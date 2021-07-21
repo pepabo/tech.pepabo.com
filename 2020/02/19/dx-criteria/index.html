@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=no" name="viewport">
+    <link href="https://tech.pepabo.com/amp/2020/02/19/dx-criteria/" rel="amphtml">
+    <meta content="https://tech.pepabo.com/blog/2020/02/19/dx-criteria/eye-catch.png" property="og:image">
+    <title>DX Criteriaの実践とその活用について - ペパボテックブログ</title>
+    <meta content="この記事の担当の黒瀧です。最近は在宅勤務が続いているので料理にハマっています。得意な料理はベーコンエッグです。今回はDX Criteriaというアセスメントツールを使って自分の事業部を診断してみたので、その結果とプロセスを共有します。" property="description">
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-5P8WMGG');
+    </script>
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="@pepabo" name="twitter:site">
+    <meta content="@kurotaky" name="twitter:creator">
+    <meta content="DX Criteriaの実践とその活用について - ペパボテックブログ" property="og:title">
+    <meta content="blog" property="og:type">
+    <meta content="この記事の担当の黒瀧です。最近は在宅勤務が続いているので料理にハマっています。得意な料理はベーコンエッグです。今回はDX Criteriaというアセスメントツールを使って自分の事業部を診断してみたので、その結果とプロセスを共有します。" property="og:description">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/stylesheets/all-353aaaac.css" rel="stylesheet" /><script src="/javascripts/application.js"></script><link href="/images/favicon.ico" rel="icon" type="image/ico" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <script type="application/ld+json">
+      {"@context":"http://schema.org","@type":"NewsArticle","headline":"DX Criteriaの実践とその活用について","author":{"@type":"Person","name":"黒瀧悠太"},"datePublished":"2020-02-18T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2020/02/19/dx-criteria/eye-catch.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+    </script>
+    <link href="//platform.twitter.com" rel="preconnect dns-prefetch">
+    <link href="//www.facebook.com" rel="preconnect dns-prefetch">
+    <link href="//connect.facebook.net" rel="preconnect dns-prefetch">
+    <link href="//www.googletagmanager.com" rel="preconnect dns-prefetch">
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div id="fb-root"></div>
+    <script>
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=709754052488816";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script><header class="header">
+      <div class="header__inner">
+        <h1 class="header__logo"><a href="/" class="header__link">
+                <span class="header__logo-img"><img src="/images/logo.svg" alt="ペパボテックブログ" /></span><span class="header__catch"><strong>T</strong>echnology, <strong>E</strong>ngineering, <strong>C</strong>reative, and <strong>H</strong>uman-Centered Design</span></a>
+        </h1><a href="" class="header__icon-link js-drawer--trigger">
+            <i class="fa fa-bars header__icon"></i></a>
+      </div>
+    </header>
+    <div class="wrapper">
+      <div class="main" role="main"><article class="article slug-dx-criteria">
+  <div class="article__inner">
+    <header class="article__header">
+      <div class="article__topic">
+        <a href="/tags/dx/" class="tag-default">DX</a>
+        <a href="/tags/suzuri/" class="tag-default">SUZURI</a>
+      </div>
+      <time class="article__time" datetime="2020-02-19">2020-02-19</time>
+      <h1 class="article__title">
+        <a href="/2020/02/19/dx-criteria/">DX Criteriaの実践とその活用について</a>
+      </h1>
+      <div class="article__topic article__topic--pc">
+        <a href="/tags/dx/" class="tag-default">DX</a>
+        <a href="/tags/suzuri/" class="tag-default">SUZURI</a>
+      </div>
+      <div class="article__eye-catch">
+        <img src="/blog/2020/02/19/dx-criteria/eye-catch.png" alt="" />
+      </div>
+    </header><div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        <li class="social-buttons__item">
+          <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+          <script>
+            !function (d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+              if(!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p+'://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js,fjs);
+              }
+            }(document, 'script', 'twitter-wjs');
+          </script>
+        </li>
+        <li class="social-buttons__item">
+          <div class="fb-like" data-action="like" data-href="/2020/02/19/dx-criteria/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+        </li>
+        <li class="social-buttons__item">
+          <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </li>
+        <li class="social-buttons__item">
+          <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+          <script>
+            !function (d, i) {
+              if (!d.getElementById(i)) {
+                var j = d.createElement("script");
+                j.id = i;
+                j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+                var w = d.getElementById(i);
+                d.body.appendChild(j);
+              }
+            }(document, "pocket-btn-js");
+          </script>
+        </li>
+      </ul>
+    </div>
+    <div class="article__body"><p>この記事の担当の<a href="https://twitter.com/kurotaky">黒瀧</a>です。最近は在宅勤務が続いているので料理にハマっています。得意な料理はベーコンエッグです。今回はDX Criteriaというアセスメントツールを使って自分の事業部を診断してみたので、その結果とプロセスを共有します。</p>
+
+<h2 id="dxとは">DXとは</h2>
+
+<p>DXには2つの意味があります。１つ目はDigital Transformation (企業のデジタル化のDX)です。経営に対してデジタル技術を用いたビジネス変革ができているか？という観点で、経済産業省の<a href="https://www.meti.go.jp/shingikai/mono_info_service/digital_transformation/20180907_report.html">DXレポート ～ITシステム「2025年の崖」克服とDXの本格的な展開～</a>においても、あらゆる産業の中にデジタル技術が使われていく状況でDXをスピーディーに進めていくことが大事であると述べられています。もう1つはDeveloper eXperience (開発者体験のDX)です。こちらは開発者にとって、働きやすい環境と高速な開発をするための文化・組織・システムが実現されているか？という観点です。<a href="https://cto-a.org/">日本CTO協会</a>ではこの２つを一体で捉えた基準を作っています。</p>
+
+<p>私自身も2つのDXを一緒に考えることはとても大事なことだと思っています。開発者が楽しく生産性を高めて開発することが良いサービスを継続的に運用していくことに繋がると思います。</p>
+
+<h2 id="dx-criteria-とは">DX Criteria とは</h2>
+
+<p>日本CTO協会が作成したアセスメントツールです。DXの進捗度を自己診断できます。
+詳しい説明は<a href="https://github.com/cto-a/dxcriteria">DX Criteria - 「２つのDX」とデジタル時代の経営ガイドライン</a>に書かれていますが、5つのテーマと8つのカテゴリ、8つの項目をかけ合わせて、全部で320個を自己診断するツールです。今回はこの診断結果と考察及び今後の取り組みについて書いていきます。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/dx-criteria-320items.png" alt="DX Criteriaの構造と観点" />
+<em><a href="https://github.com/cto-a/dxcriteria">DX Criteria - 「２つのDX」とデジタル時代の経営ガイドライン</a>より</em></p>
+
+<h2 id="各事業部においてdx-criteriaを実施">各事業部においてDX Criteriaを実施</h2>
+
+<p>今回は各事業部と事業部を横断した技術を扱う技術部においてDX Criteriaを実施しました。実施概要は以下のとおりです。</p>
+
+<h3 id="実施概要">実施概要</h3>
+
+<ul>
+  <li>診断を行う人: 各事業部のシニアエンジニアリングリード・エンジニアリングリードが約一時間で360項目に対して実施
+    <ul>
+      <li>SUZURI事業部のdesignの項目に関してはシニアデザイナの<a href="https://twitter.com/putchom">@putchom</a>に評価してもらいました</li>
+    </ul>
+  </li>
+  <li>実施日時と回答時間: 2019年12月下旬、時間は約1時間で実施、1項目10秒くらいで回答しました
+    <ul>
+      <li>項目が多いので、時間を決めて実施するのをオススメします！</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="結果">結果</h3>
+
+<p>今回はSUZURI事業部のDX Criteria結果をそのまま載せていきます。実施できているもの。当たり前になっているものは青くなっています。アンチパターンは逆転項目になっているので、Noだと青くなります。青いところは1点として計算します。実施したけど不完全だったり、やめたものに関しては灰色になっています。こちらは0.5点として計算します。実施できていないものは0点ということで赤くなっています。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/dx-criteria1.png" alt="DX Criteriaの結果1" /></p>
+
+<h4 id="縦の項目に関して">縦の項目に関して</h4>
+
+<p>得点の割合は以下のようになりました。評価する項目の個数が違うので、得られた得点を実施項目数で割って割合を出しました。メトリクスの計測が一番低い結果になりました。</p>
+
+<ul>
+  <li>メトリクス計測  12 / 40 = 0.300</li>
+  <li>学習と改善 17 / 40 = 0.425</li>
+  <li>プラクティスと習慣 61 / 120 = 0.508</li>
+  <li>アンチパターン 74 / 120 = 0.617</li>
+</ul>
+
+<h4 id="横の項目に関して">横の項目に関して</h4>
+
+<p>横のテーマごとの得点についてはdataが17.0と低い値になりました。それ以外のテーマに関しては、どれも30点台の得点でまずまずの結果かなと思います。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/dx-criteria2.png" alt="DX Criteriaの結果2" /></p>
+
+<h3 id="考察">考察</h3>
+
+<p>実施結果を眺めて考察をしました。最初は全体の傾向を見て、その後に細かい項目を見ていくと良いと思います。
+縦の項目はメトリクスの計測と学習と改善が赤の割合が多いです。横のテーマに関してはdataの項目が赤の割合が多くなっています。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/consideration-1.png" alt="DX Criteriaの結果1" /></p>
+
+<p>カテゴリーの中で6点以上の項目は以下のとおりです。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/consideration-2.png" alt="DX Criteriaの結果1" /></p>
+
+<h4 id="実施できている">実施できている</h4>
+
+<p>実施できているもの、当たり前になっているものの一例を挙げます。</p>
+
+<ul>
+  <li>アンチパターンに対する対策
+    <ul>
+      <li>Scrapboxの活用、雑談会</li>
+    </ul>
+  </li>
+  <li>バージョン管理、継続的インテグレーション
+    <ul>
+      <li>2012年くらいから技術基盤チームを中心に整備してきた</li>
+    </ul>
+  </li>
+  <li>セキュリティ
+    <ul>
+      <li>セキュリティ対策室、セキュリティキープの開催</li>
+    </ul>
+  </li>
+  <li>顧客接点のデジタル化
+    <ul>
+      <li>元々Web系の企業なので、得点が高い</li>
+      <li>メトリクス計測とタッチポイントを増やすのが今後の課題</li>
+    </ul>
+  </li>
+</ul>
+
+<p>縦のアンチパターンのところに関しては、data以外は得点が高いです。これは<a href="https://medium.com/@scrapbox/%E3%83%81%E3%83%BC%E3%83%A0%E5%86%85%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E5%8A%A0%E9%80%9F%E3%81%95%E3%81%9B%E3%82%8B-gmo%E3%83%9A%E3%83%91%E3%83%9Csuzuri%E4%BA%8B%E6%A5%AD%E9%83%A8%E3%81%AEscrapbox%E6%B4%BB%E7%94%A8%E6%B3%95-fcd209e4869b">チーム内コミュニケーションを加速させる、GMOペパボSUZURI事業部のScrapbox活用法</a>のインタビューに書かれていますが、Scrapboxを活用して情報共有をうまくやっていこうという取り組みが実施されているので、得点が高くなっています。</p>
+
+<p>以下にDX Criteriaから2つの評価項目を挙げましたが、このScrapbox活用はコミュニケーションツールのアンチパターンである、<code>オンラインでアクセスできる議事録を取っていない</code>や、タスクマネジメントの<code>他部署からの依頼が明確なタスクツールではなく、担当者へのダイレクトメール/メッセージ/口頭など透明性のない形で行われている</code>といったものに対して有効であることがわかりました。</p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/corporate-3.png" alt="コーポレート3" /></p>
+
+<p><img src="/blog/2020/02/19/dx-criteria/team-4.png" alt="コーポレート3" /></p>
+
+<p>また、バージョン管理・継続的インテグレーションに関しては、過去に弊社VPoE（VP of Engineering）の<a href="https://twitter.com/hsbt">@hsbt</a>が<a href="https://www.slideshare.net/hsbt/20150620-agile-samuraibootcamp">技術的負債との付き合い方</a>にて書いていますが、2012年からバージョンコントロールやデプロイ基盤の整備をおこなってきた結果、今では全事業部ではあたりまえの事になっているため、得点が高くなっています。</p>
+
+<h4 id="実施できていない">実施できていない</h4>
+
+<p>今度は点数が低い、どちらかというと実施できていない項目の例をいくつか挙げます。</p>
+
+<ul>
+  <li>メトリクスの計測
+    <ul>
+      <li>指標(Indicator)と目標(Objective)の設定</li>
+      <li>各指標の計測と管理</li>
+    </ul>
+  </li>
+  <li>データ活用
+    <ul>
+      <li>ユーザーの行動ログ活用</li>
+      <li>データを活用した意思決定</li>
+    </ul>
+  </li>
+</ul>
+
+<p>メトリクスの計測に関しては全体的に点数が低くなっています。例えばチーム評価項目の中で、構想から要件に落ちるまでのリードタイムの計測やチームのベロシティの計測などはあまりできていなかったように感じられます。システム評価項目に関してもSLI(サービスレベル指標)やSLO(サービスレベル目標)の設定などはできていませんでした。</p>
+
+<p>データ活用に関してはログの活用やデータを活用して意思決定するところはこれからの課題だと感じています。今後は様々なメトリクスを計測し、ファクトをベースに組織学習のサイクルを回して、みんなが作ってきたSUZURI事業部の良い文化を定量的なデータと合わせて、次のアクションを決めていきたいです。</p>
+
+<p>すでに各チームでは様々な取り組みをおこなっているので、今後SUZURI事業部のプロダクトチーム・SREチームの取り組みに関しても継続的にテックブログで紹介していきます。お楽しみに！</p>
+
+<h3 id="今後の取り組みについて">今後の取り組みについて</h3>
+
+<p>得られた結果を元に、DXの観点から2020年に注力すると良さそうなポイントを考えてみました。そして、今年はメトリクス計測とデータ活用を軸にやっていくことにしました。開発者が何か取り組む時は「メトリクスの計測どうしようか？」「データ活用の観点ではどうか？」みたいな事を考えながら取り組むと良いと思います。具体的にはAPIの改善をする時に社内外のAPI利用者にユーザビリティについてヒアリングしたりアンケートを行ってみるような感じです。</p>
+
+<p>今回の評価項目の中には個人単位ではできているものもいくつかありました。しかし、その人のモチベーションにのみ依存したりすることは継続的なサービス運営においてはリスクに繋がると思いますので、これからDX Criteriaのような基準を活用し、私達の日々やっていることが業界的にはどうなのかを照らし合わせながら、組織全体として継続的に実行できるようにしていきたいと思います。</p>
+
+<p>半年後、一年後にDX Criteriaを再実施して、1年経ってどのような変化があったかを追っていきたいと思っています。ただ得点が上がった・下がったということを見るのではなく、どういうアクションがあった結果としてどのように得点が変わったのか、プロセスと結果をセットで報告したいと思います。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>DX Criteriaを実施した結果をまとめ、SUZURI事業部の実施結果を公開しました。2020年はDX Criteriaを活用して開発者のみなさんが楽しく日々の活動に取り組めるよう、メトリクスの計測とデータ活用を意識しながらサービス改善及び開発を進めていきます！</p>
+
+<p>各企業の事例報告を集めて、各社の良いところを取り込んでいくことで業界全体の開発者体験と企業のデジタル化を加速させていけそうですね！みなさんの事例も知りたいので、テックブログやSNSで是非教えて下さい！</p>
+
+      <aside>
+        <h2>
+          GMOペパボでは、新しい仲間を募集しています
+        </h2>
+        <p>
+          募集中の職種や、詳しい社内の環境や制度に関しては以下をご覧ください。
+        </p>
+        <ul>
+          <li>
+            <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a>
+          </li>
+        </ul>
+      </aside>
+    </div>
+    <div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        <li class="social-buttons__item">
+          <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+          <script>
+            !function (d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+              if(!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p+'://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js,fjs);
+              }
+            }(document, 'script', 'twitter-wjs');
+          </script>
+        </li>
+        <li class="social-buttons__item">
+          <div class="fb-like" data-action="like" data-href="/2020/02/19/dx-criteria/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+        </li>
+        <li class="social-buttons__item">
+          <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </li>
+        <li class="social-buttons__item">
+          <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+          <script>
+            !function (d, i) {
+              if (!d.getElementById(i)) {
+                var j = d.createElement("script");
+                j.id = i;
+                j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+                var w = d.getElementById(i);
+                d.body.appendChild(j);
+              }
+            }(document, "pocket-btn-js");
+          </script>
+        </li>
+      </ul>
+    </div><footer class="article__footer">
+      <div class="article__author">
+        <h2 class="article__author-title">
+          書いた人
+        </h2>
+        <ul class="article__author-list">
+          <li class="article__author-list-item">
+            <p class="article__author-image">
+              <img src="//www.gravatar.com/avatar/0b2426ff15397042caa863cc7965c091?size=80" alt="" />
+            </p>
+            <div class="article__author-data">
+              <p class="article__author-name">
+                黒瀧悠太
+              </p>
+              <p class="article__author-description">
+                SUZURIのエンジニアリングリード、RubyKaigi 2020に登壇予定。
+              </p>
+            </div>
+            <div class="article__author-links"><a href="https://twitter.com/kurotaky" class="article__author-link article__author-link--twitter" target="_blank">
+                      <i class="fa fa-twitter fa-fw"></i></a><a href="https://www.facebook.com/kurotaky" class="article__author-link article__author-link--facebook" target="_blank"><i class="fa fa-facebook fa-fw"></i></a><a href="https://github.com/kurotaky" class="article__author-link article__author-link--github" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</article>
+      </div>
+      <aside class="sidebar js-drawer">
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            最新記事
+          </h2>
+          <ul class="sidebar__list">
+            <li class="sidebar__list-item"><a href="/2021/07/21/hiring-engineer-fes-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-21</span><span class="sidebar__list-title">この夏、エンジニア &#35;採用目的フェス を開催します!!</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/20/private-cloud-hardware/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-20</span><span class="sidebar__list-title">インスタンス数を最大化するためのハードウェア選定の工夫</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/16/hiring-suzuri-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-16</span><span class="sidebar__list-title">採用目的2021 SUZURI編</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/15/blog-relay-10th-04/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-15</span><span class="sidebar__list-title">新卒エンジニアがホスティング事業部のチームを巡った話</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/14/pepabo-tech-blog-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-14</span><span class="sidebar__list-title">ペパボテックブログの裏側</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/09/hiring-ec-division-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-09</span><span class="sidebar__list-title">採用目的 2021 EC事業部編</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/06/hiring-minne-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-06</span><span class="sidebar__list-title">採用目的2021 minne編</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            タグ
+          </h2>
+          <ul class="sidebar__tags">
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (63)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (42)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (38)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/研修/" class="sidebar__tags-link">研修 (30)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (27)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (21)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/minne/" class="sidebar__tags-link">minne (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/イベント/" class="sidebar__tags-link">イベント (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/engineering/" class="sidebar__tags-link">engineering (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/採用/" class="sidebar__tags-link">採用 (14)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (13)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/php/" class="sidebar__tags-link">PHP (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ios/" class="sidebar__tags-link">ios (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (11)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (10)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/rails/" class="sidebar__tags-link">Rails (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/github/" class="sidebar__tags-link">GitHub (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/ruby/" class="sidebar__tags-link">ruby (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/mobile/" class="sidebar__tags-link">mobile (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/rails/" class="sidebar__tags-link">rails (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/management/" class="sidebar__tags-link">management (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/slack/" class="sidebar__tags-link">Slack (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/swift/" class="sidebar__tags-link">swift (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/android/" class="sidebar__tags-link">android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/ec/" class="sidebar__tags-link">ec (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/ngx_mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/security/" class="sidebar__tags-link">security (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/android/" class="sidebar__tags-link">Android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/cre/" class="sidebar__tags-link">CRE (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/swiftui/" class="sidebar__tags-link">swiftui (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color2">
+              <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/notion/" class="sidebar__tags-link">notion (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/productivity/" class="sidebar__tags-link">productivity (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            リンク
+          </h2>
+          <ul class="information">
+            <li>
+              <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+            </li>
+            <li>
+              <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div class="credit">
+        <p class="credit__logo">
+          pepabo tech blog
+        </p>
+        <ul class="credit__links">
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+          </li>
+        </ul>
+        <p class="credit__rights">
+          © 2015 - 2021 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+        </p>
+      </div>
+    </footer><script>
+      (function () {
+        var tagjs = document.createElement("script");
+        var s = document.getElementsByTagName("script")[0];
+        tagjs.async = true;
+        tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+        s.parentNode.insertBefore(tagjs, s);
+      }());
+    </script>
+    <noscript><iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></noscript>
+    <div class="overlay"></div>
+  </body>
+</html>

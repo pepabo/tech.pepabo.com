@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=no" name="viewport">
+    <link href="https://tech.pepabo.com/amp/2018/05/01/remote-build-for-android/" rel="amphtml">
+    <meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image">
+    <title>minne Androidアプリのビルドをリモートビルドで高速化！ - ペパボテックブログ</title>
+    <meta content="minne事業部チーフテクニカルリードの @hisaichi5518 です。
+
+minneのAndroidアプリは、2012年から開発されていてそれなりにコードベースも大きくなってきており、MacBook Pro (13-inch, 2016..." property="description">
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-5P8WMGG');
+    </script>
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="@pepabo" name="twitter:site">
+    <meta content="@hisaichi5518" name="twitter:creator">
+    <meta content="minne Androidアプリのビルドをリモートビルドで高速化！ - ペパボテックブログ" property="og:title">
+    <meta content="blog" property="og:type">
+    <meta content="minne事業部チーフテクニカルリードの @hisaichi5518 です。
+
+minneのAndroidアプリは、2012年から開発されていてそれなりにコードベースも大きくなってきており、MacBook Pro (13-inch, 2016..." property="og:description">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/stylesheets/all-353aaaac.css" rel="stylesheet" /><script src="/javascripts/application.js"></script><link href="/images/favicon.ico" rel="icon" type="image/ico" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <script type="application/ld+json">
+      {"@context":"http://schema.org","@type":"NewsArticle","headline":"minne Androidアプリのビルドをリモートビルドで高速化！","author":{"@type":"Person","name":"hisaichi5518"},"datePublished":"2018-04-30T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+    </script>
+    <link href="//platform.twitter.com" rel="preconnect dns-prefetch">
+    <link href="//www.facebook.com" rel="preconnect dns-prefetch">
+    <link href="//connect.facebook.net" rel="preconnect dns-prefetch">
+    <link href="//www.googletagmanager.com" rel="preconnect dns-prefetch">
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div id="fb-root"></div>
+    <script>
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.10&appId=709754052488816";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script><header class="header">
+      <div class="header__inner">
+        <h1 class="header__logo"><a href="/" class="header__link">
+                <span class="header__logo-img"><img src="/images/logo.svg" alt="ペパボテックブログ" /></span><span class="header__catch"><strong>T</strong>echnology, <strong>E</strong>ngineering, <strong>C</strong>reative, and <strong>H</strong>uman-Centered Design</span></a>
+        </h1><a href="" class="header__icon-link js-drawer--trigger">
+            <i class="fa fa-bars header__icon"></i></a>
+      </div>
+    </header>
+    <div class="wrapper">
+      <div class="main" role="main"><article class="article slug-remote-build-for-android">
+  <div class="article__inner">
+    <header class="article__header">
+      <div class="article__topic">
+        <a href="/tags/android/" class="tag-default">Android</a>
+        <a href="/tags/minne/" class="tag-default">minne</a>
+      </div>
+      <time class="article__time" datetime="2018-05-01">2018-05-01</time>
+      <h1 class="article__title">
+        <a href="/2018/05/01/remote-build-for-android/">minne Androidアプリのビルドをリモートビルドで高速化！</a>
+      </h1>
+      <div class="article__topic article__topic--pc">
+        <a href="/tags/android/" class="tag-default">Android</a>
+        <a href="/tags/minne/" class="tag-default">minne</a>
+      </div>
+    </header><div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        <li class="social-buttons__item">
+          <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+          <script>
+            !function (d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+              if(!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p+'://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js,fjs);
+              }
+            }(document, 'script', 'twitter-wjs');
+          </script>
+        </li>
+        <li class="social-buttons__item">
+          <div class="fb-like" data-action="like" data-href="/2018/05/01/remote-build-for-android/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+        </li>
+        <li class="social-buttons__item">
+          <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </li>
+        <li class="social-buttons__item">
+          <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+          <script>
+            !function (d, i) {
+              if (!d.getElementById(i)) {
+                var j = d.createElement("script");
+                j.id = i;
+                j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+                var w = d.getElementById(i);
+                d.body.appendChild(j);
+              }
+            }(document, "pocket-btn-js");
+          </script>
+        </li>
+      </ul>
+    </div>
+    <div class="article__body"><p>minne事業部チーフテクニカルリードの <a href="https://twitter.com/hisaichi5518">@hisaichi5518</a> です。</p>
+
+<p>minneのAndroidアプリは、2012年から開発されていてそれなりにコードベースも大きくなってきており、MacBook Pro (13-inch, 2016) プロセッサ 2.9 GHz Intel Core i5, メモリ 16 GB 2133 MHz LPDDR3 でビルドするとクリーンビルドで10分、キャッシュが効いていても3分ほどかかっていました。コードに変更を加えてビルドをするたび数分待ち、その間Twitterを眺めているのは開発効率が高いとは言えないので、リモートビルドを導入しました。</p>
+
+<h2 id="リモートビルドとは">リモートビルドとは?</h2>
+
+<p>ここでいうリモートビルドとは、開発に利用しているマシン（以下、ローカルマシン）よりもハイスペックなインスタンスをGoogle Cloud Platform（以下、GCP）などに立ち上げて、そのインスタンスを利用してビルドを行い、ビルド結果をローカルマシンと同期することを指します。</p>
+
+<p>リモートビルドを行ううえで必要となるのが、以下の2点です。</p>
+
+<ul>
+  <li>GCPなどにインスタンスを立ち上げて、ビルドが出来る環境に整備する</li>
+  <li>ファイルの同期やビルドの実行</li>
+</ul>
+
+<p>どう実現するのか、1つずつ説明していきます。</p>
+
+<h2 id="gcpなどにインスタンスを立ち上げてビルドが出来る環境に整備する">GCPなどにインスタンスを立ち上げて、ビルドが出来る環境に整備する</h2>
+
+<p>minneには、<a href="http://tech.pepabo.com/2017/10/06/improve-application-release-flow/">リリース準備の自動化に利用</a>しているtenmaというコマンドがあります。前まではOSSではありませんでしたが、今はOSSになっています。</p>
+
+<p><a href="https://github.com/hisaichi5518/tenma">https://github.com/hisaichi5518/tenma</a></p>
+
+<p>このtenmaコマンドに、インスタンスの立ち上げとビルドが出来る環境に整備するまで行ってくれる<code>tenma ichiba</code>があるのでそれを使っていきます。<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
+
+<p><code>tenma ichiba</code> は、gcloudのインストールとセットアップが必要です。以下のリンクからダウンロードし、<code>gcloud init</code>を実行しアカウントを紐付けてください。</p>
+
+<p><a href="https://cloud.google.com/sdk/gcloud">https://cloud.google.com/sdk/gcloud</a></p>
+
+<p>またどのAndroid SDKをインストールするか等の情報が必要になるので、Androidアプリのディレクトリ配下に <code>tenma/ichiba.yml</code> を作る必要があります。</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">android_sdk</span><span class="pi">:</span>
+    <span class="na">license</span><span class="pi">:</span> <span class="s2">"</span><span class="s">your</span><span class="nv"> </span><span class="s">license</span><span class="nv"> </span><span class="s">key"</span>
+    <span class="na">update_list</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">platform-tools</span>
+        <span class="pi">-</span> <span class="s">build-tools-27.0.3</span>
+        <span class="pi">-</span> <span class="s">android-27</span>
+        <span class="pi">-</span> <span class="s">extra-android-m2repository</span>
+        <span class="pi">-</span> <span class="s">extra-google-m2repository</span>
+        <span class="pi">-</span> <span class="s">extra-google-google_play_services</span>
+</code></pre></div>
+<p>準備がおわり、Androidアプリのディレクトリで以下のコマンドを実行すればインスタンス作成とビルドが出来る環境が整います。<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup></p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>bundle exec tenma ichiba --create-instance --provision-instance --instance-project &lt;your-gcp-project&gt;
+</code></pre></div>
+<p>tenma 0.9.0時点で作成されるインスタンスは以下の通りです。オプションで変更も可能です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">オプション</th>
+      <th style="text-align: left">デフォルト値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code>--instance-name</code></td>
+      <td style="text-align: left">remote-build</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>--instance-zone</code></td>
+      <td style="text-align: left">asia-northeast1-c</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>--instance-machine-type</code></td>
+      <td style="text-align: left">n1-highcpu-16</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>--instance-disk-size</code></td>
+      <td style="text-align: left">20(GB)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以下は、インスタンス作成時にgcloudに渡すオプションですが、<code>tenma ichiba</code>経由では変更出来ません。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">gcloud オプション</th>
+      <th style="text-align: left">値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code>--preemptible</code></td>
+      <td style="text-align: left">true</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>--image-family</code></td>
+      <td style="text-align: left">ubuntu-1710</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>--image-project</code></td>
+      <td style="text-align: left">ubuntu-os-cloud</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="ファイルの同期やビルドの実行">ファイルの同期やビルドの実行</h2>
+
+<p>インスタンスの準備が出来たはずなので、次はファイルの同期やビルドを行います。これらは、tenmaではなく <a href="https://github.com/gojuno/mainframer">gojuno/mainframer</a> を利用します。</p>
+
+<p>Androidアプリのディレクトリに移動し、mainframerをダウンロードし、<code>.mainframer/config</code>を作成します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>remote_machine=remote-build.asia-northeast1-c.&lt;your-gcp-project&gt;
+</code></pre></div>
+<p>ローカルからインスタンスに同期する必要がないファイルなどを指定したい場合は、<a href="https://github.com/gojuno/mainframer/tree/development/samples/gradle-android/.mainframer">ignore, localignore, remoteignore</a>を作成すれば、よしなにやってくれます。</p>
+
+<p>設定が終われば、以下のコマンドでファイルの同期やビルドが行われます。</p>
+<div class="highlight"><pre class="highlight plaintext"><code>./mainframer.sh ./gradlew :app:assembleDebug
+</code></pre></div>
+<p>またAndroid StudioのRunボタンから実行したい場合は<a href="https://github.com/gojuno/mainframer/tree/development/samples/gradle-android#android-studio-configuration-to-run-apk">Android Studio Configuration to Run APK</a>に書いてある通りにやれば、実現できます。</p>
+
+<h2 id="結果">結果</h2>
+
+<p><code>tenma ichiba</code> + <code>mainframer</code> を利用することで、ビルド時間はクリーンビルドで3分, キャッシュが効いているビルドで30秒から1分ほどとなりました。</p>
+
+<p>Androidエンジニアは4人いて、1人1日20回ビルドしてるとして、1ビルド3分かけてるとすると</p>
+
+<ul>
+  <li><code>20*3</code>=1日で1人あたり60分（1時間）ビルドを待っている</li>
+  <li><code>20*3*31</code>=1ヶ月（31日間）で1人あたり1860分（約31時間）ビルドを待っている</li>
+  <li><code>20*3*31*4</code>=1ヶ月（31日間）で4人あたり7440分（約124時間）ビルドを待っている</li>
+</ul>
+
+<p>これをリモートビルドを実装したときの数字である1ビルド1分ほどにすると</p>
+
+<ul>
+  <li><code>20*1</code>=1日で1人あたり20分ビルドを待っている</li>
+  <li><code>20*1*31</code>=1ヶ月（31日間）で1人あたり620分（約10時間）ビルドを待っている</li>
+  <li><code>20*1*31*4</code>=1ヶ月（31日間）で4人あたり2480分（約41時間）ビルドを待っている</li>
+</ul>
+
+<p>となり、ざっくりとした計算ではありますが 124時間-41時間で4人あたり1ヶ月約83時間待たなくて良くなりました。</p>
+
+<h2 id="節約術">節約術</h2>
+
+<p>Androidエンジニアが働く時にだけリモートビルドインスタンスが立ち上がっていればいいので、平日朝に自動でインスタンスを立ち上げて、夜には削除するようにしています。これはBitriseの定期実行機能を使って実現しています。</p>
+
+<p>以下のようなワークフローになります。</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="nn">---</span>
+<span class="na">format_version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">4'</span>
+<span class="na">default_step_lib_source</span><span class="pi">:</span> <span class="s">https://github.com/bitrise-io/bitrise-steplib.git</span>
+<span class="na">project_type</span><span class="pi">:</span> <span class="s">android</span>
+<span class="na">workflows</span><span class="pi">:</span>
+  <span class="na">delete-remote-build-instance</span><span class="pi">:</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">activate-ssh-key</span><span class="pi">:</span>
+        <span class="na">run_if</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{{getenv</span><span class="nv"> </span><span class="s">"SSH_RSA_PRIVATE_KEY"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">ne</span><span class="nv"> </span><span class="s">""}}'</span>
+    <span class="pi">-</span> <span class="na">git-clone</span><span class="pi">:</span> <span class="pi">{}</span>
+    <span class="pi">-</span> <span class="na">script</span><span class="pi">:</span>
+        <span class="na">title</span><span class="pi">:</span> <span class="s">Delete remote-build instance</span>
+        <span class="na">inputs</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">content</span><span class="pi">:</span> <span class="pi">|-</span>
+            <span class="s">#!/usr/bin/env bash</span>
+            <span class="s">set -e</span>
+            <span class="s">set -x</span>
+
+            <span class="s">curl -o /tmp/sacc_key.json $BITRISEIO_SERVICE_ACCOUNT_KEY_URL</span>
+            <span class="s">gcloud auth activate-service-account -q --key-file /tmp/sacc_key.json</span>
+            <span class="s">gcloud config set project $GCP_PROJECT</span>
+
+            <span class="s">bundle install</span>
+            <span class="s">bundle exec tenma ichiba --delete-instance</span>
+    <span class="pi">-</span> <span class="na">deploy-to-bitrise-io</span><span class="pi">:</span> <span class="pi">{}</span>
+    <span class="pi">-</span> <span class="na">slack</span><span class="pi">:</span>
+        <span class="na">inputs</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">channel</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#minne_dev"</span>
+        <span class="pi">-</span> <span class="na">text</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+        <span class="pi">-</span> <span class="na">pretext_on_error</span><span class="pi">:</span> <span class="s">Androidリモートビルドインスタンスの削除に失敗!!!!!!!!!1</span>
+        <span class="pi">-</span> <span class="na">pretext</span><span class="pi">:</span> <span class="s">Androidリモートビルドインスタンスの削除を行いました</span>
+        <span class="pi">-</span> <span class="na">channel_on_error</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#minne_dev"</span>
+        <span class="pi">-</span> <span class="na">webhook_url</span><span class="pi">:</span> <span class="s">&lt;webhook_url&gt;</span>
+  <span class="na">create-remote-build-instance</span><span class="pi">:</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">activate-ssh-key</span><span class="pi">:</span>
+        <span class="na">run_if</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{{getenv</span><span class="nv"> </span><span class="s">"SSH_RSA_PRIVATE_KEY"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">ne</span><span class="nv"> </span><span class="s">""}}'</span>
+    <span class="pi">-</span> <span class="na">git-clone</span><span class="pi">:</span> <span class="pi">{}</span>
+    <span class="pi">-</span> <span class="na">script</span><span class="pi">:</span>
+        <span class="na">title</span><span class="pi">:</span> <span class="s">Set up remote machine</span>
+        <span class="na">inputs</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">content</span><span class="pi">:</span> <span class="pi">|-</span>
+            <span class="s">#!/usr/bin/env bash</span>
+            <span class="s">set -e</span>
+            <span class="s">set -x</span>
+
+            <span class="s">curl -o /tmp/sacc_key.json $BITRISEIO_SERVICE_ACCOUNT_KEY_URL</span>
+            <span class="s">gcloud auth activate-service-account -q --key-file /tmp/sacc_key.json</span>
+            <span class="s">gcloud config set project $GCP_PROJECT</span>
+
+            <span class="s">bundle install</span>
+            <span class="s">bundle exec tenma ichiba --create-instance</span>
+    <span class="pi">-</span> <span class="na">deploy-to-bitrise-io</span><span class="pi">:</span> <span class="pi">{}</span>
+    <span class="pi">-</span> <span class="s">slack@2.7.2</span><span class="pi">:</span>
+        <span class="na">inputs</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">channel</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#minne_dev"</span>
+        <span class="pi">-</span> <span class="na">pretext</span><span class="pi">:</span> <span class="s">Androidリモートビルドインスタンス作成に成功しました。</span>
+        <span class="pi">-</span> <span class="na">pretext_on_error</span><span class="pi">:</span> <span class="s">Androidリモートビルドインスタンス作成に失敗!!!!!!1</span>
+        <span class="pi">-</span> <span class="na">channel_on_error</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#minne_dev"</span>
+        <span class="pi">-</span> <span class="na">webhook_url</span><span class="pi">:</span> <span class="s">&lt;webhook_url&gt;</span>
+<span class="na">app</span><span class="pi">:</span>
+  <span class="na">envs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">opts</span><span class="pi">:</span>
+      <span class="na">is_expand</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">GRADLE_BUILD_FILE_PATH</span><span class="pi">:</span> <span class="s">build.gradle</span>
+  <span class="pi">-</span> <span class="na">opts</span><span class="pi">:</span>
+      <span class="na">is_expand</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">GRADLEW_PATH</span><span class="pi">:</span> <span class="s2">"</span><span class="s">./gradlew"</span>
+  <span class="pi">-</span> <span class="na">opts</span><span class="pi">:</span>
+      <span class="na">is_expand</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">GCP_PROJECT</span><span class="pi">:</span> <span class="s">&lt;your-gcp-project&gt;</span>
+</code></pre></div>
+<h2 id="まとめ">まとめ</h2>
+
+<ul>
+  <li>minneのAndroidアプリ開発では、リモートビルドを利用しています</li>
+  <li>リモートビルドによって、4人あたり約83時間待つ時間を減らすことが出来ました</li>
+  <li>節約のために、インスタンスの立ち上げと削除は自動化しています</li>
+</ul>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><code>tenma ichiba</code>は、みなさんご存知<a href="http://www.tenmaichiba.com/">活気あふれる浪花の台所 天満市場</a>から取ってます。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>都度プロジェクトを設定するのがめんどい人は、環境変数<code>TENMA_ICHIBA_INSTANCE_PROJECT</code>を設定すると適用されます <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      <aside>
+        <h2>
+          GMOペパボでは、新しい仲間を募集しています
+        </h2>
+        <p>
+          募集中の職種や、詳しい社内の環境や制度に関しては以下をご覧ください。
+        </p>
+        <ul>
+          <li>
+            <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a>
+          </li>
+        </ul>
+      </aside>
+    </div>
+    <div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        <li class="social-buttons__item">
+          <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+          <script>
+            !function (d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+              if(!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p+'://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js,fjs);
+              }
+            }(document, 'script', 'twitter-wjs');
+          </script>
+        </li>
+        <li class="social-buttons__item">
+          <div class="fb-like" data-action="like" data-href="/2018/05/01/remote-build-for-android/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+        </li>
+        <li class="social-buttons__item">
+          <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </li>
+        <li class="social-buttons__item">
+          <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+          <script>
+            !function (d, i) {
+              if (!d.getElementById(i)) {
+                var j = d.createElement("script");
+                j.id = i;
+                j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+                var w = d.getElementById(i);
+                d.body.appendChild(j);
+              }
+            }(document, "pocket-btn-js");
+          </script>
+        </li>
+      </ul>
+    </div><footer class="article__footer">
+      <div class="article__author">
+        <h2 class="article__author-title">
+          書いた人
+        </h2>
+        <ul class="article__author-list">
+          <li class="article__author-list-item">
+            <p class="article__author-image">
+              <img src="//www.gravatar.com/avatar/4b7536b1ad854fa552a2cea0248bb5cc?size=80" alt="" />
+            </p>
+            <div class="article__author-data">
+              <p class="article__author-name">
+                hisaichi5518
+              </p>
+              <p class="article__author-description">
+                吉高由里子/吉高由里子/吉高由里子
+              </p>
+            </div>
+            <div class="article__author-links"><a href="https://twitter.com/hisaichi5518" class="article__author-link article__author-link--twitter" target="_blank">
+                      <i class="fa fa-twitter fa-fw"></i></a><a href="https://github.com/hisaichi5518" class="article__author-link article__author-link--github" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</article>
+      </div>
+      <aside class="sidebar js-drawer">
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            最新記事
+          </h2>
+          <ul class="sidebar__list">
+            <li class="sidebar__list-item"><a href="/2021/07/21/hiring-engineer-fes-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-21</span><span class="sidebar__list-title">この夏、エンジニア &#35;採用目的フェス を開催します!!</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/20/private-cloud-hardware/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-20</span><span class="sidebar__list-title">インスタンス数を最大化するためのハードウェア選定の工夫</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/16/hiring-suzuri-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-16</span><span class="sidebar__list-title">採用目的2021 SUZURI編</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/15/blog-relay-10th-04/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-15</span><span class="sidebar__list-title">新卒エンジニアがホスティング事業部のチームを巡った話</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/14/pepabo-tech-blog-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-14</span><span class="sidebar__list-title">ペパボテックブログの裏側</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/09/hiring-ec-division-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-09</span><span class="sidebar__list-title">採用目的 2021 EC事業部編</span></a>
+            </li>
+            <li class="sidebar__list-item"><a href="/2021/07/06/hiring-minne-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-06</span><span class="sidebar__list-title">採用目的2021 minne編</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            タグ
+          </h2>
+          <ul class="sidebar__tags">
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (63)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (42)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (38)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/研修/" class="sidebar__tags-link">研修 (30)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (27)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (21)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/minne/" class="sidebar__tags-link">minne (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/イベント/" class="sidebar__tags-link">イベント (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/engineering/" class="sidebar__tags-link">engineering (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/採用/" class="sidebar__tags-link">採用 (14)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (13)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/php/" class="sidebar__tags-link">PHP (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ios/" class="sidebar__tags-link">ios (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (11)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (10)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/rails/" class="sidebar__tags-link">Rails (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/github/" class="sidebar__tags-link">GitHub (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/ruby/" class="sidebar__tags-link">ruby (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/mobile/" class="sidebar__tags-link">mobile (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/rails/" class="sidebar__tags-link">rails (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/management/" class="sidebar__tags-link">management (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/slack/" class="sidebar__tags-link">Slack (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/swift/" class="sidebar__tags-link">swift (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/android/" class="sidebar__tags-link">android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/ec/" class="sidebar__tags-link">ec (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/ngx_mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/security/" class="sidebar__tags-link">security (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/android/" class="sidebar__tags-link">Android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/cre/" class="sidebar__tags-link">CRE (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/swiftui/" class="sidebar__tags-link">swiftui (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color2">
+              <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/notion/" class="sidebar__tags-link">notion (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/productivity/" class="sidebar__tags-link">productivity (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            リンク
+          </h2>
+          <ul class="information">
+            <li>
+              <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+            </li>
+            <li>
+              <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div class="credit">
+        <p class="credit__logo">
+          pepabo tech blog
+        </p>
+        <ul class="credit__links">
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+          </li>
+        </ul>
+        <p class="credit__rights">
+          © 2015 - 2021 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+        </p>
+      </div>
+    </footer><script>
+      (function () {
+        var tagjs = document.createElement("script");
+        var s = document.getElementsByTagName("script")[0];
+        tagjs.async = true;
+        tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+        s.parentNode.insertBefore(tagjs, s);
+      }());
+    </script>
+    <noscript><iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></noscript>
+    <div class="overlay"></div>
+  </body>
+</html>

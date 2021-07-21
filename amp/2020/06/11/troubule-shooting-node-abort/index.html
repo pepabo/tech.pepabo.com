@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html amp="amp" lang="ja">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=no" name="viewport">
+    <link href="https://tech.pepabo.com/2020/06/11/troubule-shooting-node-abort/" rel="canonical">
+    <meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image">
+    <title>ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装 - ペパボテックブログ</title>
+    <meta content="セキュリティ対策室の伊藤洋也 @hiboma です。
+
+業務中に、Haconiwa コンテナ で動くとある node プロセスが general protection fault ( 一般保護違反! ) を起こしてdmesg にログを..." property="description">
+    
+      
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="@pepabo" name="twitter:site">
+    <meta content="@hiboma" name="twitter:creator">
+    <meta content="@udzura" name="twitter:creator">
+    <meta content="ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装 - ペパボテックブログ" property="og:title">
+    <meta content="blog" property="og:type">
+    <meta content="セキュリティ対策室の伊藤洋也 @hiboma です。
+
+業務中に、Haconiwa コンテナ で動くとある node プロセスが general protection fault ( 一般保護違反! ) を起こしてdmesg にログを..." property="og:description">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet">
+    <style amp-custom>input[type="button"],input[type="reset"],input[type="submit"],button{-webkit-appearance:none;-moz-appearance:none;appearance:none;-webkit-font-smoothing:antialiased;background-color:#2571b3;border-radius:3px;border:none;color:#fff;cursor:pointer;display:inline-block;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;font-weight:600;line-height:1;padding:0.75rem 1rem;text-decoration:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;vertical-align:middle;white-space:nowrap}input[type="button"]:hover,input[type="button"]:focus,input[type="reset"]:hover,input[type="reset"]:focus,input[type="submit"]:hover,input[type="submit"]:focus,button:hover,button:focus{background-color:#184974;color:#fff}input[type="button"]:disabled,input[type="reset"]:disabled,input[type="submit"]:disabled,button:disabled{cursor:not-allowed;opacity:0.5}fieldset{background-color:#fafafa;border:1px solid #dee0e3;margin:0 0 0.875rem;padding:1.75rem}input,label,select{display:block;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem}label{font-weight:600;margin-bottom:0.4375rem}label.required::after{content:"*"}label abbr{display:none}input[type="color"],input[type="date"],input[type="datetime"],input[type="datetime-local"],input[type="email"],input[type="month"],input[type="number"],input[type="password"],input[type="search"],input[type="tel"],input[type="text"],input[type="time"],input[type="url"],input[type="week"],input:not([type]),select[multiple=multiple],textarea{background-color:#fff;border:1px solid #dee0e3;border-radius:3px;-webkit-box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);-webkit-box-sizing:border-box;box-sizing:border-box;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;margin-bottom:0.875rem;padding:0.5833333333rem;-webkit-transition:border-color;transition:border-color;width:100%}input[type="color"]:hover,input[type="date"]:hover,input[type="datetime"]:hover,input[type="datetime-local"]:hover,input[type="email"]:hover,input[type="month"]:hover,input[type="number"]:hover,input[type="password"]:hover,input[type="search"]:hover,input[type="tel"]:hover,input[type="text"]:hover,input[type="time"]:hover,input[type="url"]:hover,input[type="week"]:hover,input:not([type]):hover,select[multiple=multiple]:hover,textarea:hover{border-color:#c2c6cc}input[type="color"]:focus,input[type="date"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="email"]:focus,input[type="month"]:focus,input[type="number"]:focus,input[type="password"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="text"]:focus,input[type="time"]:focus,input[type="url"]:focus,input[type="week"]:focus,input:not([type]):focus,select[multiple=multiple]:focus,textarea:focus{border-color:#2571b3;-webkit-box-shadow:inset 0 1px 3px rgba(0,0,0,0.06),0 0 5px rgba(33,100,158,0.7);box-shadow:inset 0 1px 3px rgba(0,0,0,0.06),0 0 5px rgba(33,100,158,0.7);outline:none}textarea{resize:vertical}input[type="search"]{-webkit-appearance:none;-moz-appearance:none;appearance:none}input[type="checkbox"],input[type="radio"]{display:inline;margin-right:0.4375rem}input[type="file"]{padding-bottom:0.875rem;width:100%}select{margin-bottom:1.75rem;max-width:100%;width:auto}ul,ol{list-style-type:none;margin:0;padding:0}dl{margin-bottom:0.875rem}dl dt{font-weight:bold;margin-top:0.875rem}dl dd{margin:0}table{-webkit-font-feature-settings:"kern", "liga", "tnum";font-feature-settings:"kern", "liga", "tnum";border-collapse:collapse;margin:0.875rem 0;table-layout:fixed;width:100%}tr,td,th{vertical-align:middle}th,td{border-bottom:1px solid #dee0e3;padding:0.875rem 0}th{font-weight:600;text-align:left}thead th{border-bottom-color:#b5b9c0}body{-webkit-font-feature-settings:"kern", "liga", "pnum";font-feature-settings:"kern", "liga", "pnum";color:#393c41;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;line-height:1.75;background-color:#fff}h1,h2,h3,h4,h5,h6{font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;line-height:1.25;margin:0 0 0.875rem}p{margin:0 0 0.875rem}a{color:#393c41;-webkit-transition:color 0.1s linear;transition:color 0.1s linear}a:active,a:focus,a:hover{color:#151618}a:active,a:focus{outline:none}hr{border-bottom:1px solid #dee0e3;border-left:none;border-right:none;border-top:none;margin:1.75rem 0}img,picture{margin:0;max-width:100%}html{-webkit-box-sizing:border-box;box-sizing:border-box}*,*::after,*::before{-webkit-box-sizing:inherit;box-sizing:inherit}.header{border-bottom:1px solid #dee0e3;position:fixed;background:#fff;max-width:100%;margin-left:auto;margin-right:auto;width:100%;z-index:1000;min-height:3rem}.header::after{clear:both;content:"";display:block}@media screen and (min-width: 860px){.header{position:static;border-bottom:none}}.header__inner{position:relative;padding:0.75rem 0 0.125rem}@media screen and (min-width: 860px){.header__inner{padding:3.75rem 0 3.75rem}}.header__logo{margin:0;position:relative;text-align:center;display:inline-block;color:#3e6f99;width:100%}@media screen and (min-width: 860px){.header__logo{position:initial}}.header__link{display:inline-block;text-align:center;cursor:pointer;text-decoration:none}@media screen and (min-width: 860px){.header__link{height:auto}}.header__logo-img{display:block;width:11.25rem;margin:0 auto;position:relative}@media screen and (min-width: 860px){.header__logo-img{width:40rem}}.header__catch{display:none;color:#3e6f99}@media screen and (min-width: 640px){.header__catch{display:block;font-size:0.625rem}}@media screen and (min-width: 860px){.header__catch{display:block;margin-top:0.5em;font-size:1rem}}.header__icon-link{position:absolute;display:block;right:0;top:0;width:2.75rem;height:3rem;text-align:center}@media screen and (min-width: 860px){.header__icon-link{display:none}}.header__icon{display:inline-block;width:100%;font-size:1.5rem;position:absolute;left:0;top:0.75rem;color:#393c41}body{margin:0;max-width:100%;margin-left:auto;margin-right:auto}body::after{clear:both;content:"";display:block}.wrapper{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:relative;margin:0 auto;padding:3.75rem 0.625rem 0;width:100%;max-width:1240px;-webkit-box-sizing:border-box;box-sizing:border-box}@media screen and (min-width: 640px){.wrapper{padding:5.3125rem 0.9375rem 0}}@media screen and (min-width: 860px){.wrapper{margin-bottom:1.25rem;padding:0 1.25rem}.wrapper::after{clear:both;content:"";display:block}}@media screen and (min-width: 860px){.main{float:left;width:75%}}.overlay{position:fixed;z-index:2000;top:0;left:0;display:none;width:100%;height:120%;background-color:rgba(0,0,0,0.75)}.overlay.fade-in{-webkit-animation:overlay__fade-in ease 0.3s 1 normal;animation:overlay__fade-in ease 0.3s 1 normal}.overlay.active{display:block}.overlay.fade-out{-webkit-animation:overlay__fade-out ease 0.3s 1 normal;animation:overlay__fade-out ease 0.3s 1 normal}@-webkit-keyframes overlay__fade-in{0%{display:none;opacity:0}1%{display:block;opacity:0}100%{display:block;opacity:1}}@keyframes overlay__fade-in{0%{display:none;opacity:0}1%{display:block;opacity:0}100%{display:block;opacity:1}}@-webkit-keyframes overlay__fade-out{0%{display:block;opacity:1}99%{display:block;opacity:0}100%{display:none;opacity:0}}@keyframes overlay__fade-out{0%{display:block;opacity:1}99%{display:block;opacity:0}100%{display:none;opacity:0}}.sidebar{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:fixed;top:0;right:-16.875rem;z-index:9999;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;width:16.875rem;height:100%;padding:1.25rem;background:#fff;color:#393c41}.sidebar.open{right:0}@media screen and (min-width: 860px){.sidebar{position:static;top:auto;right:auto;padding:0;float:right;width:25%;padding-left:2.5rem;-webkit-box-sizing:border-box;box-sizing:border-box}}.sidebar__sections{clear:both;margin:0 0 1.875rem}@media screen and (min-width: 860px){.sidebar__sections{margin:0 0 1.875rem}}.sidebar__title{margin:0 0 0.9375rem;font-size:1.375rem}@media screen and (min-width: 860px){.sidebar__title{padding:0 0 0.625rem;border-bottom:1px solid currentColor}}.sidebar__list{display:block;margin-top:-0.6em;font-size:0.9375rem}.sidebar__list-item{display:block;border-bottom:1px solid #dee0e3}.sidebar__list-link{display:block;cursor:pointer;padding:0.6em 0;line-height:1.4;text-decoration:none}.sidebar__list-date{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;color:#767b85;font-size:0.875rem}.sidebar__list-item:hover .sidebar__list-date{color:#2571b3}.sidebar__list-title{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block}.sidebar__list-item:hover .sidebar__list-title{color:#2571b3}.sidebar__tags{display:block}.sidebar__tags-item{display:inline-block;border-radius:4px;margin:0 0.1em 0.5em 0}.sidebar__tags-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:relative;display:block;cursor:pointer;padding:0.3em 0.5em;border:1px solid #ccc;border-radius:4px;font-size:0.875rem;line-height:1.2;text-decoration:none;background-color:#f8f8f8}.sidebar__tags-link:hover{color:#fff;border-color:transparent;background-color:inherit}.information li{font-size:1rem;margin:0 0 0.625rem}.information li a{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;color:pointer}.information li a:hover{color:#2571b3}.footer{display:block}.credit{background:#3e6f99;color:#fff;text-align:center;padding:1.25rem}.credit a{color:currentColor;text-decoration:none}.credit a:hover{opacity:0.8}.credit__logo{font-weight:bold}.credit__links{display:block;margin:0 0 0.875rem;font-size:0.875rem;color:#fff;text-align:center}.credit__link{display:inline-block;margin:0 0.5em}.credit__rights{font-size:0.875rem;margin:0}.article{border-bottom:1px solid #dee0e3;position:relative;padding:0 0.3125rem 0.625rem;color:#393c41}.article::after{clear:both;content:"";display:block}.article:last-child{border-bottom:none}@media screen and (min-width: 860px){.article{text-align:left;padding:0 0 1.25rem}}.article__topic{padding:0 0 0.625rem;text-align:center}.article__topic a{text-decoration:none;display:inline-block;margin:0.2rem 0.2rem 0.4rem 0;text-align:center;padding:0.1rem 0.5rem;font-size:0.7rem;border-radius:0.1875rem;font-weight:bold}@media screen and (min-width: 860px){.article__topic{display:none}}.article__topic--pc{display:none}@media screen and (min-width: 860px){.article__topic--pc{display:block;padding:0.625rem 0;text-align:left}.article__topic--pc a{font-size:0.8rem}}.article__time{display:inline-block;margin:0 0 0.5em;color:#767b85;font-size:1rem;font-weight:normal}.article__title{margin:0 0 1rem;font-size:1.375rem;line-height:1.4}.article__title a{display:block;text-decoration:none}@media screen and (min-width: 640px){.article__title{font-size:1.5625rem}}@media screen and (min-width: 860px){.article__title{margin-bottom:0}}.article__eye-catch{margin:0 0 1rem}.article__body{margin-bottom:1.5rem;color:#393c41}@media screen and (min-width: 860px){.article__body{padding:0 4rem}}.article__body h2{margin:-2.5rem 0 1rem;padding-top:4rem;padding-bottom:0.5em;border-bottom:1px solid currentColor;color:#393c41;font-size:1.4375rem;line-height:1.4}@media screen and (min-width: 860px){.article__body h2{margin:1em 0 0.8em;padding-top:0.8em}}.article__body h3{margin:-3rem 0 1rem;padding-top:4rem;color:#393c41;font-size:1.3125rem;line-height:1.4}@media screen and (min-width: 860px){.article__body h3{margin:0.8em 0 0.8em;padding-top:0.8em}}.article__body h4{margin:1em 0 0.8em;color:#393c41;font-size:1.1875rem;line-height:1.4}.article__body h5{margin:1em 0 0.8em;color:#393c41;font-size:1.0625rem;line-height:1.4}.article__body h6{margin:1em 0 0.8em;font-size:1rem;line-height:1.4}.article__body p{margin:1rem 0;font-size:1rem;line-height:1.75}.article__body p img{vertical-align:top}.article__body ul,.article__body ol{padding:0 0 0 1.5rem;margin:0 0 0.5rem;font-size:1rem}.article__body ul li,.article__body ol li{line-height:1.7}.article__body ul{list-style-type:disc}.article__body ol{list-style-type:decimal}.article__body ul li,.article__body ol li{list-style-type:inherit}.article__body ul ul,.article__body ol ul{list-style-type:circle}.article__body ul ol,.article__body ol ol{list-style-type:lower-roman}.article__body ul ul ul,.article__body ul ol ul,.article__body ol ul ul,.article__body ol ol ul{list-style-type:square}.article__body ul ul ol,.article__body ul ol ol,.article__body ol ul ol,.article__body ol ol ol{list-style-type:lower-alpha}.article__body table{border-top:1px solid #dee0e3;font-size:0.875rem;margin:0 0 0.875rem}.article__body tr{border-bottom:1px solid #dee0e3}.article__body th{padding:0.875rem 0.4375rem;color:#767b85}.article__body td{padding:0.875rem 0.4375rem}.article__body pre{margin:0 0 1rem;font-size:1rem;padding:1rem;overflow-x:auto;word-wrap:break-word}.article__body code{font-size:0.9em;background:#f8f8f8;font-family:Consolas, "Liberation Mono", Menlo, Courier, monospace, "ＭＳ ゴシック", "MS UI Gothic", sans-serif}.article__body cite{font-size:0.9em;font-style:normal;color:#767b85}.article__body blockquote{position:relative;margin:2rem 0;padding:0 0 0 3.125rem;font-size:0.875rem}.article__body blockquote::before{content:"\f10d";font-family:FontAwesome;position:absolute;left:0;top:0;color:#dee0e3;font-size:1.875rem}.article__body a{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;color:#2571b3;text-decoration:none;opacity:1}.article__body a:hover{text-decoration:underline;opacity:0.7}.article__body img.outlined{display:block;border:1px solid #dee0e3}#markdown-toc{position:relative;display:table;border:1px solid #dee0e3;margin:1rem 0;padding:3em 1em 1em 1em;list-style-type:decimal;counter-reset:item;background:#f7f8fa}#markdown-toc::before{position:absolute;top:1em;left:50%;margin-left:-1.2em;content:'目次';font-weight:bold}#markdown-toc ol{counter-reset:item}#markdown-toc li{font-size:0.95em;display:block}#markdown-toc li::before{content:counters(item, "-") ". ";counter-increment:item}#markdown-toc li::after{content:none}.article__more{font-size:1.25rem;display:inline-block}@media screen and (min-width: 860px){.article__more{font-size:1.5rem}}.article__footer{padding:0;margin:0}.article__author{margin:1rem 0;padding:0.5rem 1rem;border:2px solid #dee0e3}.article__author-title{margin:0.5rem 0;padding:0;font-size:1.125rem}.article__author-list{display:table;width:100%;border-collapse:collapse}.article__author-list-item{display:table-row}.article__author-image{display:table-cell;margin:0;padding:0.5rem 0;width:3.75rem;height:3.75rem;vertical-align:top}.article__author-image img{width:100%;border-radius:50%;vertical-align:top}.article__author-data{display:table-cell;padding:0.5rem 1rem;vertical-align:top}.article__author-name{margin:0 0 0.2em;padding:0;font-size:0.9375rem;font-weight:bold}.article__author-description{margin:0;padding:0;color:#393c41;font-size:0.875rem}.article__author-links{display:table-cell;padding:0.5rem 0;width:1.875rem;list-style-type:none;vertical-align:top;text-align:right}@media screen and (min-width: 640px){.article__author-links{width:auto;white-space:nowrap}}.article__author-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:inline-table;margin:0 0 0.25rem 0.25rem;width:1.75rem;height:1.75rem;border-radius:50%;color:#fff;text-align:center;text-decoration:none}.article__author-link i{display:table-cell;font-size:1rem;vertical-align:middle}.article__author-link:hover{color:#fff;opacity:0.85}.article__author-link--twitter{background:#1cadeb}.article__author-link--facebook{background:#3f5aa2}.article__author-link--github{background:#333}.article__author-link--youtube{background:#f00}.archive__header{margin:0.625rem 0.3125rem 1.25rem;font-size:1.25rem}@media screen and (min-width: 860px){.archive__header{margin:0 0 1.875rem;padding:0 0 0.625rem;border-bottom:1px solid currentColor;font-size:1.375rem}}.digest{position:relative;width:100%;margin-bottom:0.9375rem;border:1px solid rgba(57,60,65,0.1);border-radius:0.25rem;-webkit-box-shadow:0 1px 1px 1px rgba(57,60,65,0.06);box-shadow:0 1px 1px 1px rgba(57,60,65,0.06)}@media screen and (min-width: 640px){.digest{display:table;margin-bottom:1.875rem;border:none;border-radius:0;-webkit-box-shadow:none;box-shadow:none}}@media screen and (min-width: 860px){.digest{margin-bottom:2.5rem}.digest.digest--latest{margin-bottom:1.875rem;padding-bottom:1.875rem;border-bottom:1px solid #e0e0e0}}.digest__eye-catch{position:relaive;display:block}@media screen and (min-width: 640px){.digest__eye-catch{display:table-cell;width:36%;padding-right:0.9375rem;-webkit-box-sizing:border-box;box-sizing:border-box;vertical-align:top}}@media screen and (min-width: 860px){.digest__eye-catch{padding-right:1.25rem}.digest.digest--latest .digest__eye-catch{width:55%}}.digest__eye-catch-inner{position:relaive;display:block;cursor:pointer;border-bottom:1px solid rgba(57,60,65,0.09);border-radius:0.25rem 0.25rem 0 0;position:relative;padding:52% 0 0 0;width:100%;height:0;overflow:hidden}@media screen and (min-width: 640px){.digest__eye-catch-inner{padding-top:72%;border-radius:0.25rem;border:1px solid rgba(57,60,65,0.1);-webkit-box-shadow:0 1px 1px 1px rgba(57,60,65,0.06);box-shadow:0 1px 1px 1px rgba(57,60,65,0.06)}}.digest__eye-catch-img{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:absolute;top:0;right:0;bottom:0;left:0;content:'';background-position:center center;background-repeat:no-repeat;background-size:cover}.digest:hover .digest__eye-catch-img{-webkit-transform:scale(1.1);transform:scale(1.1);opacity:0.85}.digest__body{padding:0.75rem 0.9375rem 0.9375rem}@media screen and (min-width: 640px){.digest__body{display:table-cell;padding:0;width:64%;vertical-align:top}}@media screen and (min-width: 860px){.digest.digest--latest .digest__body{width:45%}}.digest__title-link{display:block;cursor:pointer;text-decoration:none}.digest__date{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;color:#767b85;font-size:0.875rem;line-height:1.4}.digest:hover .digest__date{color:#2571b3}@media screen and (min-width: 640px){.digest__date{font-size:0.9375rem}}.digest__title{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;font-size:1.125rem;line-height:1.4}.digest:hover .digest__title{color:#2571b3}@media screen and (min-width: 640px){.digest__title{font-size:1.25rem}}@media screen and (min-width: 860px){.digest__title{font-size:1.3125rem}.digest.digest--latest .digest__title{font-size:1.4375rem}}.digest__tags{display:block;margin-bottom:0.6em}.digest__tag{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:inline-block;margin:0 0.1em 0 0;border-radius:0.1875rem;color:#fff;font-size:0.6875rem;line-height:1.3;font-weight:bold}.digest__tag:hover{opacity:0.8}@media screen and (min-width: 640px){.digest__tag{font-size:0.8125rem}}.digest__tag-link{display:block;cursor:pointer;padding:0.2em 0.5em;color:inherit;text-decoration:none}.digest__tag-link:hover{color:inherit}.digest__summary{display:block;margin:0 0 0.4em 0;font-size:0.8125rem}@media screen and (min-width: 640px){.digest__summary{font-size:0.9375rem}}.digest__summary-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;cursor:pointer;color:#666;line-height:1.4;text-decoration:none}.digest:hover .digest__summary-link{color:inherit}.digest__authors{display:table}.digest__author{display:table-cell;vertical-align:middle}.digest__author-image{display:inline-block;margin-right:0.5em;width:24px;height:24px;overflow:hidden;border-radius:50%;vertical-align:middle}.digest__author-image img{width:100%;height:100%}@media screen and (min-width: 860px){.digest__author-image{width:28px;height:28px}}.digest__author-name{display:inline-block;margin:0 2em 0 0;font-size:0.75rem;vertical-align:middle;white-space:nowrap}@media screen and (min-width: 640px){.digest__author-name{font-size:0.8125rem}}.highlight table td{padding:5px}.highlight table pre{margin:0}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .c,.highlight .ch,.highlight .cd,.highlight .cpf{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .gd{color:#000000;background-color:#ffdddd}.highlight .ge{color:#000000;font-style:italic}.highlight .gr{color:#aa0000}.highlight .gh{color:#999999}.highlight .gi{color:#000000;background-color:#ddffdd}.highlight .go{color:#888888}.highlight .gp{color:#555555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaaaaa}.highlight .gt{color:#aa0000}.highlight .kc{color:#000000;font-weight:bold}.highlight .kd{color:#000000;font-weight:bold}.highlight .kn{color:#000000;font-weight:bold}.highlight .kp{color:#000000;font-weight:bold}.highlight .kr{color:#000000;font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .k,.highlight .kv{color:#000000;font-weight:bold}.highlight .mf{color:#009999}.highlight .mh{color:#009999}.highlight .il{color:#009999}.highlight .mi{color:#009999}.highlight .mo{color:#009999}.highlight .m,.highlight .mb,.highlight .mx{color:#009999}.highlight .sa{color:#000000;font-weight:bold}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .s,.highlight .dl{color:#d14}.highlight .na{color:#008080}.highlight .bp{color:#999999}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:#008080}.highlight .nd{color:#3c5d5d;font-weight:bold}.highlight .ni{color:#800080}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf,.highlight .fm{color:#990000;font-weight:bold}.highlight .nl{color:#990000;font-weight:bold}.highlight .nn{color:#555555}.highlight .nt{color:#000080}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .nv,.highlight .vm{color:#008080}.highlight .ow{color:#000000;font-weight:bold}.highlight .o{color:#000000;font-weight:bold}.highlight .w{color:#bbbbbb}.highlight{background-color:#f8f8f8}.social-buttons-wrapper{margin:1rem 0}@media screen and (min-width: 860px){.social-buttons-wrapper{margin:1rem 0 2rem;padding:1rem 4rem 0;background:#f8f8f8}}.social-buttons-wrapper .social-buttons{display:block;margin:0;padding:0;list-style:none;line-height:1}.social-buttons-wrapper .social-buttons amp-social-share+amp-social-share{margin-left:10px}.social-buttons-wrapper .social-buttons__item{display:inline-block;margin:0 4px 8px 0;padding:0;vertical-align:top;line-height:1}.pager{background-color:#fff;padding:1rem;overflow:hidden;text-align:center}.pager a{color:#3e6f99}.pager a:hover,.pager a:active,.pager a:focus{color:#3e6f99;opacity:0.5}.pager-medium-screen{display:none}@media screen and (min-width: 640px){.pager-medium-screen{display:flex;justify-content:center;align-items:center;text-align:center}}.pager-small-screen{display:flex;justify-content:center;align-items:center;text-align:center}@media screen and (min-width: 640px){.pager-small-screen{display:none}}.pager__numbers{display:inline-block;margin:0 auto}.pager__number{width:2rem;height:2rem;text-decoration:none;margin:0 0.3rem;border-radius:1rem;border:1px solid #3e6f99;font-size:0.9em;display:inline-block;line-height:2rem}.pager__number.current{font-weight:bold;color:#fff;background-color:#3e6f99}.pager__button{display:inline-block;text-decoration:none;color:#3e6f99;font-size:0.875rem;font-weight:bold;padding:0.625rem 0.9375rem;border-radius:0.1875rem;border:1px solid #3e6f99}.pager__button--prev{margin:0 0.3rem}.pager__button--prev::before{content:'';margin-right:0.2rem;display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-left:2px solid currentColor;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);position:relative}@media screen and (min-width: 640px){.pager__button--prev{margin:0}}.pager__button--next{margin:0 0.3rem}.pager__button--next::after{margin-left:0.2rem;content:'';display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-right:2px solid currentColor;-webkit-transform:rotate(45deg);transform:rotate(45deg);position:relative}@media screen and (min-width: 640px){.pager__button--next{margin:0}}.pager__button--back-first{margin-right:20px}.pager__button--back-first::before{margin-right:0.2rem;content:'';display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-left:2px solid currentColor;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);position:relative}.pager__caption{text-align:center;display:block;color:#767b85;letter-spacing:0.1em;padding:0;margin-top:1rem}.pager__extend{color:#767b85;margin:0 0.3em}.pager__blank-space{width:60px}.tag-default{background:#f8f8f8;border:1px solid #ccc;color:#393c41}.tag-color1{background:#f44336}.tag-color2{background:#2196f3}.tag-color3{background:#4caf50}.tag-color4{background:#fdd835}.tag-color5{background:#9e9e9e}.tag-color6{background:#e91e63}.tag-color7{background:#03a9f4}.tag-color8{background:#8bc34a}.tag-color9{background:#ffc107}.tag-color10{background:#607d8b}.tag-color11{background:#9c27b0}.tag-color12{background:#00bcd4}.tag-color13{background:#cddc39}.tag-color14{background:#ff9800}.tag-color15{background:#795548}.tag-color16{background:#673ab7}.tag-color17{background:#009688}.tag-color18{background:#ff5722}.tag-color19{background:#3f51b5}.u-align-center{text-align:center}.u-font-weight-bold{font-weight:bold}.u-target-blank::after{display:inline-block;padding:0 0.5em 0 0.3em;content:'\f08e';font-family:FontAwesome;font-size:0.75rem;font-weight:normal;vertical-align:middle}.text-color--speaker-first{color:#f47721}.text-color--speaker-second{color:#aa66cc}.text-color--speaker-third{color:#2facf9}.text-color--speaker-fourth{color:#0ba29b}.text-color--interviewer{color:#999}.embed-responsive{position:relative;height:0;padding-top:100%;margin:2em 0}.embed-responsive.embed-responsive--16by9{padding-top:56.25%}.embed-responsive.embed-responsive--17by10{padding-top:56.25%}.embed-responsive.embed-responsive--4by3{padding-top:75%}.embed-responsive>iframe{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;border:0}.embed-responsive.embed-responsive--border>iframe{border:1px solid #ccc}</style>
+<link href="/images/favicon.ico" rel="icon" type="image/ico">
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml">
+    
+    <link href="//platform.twitter.com" rel="preconnect dns-prefetch">
+    <link href="//www.facebook.com" rel="preconnect dns-prefetch">
+    <link href="//connect.facebook.net" rel="preconnect dns-prefetch">
+    <link href="//www.googletagmanager.com" rel="preconnect dns-prefetch">
+  <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+<script async src="https://cdn.ampproject.org/v0.js"></script><script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script><script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script><meta name="amp-google-client-id-api" content="googleanalytics">
+</head>
+  <body>
+<amp-analytics config="https://www.googletagmanager.com/amp.json?id=GTM-P726ZX2&amp;gtm.url=SOURCE_URL" data-credentials="include"></amp-analytics>
+    <div id="fb-root"></div>
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="header__logo">
+<a href="/" class="header__link">
+                <span class="header__logo-img"><amp-img src="//tech.pepabo.com/images/logo.svg" alt="ペパボテックブログ" width="1804" height="213" layout="responsive"></amp-img></span><span class="header__catch"><strong>T</strong>echnology, <strong>E</strong>ngineering, <strong>C</strong>reative, and <strong>H</strong>uman-Centered Design</span></a>
+        </h1>
+<a href="" class="header__icon-link js-drawer--trigger">
+            <i class="fa fa-bars header__icon"></i></a>
+      </div>
+    </header>
+    <div class="wrapper">
+      <div class="main" role="main">
+<article class="article slug-troubule-shooting-node-abort">
+  <div class="article__inner">
+    <header class="article__header">
+      <div class="article__topic">
+        <a href="/tags/%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0/" class="tag-default">トラブルシューティング</a>
+      </div>
+      <time class="article__time" datetime="2020-06-11">2020-06-11</time>
+      <h1 class="article__title">
+        <a href="/2020/06/11/troubule-shooting-node-abort/">ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装</a>
+      </h1>
+      <div class="article__topic article__topic--pc">
+        <a href="/tags/%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0/" class="tag-default">トラブルシューティング</a>
+      </div>
+    </header><div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        
+        
+        
+        
+      <li class="social-buttons__item"><amp-social-share type="twitter"></amp-social-share></li>
+<li class="social-buttons__item"><amp-social-share type="facebook" data-param-app_id="709754052488816"></amp-social-share></li>
+</ul>
+    </div>
+    <div class="article__body">
+<p>セキュリティ対策室の伊藤洋也 <a href="https://twitter.com/hiboma">@hiboma</a> です。</p>
+
+<p>業務中に、<a href="https://github.com/haconiwa/haconiwa">Haconiwa コンテナ</a> で動くとある node プロセスが <strong><em>general protection fault</em></strong> ( <strong><em>一般保護違反!</em></strong> ) を起こしてdmesg にログを残す現象を調べ、問題解決にあたっていました。その際の痕跡をまとめなおして記したエントリになります。</p>
+
+<h2 id="エントリの概要">エントリの概要</h2>
+
+<p>本エントリでは、以下のような内容を扱います。</p>
+
+<ul>
+  <li>Haconiwa コンテナの node プロセスが general protection fault を起こしている</li>
+  <li>ライブラリ関数 abort(3) の概要</li>
+  <li>abort(3) がプロセスを停止する方法の検証</li>
+  <li>node プロセスが abort(3) を呼び出すケース</li>
+  <li>glibc x86系の abort(3) 実装が HLT 命令を呼び出し、general protection fault を起こすこと</li>
+  <li>node.js の node::ResetStdio() の概要</li>
+  <li>コンテナの PID 1 のプロセスで abort(3) を呼び出すと  general protection fault を起こす</li>
+</ul>
+
+<h2 id="読者に届けたいもの">読者に届けたいもの</h2>
+
+<p>Linux 低レイヤーでのトラブルシューティングのプロセスを公開し、社内外に知見を共有する目的で書き記しています。</p>
+
+<ul>
+  <li>業務中に遭遇したリアルな問題をもとにトラブルシューティングの事例紹介</li>
+  <li>ログ、ソース、ドキュメントを突き合わせながら、事象の裏付けをとり問題を明らかにしていくアプローチの紹介</li>
+  <li>glibc, Linux Kernel, x86, gdb, strace … 等々を得意とする人たちへの「おやつ」提供</li>
+</ul>
+
+<p>.. をお届け出来ればと思います。</p>
+
+<h2 id="node-が-abort3-で-general-protection-fault-を起こしたログ">node が abort(3) で general protection fault を起こしたログ</h2>
+
+<p>さて、今回 私が追いかけた プロセス は、 dmesg に  <strong>general protection fault = 一般保護例外</strong>  のログを出していました。</p>
+
+<h3 id="dmesg">dmesg</h3>
+
+<p>実際に業務中に採取した dmesg です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>May 22 19:04:47 *** kernel: [4586113.110719] traps: node[14610] general protection fault ip:7f0291cb7196 sp:7fff48570020 error:0 in libc-2.23.so[7f0291c80000+1c0000]
+May 22 19:04:47 *** kernel: [4586113.110730] potentially unexpected fatal signal 11.
+May 22 19:04:47 *** kernel: [4586113.110733] CPU: 4 PID: 14610 Comm: node Kdump: loaded Not tainted 5.3.9-050309-generic #201911061337
+May 22 19:04:47 *** kernel: [4586113.110734] Hardware name: ****, BIOS ****
+May 22 19:04:47 *** kernel: [4586113.110738] RIP: 0033:0x7f0291cb7196
+May 22 19:04:47 *** kernel: [4586113.110741] Code: 05 0f 85 e6 fd ff ff bf 06 00 00 00 c7 05 7e ea 38 00 06 00 00 00 e8 69 e2 ff ff 8b 05 73 ea 38 00 83 f8 06 0f 85 cc fd ff ff &lt;f4&gt; bf 7f 00 00 00 c7 05 5a ea 38 00 08 00 00 00 e8 65 55 09 00 0f
+May 22 19:04:47 *** kernel: [4586113.110742] RSP: 002b:00007fff48570020 EFLAGS: 00010246
+May 22 19:04:47 *** kernel: [4586113.110745] RAX: 0000000000000006 RBX: 0000000001c12a10 RCX: ffffffffffffff00
+May 22 19:04:47 *** kernel: [4586113.110746] RDX: 00007f0292f21740 RSI: 00007f0292046770 RDI: 00007f0292045540
+May 22 19:04:47 *** kernel: [4586113.110747] RBP: 00007fff48570150 R08: 00007f0292046770 R09: 00007f0292f21740
+May 22 19:04:47 *** kernel: [4586113.110748] R10: 0000000000000006 R11: 0000000000000000 R12: 84bda12f684bda13
+May 22 19:04:47 *** kernel: [4586113.110749] R13: 0000000000000001 R14: 0000000000008000 R15: 0000000000000000
+May 22 19:04:47 *** kernel: [4586113.110750] FS:  00007f0292f21740 GS:  0000000000000000
+</code></pre></div>
+<p>💡 ホスト名やハードウェアを特定できる部分にマスクを入れています</p>
+
+<p><code>general protection fault</code> を起こして <code>signal 11</code> = <strong>SIGSEGV</strong> を受けて停止しています。</p>
+
+<p>ログを残したプロセスは <code>node</code> (npm) です。プロセスは、コンテナ環境、正確に言えば <a href="https://github.com/haconiwa/haconiwa">Haconiwa</a> を利用した環境で動いていました。調べていくうちに、node (npm) プロセス停止時に上記の dmesg を出して異常停止し、数十分毎に再現する周期性を持つ特徴を発見します。</p>
+
+<p>さて、このようなログを手掛かりにどうやって調べていきましょうか?</p>
+
+<h2 id="gdb-で調査する">gdb で調査する</h2>
+
+<p>各種の制約で、コンテナの設定や環境に手を加えるのが難しく、プロセス停止時のコアを採取できなかったため、まずは稼働しているプロセスに gdb でアタッチして糸口を探りました。</p>
+
+<p>gdb でプロセスにアタッチし RIP を disassemble します。すると、abort(3) の呼び出しであることが分かりました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) disas 0x7ffff6d82196
+Dump of assembler code for function abort: 👈
+   0x00007ffff6d81ec0 &lt;+0&gt;:	int3   
+   0x00007ffff6d81ec1 &lt;+1&gt;:	sub    $0x128,%esp
+   0x00007ffff6d81ec7 &lt;+7&gt;:	mov    %fs:0x10,%rdx
+   0x00007ffff6d81ed0 &lt;+16&gt;:	cmp    0x38ed21(%rip),%rdx        # 0x7ffff7110bf8
+   0x00007ffff6d81ed7 &lt;+23&gt;:	je     0x7ffff6d81f1f &lt;abort+95&gt;
+   0x00007ffff6d81ed9 &lt;+25&gt;:	mov    $0x1,%esi
+   0x00007ffff6d81ede &lt;+30&gt;:	xor    %eax,%eax
+
+... 略
+
+   0x00007ffff6d8216d &lt;+685&gt;:	jne    0x7ffff6d81f59 &lt;abort+153&gt;
+   0x00007ffff6d82173 &lt;+691&gt;:	mov    $0x6,%edi
+   0x00007ffff6d82178 &lt;+696&gt;:	movl   $0x6,0x38ea7e(%rip)        # 0x7ffff7110c00
+   0x00007ffff6d82182 &lt;+706&gt;:	callq  0x7ffff6d803f0 &lt;raise&gt;
+   0x00007ffff6d82187 &lt;+711&gt;:	mov    0x38ea73(%rip),%eax        # 0x7ffff7110c00
+   0x00007ffff6d8218d &lt;+717&gt;:	cmp    $0x6,%eax
+   0x00007ffff6d82190 &lt;+720&gt;:	jne    0x7ffff6d81f62 &lt;abort+162&gt;
+   0x00007ffff6d82196 &lt;+726&gt;:	hlt   🔥
+   0x00007ffff6d82197 &lt;+727&gt;:	mov    $0x7f,%edi
+   0x00007ffff6d8219c &lt;+732&gt;:	movl   $0x8,0x38ea5a(%rip)        # 0x7ffff7110c00
+   0x00007ffff6d821a6 &lt;+742&gt;:	callq  0x7ffff6e17710 &lt;_exit&gt;
+
+</code></pre></div>
+<p>💡 <code>sysctl kernel.randomize_va_space =0</code> で ALSR  = address space layout randomization を無効にしてから再現を確認し調査をしました。これによって RIP がランダム化されないので gdb で追いかけるのが容易になります。</p>
+
+<p>🔥　が general protection fault を起こした RIP のディスアセンブル箇所です。 <strong><em>abort(3) の中に HLT 命令が ?</em></strong> なんなのだこれは?</p>
+
+<h2 id="man-で--abort3-を調べる">man で  abort(3) を調べる</h2>
+
+<p>HLT 命令が気になるところですが、いったん脇において、初心にかえって abort(3) がどういうライブラリ関数なのかを確かめ直しました。</p>
+
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/abort.3.html">abort(3) の man</a> を読むと以下の通りの説明が付いています。</p>
+
+<blockquote>
+  <p>abort() 関数は、まず SIGABRT の禁止 (block) を解除してから、 (raise(3) が呼び出されたかのように) 呼び出し元のプロセスに SIGABRT シグナルを上げる。その結果、 SIGABRT シグナルが捕捉 (caught) されて対応するシグナルハンドラーが 返って来ない場合以外は、プログラムの異常終了が起こる (longjmp(3) 参照)。
+abort() 関数によってプロセスの終了が引き起こされたときには、 すべての開いているストリームは閉じられフラッシュされる。</p>
+
+  <p>SIGABRT シグナルが無視、または返って来るシグナルハンドラーで 捕捉されるようになっている場合であっても、 abort() 関数はそのプロセスを終了する。 SIGABRT シグナルに対する処理方法をデフォルトに戻してから、再度 SIGABRT シグナルを上げることで、このような動作になる。</p>
+</blockquote>
+
+<p>💡linuxjm.osdn.jp の翻訳は http://man7.org/linux/man-pages/man3/abort.3.html と同等の翻訳になっていたので、日本の読者向けに翻訳を引用しています。</p>
+
+<p>HLT 命令に関する記述は特にないですね 🤔</p>
+
+<h2 id="abort3-の検証">abort(3) の検証</h2>
+
+<p>小さなコードを書いて abort(3) の検証を行いました。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#include &lt;stdlib.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>abort(3) を呼び出して、プロセスは停止する! Aborted !</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code> $ ./a.out
+Aborted (core dumped)
+</code></pre></div>
+<p>さて、Linux では</p>
+
+<ul>
+  <li><code>sysctl kernel.print-fatal-signals=1</code></li>
+  <li><code>sysctl debug.exception-trace=1</code></li>
+</ul>
+
+<p>を設定すると dmesg に プロセスが異常停止した際の詳細を出すことができます (例: SIGSEGV, SIGABRT 等を受けて停止するケース) 。以下のログは、検証時に取った dmesg です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[19406.703560] potentially unexpected fatal signal 6.
+[19406.703562] CPU: 0 PID: 13773 Comm: a.out Tainted: G         C OE    4.15.0-20-generic #21-Ubuntu
+[19406.703563] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[19406.703565] RIP: 0033:0x7f9807e9ae97
+[19406.703566] RSP: 002b:00007fffb287e5f0 EFLAGS: 00000246 ORIG_RAX: 000000000000000e
+[19406.703567] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f9807e9ae97
+## [19406.703568] RDX: 0000000000000000 RSI: 00007fffb287e5f0 RDI: 0000000000000002
+[19406.703568] RBP: 00007fffb287e840 R08: 0000000000000000 R09: 00007fffb287e5f0
+[19406.703569] R10: 0000000000000008 R11: 0000000000000246 R12: 0000558697fd8540
+[19406.703569] R13: 00007fffb287e920 R14: 0000000000000000 R15: 0000000000000000
+[19406.703570] FS:  00007f98084694c0(0000) GS:ffff9e653fc00000(0000) knlGS:0000000000000000
+[19406.703571] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[19406.703572] CR2: 00007f9807e9f430 CR3: 0000000073cea002 CR4: 00000000000606f0
+</code></pre></div>
+<p><code>potentially unexpected fatal signal 6</code> 、つまり、シグナル番号 6 で停止した旨が書き出されています。 番号 6 は <strong>SIGABRT</strong> です。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-R</span> SIGABRT /usr/include/asm-generic/signal.h 
+<span class="c">#define SIGABRT		 6</span>
+</code></pre></div>
+<p>うーん、冒頭にみたログとは違い <strong>general protection fault</strong> と <strong>SIGSEGV</strong> では無いですね 🤔</p>
+
+<h3 id="strace-でトレースする">strace でトレースする</h3>
+
+<p>abort(3) を起こす際に strace をとってみます。</p>
+
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man2/tkill.2.html">tgkill(2)</a> で SIGABRT を自スレッド ( ここではプロセスと同等 ) に送っているのが観察できます。</p>
+
+<div class="highlight"><pre class="highlight diff"><code><span class="p">vagrant@ubuntu1810:~$ strace -e tgkill ./a.out 
+tgkill(13809, 13809, SIGABRT)           = 0
+</span><span class="gd">--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=13809, si_uid=1000} ---
+</span><span class="gi">+++ killed by SIGABRT (core dumped) +++
+</span><span class="p">Aborted (core dumped)
+</span></code></pre></div>
+<p>ここまでは abort(3) の <strong>「表の顔」</strong> とでも言うべき挙動です。次に <strong>「裏の顔」</strong> をみていきましょう</p>
+
+<h2 id="abort3-の-glibc-実装を追う">abort(3) の glibc 実装を追う</h2>
+
+<p>abort の話に戻ります。HLT 命令の呼び出しが気になるので、glibc がどのように abort(3) を実装しているか、ソースを追いかけました。glibc-2.27 のソースを掲載します。</p>
+
+<h4 id="stdlibabortc">stdlib/abort.c</h4>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cm">/* Cause an abnormal program termination with core-dump.  */</span>
+<span class="kt">void</span>
+<span class="nf">abort</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">sigaction</span> <span class="n">act</span><span class="p">;</span>
+  <span class="n">sigset_t</span> <span class="n">sigs</span><span class="p">;</span>
+
+  <span class="cm">/* First acquire the lock.  */</span>
+  <span class="n">__libc_lock_lock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+
+  <span class="cm">/* Now it's for sure we are alone.  But recursive calls are possible.  */</span>
+
+  <span class="cm">/* Unblock SIGABRT.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">__sigemptyset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">sigs</span><span class="p">);</span>
+      <span class="n">__sigaddset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">sigs</span><span class="p">,</span> <span class="n">SIGABRT</span><span class="p">);</span>
+      <span class="n">__sigprocmask</span> <span class="p">(</span><span class="n">SIG_UNBLOCK</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sigs</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Send signal which possibly calls a user handler.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="cm">/* This stage is special: we must allow repeated calls of
+	 `abort' when a user defined handler for SIGABRT is installed.
+	 This is risky since the `raise' implementation might also
+	 fail but I don't see another possibility.  */</span>
+      <span class="kt">int</span> <span class="n">save_stage</span> <span class="o">=</span> <span class="n">stage</span><span class="p">;</span>
+
+      <span class="n">stage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">__libc_lock_unlock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+
+      <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span> <span class="err">🔥</span>
+
+      <span class="n">__libc_lock_lock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+      <span class="n">stage</span> <span class="o">=</span> <span class="n">save_stage</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* There was a handler installed.  Now remove it.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">memset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">act</span><span class="p">,</span> <span class="sc">'\0'</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sigaction</span><span class="p">));</span>
+      <span class="n">act</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">SIG_DFL</span><span class="p">;</span>
+      <span class="n">__sigfillset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">act</span><span class="p">.</span><span class="n">sa_mask</span><span class="p">);</span>
+      <span class="n">act</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">__sigaction</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">act</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Try again.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span> <span class="err">🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Now try to abort using the system specific command.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">🔥🔥🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* If we can't signal ourselves and the abort instruction failed, exit.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">_exit</span> <span class="p">(</span><span class="mi">127</span><span class="p">);</span><span class="err">　🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* If even this fails try to use the provided instruction to crash
+     or otherwise make sure we never return.  */</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="cm">/* Try for ever and ever.  */</span>
+    <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">🔥</span>
+<span class="p">}</span>
+<span class="n">libc_hidden_def</span> <span class="p">(</span><span class="n">abort</span><span class="p">)</span>
+</code></pre></div>
+<p>🔥でアノテートしたコードは、プロセスの停止を試みている部分です。</p>
+
+<p>なるほど、abort は <strong>ステージ</strong> を分け、それぞれでプロセスを停止する術を変える実装になってますね !!!</p>
+
+<h3 id="abort-のステージ">abort のステージ</h3>
+
+<ol>
+  <li>raise(SIGABRT) での停止を試みる</li>
+  <li>
+<strong>ABORT_INSTRUCTION</strong> での停止を試みる</li>
+  <li>_exit(127) での停止を試みる</li>
+  <li>無限ループして <strong>ABORT_INSTRUCTION</strong> で停止を試みる</li>
+</ol>
+
+<p><strong>「 abort(3) がどうやって general protection fault を起こしたのか？」</strong> という疑問に対して <strong>ABORT_INSTRUCTION</strong> が答えのキーとなります。実は、x86 アーキテクチャで ABORT_INSTRUCTION は HLT 命令を実行するマクロになっています。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cm">/* An instruction which should crash any program is `hlt'.  */</span>
+<span class="cp">#define ABORT_INSTRUCTION asm ("hlt")
+</span></code></pre></div>
+<p>コメント文が興味深いですね。</p>
+
+<p>次は HLT 命令について調べていきました。(どんどん脇道に逸れている気がしますが、トラブルシューティングでは、問題に回帰するポイントを見失ってはいけませんね )</p>
+
+<h2 id="hlt-命令とは何か">HLT 命令とは何か?</h2>
+
+<p>『IA-32インテル® アーキテクチ-ャ・ソフトウェア・デベロッパーズ・マニュアル 中巻A:命令セット・リファレンスA-M』を参照しました。</p>
+
+<blockquote>
+  <p>命令の実行を停止し、プロセッサを HALT 状態にする。イネーブルにされている割り 込み(NMI および SMI を含む)、デバッグ例外、BINIT# 信号、INIT# 信号、RESET# 信 号によって実行が再開される。</p>
+
+  <p>HLT 命令の後で割り込み(NMI を含む)を使用して実 行を再開する場合、セーブされている命令ポインタ(CS:EIP)は HLT 命令の次の命令 を指している。</p>
+
+  <p>ハイパー・スレッディング・テクノロジに対応した IA-32 プロセッサ上で HLT 命令を 実行した場合は、HLT 命令を実行した論理プロセッサだけが HALT 状態になる。物理 プロセッサ内のそれ以外の論理プロセッサは、HLT 命令を実行することで個別に HALT 状態にされない限り、アクティブのままになる。</p>
+
+  <p>引用:『IA-32インテル® アーキテクチャ・ソフトウェア・デベロッパーズ・マニュアル 中巻A:命令セット・リファレンスA-M』 3-360</p>
+</blockquote>
+
+<p>さらに特権レベルについての説明が続きます。</p>
+
+<blockquote>
+  <p>HLT 命令は特権命令である。プロセッサが保護モードまたは仮想 8086 モードで動作し ている場合は、HLT 命令を実行するには、プログラムまたはプロシージャの特権レベ ルが 0 でなければならない。</p>
+</blockquote>
+
+<p>HLT 命令は 特権レベル (Ring) 0 で実行可能な特権命令である。ここが大事です。</p>
+
+<h2 id="ユーザ空間での-hlt-命令呼び出し---general-protection-fault-">ユーザ空間での HLT 命令呼び出し -&gt; general protection fault 🔥</h2>
+
+<p>「特権レベル」について確認しましょう。</p>
+
+<blockquote>
+  <p>プロセッサは特権レベルを使用して、低い特権レベルで動 作しているプログラムまたはタスクが高い特権レベルのセグメントにアクセスしな いようにする。プロセッサは、特権レベル違反を検出すると、一般保護例外(#GP) を生成する。</p>
+
+  <p>引用:『IA-32インテル® アーキテクチャ・ソフトウェア・デベロッパーズ・マニュアル 下巻:システム・プログラミング・ガイド』4.5. 特権レベル</p>
+</blockquote>
+
+<p>では、上記に倣って Linux での挙動を整頓してみます。</p>
+
+<ul>
+  <li>Linux x86 系で ユーザ空間 ( = Ring 3 ) で動作するプロセスが、 HLT 命令 ( Ring 0 の特権レベルが必要 ) を呼び出す</li>
+  <li>CPU が 特権レベル違反を検知して general protection fault を起こす</li>
+  <li>fault を カーネルがハンドリングし、該当のプロセスに SIGSEGV を飛ばして停止を試みる</li>
+</ul>
+
+<p>ということになりそうです。Linux カーネルのソースも合わせて確かめます。</p>
+
+<h2 id="general-proection-fault-から-linux-kernel-へ">general proection fault から Linux Kernel へ</h2>
+
+<p>CPU が起こす general protection fault を、Linxu カーネルは <strong>do_general_protection ()</strong> でハンドリングします。 do_general_protection () は、IDT = Interrupt Descriptor Table で登録された割り込みハンドラです。( このへんの説明は割愛します。OS の実装を取り扱ったドキュメント、技術書、サイトを参考にしてください )</p>
+
+<h4 id="do_general_protection-in-archx86kerneltrapsc">do_general_protection() in arch/x86/kernel/traps.c</h4>
+
+<ul>
+  <li>👈 dmesg のログを出力するコード</li>
+  <li>🔥 SIGSEGV を送りつけるコード</li>
+</ul>
+
+<p>となっています。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="n">dotraplinkage</span> <span class="kt">void</span>
+<span class="nf">do_general_protection</span><span class="p">(</span><span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">regs</span><span class="p">,</span> <span class="kt">long</span> <span class="n">error_code</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">tsk</span><span class="p">;</span>
+
+	<span class="n">RCU_LOCKDEP_WARN</span><span class="p">(</span><span class="o">!</span><span class="n">rcu_is_watching</span><span class="p">(),</span> <span class="s">"entry code didn't wake RCU"</span><span class="p">);</span>
+	<span class="n">cond_local_irq_enable</span><span class="p">(</span><span class="n">regs</span><span class="p">);</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">static_cpu_has</span><span class="p">(</span><span class="n">X86_FEATURE_UMIP</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">user_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">fixup_umip_exception</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span>
+			<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">v8086_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span> <span class="p">{</span>
+		<span class="n">local_irq_enable</span><span class="p">();</span>
+		<span class="n">handle_vm86_fault</span><span class="p">((</span><span class="k">struct</span> <span class="n">kernel_vm86_regs</span> <span class="o">*</span><span class="p">)</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">tsk</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">user_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">fixup_exception</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span> <span class="n">X86_TRAP_GP</span><span class="p">))</span>
+			<span class="k">return</span><span class="p">;</span>
+
+		<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span><span class="p">;</span>
+		<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">trap_nr</span> <span class="o">=</span> <span class="n">X86_TRAP_GP</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">notify_die</span><span class="p">(</span><span class="n">DIE_GPF</span><span class="p">,</span> <span class="s">"general protection fault"</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span>
+			       <span class="n">X86_TRAP_GP</span><span class="p">,</span> <span class="n">SIGSEGV</span><span class="p">)</span> <span class="o">!=</span> <span class="n">NOTIFY_STOP</span><span class="p">)</span>
+			<span class="n">die</span><span class="p">(</span><span class="s">"general protection fault"</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span><span class="p">;</span>
+	<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">trap_nr</span> <span class="o">=</span> <span class="n">X86_TRAP_GP</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">show_unhandled_signals</span> <span class="o">&amp;&amp;</span> <span class="n">unhandled_signal</span><span class="p">(</span><span class="n">tsk</span><span class="p">,</span> <span class="n">SIGSEGV</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+			<span class="n">printk_ratelimit</span><span class="p">())</span> <span class="p">{</span>
+		<span class="n">pr_info</span><span class="p">(</span><span class="s">"%s[%d] general protection ip:%lx sp:%lx error:%lx"</span><span class="p">,</span> <span class="err">👈</span>
+			<span class="n">tsk</span><span class="o">-&gt;</span><span class="n">comm</span><span class="p">,</span> <span class="n">task_pid_nr</span><span class="p">(</span><span class="n">tsk</span><span class="p">),</span> <span class="p">,</span> <span class="err">👈</span>
+			<span class="n">regs</span><span class="o">-&gt;</span><span class="n">ip</span><span class="p">,</span> <span class="n">regs</span><span class="o">-&gt;</span><span class="n">sp</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span> <span class="p">,</span> <span class="err">👈</span>
+		<span class="n">print_vma_addr</span><span class="p">(</span><span class="n">KERN_CONT</span> <span class="s">" in "</span><span class="p">,</span> <span class="n">regs</span><span class="o">-&gt;</span><span class="n">ip</span><span class="p">);</span> <span class="p">,</span> <span class="err">👈</span>
+		<span class="n">pr_cont</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="n">force_sig_info</span><span class="p">(</span><span class="n">SIGSEGV</span><span class="p">,</span> <span class="n">SEND_SIG_PRIV</span><span class="p">,</span> <span class="n">tsk</span><span class="p">);</span> <span class="err">🔥</span>
+<span class="p">}</span>
+<span class="n">NOKPROBE_SYMBOL</span><span class="p">(</span><span class="n">do_general_protection</span><span class="p">);</span>
+</code></pre></div>
+<p>ここまで来たので一応、確認をとっておくと、IDT = Interrupt Descriptor Table は以下のようなソースになっています。</p>
+
+<h4 id="archx86entryentry_64s">/arch/x86/entry/entry_64.S</h4>
+
+<div class="highlight"><pre class="highlight plaintext"><code>idtentry general_protection	do_general_protection	has_error_code=1
+idtentry page_fault		do_page_fault		has_error_code=1
+</code></pre></div>
+<h2 id="abort3-が-hlt-命令を呼び出す訳--強制停止-の手段">abort(3) が HLT 命令を呼び出す訳 —&gt; 「強制」停止 の手段</h2>
+
+<p>長くなってきました。一旦、ここまで調べ上げたことをまとめてみましょう</p>
+
+<p>abort(3) は、SIGABRT シグナルや _exit(2) システムコール以外にも、 x86 アーキテクチャでは HLT 命令を用いて特権レベル違反を起こし、カーネルから強制停止する術を利用してプロセスを強制停止する術としているのだと解釈できます。</p>
+
+<p>シグナルでも、システムコールでも停止できないプロセスに対して CPU の例外機構を持ちいて強制停止を試みるのは、ブレーキやエンジンの制御が壊れた車を壁にぶつけるなり海に飛び込むなりして無理やり停止を試みるアクション映画のような比喩を想起させます 🔥🚗</p>
+
+<h2 id="なぜ-node-プロセスが-abort3-を呼び出すか">なぜ node プロセスが abort(3) を呼び出すか?</h2>
+
+<p><strong>「 abort(3) がなぜ general protection fault を起こすのか？」</strong> を追いかけてきました。 <strong>「 なぜ node プロセスが abort(3) を呼び出すか」</strong> がトラブルの根本であり、重要です。</p>
+
+<p>業務上のコンテナの仕様も絡んでおり、公開できる範囲で一般化して記述します。</p>
+
+<p>ざっくり書きだすと</p>
+
+<ul>
+  <li>node プロセスは、シグナルを受けて停止する際に stdio, stdout, stderr の TTY 設定を元に戻す</li>
+  <li>node::ResetStdio() 実装されている</li>
+  <li>node::ResetStdio() で stdio, stdout, stderr に対して fstat(2) をとる</li>
+  <li>この fstat(2) がエラーを返すと、node はアサーション失敗とみなして node::Abort() を呼び出し、さらに libc の abort(3) を呼び出す</li>
+</ul>
+
+<p>という node 側の実装に対して、該当のコンテナは</p>
+
+<ul>
+  <li>コンテナで動いていた node プロセスは、 stdout, stderr に <strong>NFS</strong> のファイルデスクリプタが関連づいていた</li>
+  <li>node プロセス停止のタイミングで、それらの NFS のファイルが NFS サーバ側で前もって削除されてしまっており fstat(2) が ESTALE を返す状況を招いていた</li>
+  <li>
+<a href="http://tss.iki.fi/nfs-coding-howto.html#estale">NFS サーバ側でファイルが削除されると ESTALE を返すのは NFSv3 の挙動に依る</a>*</li>
+  <li>NFS のファイルが削除されるのは、該当のサービスでの仕様/挙動であり、意図せず問題を招いてしまっていた。</li>
+</ul>
+
+<p>というところを調べ上げました。まさか NFS が絡んでくるとは …</p>
+
+<h4 id="調査時の-gdb-strace">調査時の gdb, strace</h4>
+
+<p>node::ResetStdio() を含むバックトレースは以下のようなものになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) bt
+#0  0x00007ffff6d82196 in abort () from target:/lib/x86_64-linux-gnu/libc.so.6
+#1  0x0000000000a295f1 in node::Abort() ()
+#2  0x0000000000a2965e in node::Assert(node::AssertionInfo const&amp;) ()
+#3  0x00000000009f5e60 in node::ResetStdio() ()
+#4  0x00000000009f5f8c in node::TrapWebAssemblyOrContinue(int, siginfo_t*, void*) ()
+#5  &lt;signal handler called&gt;
+#6  0x00007ffff6d82196 in abort () from target:/lib/x86_64-linux-gnu/libc.so.6
+#7  0x0000000000a295f1 in node::Abort() ()
+#8  0x0000000000a2965e in node::Assert(node::AssertionInfo const&amp;) ()
+#9  0x00000000009f5e60 in node::ResetStdio() ()
+#10 0x00007ffff6d84ff8 in ?? () from target:/lib/x86_64-linux-gnu/libc.so.6
+#11 0x00007ffff6d85045 in exit () from target:/lib/x86_64-linux-gnu/libc.so.6
+#12 0x0000000000998567 in node::DefaultProcessExitHandler(node::Environment*, int) ()
+#13 0x00000000009cff43 in node::Environment::Exit(int) ()
+#14 0x0000000000c0278b in v8::internal::MaybeHandle&lt;v8::internal::Object&gt; v8::internal::(anonymous namespace)::HandleApiCallHelper&lt;false&gt;(v8::internal::Isolate*, v8::internal::Handle&lt;v8::internal::HeapObject&gt;, v8::internal::Handle&lt;v8::internal)
+#15 0x0000000000c03d36 in v8::internal::Builtin_Impl_HandleApiCall(v8::internal::BuiltinArguments, v8::internal::Isolate*) ()
+#16 0x0000000000c043b6 in v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) ()
+#17 0x00000000013a5b79 in Builtins_CEntry_Return1_DontSaveFPRegs_ArgvOnStack_BuiltinExit ()
+#18 0x000000000133e658 in Builtins_InterpreterEntryTrampoline ()
+#19 0x00000d97868c0471 in ?? ()
+#20 0x00001e96809c2fa9 in ?? ()
+#21 0x0000000600000000 in ?? ()
+#22 0x00000d97868c0541 in ?? ()
+#23 0xffffff8c00000000 in ?? ()
+#24 0x00002346432c09f1 in ?? ()
+#25 0x00000d97868c0471 in ?? ()
+</code></pre></div>
+<p>また、以下は node::ResetStdio() が fstat(2) でエラーを返し、Assertion に失敗する際の strace です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[pid 21923] 22:24:15 +++ exited with 0 +++
+[pid 21875] 22:24:15 &lt;... futex resumed&gt; ) = 0 &lt;0.000599&gt;
+[pid 21875] 22:24:15 munmap(0x7ffff654a000, 8392704) = 0 &lt;0.000039&gt;
+[pid 21875] 22:24:15 epoll_ctl(3&lt;anon_inode:[eventpoll]&gt;, EPOLL_CTL_ADD, 6&lt;pipe:[1059990718]&gt;, {EPOLLIN, {u32=6, u64=6}}) = 0 &lt;0.000023&gt;
+[pid 21875] 22:24:15 epoll_ctl(3&lt;anon_inode:[eventpoll]&gt;, EPOLL_CTL_ADD, 8&lt;anon_inode:[eventfd]&gt;, {EPOLLIN, {u32=8, u64=8}}) = 0 &lt;0.000018&gt;
+[pid 21875] 22:24:15 epoll_wait(3&lt;anon_inode:[eventpoll]&gt;, [], 1024, 0) = 0 &lt;0.000020&gt;
+[pid 21875] 22:24:15 close(6&lt;pipe:[1059990718]&gt;) = 0 &lt;0.000026&gt;
+[pid 21875] 22:24:15 close(7&lt;pipe:[1059990718]&gt;) = 0 &lt;0.000026&gt;
+[pid 21875] 22:24:15 close(8&lt;anon_inode:[eventfd]&gt;) = 0 &lt;0.000023&gt;
+[pid 21875] 22:24:15 close(3&lt;anon_inode:[eventpoll]&gt;) = 0 &lt;0.000022&gt;
+[pid 21875] 22:24:15 fstat(0&lt;/dev/null&gt;, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0 &lt;0.000014&gt;
+[pid 21875] 22:24:15 fcntl(0&lt;/dev/null&gt;, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) &lt;0.000013&gt;
+🔥 [pid 21875] 22:24:15 fstat(1&lt;/var/log/container/***/.out&gt;, 0x7fffffffdd70) = -1 ESTALE (Stale file handle) &lt;0.000028&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "npm[1]: ../src/node.cc:657:void node::ResetStdio(): Assertion `((*__errno_location ())) == (9)' failed.\n", 104) = -1 ESTALE (Stale file handle) &lt;0.000014&gt;
+[pid 21875] 22:24:15 futex(0x7ffff7113110, FUTEX_WAKE_PRIVATE, 2147483647) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 futex(0x7ffff7547680, FUTEX_WAKE_PRIVATE, 2147483647) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 1: 0xa295e0 node::Abort() [npm]\n", 33) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 2: 0xa2965e  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 3: 0x9f5e60 node::ResetStdio() [npm]\n", 38) = -1 ESTALE (Stale file handle) &lt;0.000021&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 4: 0x7ffff6d84ff8  [/lib/x86_64-linux-gnu/libc.so.6]\n", 54) = -1 ESTALE (Stale file handle) &lt;0.000014&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 5: 0x7ffff6d85045  [/lib/x86_64-linux-gnu/libc.so.6]\n", 54) = -1 ESTALE (Stale file handle) &lt;0.000023&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 6: 0x998567  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 7: 0x9cff43 node::Environment::Exit(int) [npm]\n", 48) = -1 ESTALE (Stale file handle) &lt;0.000022&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 8: 0xc0278b  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000038&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 9: 0xc03d36  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000016&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "10: 0xc043b6 v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) [npm]\n", 100) = -1 ESTALE (Stale file handle) &lt;0.000017&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "11: 0x13a5b79  [npm]\n", 21) = -1 ESTALE (Stale file handle) &lt;0.000016&gt;
+[pid 21875] 22:24:15 rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 tgkill(1, 1, SIGABRT) = 0 &lt;0.000025&gt;
+[pid 21875] 22:24:15 --- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=1, si_uid=1000} ---
+
+💡一部 パス名を改変、マスクをかけています
+</code></pre></div>
+<p>fstat(2) が ESTALE を返していますね</p>
+
+<blockquote>
+  <p>[pid 21875] 22:24:15 fstat(1&lt;/var/log/container/***/.out&gt;, 0x7fffffffdd70) = -1 ESTALE</p>
+</blockquote>
+
+<h4 id="メモ">メモ</h4>
+
+<p>node::ResetStdio() に関係する実装は下記のソースになります。</p>
+
+<p><a href="https://github.com/nodejs/node/blob/0e5b975873e88d9276dd8f1e1d94b8f66e741155/src/node.cc#L690:embed:cite">GitHub node.js リポジトリへのリンク</a></p>
+
+<p>node の実装を追う調査をヘルプしてくれた id:mrtc0 に感謝しています。</p>
+
+<h2 id="調査の終了サービス担当者へのフィードバック">調査の終了/サービス担当者へのフィードバック</h2>
+
+<p>さて、ここまで調べ上げたことを担当のサービスの技術者、ならびにコンテナを実装した技術者 ( @udzura ) にフィードバックを返しました。</p>
+
+<p>そして、よくよく話を伺ってみると、実は <strong><em>サービスの監視のために定期的に稼働していたコンテナ</em></strong> であり、dmesg のログを出している以外は 特に問題になっていなかったというオチが付きました ( ͡° ͜ʖ ͡°)</p>
+
+<h2 id="補足的な内容">補足的な内容</h2>
+
+<p>ここまでの流れで拾いきれなかったトピックについても付記しておきます。</p>
+
+<h2 id="補足1-haconiwa-での問題-他のコンテナランタイムではどうか">補足(1) Haconiwa での問題? 他のコンテナランタイムではどうか?</h2>
+
+<p>この項だけ作者の @udzura より補足します。</p>
+
+<p>まず、Haconiwaを利用して立ち上げたコンテナ内部の PID = 1 のプロセスは、執筆時現在のバージョンでは以下のような処理の流れでコンテナの fd = 0, 1, 2 をセットします。</p>
+
+<ol>
+  <li>
+<code>fork(2)</code> する</li>
+  <li>
+<code>haconiwa.out</code> 、 <code>haconiwa.err</code> などログファイルを <code>O_APPEND|O_WRONLY</code> で開く</li>
+  <li>
+<code>dup2(2)</code> で fd = 1, 2 の示すファイルをそれらのファイルにする（0は <code>/dev/null</code> ）</li>
+  <li>ほかに存在するfdについては <code>O_CLOEXEC</code> を付与する</li>
+  <li>コンテナのプログラムに <code>execve(2)</code> する</li>
+</ol>
+
+<p>一方で、例えば <a href="https://github.com/opencontainers/runc">runc</a> のような別のコンテナランタイム実装は、コンテナの PID = 1 が直接ファイルをつかむようなことはせず、親プロセスである <code>container-shim</code> などに繋がるpipeを開いた状態でexecveしています。pipeを挟むことで、少なくともfdへのアクセスでESTALEを返すことは回避できるでしょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>## 3113 はhttpdコンテナのホストで見たルートPIDです:
+$ sudo ls -l /proc/3113/fd
+total 0
+lrwx------ 1 root root 64 Jun  8 14:30 0 -&gt; /dev/null
+l-wx------ 1 root root 64 Jun  8 14:30 1 -&gt; pipe:[26286]
+l-wx------ 1 root root 64 Jun  8 14:30 2 -&gt; pipe:[26287]
+lrwx------ 1 root root 64 Jun  8 14:30 3 -&gt; socket:[28179]
+lr-x------ 1 root root 64 Jun  8 14:30 4 -&gt; pipe:[28195]
+l-wx------ 1 root root 64 Jun  8 14:30 5 -&gt; pipe:[28195]
+l-wx------ 1 root root 64 Jun  8 14:30 6 -&gt; pipe:[26286]
+</code></pre></div>
+<p>Haconiwa側でも、直接コンテナの PID = 1 がファイルをつかむ実装を回避する方向で開発を進めています。</p>
+
+<h2 id="補足2-vagrant-で追試">補足(2) Vagrant で追試</h2>
+
+<p>本エントリを書き出している間、 @udzura とディスカッションをして 改めて問題の再現をとり挙動を調べ直しました</p>
+
+<h3 id="明らかになっていなかったこと">明らかになっていなかったこと</h3>
+
+<p>node プロセスは、node::Abort() -&gt; abort(3) を呼び出すと raise (SIGABRT) で停止しそうなものですが、なぜか ABORT_INSTRUCTION  = HLT 命令の呼び出しに至り、停止しています。この挙動が明らかにできていませんでした。</p>
+
+<h3 id="vagrant-での再現1">Vagrant での再現(1)</h3>
+
+<p>Vagrant を用いて Ubuntu 18.04 の NFS サーバの VM と NFS クライアントの VM を作り、 NFSv3 で構成することで問題を再現することができました。</p>
+
+<h4 id="vagrantfile">Vagrantfile</h4>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Vagrant</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="s2">"2"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">define</span> <span class="s1">'client'</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span>      <span class="o">=</span> <span class="s1">'bento/ubuntu-18.04'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">hostname</span> <span class="o">=</span> <span class="s1">'client000'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="n">ip</span><span class="ss">:"192.168.100.100"</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="o">&lt;&lt;-</span><span class="no">SHELL</span><span class="sh">
+apt install -y nfs-common
+mkdir -p /mnt/nfs
+# mount 192.168.100.200:/var/nfs/exports /mnt/nfs
+</span><span class="no">SHELL</span>
+  <span class="k">end</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">define</span> <span class="s1">'server'</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span>      <span class="o">=</span> <span class="s1">'bento/ubuntu-18.04'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">hostname</span> <span class="o">=</span> <span class="s1">'server000'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="n">ip</span><span class="ss">:"192.168.100.200"</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="o">&lt;&lt;-</span><span class="no">SHELL</span><span class="sh">
+apt install -y nfs-kernel-server
+mkdir -p /var/nfs/exports
+chown nobody.nogroup /var/nfs/exports
+echo '/var/nfs/exports 192.168.100.0/24(rw,sync,fsid=0,crossmnt,no_subtree_check,insecure,all_squash)' &gt; /etc/exports
+exportfs -ra
+</span><span class="no">SHELL</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h4 id="再現の手順">再現の手順</h4>
+
+<h5 id="1-nfs-クライアントでの手順">1. NFS クライアントでの手順</h5>
+
+<p>node のコードは以下のような内容です。sleep するだけのコードを用意します。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">sleep</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">sleep</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">sleep</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</code></pre></div>
+<p>次に、node の stdout に NFSv3 のファイルをリダイレクトして起動するスクリプトを用意します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/bash</span>
+
+<span class="nb">exec </span>1&gt; /mnt/nfs/stdout.txt
+<span class="nb">exec </span>node main.js
+</code></pre></div>
+<p>unshare コマンドを使って node プロセスを起動し PID = 1 で起動します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>unshare <span class="nt">-fp</span> <span class="nt">--mount-proc</span> ./launch-node.sh 
+</code></pre></div>
+<h5 id="2-nfs-サーバ-での手順">2. NFS サーバ での手順</h5>
+
+<p>NFS クライアント側の node 起動と同時に、NFS サーバ側で ファイルを削除します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>sudo rm -rfv /var/nfs/exports/*.txt
+</code></pre></div>
+<h5 id="3-nfs-クライアント-での手順">3. NFS クライアント での手順</h5>
+
+<p>node プロセスが sleep から起床し、プロセスが停止する過程で general protection fault を起こします。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@client000:~$ sudo unshare -fp --mount-proc ./launch-node.sh 
+node[1]: ../src/node.cc:599:void node::ResetStdio(): Assertion `((*__errno_location ())) == (9)' failed.
+ 1: 0xa07f90 node::Abort() [node]
+ 2: 0xa0800e  [node]
+ 3: 0x9d4b9c node::ResetStdio() [node]
+ 4: 0xa4b3ce node::NodeMainInstance::Run() [node]
+ 5: 0x9d9228 node::Start(int, char**) [node]
+ 6: 0x7f3a912bbb97 __libc_start_main [/lib/x86_64-linux-gnu/libc.so.6]
+ 7: 0x977335  [node]
+Segmentation fault
+</code></pre></div>
+<p>dmesg は下記の通りです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[ 9705.959202] traps: node[7479] general protection ip:7f3a912da8f0 sp:7ffc7674b740 error:0 in libc-2.27.so[7f3a9129a000+1e7000]
+[ 9705.959210] potentially unexpected fatal signal 11.
+[ 9705.959212] CPU: 0 PID: 7479 Comm: node Tainted: G           OE    4.15.0-29-generic #31-Ubuntu
+[ 9705.959213] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[ 9705.959216] RIP: 0033:0x7f3a912da8f0
+[ 9705.959216] RSP: 002b:00007ffc7674b740 EFLAGS: 00010246
+[ 9705.959218] RAX: 0000000000000004 RBX: 0000000001e12cd0 RCX: 0000000000000000
+[ 9705.959219] RDX: 0000000000000000 RSI: 00007ffc7674b620 RDI: 0000000000000002
+[ 9705.959220] RBP: 00007ffc7674b870 R08: 0000000000000000 R09: 00007ffc7674b620
+[ 9705.959220] R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000001
+[ 9705.959221] R13: 0000000002c8dd58 R14: 84bda12f684bda13 R15: 0000000002c8dd18
+[ 9705.959222] FS:  00007f3a92605780(0000) GS:ffff8f1f7fc00000(0000) knlGS:0000000000000000
+[ 9705.959223] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 9705.959224] CR2: 000000000286496c CR3: 0000000038a60005 CR4: 00000000000606f0
+</code></pre></div>
+<h4 id="node-プロセスが-pid--1-">node プロセスが PID = 1 !</h4>
+
+<p>引き続き、再現をとりながら社内の Slack #kernel チャンネルでディスカッションを続けていたところ、以下の資料に辿り着きました。</p>
+
+<ul>
+  <li><a href="Docker%20%E3%81%A7%20node.js%20%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99%E3%81%A8%E3%81%8D%E3%81%AF%20PID%201%20%E3%81%AB%E3%81%97%E3%81%A6%E3%81%AF%E3%81%84%E3%81%91%E3%81%AA%E3%81%84%20-%20ngzm%E3%81%AE%E3%83%96%E3%83%AD%E3%82%B0">Docker で node.js を動かすときは PID 1 にしてはいけない - ngzmのブログ</a></li>
+  <li><a href="https://speakerdeck.com/superbrothers/pid1-ha-kanerukara-te-bie-xi-isareterututeben-dang-desuka">PID1 は、カーネルから 特別扱いされてるって本当ですか？ -  Kazuki Suda / Docker Meetup Tokyo #6</a></li>
+</ul>
+
+<p>これを読み、namespace を切って PID 1 で動かした場合に、abort(3) の general protection fault を招く挙動になるのでは? と閃きました</p>
+
+<p>abort(3) の実装は、SIGABRT のシグナルハンドラをクリアしてから自プロセスに kill(2) + SIGABRT を飛ばして停止を試みます。namespace 内の PID 1 のプロセスとして動いている場合は SIGABRT が無視されることになり、ABORT_INSTRUCTION  = HLT 命令で停止を試みるステージに達すると考えられます。</p>
+
+<h4 id="vagrant-での再現2">Vagrant での再現(2)</h4>
+
+<p>node プロセスと NFS を切りはなして、ただ単に abort するだけのコードを用意して再現を試みます。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#include &lt;stdlib.h&gt;
+</span><span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>これを <code>sudo -f unshare -fp --mount-proc ./abort</code> で unshare して pid = 1 として実行すると再現がとれます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Jun  9 14:17:34 client000 kernel: [17269.995167] traps: a.out[7613] general protection ip:7f6bfe6ac8f0 sp:7ffcffdd5430 error:0 in libc-2.27.so[7f6bfe66c000+1e7000]
+Jun  9 14:17:34 client000 kernel: [17269.995173] potentially unexpected fatal signal 11.
+Jun  9 14:17:34 client000 kernel: [17269.995175] CPU: 0 PID: 7613 Comm: a.out Tainted: G           OE    4.15.0-29-generic #31-Ubuntu
+Jun  9 14:17:34 client000 kernel: [17269.995175] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+Jun  9 14:17:34 client000 kernel: [17269.995178] RIP: 0033:0x7f6bfe6ac8f0
+Jun  9 14:17:34 client000 kernel: [17269.995178] RSP: 002b:00007ffcffdd5430 EFLAGS: 00010246
+Jun  9 14:17:34 client000 kernel: [17269.995179] RAX: 0000000000000004 RBX: 0000000000000000 RCX: 0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995180] RDX: 0000000000000000 RSI: 00007ffcffdd5310 RDI: 0000000000000002
+Jun  9 14:17:34 client000 kernel: [17269.995181] RBP: 00007ffcffdd5560 R08: 0000000000000000 R09: 00007ffcffdd5310
+Jun  9 14:17:34 client000 kernel: [17269.995181] R10: 0000000000000008 R11: 0000000000000246 R12: 000055c5be03e540
+Jun  9 14:17:34 client000 kernel: [17269.995182] R13: 00007ffcffdd5640 R14: 0000000000000000 R15: 0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995183] FS:  00007f6bfec7b4c0(0000) GS:ffff8f1f7fc00000(0000) knlGS:0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995184] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Jun  9 14:17:34 client000 kernel: [17269.995184] CR2: 000055691ff61180 CR3: 000000003b37e006 CR4: 00000000000606f0
+</code></pre></div>
+<p>今回追いかけてきた abort(3) が general protection fault を起こす最小の再現 です。</p>
+
+<p>コアを採取して gdb でソースを確かめます。107行目は ABORT_INSTRUCTION の呼び出しで、確かに合っていそうです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) bt
+#0  __GI_abort () at abort.c:107
+#1  0x00005581f8728653 in main ()
+</code></pre></div>
+<div class="highlight"><pre class="highlight c"><code> <span class="mi">96</span>   <span class="cm">/* Try again.  */</span>
+ <span class="mi">97</span>   <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+ <span class="mi">98</span>     <span class="p">{</span>
+ <span class="mi">99</span>       <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+<span class="mi">100</span>       <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span>
+<span class="mi">101</span>     <span class="p">}</span>
+<span class="mi">102</span>   
+<span class="mi">103</span>   <span class="cm">/* Now try to abort using the system specific command.  */</span>
+<span class="mi">104</span>   <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+<span class="mi">105</span>     <span class="p">{</span> 
+<span class="mi">106</span>       <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+<span class="mi">107</span>       <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">👈</span>
+<span class="mi">108</span>     <span class="p">}</span>
+<span class="mi">109</span> 
+</code></pre></div>
+<p>( unshare で起動したバイナリのシンボルを gdb で解決できないのはなぜだろうな ?  … )</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>node プロセスが起こした general protection fault を端緒に、abort(3) の実装からカーネル、CPU、コンテナまで潜り込み、トラブルを追いかけた事例を紹介しました。node , NFSv3, コンテナ (pid namespace), abort(3) の実装と、いろいろな要素が合体したキメラのような問題でした。</p>
+
+<p>本エントリのようなトラブルシューティングでは、各種ツールを組み合わせてプロセスの挙動を探り、エビデンスとなるログやトレースをとり、ソースやドキュメントを読み、再現をとり、挙動の裏付けをとり、という地道な作業の積み重ねで問題を打開します。すんなりと問題に至れたようですが、泥くさい手作業での調査や検証でもかなりの時間を費やしています。</p>
+
+<p>本エントリを読んだ方に「こんなツールあるんだ」「こういう挙動は知らなかった」「もっといい方法あるよ」「ここ、もっと調べて欲しい」 と何かしらの感想を喚起できればと思います。</p>
+
+<h2 id="謝辞">謝辞</h2>
+
+<p>本エントリの pull request レビューで、不明瞭だった点にツッコミをいれて最後の詰めを促してくれてた @udzura さんに感謝します。</p>
+
+<h2 id="リンクリファレンス">リンク・リファレンス</h2>
+
+<ul>
+  <li><a href="https://github.com/haconiwa/haconiwa">haconiwa/haconiwa</a></li>
+  <li><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/abort.3.html">linuxjm.osdn.jp abort(3)</a></li>
+  <li><a href="https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf:image=https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf">IA-32 インテル® アーキテクチャ ソフトウェア・デベロッパーズ・ マニュアル 中巻 A: 命令セット・リファレンス A-M</a></li>
+  <li><a href="https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol3_i.pdf:image=https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol3_i.pdf">IA-32 インテル® アーキテクチャ ソフトウェア・デベロッパーズ・ マニュアル 下巻: システム・プログラミング・ガイド</a></li>
+  <li><a href="https://github.com/nodejs/node/blob/0e5b975873e88d9276dd8f1e1d94b8f66e741155/src/node.cc#L690:embed:cite">node.js - node::ResetStdio()</a></li>
+  <li><a href="https://github.com/haconiwa/haconiwa/blob/1fc4aa2a8e8e3f1c5ce0ab7a42dd9fb652eaa490/mrblib/haconiwa/runner.rb#L669-L677">Haconiwaでのコンテナのfd開き直しの実装箇所</a></li>
+  <li><a href="https://kazuhira-r.hatenablog.com/entry/2018/10/06/004855">Ubuntu Linux 18.04 LTSで、NFSの設定を行う - kazuhira-r.hatenablog.com</a></li>
+  <li><a href="https://ngzm.hateblo.jp/entry/2017/08/22/185224">Docker で node.js を動かすときは PID 1 にしてはいけない - ngzmのブログ</a></li>
+  <li><a href="https://speakerdeck.com/superbrothers/pid1-ha-kanerukara-te-bie-xi-isareterututeben-dang-desuka">PID1 は、カーネルから 特別扱いされてるって本当ですか？ -  Kazuki Suda / Docker Meetup Tokyo #6</a></li>
+  <li><a href="http://tss.iki.fi/nfs-coding-howto.html#estale">NFS Coding HOWTO - Timo Sirainen</a></li>
+</ul>
+
+      <aside>
+        <h2>
+          GMOペパボでは、新しい仲間を募集しています
+        </h2>
+        <p>
+          募集中の職種や、詳しい社内の環境や制度に関しては以下をご覧ください。
+        </p>
+        <ul>
+          <li>
+            <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a>
+          </li>
+        </ul>
+      </aside>
+    </div>
+    <div class="social-buttons-wrapper">
+      <ul class="social-buttons">
+        
+        
+        
+        
+      </ul>
+    </div>
+<footer class="article__footer">
+      <div class="article__author">
+        <h2 class="article__author-title">
+          書いた人
+        </h2>
+        <ul class="article__author-list">
+          <li class="article__author-list-item">
+            <p class="article__author-image">
+              <amp-img src="https://www.gravatar.com/avatar/6c6b60f0440e030040a9141cab781ed0?size=80" alt="" width="80" height="80" layout="responsive"></amp-img>
+            </p>
+            <div class="article__author-data">
+              <p class="article__author-name">
+                伊藤洋也
+              </p>
+              <p class="article__author-description">
+                低レイヤでのトラブルシューティングが得意です
+              </p>
+            </div>
+            <div class="article__author-links">
+<a href="https://twitter.com/hiboma" class="article__author-link article__author-link--twitter" target="_blank">
+                      <i class="fa fa-twitter fa-fw"></i></a><a href="https://www.facebook.com/hiboma" class="article__author-link article__author-link--facebook" target="_blank"><i class="fa fa-facebook fa-fw"></i></a><a href="https://github.com/hiboma" class="article__author-link article__author-link--github" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+            </div>
+          </li>
+          <li class="article__author-list-item">
+            <p class="article__author-image">
+              <amp-img src="https://www.gravatar.com/avatar/2cf373725ded741824c50fd571eda6e1?size=80" alt="" width="80" height="80" layout="responsive"></amp-img>
+            </p>
+            <div class="article__author-data">
+              <p class="article__author-name">
+                近藤うちお
+              </p>
+              <p class="article__author-description">
+                Rubyとシステムプログラミングが好きです
+              </p>
+            </div>
+            <div class="article__author-links">
+<a href="https://twitter.com/udzura" class="article__author-link article__author-link--twitter" target="_blank">
+                      <i class="fa fa-twitter fa-fw"></i></a><a href="https://www.facebook.com/uchio.kondo" class="article__author-link article__author-link--facebook" target="_blank"><i class="fa fa-facebook fa-fw"></i></a><a href="https://github.com/udzura" class="article__author-link article__author-link--github" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</article>
+      </div>
+      <aside class="sidebar js-drawer">
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            最新記事
+          </h2>
+          <ul class="sidebar__list">
+            <li class="sidebar__list-item">
+<a href="/2021/07/21/hiring-engineer-fes-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-21</span><span class="sidebar__list-title">この夏、エンジニア #採用目的フェス を開催します!!</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/20/private-cloud-hardware/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-20</span><span class="sidebar__list-title">インスタンス数を最大化するためのハードウェア選定の工夫</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/16/hiring-suzuri-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-16</span><span class="sidebar__list-title">採用目的2021 SUZURI編</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/15/blog-relay-10th-04/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-15</span><span class="sidebar__list-title">新卒エンジニアがホスティング事業部のチームを巡った話</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/14/pepabo-tech-blog-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-14</span><span class="sidebar__list-title">ペパボテックブログの裏側</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/09/hiring-ec-division-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-09</span><span class="sidebar__list-title">採用目的 2021 EC事業部編</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/06/hiring-minne-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-06</span><span class="sidebar__list-title">採用目的2021 minne編</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            タグ
+          </h2>
+          <ul class="sidebar__tags">
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3/" class="sidebar__tags-link">デザイン (63)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88/" class="sidebar__tags-link">イベントレポート (42)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/%E5%8B%89%E5%BC%B7%E4%BC%9A/" class="sidebar__tags-link">勉強会 (38)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E7%A0%94%E4%BF%AE/" class="sidebar__tags-link">研修 (30)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (27)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ec%E3%83%96%E3%83%AD%E3%82%B0%E3%83%AA%E3%83%AC%E3%83%BC/" class="sidebar__tags-link">ECブログリレー (22)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%9F%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97/" class="sidebar__tags-link">カラーミーショップ (21)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%97%E3%83%AD%E3%83%80%E3%82%AF%E3%83%88%E3%83%9E%E3%83%8D%E3%82%B8%E3%83%A1%E3%83%B3%E3%83%88/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/minne/" class="sidebar__tags-link">minne (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/" class="sidebar__tags-link">イベント (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/engineering/" class="sidebar__tags-link">engineering (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E6%8E%A1%E7%94%A8/" class="sidebar__tags-link">採用 (14)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E7%99%BB%E5%A3%87%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88/" class="sidebar__tags-link">登壇レポート (13)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/php/" class="sidebar__tags-link">PHP (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ios/" class="sidebar__tags-link">ios (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (11)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/" class="sidebar__tags-link">インフラ (10)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E7%99%BB%E5%A3%87%E6%83%85%E5%A0%B1/" class="sidebar__tags-link">登壇情報 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E6%8A%80%E8%A1%93%E6%96%87%E6%9B%B8/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/rails/" class="sidebar__tags-link">Rails (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E6%88%A6%E7%95%A5%E3%83%81%E3%83%BC%E3%83%A0/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/github/" class="sidebar__tags-link">GitHub (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/ruby/" class="sidebar__tags-link">ruby (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E9%96%8B%E7%99%BA%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9/" class="sidebar__tags-link">開発プロセス (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89/" class="sidebar__tags-link">フロントエンド (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/%E9%B9%BF%E5%85%90%E5%B3%B6/" class="sidebar__tags-link">鹿児島 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/%E3%82%B0%E3%83%BC%E3%83%9A/" class="sidebar__tags-link">グーペ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%82%BF%E3%83%BC/" class="sidebar__tags-link">ディレクター (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%83%E3%83%97/" class="sidebar__tags-link">インターンシップ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90/" class="sidebar__tags-link">データ分析 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E6%8E%A1%E7%94%A8%E7%9B%AE%E7%9A%84/" class="sidebar__tags-link">採用目的 (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/mobile/" class="sidebar__tags-link">mobile (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E9%B9%BF%E5%85%90%E5%B3%B6%E3%82%AA%E3%83%95%E3%82%A3%E3%82%B9%E3%83%81%E3%83%BC%E3%83%A0/" class="sidebar__tags-link">鹿児島オフィスチーム (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/rails/" class="sidebar__tags-link">rails (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/management/" class="sidebar__tags-link">management (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/" class="sidebar__tags-link">リモートワーク (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E6%96%B0%E5%8D%9210%E6%9C%9F%E3%83%96%E3%83%AD%E3%82%B0%E3%83%AA%E3%83%AC%E3%83%BC/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C%E3%81%AE%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%80%E3%83%BC%E3%83%89/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/slack/" class="sidebar__tags-link">Slack (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/swift/" class="sidebar__tags-link">swift (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%83%AD%E3%83%AA%E3%83%9D%E3%83%83%E3%83%97/" class="sidebar__tags-link">ロリポップ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C/" class="sidebar__tags-link">ペパボ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">トラブルシューティング (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3/" class="sidebar__tags-link">セキュリティ (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2/" class="sidebar__tags-link">エンジニア (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3/" class="sidebar__tags-link">サービスデザイン (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/android/" class="sidebar__tags-link">android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/ec/" class="sidebar__tags-link">ec (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E4%BB%8A%E6%97%A5%E8%A9%B1%E3%81%97%E3%81%9F%E3%81%93%E3%81%A8/" class="sidebar__tags-link">今日話したこと (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/ngx_mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%83%98%E3%83%86%E3%83%A0%E3%83%AB/" class="sidebar__tags-link">ヘテムル (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E6%8A%80%E8%A1%93%E5%9F%BA%E7%9B%A4/" class="sidebar__tags-link">技術基盤 (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/security/" class="sidebar__tags-link">security (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/android/" class="sidebar__tags-link">Android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%93%E3%83%A5%E3%83%BC/" class="sidebar__tags-link">インタビュー (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%AA%E3%82%B5%E3%83%BC%E3%83%81/" class="sidebar__tags-link">デザインリサーチ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/cre/" class="sidebar__tags-link">CRE (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/swiftui/" class="sidebar__tags-link">swiftui (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E3%82%B9%E3%82%AF%E3%83%A9%E3%83%A0%E9%96%8B%E7%99%BA/" class="sidebar__tags-link">スクラム開発 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color2">
+              <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" class="sidebar__tags-link">ストレージ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">メンタリング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E6%83%85%E5%A0%B1%E5%85%B1%E6%9C%89/" class="sidebar__tags-link">情報共有 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/notion/" class="sidebar__tags-link">notion (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/%E5%86%99%E7%9C%9F/" class="sidebar__tags-link">写真 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C%E3%81%AE%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E6%80%9D%E8%80%83/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%97%E3%83%AA%E3%83%B3%E3%83%88/" class="sidebar__tags-link">デザインスプリント (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E5%8B%95%E7%94%BB/" class="sidebar__tags-link">動画 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/productivity/" class="sidebar__tags-link">productivity (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%94%E3%83%BC%E3%83%88/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E3%83%81%E3%83%BC%E3%83%A0%E3%83%93%E3%83%AB%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">チームビルディング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%8A%E3%83%BC%E4%BA%A4%E6%B5%81%E4%BC%9A/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E5%B1%95/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            リンク
+          </h2>
+          <ul class="information">
+            <li>
+              <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+            </li>
+            <li>
+              <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div class="credit">
+        <p class="credit__logo">
+          pepabo tech blog
+        </p>
+        <ul class="credit__links">
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+          </li>
+        </ul>
+        <p class="credit__rights">
+          © 2015 - 2021 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+        </p>
+      </div>
+    </footer>
+    
+    <div class="overlay"></div>
+  </body>
+</html>

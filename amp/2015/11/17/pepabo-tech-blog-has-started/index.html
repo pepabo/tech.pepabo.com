@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html amp="amp" lang="ja">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=no" name="viewport">
+    <link href="https://tech.pepabo.com/2015/11/17/pepabo-tech-blog-has-started/" rel="canonical">
+    <meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image">
+    <title>「いるだけで成長できる環境」へ - ペパボテックブログ</title>
+    <meta content="GMOペパボ株式会社の執行役員CTOを務めております、栗林と申します。ネット上では「あんちぽくん」として知られてございます。
+
+「ペパボテックブログ」と題して、技術ブログを始めます。
+
+採用ページのリニューアル
+
+先日、エンジニア採用..." property="description">
+    
+      
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="@pepabo" name="twitter:site">
+    <meta content="@kentaro" name="twitter:creator">
+    <meta content="「いるだけで成長できる環境」へ - ペパボテックブログ" property="og:title">
+    <meta content="blog" property="og:type">
+    <meta content="GMOペパボ株式会社の執行役員CTOを務めております、栗林と申します。ネット上では「あんちぽくん」として知られてございます。
+
+「ペパボテックブログ」と題して、技術ブログを始めます。
+
+採用ページのリニューアル
+
+先日、エンジニア採用..." property="og:description">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet">
+    <style amp-custom>input[type="button"],input[type="reset"],input[type="submit"],button{-webkit-appearance:none;-moz-appearance:none;appearance:none;-webkit-font-smoothing:antialiased;background-color:#2571b3;border-radius:3px;border:none;color:#fff;cursor:pointer;display:inline-block;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;font-weight:600;line-height:1;padding:0.75rem 1rem;text-decoration:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;vertical-align:middle;white-space:nowrap}input[type="button"]:hover,input[type="button"]:focus,input[type="reset"]:hover,input[type="reset"]:focus,input[type="submit"]:hover,input[type="submit"]:focus,button:hover,button:focus{background-color:#184974;color:#fff}input[type="button"]:disabled,input[type="reset"]:disabled,input[type="submit"]:disabled,button:disabled{cursor:not-allowed;opacity:0.5}fieldset{background-color:#fafafa;border:1px solid #dee0e3;margin:0 0 0.875rem;padding:1.75rem}input,label,select{display:block;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem}label{font-weight:600;margin-bottom:0.4375rem}label.required::after{content:"*"}label abbr{display:none}input[type="color"],input[type="date"],input[type="datetime"],input[type="datetime-local"],input[type="email"],input[type="month"],input[type="number"],input[type="password"],input[type="search"],input[type="tel"],input[type="text"],input[type="time"],input[type="url"],input[type="week"],input:not([type]),select[multiple=multiple],textarea{background-color:#fff;border:1px solid #dee0e3;border-radius:3px;-webkit-box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);-webkit-box-sizing:border-box;box-sizing:border-box;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;margin-bottom:0.875rem;padding:0.5833333333rem;-webkit-transition:border-color;transition:border-color;width:100%}input[type="color"]:hover,input[type="date"]:hover,input[type="datetime"]:hover,input[type="datetime-local"]:hover,input[type="email"]:hover,input[type="month"]:hover,input[type="number"]:hover,input[type="password"]:hover,input[type="search"]:hover,input[type="tel"]:hover,input[type="text"]:hover,input[type="time"]:hover,input[type="url"]:hover,input[type="week"]:hover,input:not([type]):hover,select[multiple=multiple]:hover,textarea:hover{border-color:#c2c6cc}input[type="color"]:focus,input[type="date"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="email"]:focus,input[type="month"]:focus,input[type="number"]:focus,input[type="password"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="text"]:focus,input[type="time"]:focus,input[type="url"]:focus,input[type="week"]:focus,input:not([type]):focus,select[multiple=multiple]:focus,textarea:focus{border-color:#2571b3;-webkit-box-shadow:inset 0 1px 3px rgba(0,0,0,0.06),0 0 5px rgba(33,100,158,0.7);box-shadow:inset 0 1px 3px rgba(0,0,0,0.06),0 0 5px rgba(33,100,158,0.7);outline:none}textarea{resize:vertical}input[type="search"]{-webkit-appearance:none;-moz-appearance:none;appearance:none}input[type="checkbox"],input[type="radio"]{display:inline;margin-right:0.4375rem}input[type="file"]{padding-bottom:0.875rem;width:100%}select{margin-bottom:1.75rem;max-width:100%;width:auto}ul,ol{list-style-type:none;margin:0;padding:0}dl{margin-bottom:0.875rem}dl dt{font-weight:bold;margin-top:0.875rem}dl dd{margin:0}table{-webkit-font-feature-settings:"kern", "liga", "tnum";font-feature-settings:"kern", "liga", "tnum";border-collapse:collapse;margin:0.875rem 0;table-layout:fixed;width:100%}tr,td,th{vertical-align:middle}th,td{border-bottom:1px solid #dee0e3;padding:0.875rem 0}th{font-weight:600;text-align:left}thead th{border-bottom-color:#b5b9c0}body{-webkit-font-feature-settings:"kern", "liga", "pnum";font-feature-settings:"kern", "liga", "pnum";color:#393c41;font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;line-height:1.75;background-color:#fff}h1,h2,h3,h4,h5,h6{font-family:"Open Sans", "Noto Sans JP", apple-system, BlinkMacSystemFont, Roboto, "Lucida Grande", Helvetica, Arial;font-size:1rem;line-height:1.25;margin:0 0 0.875rem}p{margin:0 0 0.875rem}a{color:#393c41;-webkit-transition:color 0.1s linear;transition:color 0.1s linear}a:active,a:focus,a:hover{color:#151618}a:active,a:focus{outline:none}hr{border-bottom:1px solid #dee0e3;border-left:none;border-right:none;border-top:none;margin:1.75rem 0}img,picture{margin:0;max-width:100%}html{-webkit-box-sizing:border-box;box-sizing:border-box}*,*::after,*::before{-webkit-box-sizing:inherit;box-sizing:inherit}.header{border-bottom:1px solid #dee0e3;position:fixed;background:#fff;max-width:100%;margin-left:auto;margin-right:auto;width:100%;z-index:1000;min-height:3rem}.header::after{clear:both;content:"";display:block}@media screen and (min-width: 860px){.header{position:static;border-bottom:none}}.header__inner{position:relative;padding:0.75rem 0 0.125rem}@media screen and (min-width: 860px){.header__inner{padding:3.75rem 0 3.75rem}}.header__logo{margin:0;position:relative;text-align:center;display:inline-block;color:#3e6f99;width:100%}@media screen and (min-width: 860px){.header__logo{position:initial}}.header__link{display:inline-block;text-align:center;cursor:pointer;text-decoration:none}@media screen and (min-width: 860px){.header__link{height:auto}}.header__logo-img{display:block;width:11.25rem;margin:0 auto;position:relative}@media screen and (min-width: 860px){.header__logo-img{width:40rem}}.header__catch{display:none;color:#3e6f99}@media screen and (min-width: 640px){.header__catch{display:block;font-size:0.625rem}}@media screen and (min-width: 860px){.header__catch{display:block;margin-top:0.5em;font-size:1rem}}.header__icon-link{position:absolute;display:block;right:0;top:0;width:2.75rem;height:3rem;text-align:center}@media screen and (min-width: 860px){.header__icon-link{display:none}}.header__icon{display:inline-block;width:100%;font-size:1.5rem;position:absolute;left:0;top:0.75rem;color:#393c41}body{margin:0;max-width:100%;margin-left:auto;margin-right:auto}body::after{clear:both;content:"";display:block}.wrapper{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:relative;margin:0 auto;padding:3.75rem 0.625rem 0;width:100%;max-width:1240px;-webkit-box-sizing:border-box;box-sizing:border-box}@media screen and (min-width: 640px){.wrapper{padding:5.3125rem 0.9375rem 0}}@media screen and (min-width: 860px){.wrapper{margin-bottom:1.25rem;padding:0 1.25rem}.wrapper::after{clear:both;content:"";display:block}}@media screen and (min-width: 860px){.main{float:left;width:75%}}.overlay{position:fixed;z-index:2000;top:0;left:0;display:none;width:100%;height:120%;background-color:rgba(0,0,0,0.75)}.overlay.fade-in{-webkit-animation:overlay__fade-in ease 0.3s 1 normal;animation:overlay__fade-in ease 0.3s 1 normal}.overlay.active{display:block}.overlay.fade-out{-webkit-animation:overlay__fade-out ease 0.3s 1 normal;animation:overlay__fade-out ease 0.3s 1 normal}@-webkit-keyframes overlay__fade-in{0%{display:none;opacity:0}1%{display:block;opacity:0}100%{display:block;opacity:1}}@keyframes overlay__fade-in{0%{display:none;opacity:0}1%{display:block;opacity:0}100%{display:block;opacity:1}}@-webkit-keyframes overlay__fade-out{0%{display:block;opacity:1}99%{display:block;opacity:0}100%{display:none;opacity:0}}@keyframes overlay__fade-out{0%{display:block;opacity:1}99%{display:block;opacity:0}100%{display:none;opacity:0}}.sidebar{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:fixed;top:0;right:-16.875rem;z-index:9999;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;width:16.875rem;height:100%;padding:1.25rem;background:#fff;color:#393c41}.sidebar.open{right:0}@media screen and (min-width: 860px){.sidebar{position:static;top:auto;right:auto;padding:0;float:right;width:25%;padding-left:2.5rem;-webkit-box-sizing:border-box;box-sizing:border-box}}.sidebar__sections{clear:both;margin:0 0 1.875rem}@media screen and (min-width: 860px){.sidebar__sections{margin:0 0 1.875rem}}.sidebar__title{margin:0 0 0.9375rem;font-size:1.375rem}@media screen and (min-width: 860px){.sidebar__title{padding:0 0 0.625rem;border-bottom:1px solid currentColor}}.sidebar__list{display:block;margin-top:-0.6em;font-size:0.9375rem}.sidebar__list-item{display:block;border-bottom:1px solid #dee0e3}.sidebar__list-link{display:block;cursor:pointer;padding:0.6em 0;line-height:1.4;text-decoration:none}.sidebar__list-date{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;color:#767b85;font-size:0.875rem}.sidebar__list-item:hover .sidebar__list-date{color:#2571b3}.sidebar__list-title{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block}.sidebar__list-item:hover .sidebar__list-title{color:#2571b3}.sidebar__tags{display:block}.sidebar__tags-item{display:inline-block;border-radius:4px;margin:0 0.1em 0.5em 0}.sidebar__tags-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:relative;display:block;cursor:pointer;padding:0.3em 0.5em;border:1px solid #ccc;border-radius:4px;font-size:0.875rem;line-height:1.2;text-decoration:none;background-color:#f8f8f8}.sidebar__tags-link:hover{color:#fff;border-color:transparent;background-color:inherit}.information li{font-size:1rem;margin:0 0 0.625rem}.information li a{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;color:pointer}.information li a:hover{color:#2571b3}.footer{display:block}.credit{background:#3e6f99;color:#fff;text-align:center;padding:1.25rem}.credit a{color:currentColor;text-decoration:none}.credit a:hover{opacity:0.8}.credit__logo{font-weight:bold}.credit__links{display:block;margin:0 0 0.875rem;font-size:0.875rem;color:#fff;text-align:center}.credit__link{display:inline-block;margin:0 0.5em}.credit__rights{font-size:0.875rem;margin:0}.article{border-bottom:1px solid #dee0e3;position:relative;padding:0 0.3125rem 0.625rem;color:#393c41}.article::after{clear:both;content:"";display:block}.article:last-child{border-bottom:none}@media screen and (min-width: 860px){.article{text-align:left;padding:0 0 1.25rem}}.article__topic{padding:0 0 0.625rem;text-align:center}.article__topic a{text-decoration:none;display:inline-block;margin:0.2rem 0.2rem 0.4rem 0;text-align:center;padding:0.1rem 0.5rem;font-size:0.7rem;border-radius:0.1875rem;font-weight:bold}@media screen and (min-width: 860px){.article__topic{display:none}}.article__topic--pc{display:none}@media screen and (min-width: 860px){.article__topic--pc{display:block;padding:0.625rem 0;text-align:left}.article__topic--pc a{font-size:0.8rem}}.article__time{display:inline-block;margin:0 0 0.5em;color:#767b85;font-size:1rem;font-weight:normal}.article__title{margin:0 0 1rem;font-size:1.375rem;line-height:1.4}.article__title a{display:block;text-decoration:none}@media screen and (min-width: 640px){.article__title{font-size:1.5625rem}}@media screen and (min-width: 860px){.article__title{margin-bottom:0}}.article__eye-catch{margin:0 0 1rem}.article__body{margin-bottom:1.5rem;color:#393c41}@media screen and (min-width: 860px){.article__body{padding:0 4rem}}.article__body h2{margin:-2.5rem 0 1rem;padding-top:4rem;padding-bottom:0.5em;border-bottom:1px solid currentColor;color:#393c41;font-size:1.4375rem;line-height:1.4}@media screen and (min-width: 860px){.article__body h2{margin:1em 0 0.8em;padding-top:0.8em}}.article__body h3{margin:-3rem 0 1rem;padding-top:4rem;color:#393c41;font-size:1.3125rem;line-height:1.4}@media screen and (min-width: 860px){.article__body h3{margin:0.8em 0 0.8em;padding-top:0.8em}}.article__body h4{margin:1em 0 0.8em;color:#393c41;font-size:1.1875rem;line-height:1.4}.article__body h5{margin:1em 0 0.8em;color:#393c41;font-size:1.0625rem;line-height:1.4}.article__body h6{margin:1em 0 0.8em;font-size:1rem;line-height:1.4}.article__body p{margin:1rem 0;font-size:1rem;line-height:1.75}.article__body p img{vertical-align:top}.article__body ul,.article__body ol{padding:0 0 0 1.5rem;margin:0 0 0.5rem;font-size:1rem}.article__body ul li,.article__body ol li{line-height:1.7}.article__body ul{list-style-type:disc}.article__body ol{list-style-type:decimal}.article__body ul li,.article__body ol li{list-style-type:inherit}.article__body ul ul,.article__body ol ul{list-style-type:circle}.article__body ul ol,.article__body ol ol{list-style-type:lower-roman}.article__body ul ul ul,.article__body ul ol ul,.article__body ol ul ul,.article__body ol ol ul{list-style-type:square}.article__body ul ul ol,.article__body ul ol ol,.article__body ol ul ol,.article__body ol ol ol{list-style-type:lower-alpha}.article__body table{border-top:1px solid #dee0e3;font-size:0.875rem;margin:0 0 0.875rem}.article__body tr{border-bottom:1px solid #dee0e3}.article__body th{padding:0.875rem 0.4375rem;color:#767b85}.article__body td{padding:0.875rem 0.4375rem}.article__body pre{margin:0 0 1rem;font-size:1rem;padding:1rem;overflow-x:auto;word-wrap:break-word}.article__body code{font-size:0.9em;background:#f8f8f8;font-family:Consolas, "Liberation Mono", Menlo, Courier, monospace, "ＭＳ ゴシック", "MS UI Gothic", sans-serif}.article__body cite{font-size:0.9em;font-style:normal;color:#767b85}.article__body blockquote{position:relative;margin:2rem 0;padding:0 0 0 3.125rem;font-size:0.875rem}.article__body blockquote::before{content:"\f10d";font-family:FontAwesome;position:absolute;left:0;top:0;color:#dee0e3;font-size:1.875rem}.article__body a{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;color:#2571b3;text-decoration:none;opacity:1}.article__body a:hover{text-decoration:underline;opacity:0.7}.article__body img.outlined{display:block;border:1px solid #dee0e3}#markdown-toc{position:relative;display:table;border:1px solid #dee0e3;margin:1rem 0;padding:3em 1em 1em 1em;list-style-type:decimal;counter-reset:item;background:#f7f8fa}#markdown-toc::before{position:absolute;top:1em;left:50%;margin-left:-1.2em;content:'目次';font-weight:bold}#markdown-toc ol{counter-reset:item}#markdown-toc li{font-size:0.95em;display:block}#markdown-toc li::before{content:counters(item, "-") ". ";counter-increment:item}#markdown-toc li::after{content:none}.article__more{font-size:1.25rem;display:inline-block}@media screen and (min-width: 860px){.article__more{font-size:1.5rem}}.article__footer{padding:0;margin:0}.article__author{margin:1rem 0;padding:0.5rem 1rem;border:2px solid #dee0e3}.article__author-title{margin:0.5rem 0;padding:0;font-size:1.125rem}.article__author-list{display:table;width:100%;border-collapse:collapse}.article__author-list-item{display:table-row}.article__author-image{display:table-cell;margin:0;padding:0.5rem 0;width:3.75rem;height:3.75rem;vertical-align:top}.article__author-image img{width:100%;border-radius:50%;vertical-align:top}.article__author-data{display:table-cell;padding:0.5rem 1rem;vertical-align:top}.article__author-name{margin:0 0 0.2em;padding:0;font-size:0.9375rem;font-weight:bold}.article__author-description{margin:0;padding:0;color:#393c41;font-size:0.875rem}.article__author-links{display:table-cell;padding:0.5rem 0;width:1.875rem;list-style-type:none;vertical-align:top;text-align:right}@media screen and (min-width: 640px){.article__author-links{width:auto;white-space:nowrap}}.article__author-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:inline-table;margin:0 0 0.25rem 0.25rem;width:1.75rem;height:1.75rem;border-radius:50%;color:#fff;text-align:center;text-decoration:none}.article__author-link i{display:table-cell;font-size:1rem;vertical-align:middle}.article__author-link:hover{color:#fff;opacity:0.85}.article__author-link--twitter{background:#1cadeb}.article__author-link--facebook{background:#3f5aa2}.article__author-link--github{background:#333}.article__author-link--youtube{background:#f00}.archive__header{margin:0.625rem 0.3125rem 1.25rem;font-size:1.25rem}@media screen and (min-width: 860px){.archive__header{margin:0 0 1.875rem;padding:0 0 0.625rem;border-bottom:1px solid currentColor;font-size:1.375rem}}.digest{position:relative;width:100%;margin-bottom:0.9375rem;border:1px solid rgba(57,60,65,0.1);border-radius:0.25rem;-webkit-box-shadow:0 1px 1px 1px rgba(57,60,65,0.06);box-shadow:0 1px 1px 1px rgba(57,60,65,0.06)}@media screen and (min-width: 640px){.digest{display:table;margin-bottom:1.875rem;border:none;border-radius:0;-webkit-box-shadow:none;box-shadow:none}}@media screen and (min-width: 860px){.digest{margin-bottom:2.5rem}.digest.digest--latest{margin-bottom:1.875rem;padding-bottom:1.875rem;border-bottom:1px solid #e0e0e0}}.digest__eye-catch{position:relaive;display:block}@media screen and (min-width: 640px){.digest__eye-catch{display:table-cell;width:36%;padding-right:0.9375rem;-webkit-box-sizing:border-box;box-sizing:border-box;vertical-align:top}}@media screen and (min-width: 860px){.digest__eye-catch{padding-right:1.25rem}.digest.digest--latest .digest__eye-catch{width:55%}}.digest__eye-catch-inner{position:relaive;display:block;cursor:pointer;border-bottom:1px solid rgba(57,60,65,0.09);border-radius:0.25rem 0.25rem 0 0;position:relative;padding:52% 0 0 0;width:100%;height:0;overflow:hidden}@media screen and (min-width: 640px){.digest__eye-catch-inner{padding-top:72%;border-radius:0.25rem;border:1px solid rgba(57,60,65,0.1);-webkit-box-shadow:0 1px 1px 1px rgba(57,60,65,0.06);box-shadow:0 1px 1px 1px rgba(57,60,65,0.06)}}.digest__eye-catch-img{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;position:absolute;top:0;right:0;bottom:0;left:0;content:'';background-position:center center;background-repeat:no-repeat;background-size:cover}.digest:hover .digest__eye-catch-img{-webkit-transform:scale(1.1);transform:scale(1.1);opacity:0.85}.digest__body{padding:0.75rem 0.9375rem 0.9375rem}@media screen and (min-width: 640px){.digest__body{display:table-cell;padding:0;width:64%;vertical-align:top}}@media screen and (min-width: 860px){.digest.digest--latest .digest__body{width:45%}}.digest__title-link{display:block;cursor:pointer;text-decoration:none}.digest__date{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;color:#767b85;font-size:0.875rem;line-height:1.4}.digest:hover .digest__date{color:#2571b3}@media screen and (min-width: 640px){.digest__date{font-size:0.9375rem}}.digest__title{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;margin-bottom:0.2em;font-size:1.125rem;line-height:1.4}.digest:hover .digest__title{color:#2571b3}@media screen and (min-width: 640px){.digest__title{font-size:1.25rem}}@media screen and (min-width: 860px){.digest__title{font-size:1.3125rem}.digest.digest--latest .digest__title{font-size:1.4375rem}}.digest__tags{display:block;margin-bottom:0.6em}.digest__tag{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:inline-block;margin:0 0.1em 0 0;border-radius:0.1875rem;color:#fff;font-size:0.6875rem;line-height:1.3;font-weight:bold}.digest__tag:hover{opacity:0.8}@media screen and (min-width: 640px){.digest__tag{font-size:0.8125rem}}.digest__tag-link{display:block;cursor:pointer;padding:0.2em 0.5em;color:inherit;text-decoration:none}.digest__tag-link:hover{color:inherit}.digest__summary{display:block;margin:0 0 0.4em 0;font-size:0.8125rem}@media screen and (min-width: 640px){.digest__summary{font-size:0.9375rem}}.digest__summary-link{-webkit-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;display:block;cursor:pointer;color:#666;line-height:1.4;text-decoration:none}.digest:hover .digest__summary-link{color:inherit}.digest__authors{display:table}.digest__author{display:table-cell;vertical-align:middle}.digest__author-image{display:inline-block;margin-right:0.5em;width:24px;height:24px;overflow:hidden;border-radius:50%;vertical-align:middle}.digest__author-image img{width:100%;height:100%}@media screen and (min-width: 860px){.digest__author-image{width:28px;height:28px}}.digest__author-name{display:inline-block;margin:0 2em 0 0;font-size:0.75rem;vertical-align:middle;white-space:nowrap}@media screen and (min-width: 640px){.digest__author-name{font-size:0.8125rem}}.highlight table td{padding:5px}.highlight table pre{margin:0}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .c,.highlight .ch,.highlight .cd,.highlight .cpf{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .gd{color:#000000;background-color:#ffdddd}.highlight .ge{color:#000000;font-style:italic}.highlight .gr{color:#aa0000}.highlight .gh{color:#999999}.highlight .gi{color:#000000;background-color:#ddffdd}.highlight .go{color:#888888}.highlight .gp{color:#555555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaaaaa}.highlight .gt{color:#aa0000}.highlight .kc{color:#000000;font-weight:bold}.highlight .kd{color:#000000;font-weight:bold}.highlight .kn{color:#000000;font-weight:bold}.highlight .kp{color:#000000;font-weight:bold}.highlight .kr{color:#000000;font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .k,.highlight .kv{color:#000000;font-weight:bold}.highlight .mf{color:#009999}.highlight .mh{color:#009999}.highlight .il{color:#009999}.highlight .mi{color:#009999}.highlight .mo{color:#009999}.highlight .m,.highlight .mb,.highlight .mx{color:#009999}.highlight .sa{color:#000000;font-weight:bold}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .s,.highlight .dl{color:#d14}.highlight .na{color:#008080}.highlight .bp{color:#999999}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:#008080}.highlight .nd{color:#3c5d5d;font-weight:bold}.highlight .ni{color:#800080}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf,.highlight .fm{color:#990000;font-weight:bold}.highlight .nl{color:#990000;font-weight:bold}.highlight .nn{color:#555555}.highlight .nt{color:#000080}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .nv,.highlight .vm{color:#008080}.highlight .ow{color:#000000;font-weight:bold}.highlight .o{color:#000000;font-weight:bold}.highlight .w{color:#bbbbbb}.highlight{background-color:#f8f8f8}.social-buttons-wrapper{margin:1rem 0}@media screen and (min-width: 860px){.social-buttons-wrapper{margin:1rem 0 2rem;padding:1rem 4rem 0;background:#f8f8f8}}.social-buttons-wrapper .social-buttons{display:block;margin:0;padding:0;list-style:none;line-height:1}.social-buttons-wrapper .social-buttons amp-social-share+amp-social-share{margin-left:10px}.social-buttons-wrapper .social-buttons__item{display:inline-block;margin:0 4px 8px 0;padding:0;vertical-align:top;line-height:1}.pager{background-color:#fff;padding:1rem;overflow:hidden;text-align:center}.pager a{color:#3e6f99}.pager a:hover,.pager a:active,.pager a:focus{color:#3e6f99;opacity:0.5}.pager-medium-screen{display:none}@media screen and (min-width: 640px){.pager-medium-screen{display:flex;justify-content:center;align-items:center;text-align:center}}.pager-small-screen{display:flex;justify-content:center;align-items:center;text-align:center}@media screen and (min-width: 640px){.pager-small-screen{display:none}}.pager__numbers{display:inline-block;margin:0 auto}.pager__number{width:2rem;height:2rem;text-decoration:none;margin:0 0.3rem;border-radius:1rem;border:1px solid #3e6f99;font-size:0.9em;display:inline-block;line-height:2rem}.pager__number.current{font-weight:bold;color:#fff;background-color:#3e6f99}.pager__button{display:inline-block;text-decoration:none;color:#3e6f99;font-size:0.875rem;font-weight:bold;padding:0.625rem 0.9375rem;border-radius:0.1875rem;border:1px solid #3e6f99}.pager__button--prev{margin:0 0.3rem}.pager__button--prev::before{content:'';margin-right:0.2rem;display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-left:2px solid currentColor;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);position:relative}@media screen and (min-width: 640px){.pager__button--prev{margin:0}}.pager__button--next{margin:0 0.3rem}.pager__button--next::after{margin-left:0.2rem;content:'';display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-right:2px solid currentColor;-webkit-transform:rotate(45deg);transform:rotate(45deg);position:relative}@media screen and (min-width: 640px){.pager__button--next{margin:0}}.pager__button--back-first{margin-right:20px}.pager__button--back-first::before{margin-right:0.2rem;content:'';display:inline-block;width:10px;height:10px;border-top:2px solid currentColor;border-left:2px solid currentColor;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);position:relative}.pager__caption{text-align:center;display:block;color:#767b85;letter-spacing:0.1em;padding:0;margin-top:1rem}.pager__extend{color:#767b85;margin:0 0.3em}.pager__blank-space{width:60px}.tag-default{background:#f8f8f8;border:1px solid #ccc;color:#393c41}.tag-color1{background:#f44336}.tag-color2{background:#2196f3}.tag-color3{background:#4caf50}.tag-color4{background:#fdd835}.tag-color5{background:#9e9e9e}.tag-color6{background:#e91e63}.tag-color7{background:#03a9f4}.tag-color8{background:#8bc34a}.tag-color9{background:#ffc107}.tag-color10{background:#607d8b}.tag-color11{background:#9c27b0}.tag-color12{background:#00bcd4}.tag-color13{background:#cddc39}.tag-color14{background:#ff9800}.tag-color15{background:#795548}.tag-color16{background:#673ab7}.tag-color17{background:#009688}.tag-color18{background:#ff5722}.tag-color19{background:#3f51b5}.u-align-center{text-align:center}.u-font-weight-bold{font-weight:bold}.u-target-blank::after{display:inline-block;padding:0 0.5em 0 0.3em;content:'\f08e';font-family:FontAwesome;font-size:0.75rem;font-weight:normal;vertical-align:middle}.text-color--speaker-first{color:#f47721}.text-color--speaker-second{color:#aa66cc}.text-color--speaker-third{color:#2facf9}.text-color--speaker-fourth{color:#0ba29b}.text-color--interviewer{color:#999}.embed-responsive{position:relative;height:0;padding-top:100%;margin:2em 0}.embed-responsive.embed-responsive--16by9{padding-top:56.25%}.embed-responsive.embed-responsive--17by10{padding-top:56.25%}.embed-responsive.embed-responsive--4by3{padding-top:75%}.embed-responsive>iframe{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;border:0}.embed-responsive.embed-responsive--border>iframe{border:1px solid #ccc}</style>
+<link href="/images/favicon.ico" rel="icon" type="image/ico">
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml">
+    
+    <link href="//platform.twitter.com" rel="preconnect dns-prefetch">
+    <link href="//www.facebook.com" rel="preconnect dns-prefetch">
+    <link href="//connect.facebook.net" rel="preconnect dns-prefetch">
+    <link href="//www.googletagmanager.com" rel="preconnect dns-prefetch">
+  <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+<script async src="https://cdn.ampproject.org/v0.js"></script><script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script><script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script><meta name="amp-google-client-id-api" content="googleanalytics">
+</head>
+  <body>
+<amp-analytics config="https://www.googletagmanager.com/amp.json?id=GTM-P726ZX2&amp;gtm.url=SOURCE_URL" data-credentials="include"></amp-analytics>
+    <div id="fb-root"></div>
+    <header class="header">
+      <div class="header__inner">
+        <h1 class="header__logo">
+<a href="/" class="header__link">
+                <span class="header__logo-img"><amp-img src="//tech.pepabo.com/images/logo.svg" alt="ペパボテックブログ" width="1804" height="213" layout="responsive"></amp-img></span><span class="header__catch"><strong>T</strong>echnology, <strong>E</strong>ngineering, <strong>C</strong>reative, and <strong>H</strong>uman-Centered Design</span></a>
+        </h1>
+<a href="" class="header__icon-link js-drawer--trigger">
+            <i class="fa fa-bars header__icon"></i></a>
+      </div>
+    </header>
+    <div class="wrapper">
+      <div class="main" role="main">
+        <article class="article slug-pepabo-tech-blog-has-started">
+          <div class="article__inner">
+            <header class="article__header">
+              <div class="article__topic">
+                <a href="/tags/pepabo/" class="tag-default">pepabo</a>
+                <a href="/tags/cto/" class="tag-default">CTO</a>
+              </div>
+              <time class="article__time" datetime="2015-11-17">2015-11-17</time>
+              <h1 class="article__title">
+                <a href="/2015/11/17/pepabo-tech-blog-has-started/">「いるだけで成長できる環境」へ</a>
+              </h1>
+              <div class="article__topic article__topic--pc">
+                <a href="/tags/pepabo/" class="tag-default">pepabo</a>
+                <a href="/tags/cto/" class="tag-default">CTO</a>
+              </div>
+            </header><div class="social-buttons-wrapper">
+              <ul class="social-buttons">
+                
+                
+                
+                
+              <li class="social-buttons__item"><amp-social-share type="twitter"></amp-social-share></li>
+<li class="social-buttons__item"><amp-social-share type="facebook" data-param-app_id="709754052488816"></amp-social-share></li>
+</ul>
+            </div>
+            <div class="article__body">
+              <p>GMOペパボ株式会社の執行役員CTOを務めております、栗林と申します。ネット上では「あんちぽくん」として知られてございます。</p>
+              
+              <p>「ペパボテックブログ」と題して、技術ブログを始めます。</p>
+              
+              <h2 id="採用ページのリニューアル">採用ページのリニューアル</h2>
+              
+              <p>先日、エンジニア採用ページをリニューアルしました。</p>
+              
+              <ul>
+                <li><a href="http://pepabo.com/recruit/career/engineer/">エンジニアの働き方 | キャリア採用 | 採用情報 | GMOペパボ株式会社</a></li>
+              </ul>
+              
+              <p><a href="https://minne.com/">ハンドメイドマーケットのminne</a>への積極投資を始めとする各サービスにおける業容拡大のため、エンジニアの採用を積極的に行っているところです。今年は、<a href="http://eventdots.jp/event/573086">ペパボテックカンファレンス</a>や<a href="https://pepabo.com/recruit/pepaluncheon/">ペパランチョン</a>など、いろいろな取り組みを行ってきました。</p>
+              
+              <p>そんなペパボの魅力を、より効果的にお伝えできる内容になったのではないかと思います。</p>
+              
+              <h2 id="コンセプトの明文化">コンセプトの明文化</h2>
+              
+              <p>かねてより、エンジニア組織についてもプロダクト開発同様に、コンセプトを定めて活動していく必要があると考えていました。CTOにとって、エンジニア組織は責任を持つ「プロダクト」のひとつでもあります。そこで、<strong>「いるだけで成長できる環境」</strong>というコンセプトを考え、今回リニューアルした採用ページ内で、新たに項目を設けました。</p>
+              
+              <p><amp-img src="//tech.pepabo.com/blog/2015/11/17/pepabo-tech-blog-has-started/pepabo-tech-blog-has-started_1.png" alt="いるだけで成長できる環境" width="1200" height="676" layout="responsive"></amp-img></p>
+              
+              <p>(<em><a href="http://pepabo.com/recruit/career/engineer/">エンジニアの働き方 | キャリア採用 | 採用情報 | GMOペパボ株式会社</a></em>より)</p>
+              
+              <p>もちろん、ただ「いるだけ」で成長できるわけではありません。そのような環境づくりに会社としてコミットしていくこと、そのことで結果として個々のエンジニアが<strong>「いるだけで成長」してしまう</strong>環境を作って行きたいと思っています。</p>
+              
+              <h2 id="テックブログの位置づけ">テックブログの位置づけ</h2>
+              
+              <p>「いるだけで成長」する環境を実現するためには、我々知的生産を行う職業の者にとっては、毎日の職業生活が有意義かつ生産的で、知的な刺激をもたらすものでなくてはなりません。そのために、たとえば「<a href="http://engineer.typemag.jp/article/pepabo-dev">GMOペパボ攻勢の裏側にあった「技術的負債を抱えない開発体制づくり」3つの布石 - エンジニアtype</a>」という記事で述べたような地ならしを行ってきました。</p>
+              
+              <p>しかし、それだけでは不十分です。日々の業務から得られた知見を少し立ち止まって振り返り、より一般化して考えてみる、その結果としてアウトプットするということが、エンジニアとしての成長には必要です。そのため、業務ロジックから一般化したライブラリをOSSとして公開すること、社内外の技術イベントで発表することなどを推奨しています。</p>
+              
+              <p>このテックブログもまた、そのような活動の場となり、エンジニアの成長の一助となることを期待しています。</p>
+              
+              <aside>
+                <h2>
+                  GMOペパボでは、新しい仲間を募集しています
+                </h2>
+                <p>
+                  募集中の職種や、詳しい社内の環境や制度に関しては以下をご覧ください。
+                </p>
+                <ul>
+                  <li>
+                    <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a>
+                  </li>
+                </ul>
+              </aside>
+            </div>
+            <div class="social-buttons-wrapper">
+              <ul class="social-buttons">
+                
+                
+                
+                
+              </ul>
+            </div>
+<footer class="article__footer">
+              <div class="article__author">
+                <h2 class="article__author-title">
+                  書いた人
+                </h2>
+                <ul class="article__author-list">
+                  <li class="article__author-list-item">
+                    <p class="article__author-image">
+                      <amp-img src="https://www.gravatar.com/avatar/23f4d5d797a91b6d17d627b90b5a42d9?size=80" alt="" width="80" height="80" layout="responsive"></amp-img>
+                    </p>
+                    <div class="article__author-data">
+                      <p class="article__author-name">
+                        あんちぽくん
+                      </p>
+                      <p class="article__author-description">
+                        GMOペパボ株式会社・執行役員CTO。市役所職員、Web企業勤務を経て、現職。Perl Monger兼本読みとして、フロントエンドからインフラ、ハッカー倫理から経営までをあちこち揺れ動く、文化系ソフトウェアエンジニア。ネット上では「あんちぽくん」として知られる。
+                      </p>
+                    </div>
+                    <div class="article__author-links">
+<a href="https://twitter.com/kentaro" class="article__author-link article__author-link--twitter" target="_blank">
+                              <i class="fa fa-twitter fa-fw"></i></a><a href="https://www.facebook.com/kentarok" class="article__author-link article__author-link--facebook" target="_blank"><i class="fa fa-facebook fa-fw"></i></a><a href="https://github.com/kentaro" class="article__author-link article__author-link--github" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </footer>
+          </div>
+        </article>
+      </div>
+      <aside class="sidebar js-drawer">
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            最新記事
+          </h2>
+          <ul class="sidebar__list">
+            <li class="sidebar__list-item">
+<a href="/2021/07/21/hiring-engineer-fes-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-21</span><span class="sidebar__list-title">この夏、エンジニア #採用目的フェス を開催します!!</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/20/private-cloud-hardware/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-20</span><span class="sidebar__list-title">インスタンス数を最大化するためのハードウェア選定の工夫</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/16/hiring-suzuri-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-16</span><span class="sidebar__list-title">採用目的2021 SUZURI編</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/15/blog-relay-10th-04/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-15</span><span class="sidebar__list-title">新卒エンジニアがホスティング事業部のチームを巡った話</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/14/pepabo-tech-blog-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-14</span><span class="sidebar__list-title">ペパボテックブログの裏側</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/09/hiring-ec-division-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-09</span><span class="sidebar__list-title">採用目的 2021 EC事業部編</span></a>
+            </li>
+            <li class="sidebar__list-item">
+<a href="/2021/07/06/hiring-minne-2021/" class="sidebar__list-link">
+                      <span class="sidebar__list-date">2021-07-06</span><span class="sidebar__list-title">採用目的2021 minne編</span></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            タグ
+          </h2>
+          <ul class="sidebar__tags">
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3/" class="sidebar__tags-link">デザイン (63)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88/" class="sidebar__tags-link">イベントレポート (42)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/%E5%8B%89%E5%BC%B7%E4%BC%9A/" class="sidebar__tags-link">勉強会 (38)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E7%A0%94%E4%BF%AE/" class="sidebar__tags-link">研修 (30)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (27)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/ec%E3%83%96%E3%83%AD%E3%82%B0%E3%83%AA%E3%83%AC%E3%83%BC/" class="sidebar__tags-link">ECブログリレー (22)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%9F%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97/" class="sidebar__tags-link">カラーミーショップ (21)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%97%E3%83%AD%E3%83%80%E3%82%AF%E3%83%88%E3%83%9E%E3%83%8D%E3%82%B8%E3%83%A1%E3%83%B3%E3%83%88/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/minne/" class="sidebar__tags-link">minne (17)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/" class="sidebar__tags-link">イベント (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/engineering/" class="sidebar__tags-link">engineering (16)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E6%8E%A1%E7%94%A8/" class="sidebar__tags-link">採用 (14)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E7%99%BB%E5%A3%87%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88/" class="sidebar__tags-link">登壇レポート (13)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/php/" class="sidebar__tags-link">PHP (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ios/" class="sidebar__tags-link">ios (12)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (11)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/" class="sidebar__tags-link">インフラ (10)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E7%99%BB%E5%A3%87%E6%83%85%E5%A0%B1/" class="sidebar__tags-link">登壇情報 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E7%A4%BE%E5%86%85%E5%90%91%E3%81%91%E6%8A%80%E8%A1%93%E6%96%87%E6%9B%B8/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/rails/" class="sidebar__tags-link">Rails (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E6%88%A6%E7%95%A5%E3%83%81%E3%83%BC%E3%83%A0/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/github/" class="sidebar__tags-link">GitHub (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/ruby/" class="sidebar__tags-link">ruby (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E9%96%8B%E7%99%BA%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9/" class="sidebar__tags-link">開発プロセス (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89/" class="sidebar__tags-link">フロントエンド (7)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/%E9%B9%BF%E5%85%90%E5%B3%B6/" class="sidebar__tags-link">鹿児島 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/%E3%82%B0%E3%83%BC%E3%83%9A/" class="sidebar__tags-link">グーペ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%82%BF%E3%83%BC/" class="sidebar__tags-link">ディレクター (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%83%E3%83%97/" class="sidebar__tags-link">インターンシップ (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/%E3%83%87%E3%83%BC%E3%82%BF%E5%88%86%E6%9E%90/" class="sidebar__tags-link">データ分析 (6)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E6%8E%A1%E7%94%A8%E7%9B%AE%E7%9A%84/" class="sidebar__tags-link">採用目的 (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/mobile/" class="sidebar__tags-link">mobile (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E9%B9%BF%E5%85%90%E5%B3%B6%E3%82%AA%E3%83%95%E3%82%A3%E3%82%B9%E3%83%81%E3%83%BC%E3%83%A0/" class="sidebar__tags-link">鹿児島オフィスチーム (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/rails/" class="sidebar__tags-link">rails (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/management/" class="sidebar__tags-link">management (5)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/" class="sidebar__tags-link">リモートワーク (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E6%96%B0%E5%8D%9210%E6%9C%9F%E3%83%96%E3%83%AD%E3%82%B0%E3%83%AA%E3%83%AC%E3%83%BC/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C%E3%81%AE%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%80%E3%83%BC%E3%83%89/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/slack/" class="sidebar__tags-link">Slack (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/swift/" class="sidebar__tags-link">swift (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%83%AD%E3%83%AA%E3%83%9D%E3%83%83%E3%83%97/" class="sidebar__tags-link">ロリポップ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C/" class="sidebar__tags-link">ペパボ (4)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">トラブルシューティング (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3/" class="sidebar__tags-link">セキュリティ (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2/" class="sidebar__tags-link">エンジニア (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3/" class="sidebar__tags-link">サービスデザイン (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/android/" class="sidebar__tags-link">android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/ec/" class="sidebar__tags-link">ec (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E4%BB%8A%E6%97%A5%E8%A9%B1%E3%81%97%E3%81%9F%E3%81%93%E3%81%A8/" class="sidebar__tags-link">今日話したこと (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color16">
+              <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/ngx_mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color12">
+              <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color17">
+              <a href="/tags/%E3%83%98%E3%83%86%E3%83%A0%E3%83%AB/" class="sidebar__tags-link">ヘテムル (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E6%8A%80%E8%A1%93%E5%9F%BA%E7%9B%A4/" class="sidebar__tags-link">技術基盤 (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/security/" class="sidebar__tags-link">security (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/android/" class="sidebar__tags-link">Android (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color19">
+              <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%93%E3%83%A5%E3%83%BC/" class="sidebar__tags-link">インタビュー (3)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%AA%E3%82%B5%E3%83%BC%E3%83%81/" class="sidebar__tags-link">デザインリサーチ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color10">
+              <a href="/tags/cre/" class="sidebar__tags-link">CRE (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/swiftui/" class="sidebar__tags-link">swiftui (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E3%82%B9%E3%82%AF%E3%83%A9%E3%83%A0%E9%96%8B%E7%99%BA/" class="sidebar__tags-link">スクラム開発 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color4">
+              <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color2">
+              <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" class="sidebar__tags-link">ストレージ (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color11">
+              <a href="/tags/%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">メンタリング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E6%83%85%E5%A0%B1%E5%85%B1%E6%9C%89/" class="sidebar__tags-link">情報共有 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/notion/" class="sidebar__tags-link">notion (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color18">
+              <a href="/tags/%E5%86%99%E7%9C%9F/" class="sidebar__tags-link">写真 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color7">
+              <a href="/tags/%E3%83%9A%E3%83%91%E3%83%9C%E3%81%AE%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E6%80%9D%E8%80%83/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%97%E3%83%AA%E3%83%B3%E3%83%88/" class="sidebar__tags-link">デザインスプリント (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color1">
+              <a href="/tags/%E5%8B%95%E7%94%BB/" class="sidebar__tags-link">動画 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color13">
+              <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color5">
+              <a href="/tags/productivity/" class="sidebar__tags-link">productivity (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color15">
+              <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color8">
+              <a href="/tags/%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%9F%E3%83%BC%E3%83%AA%E3%83%94%E3%83%BC%E3%83%88/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color14">
+              <a href="/tags/%E3%83%81%E3%83%BC%E3%83%A0%E3%83%93%E3%83%AB%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0/" class="sidebar__tags-link">チームビルディング (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color9">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%8A%E3%83%BC%E4%BA%A4%E6%B5%81%E4%BC%9A/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E5%B1%95/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color6">
+              <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+            </li>
+            <li class="sidebar__tags-item tag-color3">
+              <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar__sections">
+          <h2 class="sidebar__title">
+            リンク
+          </h2>
+          <ul class="information">
+            <li>
+              <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+            </li>
+            <li>
+              <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+            </li>
+            <li>
+              <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div class="credit">
+        <p class="credit__logo">
+          pepabo tech blog
+        </p>
+        <ul class="credit__links">
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+          </li>
+          <li class="credit__link">
+            <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+          </li>
+        </ul>
+        <p class="credit__rights">
+          © 2015 - 2021 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+        </p>
+      </div>
+    </footer>
+    
+    <div class="overlay"></div>
+  </body>
+</html>
