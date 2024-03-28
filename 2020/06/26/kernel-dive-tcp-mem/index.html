@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>ペパボ トラブルシュート伝 - TCP: out of memory -- consider tuning tcp_mem の dmesg から辿る 詳解 Linux net.ipv4.tcp_mem - Pepabo Tech Portal</title>
+<meta content="セキュリティ対策室の伊藤洋也です @hiboma
+
+過去の障害対応中に遭遇した TCP: out of memory -- consider tuning tcp_mem という dmesg を端緒として、Linux カーネルが どの..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@hiboma" name="twitter:creator" />
+<meta content="ペパボ トラブルシュート伝 - TCP: out of memory -- consider tuning tcp_mem の dmesg から辿る 詳解 Linux net.ipv4.tcp_mem - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="セキュリティ対策室の伊藤洋也です @hiboma
+
+過去の障害対応中に遭遇した TCP: out of memory -- consider tuning tcp_mem という dmesg を端緒として、Linux カーネルが どの..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"ペパボ トラブルシュート伝 - TCP: out of memory -- consider tuning tcp_mem の dmesg から辿る 詳解 Linux net.ipv4.tcp_mem","author":{"@type":"Person","name":"伊藤洋也"},"datePublished":"2020-06-25T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-kernel-dive-tcp-mem">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/トラブルシューティング/" class="tag-default">トラブルシューティング</a>
+  </div>
+  <time class="article__time" datetime="2020-06-26">
+    2020-06-26
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/06/26/kernel-dive-tcp-mem/">ペパボ トラブルシュート伝 - TCP: out of memory -- consider tuning tcp_mem の dmesg から辿る 詳解 Linux net.ipv4.tcp_mem</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/トラブルシューティング/" class="tag-default">トラブルシューティング</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/06/26/kernel-dive-tcp-mem/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>セキュリティ対策室の伊藤洋也です <a href="https://twitter.com/hiboma">@hiboma</a></p>
+
+<p>過去の障害対応中に遭遇した <code>TCP: out of memory -- consider tuning tcp_mem</code> という dmesg を端緒として、Linux カーネルが どのようにTCPのメモリを管理するのかを調べました。</p>
+
+<h2 id="本エントリのテーマ">本エントリのテーマ</h2>
+
+<ul>
+  <li><code>TCP: out of memory -- consider tuning tcp_mem</code> の dmesg</li>
+  <li>memory pressure モード</li>
+  <li><code>sysctl net.ipv4.tcp_mem</code> の詳細</li>
+</ul>
+
+<p>を扱います。</p>
+
+<h2 id="誰のために向けて書いた技術文章なのか">誰のために向けて書いた技術文章なのか?</h2>
+
+<ul>
+  <li>Linux の TCP メモリ管理を調べたい人</li>
+  <li>TCP out of memory  あるいは memory pressure モードを調べたい人</li>
+  <li>TCP out of memory, memory pressure モードの監視・メトリクス採取したい人</li>
+  <li>net.ipv4.tcp_mem を <strong><em>深〜く</em></strong> 知りたい人</li>
+</ul>
+
+<p>に向けて知見を提供できればと思い、エントリを公開しています。</p>
+
+<h2 id="そもそもなぜこのログを調べるに至ったのか">そもそも、なぜ、このログを調べるに至ったのか?</h2>
+
+<p>過去に起きた障害が発端となります。</p>
+
+<p>次の図のようにモデル化される production 構成で、静的コンテンツの配信が遅延する (数十秒単位) 事象に遭遇しました。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/1-model.png" alt="production構成のモデル" /></p>
+
+<p>💡<em>エントリの内容に沿って説明を容易にするために <strong>簡素</strong> にしたモデル図です</em></p>
+
+<h4 id="障害対応の概要">障害対応の概要</h4>
+
+<p>当時、障害対応を進めていた同僚が <code>TCP: out of memory -- consider tuning tcp_mem</code> ( 以降は <strong>TCP oom</strong> と略記します) のログを dmesg に出しているホストを発見しました。該当のホストは、haproxy を HTTP ロードバランサー として稼働させていました。 haproxy の upstream のホストでは、nginx が静的コンテンツを扱う構成となっていました。</p>
+
+<p>TCP oom のログをもとに、同僚 ( <a href="https://twitter.com/pyama86/">@pyama86</a> ) が解決策を調査し <code>sysctl net.ipv4.tcp_mem</code> をチューニングすることで遅延をおさめ障害を復旧しました。</p>
+
+<h4 id="事後の調査">事後の調査</h4>
+
+<p>後の調査で haproxy を動かしていた VM (OpenStack Octavia サービスの Amphora 内で稼働) の搭載 RAM が 2GB と小さく、起動時に自動で決定される net.ipv4.tcp_mem が低く抑えられていたことで TCP oom を誘発したという結論に至りました。</p>
+
+<p>しかし、静的コンテンツの配信の遅延が どういった原理で起きたのかまでは説明できませんでした。</p>
+
+<p>そういった背景があり</p>
+
+<ul>
+  <li>TCP oom はどのように再現できるのか?</li>
+  <li>TCP oom はどのような条件で発生するのか?</li>
+  <li>TCP oom が発生すると何が起きるのか?</li>
+  <li><code>sysctl net.ipv4.tcp_mem</code> のチューニングはどのようにすべきか?</li>
+  <li>監視やメトリクスはどんなデータを参照すべきか?</li>
+</ul>
+
+<p>の調査に入りました。</p>
+
+<h4 id="自分で全部調べよう">自分で全部調べよう</h4>
+
+<p>さて、いざ調べ出してみると オンラインあるいは書籍でも これらについて説明した文章は少なく、間違った記述も散見されました。それならば いっそ自分でソースを追って調べ確認を取った方が早かろう! … というモチベーションに駆動されてまとめたのが 本エントリの内容になります。</p>
+
+<h2 id="1-tcp-oom-の再現実験観察">1. TCP oom の再現、実験、観察</h2>
+
+<p>まずは Vagrant 上に TCP oom を再現する環境を作り、実験・観察をします。</p>
+
+<h2 id="1-1-実験環境">1-1 実験環境</h2>
+
+<p>実験環境に Vagrant を用います。ディストリビューションは Ubuntu Bionic を用いています。カーネルは 5.0 系で行いました。</p>
+
+<div class="highlight"><pre class="highlight shell"><code>vagrant@proxy000:~<span class="nv">$ </span><span class="nb">uname</span> <span class="nt">-a</span>
+Linux proxy000 5.0.0-37-generic <span class="c">#40~18.04.1-Ubuntu SMP Thu Nov 14 12:06:39 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux</span>
+</code></pre></div>
+<h2 id="1-2-vagrant-を用意する">1-2 Vagrant を用意する</h2>
+
+<p>Vagrant で 3台の VM をたてて、 TCP oom を再現する構成を作りました。 Vagrantfile は下記に公開してあります。</p>
+
+<p><a href="https://github.com/hiboma/tcp_mem">GitHub hiboma/tcp_mem</a></p>
+
+<p>下記が簡易の構成図です</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/2-2-vagrant.png" alt="Vagrant のモデルズ" /></p>
+
+<h4 id="注釈">注釈</h4>
+
+<p>モデルは 3ホスト構成になっていますが、1ホスト構成で client, server となるプロセスを起動して TCP oom を再現することも可能です。</p>
+
+<p>しかしながら、プロセスが 1ホストに集約されていると  <code>/proc/net/netstat</code> 等のメトリクスや tcpdump, bpftrace 等のツールで観察する際に、どのプロセスがどのようにシステムに作用しているかの切り分けが難しくなるため、複数のホストを分離した構成を実験環境としました。</p>
+
+<p>また、同僚に説明するにあたって、リアルな構成に即したモデルの方が馴染みがよいだろうという内的な事情もあります。</p>
+
+<h2 id="1-3-実験の手順">1-3 実験の手順</h2>
+
+<p>以下の手順を踏み、構成図でいう <em>proxy</em> で TCP oom を再現します。</p>
+
+<h3 id="1-proxy-の-netipv4tcp_mem-を極端に小さい数値にする">1. proxy の net.ipv4.tcp_mem を極端に小さい数値にする</h3>
+
+<p>デフォルト設定でワークロードをかけて再現するのは調整が面倒なので、意図的に net.ipv4.tcp_mem を引き下げて TCP クォータが逼迫した状態を作り出します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code>sysctl net.ipv4.tcp_mem<span class="o">=</span><span class="s1">'100 200 300'</span>
+</code></pre></div>
+<p>くらいまで下げましょう (もっと下げても構いません)</p>
+
+<h3 id="2-server-に-1mb-の静的ファイルを置く">2. server に 1MB の静的ファイルを置く</h3>
+
+<p>構成図の  <em>proxy</em> で TCP oom を出すにあたって、以下の条件を再現する必要があります。</p>
+
+<ul>
+  <li><em>proxy</em> が memory pressure モード (後述します) であること</li>
+  <li><em>proxy</em> で動く haproxy の TCP ソケットで、送信バッファに一定量のデータを溜めたものが close されること</li>
+</ul>
+
+<p>小さなファイルでは送信バッファが埋まらず TCP oom を再現できないので、1MB のファイルを用います。</p>
+
+<h3 id="3-client-からapache-bench-ab-で-静的ファイルを-get-する-リクエストを出す">3. client から、Apache Bench (ab) で 静的ファイルを GET する リクエストを出す</h3>
+
+<p>構成図の <em>client</em> から以下のようなワークロードをかけます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code>ab <span class="nt">-c</span> 5 <span class="nt">-n</span> 100 192.168.100.100:8888/1mb.txt
+</code></pre></div>
+<h2 id="1-4-実験観察">1-4 実験・観察</h2>
+
+<p>1, 2, 3 の手順を踏むと、 <em>proxy</em> の dmesg に TCP oom のログが出るのを観測できるでしょう</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ tail /var/log/syslog
+Dec 17 07:27:02 proxy000 kernel: [ 9774.254080] TCP: out of memory -- consider tuning tcp_mem
+Dec 17 07:27:02 proxy000 kernel: [ 9774.399771] TCP: out of memory -- consider tuning tcp_mem
+Dec 17 07:27:02 proxy000 kernel: [ 9774.401927] TCP: out of memory -- consider tuning tcp_mem
+Dec 17 07:27:02 proxy000 kernel: [ 9774.900174] TCP: out of memory -- consider tuning tcp_mem
+Dec 17 07:27:03 proxy000 kernel: [ 9775.152904] TCP: out of memory -- consider tuning tcp_mem
+</code></pre></div>
+<p>再現が取れたところで <code>/proc/</code> 以下のメトリクスを観察したり、Linux カーネルのドキュメントやソースを追いかけたり、TCP プロトコルの教科書も合わせて読みつつ、理解を深めていきましょう。</p>
+
+<h2 id="2-tcp-oom-はどんな条件で発生しますか">2. TCP oom はどんな条件で発生しますか?</h2>
+
+<p>TCP oom は以下の条件で発生します。</p>
+
+<ul>
+  <li>Linux カーネルが、TCP ソケットに送信・受信バッファに割り当てたメモリ(ページ数) が <strong><em>閾値</em></strong> を超えている</li>
+  <li>TCPソケットの送信バッファに一定量のデータを残したまま close される</li>
+</ul>
+
+<p>また、TCP oom が発生する状態で Linux カーネルは <strong>memory pressure モード</strong> に遷移しており、TCP ソケットの送信・受信バッファに割り当てるメモリを制限しています。そのため TCP での送受信のパフォーマンスにペナルティが課されます。</p>
+
+<p><strong><em>閾値</em></strong> と書きましたが、一体 どの数値が何を超えたことを指すのでしょう? 詳細を次章以降に記述していきます。</p>
+
+<h2 id="3-sysctl-netipv4tcp_mem-とは何か">3. sysctl net.ipv4.tcp_mem とは何か?</h2>
+
+<p>TCP oom と memory pressure モードを理解する際に重要なのが <strong>sysctl net.ipv4.tcp_mem</strong> です. <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">man tcp 7</a> の説明を引用します.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>       tcp_mem (since Linux 2.4)
+              This is a vector of 3 integers: [low, pressure, high].  These
+              bounds, measured in units of the system page size, are used by
+              TCP to track its memory usage.  The defaults are calculated at
+              boot time from the amount of available memory.  (TCP can only
+              use low memory for this, which is limited to around 900
+              megabytes on 32-bit systems.  64-bit systems do not suffer
+              this limitation.)
+
+              low       TCP doesn't regulate its memory allocation when the
+                        number of pages it has allocated globally is below
+                        this number.
+
+              pressure  When the amount of memory allocated by TCP exceeds
+                        this number of pages, TCP moderates its memory
+                        consumption.  This memory pressure state is exited
+                        once the number of pages allocated falls below the
+                        low mark.
+
+              high      The maximum number of pages, globally, that TCP will
+                        allocate.  This value overrides any other limits
+                        imposed by the kernel.
+
+ref http://man7.org/linux/man-pages/man7/tcp.7.html
+</code></pre></div>
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man7/tcp.7.html">linuxjm.osdn.jp に翻訳された man</a> も引用します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>tcp_mem (Linux 2.4 以降)
+    これは 3 つの整数 [low, pressure, high] からなるベクトル値である。 これらは TCP がメモリー使用量
+    を追跡するために用いられる (使用量はシステムのページサイズ単位で計測される)。 デフォルトはブート時に
+    利用できるメモリーの量から計算される。 (実際には、TCP は low memory のみを使用する。値は 32ビット
+    システムでは約 900 メガバイトに制限される。 64 ビットシステムではこの制限はない。)
+
+    low
+        TCP は、グローバルにアロケートしたページがこの数値以下の場合は、 メモリーアロケーションを調整しない。
+
+    pressure
+        TCP がアロケートしたメモリーがこの数値分のページ数を越えると、 TCP はメモリー消費を抑えるようになる。
+        アロケートしたページ数が low 以下になると、このメモリー圧迫状態から脱する。
+
+    high
+        TCP がグローバルに割り当てるページ数の最大値。 この値はカーネルによって課されるあらゆる制限よりも優先される。
+</code></pre></div>
+<p>man は概要を記述するのにとどまっており、少し説明が物足りないですね 🙂 以降の章で、net.ipv4.tcp_mem の詳細に踏み込み説明していきます。</p>
+
+<h2 id="3-1-netipv4tcp_mem-は-閾値">3-1 net.ipv4.tcp_mem は 閾値</h2>
+
+<p>net.ipv4.tcp_mem は TCPメモリ管理の「閾値」として作用します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>sysctl net.ipv4.tcp_mem
+net.ipv4.tcp_mem <span class="o">=</span> 5256 7010    10512
+</code></pre></div>
+<p>数値の単位は <strong>ページ</strong> (x86-64アーキテクチャで 1ページ は 4096 byte) です。</p>
+
+<p>net.ipv4.tcp_mem の３つの数値には名前がついています。<a href="http://man7.org/linux/man-pages/man7/tcp.7.html">man 7 tcp</a> や <a href="https://github.com/torvalds/linux/blob/ac71676c493f738ed04b0db9dc67aa03de7f2722/Documentation/networking/ip-sysctl.txt#L428-L440">Linux カーネルのドキュメント</a> を引用してまとめます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>数値</th>
+      <th>リミットの種類</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>max</td>
+      <td>sysctl net.ipv4.tcp_mem[2]</td>
+      <td>ハードリミット</td>
+    </tr>
+    <tr>
+      <td>pressure</td>
+      <td>sysctl net.ipv4.tcp_mem[1]</td>
+      <td>ソフトリミット</td>
+    </tr>
+    <tr>
+      <td>min / low</td>
+      <td>sysctl net.ipv4.tcp_mem[0]</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="netipv4tcp_mem-のモデル図">net.ipv4.tcp_mem のモデル図</h4>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/limit.png" alt="limit のモデル図" /></p>
+
+<p>Linux カーネル は TCP の送信・受信処理で、 <strong>TCP メモリクォータ</strong> (<strong>tcp_memory_allocated</strong>) と net.ipv4.tcp_mem の <strong>min</strong>, <strong>pressure</strong>,  <strong>max</strong> を閾値として比較して、システム全体の TCP ソケットのメモリ管理を動的にコントロールします。それぞれのリミットを超えた時の詳細を次章以降で説明します。</p>
+
+<p><strong>⚠️ハードリミットの呼称について</strong></p>
+
+<p>Linux カーネルのソース ( net/core/sock.c ) を読むと net.ipv4.tcp_mem[2] (sk_prot_mem_limits) に <code>hard limit</code> と呼んでいるコメントが付いています。本文での <strong>ハードリミット</strong> の呼称はこれに準じます。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="kt">int</span> <span class="nf">__sk_mem_raise_allocated</span><span class="p">(</span><span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">sk</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="kt">int</span> <span class="n">amt</span><span class="p">,</span> <span class="kt">int</span> <span class="n">kind</span><span class="p">)</span> 
+<span class="p">{</span>
+<span class="p">...</span>
+
+	<span class="cm">/* Over hard limit. */</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">allocated</span> <span class="o">&gt;</span> <span class="n">sk_prot_mem_limits</span><span class="p">(</span><span class="n">sk</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+		<span class="k">goto</span> <span class="n">suppress_allocation</span><span class="p">;</span>
+
+<span class="p">...</span>
+</code></pre></div>
+<p><strong>⚠️ソフトリミットの呼称について</strong></p>
+
+<p>net.ipv4.tcp_mem[1] に対して <strong>ソフトリミット</strong> として名称を記載するソースやコメントはありません。ハードリミットと対比して説明を容易にするために筆者  @hiboma が採用した呼称です。ご了承ください。</p>
+
+<h2 id="4-linux-カーネルの-tcp-メモリ管理を俯瞰する">4. Linux カーネルの TCP メモリ管理を俯瞰する</h2>
+
+<p>TCP oom を理解するにあたって、Linux カーネルのメモリ管理に踏み込んでいきましょう。次の図は、Linux カーネルの TCP メモリ管理をモデル化したものです。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/2-memory-pool.png" alt="TCPメモリ管理のモデル" /></p>
+
+<p>Linux カーネルは、TCP ソケットでデータを送信する・データを受信する際にデータをバッファリングします。バッファはカーネル内に確保します。バッファ用のメモリは、メモリ管理サブシステムから割り当てます。</p>
+
+<p>また、カーネルは、システム内の全ての TCP ソケットを対象としてどれだけのバッファのメモリ (ページ) を割り当てたかを、<strong>TCP メモリプール</strong> を通して追跡します。
+TCP ソケットは TCP メモリプールからクォータを確保し、クォータの範囲内で送信バッファ・受信バッファのサイズを拡大・縮小して扱います。</p>
+
+<p><strong>⚠️ TCP メモリプール・ソケットメモリープルという呼称について</strong></p>
+
+<p>TCP メモリプール、ソケットメモリープルという呼称は <a href="https://www.amazon.co.jp/dp/0470147733">TCP/IP Architecture, Design, and Implementation in Linux</a> に準じています。</p>
+
+<h2 id="4-1-tcp-メモリプールとソフトリミットハードリミットの関係">4-1 TCP メモリプールとソフトリミット・ハードリミットの関係</h2>
+
+<p>TCP メモリープルで追跡されるソケットのメモリ使用量である <strong>TCP メモリクォータ</strong> (カーネル内部では <strong>tcp_memory_allocated</strong> というグローバル変数) は、TCP レイヤーの送信処理・受信処理の各所で <strong>ソフトリミット</strong> 、<strong>ハードリミット</strong> と比較され、いずれかのリミットを超えていた場合にメモリ割り当てに制限がかかります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>数値</th>
+      <th>リミットの種類</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>max</td>
+      <td>sysctl net.ipv4.tcp_mem[2]</td>
+      <td>ハードリミット</td>
+    </tr>
+    <tr>
+      <td>pressure</td>
+      <td>sysctl net.ipv4.tcp_mem[1]</td>
+      <td>ソフトリミット</td>
+    </tr>
+    <tr>
+      <td>min / low</td>
+      <td>sysctl net.ipv4.tcp_mem[0]</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="min-low-tcp_memory_allocated--netipv4tcp_mem0">min (low): tcp_memory_allocated &lt; net.ipv4.tcp_mem[0]</h3>
+
+<p>min (low) は、 TCP メモリクォータ (tcp_memory_allocated) が net.ipv4.tcp_mem[0] を下回っている状態です。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/4-low.png" alt="low" /></p>
+
+<p>min (low) は、memory pressure モードを脱けるかどうかの閾値として用いられます。</p>
+
+<h3 id="pressure-tcpmemoryallocated--netipv4tcp_mem1">pressure: tcpmemoryallocated &lt; net.ipv4.tcp_mem[1]</h3>
+
+<p>pressure は  TCP メモリクォータ (tcp_memory_allocated) が net.ipv4.tcp_mem[1] を超えた状態です。ソフトリミットのモデル図になります。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/2-2-pressure.png" alt="ソフトリミットのモデル図" /></p>
+
+<p>pressure の説明に<a href="http://man7.org/linux/man-pages/man7/tcp.7.html">man 7 tcp</a> を引用します.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>          pressure  When the amount of memory allocated by TCP exceeds
+                   this number of pages, TCP moderates its memory
+                   consumption.  This memory pressure state is exited
+                   once the number of pages allocated falls below the
+                   low mark.
+</code></pre></div></blockquote>
+
+<p>加えて <a href="https://github.com/torvalds/linux/blob/master/Documentation/networking/ip-sysctl.txt">Documentation/networking/ip-sysctl.txt</a> を引用します.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>pressure: when amount of memory allocated by TCP exceeds this number
+of pages, TCP moderates its memory consumption and enters memory
+pressure mode, which is exited when memory consumption falls
+under "min".
+</code></pre></div></blockquote>
+
+<p>tcp_memory_allocated が pressure = net.ipv4.tcp_mem[0] を超えると、Linux カーネルは <strong>memory pressure モード</strong> に入り 送信・受信に制限がかかり、TCP のメモリ割り当てを控えようとします。詳細は 4-2 で後述します。</p>
+
+<h3 id="max-tcpmemoryallocated--netipv4tcp_mem0">max: tcpmemoryallocated &lt; net.ipv4.tcp_mem[0]</h3>
+
+<p><code>max: tcp_memory_allocated &gt; net.ipv4.tcp_mem[2]</code> は、 TCP メモリクォータ (tcp_memory_allocated) が net.ipv4.tcp_mem[2] を値を超えた状態です。ハードリミットのモデル図になります。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/2-1-max.png" alt="ハードリミットのモデル図" /></p>
+
+<p>high の説明に<a href="http://man7.org/linux/man-pages/man7/tcp.7.html">man 7 tcp</a> を引用します.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>          high      The maximum number of pages, globally, that TCP will
+                   allocate.  This value overrides any other limits
+                   imposed by the kernel.
+</code></pre></div>
+</blockquote>
+
+<p>加えて <a href="https://github.com/torvalds/linux/blob/master/Documentation/networking/ip-sysctl.txt">Documentation/networking/ip-sysctl.txt</a> を引用します。</p>
+
+<blockquote>
+  <p>max: number of pages allowed for queueing by all TCP sockets.</p>
+</blockquote>
+
+<p><code>max: tcp_memory_allocated &gt; net.ipv4.tcp_mem[2]</code> は、 TCP で確保できる最大のメモリ(ページ数) の閾値を超えた状態であり、TCP の送信受信で制限が入る、あるいは、エラーが起こります。TCP oom が発生するのも、この状態です。</p>
+
+<p>詳細は 4-2 で後述します。</p>
+
+<h2 id="4-2-ソフトリミットハードリミットを超えると何が制限されるのか">4-2 ソフトリミット・ハードリミットを超えると何が制限されるのか</h2>
+
+<h3 id="モデル図">モデル図</h3>
+
+<p>4-1 の ３つのリミットと、TCP oom、memory presssure モードの関係をまとめたモデル図です。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/5-memory-pressure.png" alt="" /></p>
+
+<p>TCP メモリクォータがソフトリミット を超え、 <strong>memory pressure モード</strong> に入ると以下の処理を行います。</p>
+
+<ul>
+  <li>TCP ソケットの送信・受信バッファのサイズを制限する <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_should_expand_sndbuf">1</a>  <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#sk_stream_alloc_skb---sk_mem_reclaim_partial">2</a> <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_clamp_window">3</a></li>
+  <li>受信ウィンドウサイズを縮小する (ウィンドウをクローズする)</li>
+  <li>受信キュー入ったセグメントから重複したシーケンス番号をもつセグメントをマージして、空きメモリの確保を試みる ( collapse 処理 ) <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_prune_queue">1</a></li>
+  <li>シーケンス番号順に受信できなかったセグメンを保持する Ouf of Order キューに入った SACK 済みセグメントを破棄して、空きメモリを確保する ( prune 処理 ) <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_prune_queue">1</a></li>
+  <li>受信スロースタートの閾値を制限する <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#__tcp_select_window">1</a> <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_grow_window">2</a></li>
+</ul>
+
+<p>さらに、TCP メモリクォータが <strong>ハードリミット</strong> を超えると、以下の処理も行います。</p>
+
+<ul>
+  <li>セグメントの受信処理で、新規に受信したセグメントを破棄する (パケットドロップ) <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_data_queue">1</a></li>
+  <li>memory pressure モードを継続し、送信バッファ・受信バッファのメモリ割り当てを控える</li>
+  <li>セグメントの送信処理で、メモリを確保できるまでプロセスをブロックして待機させる <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_sendmsg_locked----write2-sendmsg2-等のシステムコール呼び出し">1</a>  <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#do_tcp_sendpages-の呼び出し">2</a></li>
+  <li>connect(2) を ENOBUFS で失敗させる <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#sk_stream_alloc_skb-と-connect2-実行のパス">1</a></li>
+  <li>セグメントの受信処理で、 Ouf of Order キューのセグメントを破棄して、空きを確保しようとする ( SACK renege ) <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp_prune_ofo_queue">1</a></li>
+  <li>TCP の タイマー処理をやり直す <a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#sk_stream_alloc_skb-と--タイマー処理のパス">1</a></li>
+  <li>送信バッファに一定量のデータを持ったままソケットを close すると <strong>TCP oom</strong> を起こす ( RST を送信し TCP oom の dmesg ログを出す )<a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md#tcp-out-of-memory----consider-tuning-tcp_mem-を出す条件は">1</a></li>
+</ul>
+
+<p>カーネルは、ソフトリミットを超えただけでは送信・受信処理をエラーにはせず制限や回収処理を行います。 <strong>ハードリミット</strong> を超えると、送信・受信でのエラー発生や TCP コネクション断を起こしてでもメモリを制限・回収します。</p>
+
+<p><strong>TCP oom は、TCP メモリクォータがハードリミットを超えた際に起こりうるエラーの 一事象 です</strong>。 TCP oom が出た時点では、送信・受信処理において、上記の問題も併発していることに注意しましょう。</p>
+
+<p>いずれの制限・メモリ回収処理も、一時的に TCP の送信・受信のパフォーマンスを犠牲にして、メモリが不足した状態から回復を試みようとするカーネルの挙動とみなせます。</p>
+
+<h3 id="ソース">📙ソース</h3>
+
+<p>ここまでに記した内容は、実際に書籍やソースを読み調べたものですが、本ブログにソースの説明まで掲載すると長大になるので、一部だけ触れます。本エントリで省いたソースの詳細は、以下のリポジトリに掲載しています。補助資料としてご覧ください。(書き切ってない箇所が多々あります。すいません。)</p>
+
+<p><a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md">GitHub hiboma/hiboma TCP oom.md</a></p>
+
+<p>ソフトリミット・ハードリミットの比較は  <a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/core/sock.c#L2342">__sk_mem_raise_allocated</a> で処理されます。__sk_mem_raise_allocated を起点にして、周辺の関数を辿ると、TCP oom ならびに memory pressure モードがどんな影響を及ぼすかを調べることできます。ポイントとなる関数と呼び出しの図を載せておきます。</p>
+
+<h4 id="tcp_under_memory_pressure"><a href="https://elixir.bootlin.com/linux/v5.0.21/source/include/net/tcp.h#L256">tcp_under_memory_pressure</a></h4>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/tcp_under_memory_pressure.png" alt="tcp_under_memory_pressure" /></p>
+
+<p>送信処理で memory pressure モードが影響する箇所です。</p>
+
+<hr />
+
+<h4 id="sk_wmem_schedule--sk_stream_alloc_skb"><a href="https://elixir.bootlin.com/linux/v5.0.21/source/include/net/sock.h#L1405">sk_wmem_schedule</a>,  <a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/ipv4/tcp.c#L863">sk_stream_alloc_skb</a></h4>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/sk_wmem_schedule.png" alt="sk_wmem_schedule" /></p>
+
+<p>送信処理に関係する箇所です。</p>
+
+<hr />
+
+<h3 id="sk_rmem_schedule"><a href="https://elixir.bootlin.com/linux/v5.0.21/source/include/net/sock.h#L1414">sk_rmem_schedule</a></h3>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/sk_rmem_schedule.png" alt="sk_rmem_schedule" /></p>
+
+<p>受信処理に関係する箇所です。</p>
+
+<hr />
+
+<h3 id="tcp_check_oom"><a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/ipv4/tcp.c#L2311">tcp_check_oom</a></h3>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/tcp_check_oom.png" alt="tcp_check_oom.png" /></p>
+
+<p>TCP oom に関係する関数です。</p>
+
+<h2 id="5-tcp-oom-と-memory-pressure-モードに関連する-proc-ファイル">5. TCP oom と memory pressure モードに関連する /proc ファイル</h2>
+
+<p>TCP oom や memroy pressure が発生した際のトラブルシューティングや、監視やメトリクス採取をする際に参照すべき <code>/proc</code> ファイルを説明します。</p>
+
+<h3 id="procnetsockstat-の-tcp-mem">/proc/net/sockstat の TCP mem</h3>
+
+<p><code>/proc/net/sockstat</code> の <code>mem</code> 欄は、「ネットワークプロトコルごとで割り当てたメモリ（単位はページ。x86_64 アーキテクチャでは 1ページ は 4096byte) 」を示しています。</p>
+
+<div class="highlight"><pre class="highlight shell"><code>vagrant@proxy000:~<span class="nv">$ </span><span class="nb">cat</span> /proc/net/sockstat
+sockets: used 143
+TCP: inuse 7 orphan 0 tw 0 alloc 9 mem 1 👈
+UDP: inuse 4 mem 1
+UDPLITE: inuse 0
+RAW: inuse 0
+FRAG: inuse 0 memory 0
+</code></pre></div>
+<p>従って <code>/proc/net/sotkstat</code> の <code>TCP</code> の <code>mem</code> は TCP ( IPv4 のみ. IPv6 は含まない) で使っているページ数を示しています。</p>
+
+<p><code>TCP mem</code> の数値は、例えば、実験環境で Apache Bench - <code>ab</code> や <code>curl</code> 等のコマンドで HTTP リクエストを出すと増減するのを観測できます。( TCP を扱うコマンドなら何でも構いません)</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/tcpmem.gif" alt="実験のGIFアニメーション" /></p>
+
+<p>カーネルのソースで <code>/proc/net/sockstat</code> の <code>mem</code> は、<a href="https://elixir.bootlin.com/linux/v5.0.21/source/include/net/sock.h#L1128"><code>struct proto</code> の <code>memory_allocated</code></a> メンバを参照しているのを確認できます。<code>struct proto</code> はトランスポートレイヤのプロトコルを表現する構造体です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>/* Networking protocol blocks we attach to sockets.
+ * socket layer -&gt; transport layer interface
+ */
+struct proto {
+
+... (略) 
+
+	atomic_long_t		*memory_allocated;	/* Current allocated memory. */ 👈
+</code></pre></div>
+<h3 id="procnetprotocols-の-memory">/proc/net/protocols の memory</h3>
+
+<p><code>/proc/net/protocols</code> の <code>memory</code> 欄も ネットワークプロトコルごとで割り当てたメモリ(ページ) を示しています。</p>
+
+<div class="highlight"><pre class="highlight shell"><code>vagrant@proxy000:~<span class="nv">$ </span><span class="nb">cat</span> /proc/net/protocols
+protocol  size sockets  memory press maxhdr  slab module     cl co di ac io <span class="k">in </span>de sh ss gs se re sp bi br ha uh gp em
+PACKET    1408      2      <span class="nt">-1</span>   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+PINGv6    1136      0      <span class="nt">-1</span>   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  n  y  n  n  y  y  y  y  n  y  y  y  y  y  n
+RAWv6     1136      2      <span class="nt">-1</span>   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  y  y  y  y  n  n
+UDPLITEv6 1280      0       1   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  n  n  y  y  y  n
+UDPv6     1280      2       1   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  n  n  y  y  y  n
+TCPv6     2304      2       1   no     304   <span class="nb">yes  </span>kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
+XDP        960      0      <span class="nt">-1</span>   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+UNIX      1024    105      <span class="nt">-1</span>   NI       0   <span class="nb">yes  </span>kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+UDP-Lite  1088      0       1   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
+PING       928      0      <span class="nt">-1</span>   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  n  y  n  n  y  y  y  y  n  y  y  y  y  y  n
+RAW        936      0      <span class="nt">-1</span>   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  y  y  y  y  n  n
+UDP       1088      4       1   NI       0   <span class="nb">yes  </span>kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
+TCP       2144      6       1👈 no     304   <span class="nb">yes  </span>kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
+NETLINK   1064     15      <span class="nt">-1</span>   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+</code></pre></div>
+<p>実は  <code>/proc/net/sockstat</code> の <code>mem</code> と　 <code>/proc/net/protocols</code> の <code>memory</code> は同一の値を指しています。</p>
+
+<p><code>/proc/net/protocols</code> のソースを見てみると <a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/core/sock.c#L3347"><code>struct proto</code> の <code>memory_allocated</code> を参照しており</a>、 <code>/proc/net/sockstat</code> の <code>mem</code> と同一であることを確認できます。</p>
+
+<p>いずれ数値もポインタでグローバル変数 <a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/ipv4/tcp.c#L292">tcp_memory_allocated</a> を参照しています。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="n">atomic_long_t</span> <span class="n">tcp_memory_allocated</span><span class="p">;</span>	<span class="cm">/* Current allocated memory. */</span> <span class="err">👈</span>
+<span class="n">EXPORT_SYMBOL</span><span class="p">(</span><span class="n">tcp_memory_allocated</span><span class="p">);</span> 
+</code></pre></div>
+<h3 id="procnetprotocols-の-press">/proc/net/protocols の press</h3>
+
+<p><code>/proc/net/protocols</code> の <code>press</code> 欄は、該当のプロトコルが memory pressure モードかどうかを示します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ cat /proc/net/protocols
+protocol  size sockets  memory press maxhdr  slab module     cl co di ac io in de sh ss gs se re sp bi br ha uh gp em
+PACKET    1408      2      -1   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+PINGv6    1136      0      -1   NI       0   yes  kernel      y  y  y  n  n  y  n  n  y  y  y  y  n  y  y  y  y  y  n
+RAWv6     1136      2      -1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  y  y  y  y  n  n
+UDPLITEv6 1280      0       1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  n  n  y  y  y  n
+UDPv6     1280      2       1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  n  n  y  y  y  n
+TCPv6     2304      2      36   yes    304   yes  kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
+XDP        960      0      -1   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+UNIX      1024    111      -1   NI       0   yes  kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+UDP-Lite  1088      0       1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
+PING       928      0      -1   NI       0   yes  kernel      y  y  y  n  n  y  n  n  y  y  y  y  n  y  y  y  y  y  n
+RAW        936      0      -1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  n  y  y  y  y  n  n
+UDP       1088      4       1   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
+TCP       2144     28      36   yes👈  304   yes  kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
+NETLINK   1064     15      -1   NI       0   no   kernel      n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n  n
+</code></pre></div>
+<p>上記では TCP の  <code>press</code> が <code>yes</code> になっています。これは TCP が memory pressure モードであることを示しています。</p>
+
+<h3 id="procnetnetstat-tcpmemorypressures">/proc/net/netstat: TCPMemoryPressures</h3>
+
+<p><a href="https://elixir.bootlin.com/linux/v4.15/source/net/ipv4/tcp.c#L326">memory pressure モードに入る際</a> に <code>/proc/net/netstat</code> の <strong>TCPMemoryPressures</strong> が +1 加算されます</p>
+
+<p>以下の <code>netstat -s</code> は TCPMemoryPressures を示しています。(<a href="https://github.com/ecki/net-tools/blob/115f1af2494ded1fcd21c8419d5e289bc4df380f/statistics.c#L252">ソース</a>)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ netstat -s | grep 'ran low'
+    TCP ran low on memory 80 times
+</code></pre></div>
+<p>TCPMemoryPressures はかなり古いバージョンで実装されたようです。正確なコミットまでは調べていませんが、 2.6.18 で存在を確認しています。</p>
+
+<h3 id="procnetnetstat-tcpmemorypressureschrono">/proc/net/netstat: TCPMemoryPressuresChrono</h3>
+
+<p><a href="https://elixir.bootlin.com/linux/v4.15/source/net/ipv4/tcp.c#L341">memory pressure モードを抜ける際</a> に <code>/proc/net/sockstat</code> の <strong>TCPMemoryPressuresChrono</strong> に <strong>「memory pressure モードであった時間 (単位は ms) 」</strong> が加算されます.</p>
+
+<p>先の TCPMemoryPressures と合わせて、TCPMemoryPressuresChrono がどのようなタイミングで計上されるか、どのような数値を計上しているかについて模式図を作りました。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/chrono.png" alt="" /></p>
+
+<p>TCPMemoryPressuresChrono は <a href="https://github.com/torvalds/linux/commit/0604475119de5f80dc051a5db055c6a2a75bd542">v4.13-rc1</a> で登場します。</p>
+
+<h3 id="procnetnetstat-ofopruned">/proc/net/netstat: OfoPruned</h3>
+
+<p>Ofo は Ouf of Order の略称で、TCP の Ouf of Order キューを指します。Ouf of Order キュー はシーケンス番号順に受信できなかったセグメントを保持するキューです。</p>
+
+<p>memory pressure モードで Ouf of Order キューのセグメントを破棄すると <strong>OfOPruned</strong> が +1 加算されます。</p>
+
+<p>以下の <code>netstat -s</code> は OfOPruned を示しています. (<a href="https://github.com/ecki/net-tools/blob/115f1af2494ded1fcd21c8419d5e289bc4df380f/statistics.c#L215">ソース</a>)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ netstat -s | grep 'dropped from out-of-order'
+    58 packets dropped from out-of-order queue because of socket buffer overrun
+</code></pre></div>
+<h3 id="procnetnetstat-tcpabortonmemory">/proc/net/netstat: TCPAbortOnMemory</h3>
+
+<p>TCP oom が発生すると <code>/proc/net/netstat</code> の <strong>TCPAbortOnMemory</strong> が +1 加算されます。</p>
+
+<p>以下の <code>netstat -s</code> は <strong>TCPAbortOnMemory</strong> を示しています。 (<a href="https://github.com/ecki/net-tools/blob/115f1af2494ded1fcd21c8419d5e289bc4df380f/statistics.c#L230">ソース</a>)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ netstat -s | grep pressure
+    116 connections aborted due to memory pressure
+</code></pre></div>
+<h3 id="procnetnetstat-prunecalled-rcvpruned">/proc/net/netstat: PruneCalled, RcvPruned</h3>
+
+<p>ハードリミットを超えていて、 受信キューの collapse 処理と Ouf Of Order キューのセグメントを破棄(DROP) を行ってもなお、空きメモリが確保できない場合は <strong>TCPRcvPrune</strong> が +1 加算されます。</p>
+
+<p>以下の <code>netstat -s</code> は <strong>PruneCalled</strong> を示しています. (<a href="https://github.com/ecki/net-tools/blob/115f1af2494ded1fcd21c8419d5e289bc4df380f/statistics.c#L220">ソース</a>)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ netstat -s | grep pruned
+    515 packets pruned from receive queue because of socket buffer overrun
+</code></pre></div>
+<p>coallapse は、受信キューや Ouf of Order キューに入ったセグメントをマージして空きメモリを確保する処理です。</p>
+
+<h3 id="procnetnetstat-tcprcvqdrop">/proc/net/netstat: TCPRcvQDrop</h3>
+
+<p>ハードリミットを超えていて、受信したセグメント(パケット) をドロップした際に <strong>TCPRcvDrop</strong> が +1 加算されます。</p>
+
+<p>以下の <code>netstat -s</code> は <strong>TCPRcvQDrop</strong> を示しています. (<a href="https://github.com/ecki/net-tools/blob/115f1af2494ded1fcd21c8419d5e289bc4df380f/statistics.c#L220">ソース</a>)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@proxy000:~$ netstat -s | grep TCPRcvQDrop
+    TCPRcvQDrop: 328
+</code></pre></div>
+<h3 id="procnetnetstat-tcpabortfailed">/proc/net/netstat: TCPAbortFailed</h3>
+
+<p>TCP oom が発生すると 該当のソケットで RST を送りコネクションを切断します。この際に <a href="https://elixir.bootlin.com/linux/v5.0.21/source/net/ipv4/tcp_output.c#L3140">ソケットバッファ(skb)の割り当てに失敗する</a> と、<code>/proc/net/netstat</code> の <strong>TCPAbortFailed</strong> が +1 加算されます.</p>
+
+<p>ここでのソケットバッファの割り当て失敗は、TCP クォータの制限による失敗ではなく、Slab アロケータによる割り当て失敗です。TCPAbortFailed は 、Slab アロケータが逼迫した状況を指すメトリクスになるでしょう。</p>
+
+<h2 id="6-その他">6. その他</h2>
+
+<p>各章の補遺を記します。</p>
+
+<h3 id="️-tcp-oom--out-of-memoy-killler">⚠️ TCP oom ≠ Out of Memoy Killler</h3>
+
+<p><code>TCP: out of memory -- consider tuning tcp_mem</code> は、 カーネルが空きメモリが逼迫した際にプロセスを SIGKILL してメモリを回収する仕組みの <code>OOM Killer = Out of Memory Killer</code> とは関係ありません。</p>
+
+<h3 id="️-tcp-の-memory-pressure-モード--メモリ管理サブシステムの--memory-pressure">⚠️ TCP の memory pressure モード ≠ メモリ管理サブシステムの  memory pressure</h3>
+
+<p>本エントリで表記する <code>memory pressure モード</code> は <a href="https://github.com/torvalds/linux/blob/master/Documentation/networking/ip-sysctl.txt">kernel のドキュメント networking/ip-sysctl.tx</a> の <code>memory pressure mode</code> に準じます。メモリ管理サブシステムや cgroup の説明で用いられてる <a href="https://linux-mm.org/Memory_pressure">memory pressure</a> とは関係ありません。</p>
+
+<h4 id="-netipv4tcp_mem-のデフォルト値はブート時に自動で計算されます">📝 net.ipv4.tcp_mem のデフォルト値はブート時に自動で計算されます</h4>
+
+<p>net.ipv4.tcp_mem のデフォルト値は搭載している RAM に準じてブート時に自動で計算・設定されます. 計算のソースは以下の通りです</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>static void __init tcp_init_mem(void)
+{
+	unsigned long limit = nr_free_buffer_pages() / 16;
+
+	limit = max(limit, 128UL);
+	sysctl_tcp_mem[0] = limit / 4 * 3;		/* 4.68 % */
+	sysctl_tcp_mem[1] = limit;			/* 6.25 % */
+	sysctl_tcp_mem[2] = sysctl_tcp_mem[0] * 2;	/* 9.37 % */
+}
+</code></pre></div>
+<p>本エントリの冒頭に示した障害では、haproxy を動かしていた VM の RAM が 2GB と少なかったため、ブート時に自動で計算された net.ipv4.tcp_mem のデフォルト値が低くなり、memory pressure ならびに TCP oom  を起こし、パフォーマンスダウンを招いたと分析しています。</p>
+
+<h4 id="-sysctl-netipv4tcp_mem-はオンラインで変更できる">📝 sysctl net.ipv4.tcp_mem はオンラインで変更できる</h4>
+
+<p>net.ipv4.tcp_mem の閾値は、カーネル全体でグローバル ( 全 namespace の 全 TCP ソケット) に作用します。sysctl コマンドで net.ipv4.tcp_mem の値を変更すると、直ちにシステムの全てのソケットに対して「閾値」の変更が反映されます。</p>
+
+<p>変更に際して、TCP ソケットのファイルデスクリプタを掴んでいるプロセス再起動や、TCP ソケットの再作成/再接続といった処理をせずとも、直ちに反映されます。また、sysctl を設定したタイミングでカーネル内部でメモリを割り当てする・予約する (あるいは解放する) という設定ではありません。</p>
+
+<p>本エントリの冒頭に示した障害でも、sysctl の変更によって直ちに復旧を果たすことができました。</p>
+
+<h3 id="️-netipv4tcp_rmem-と-netipv4tcp_wmem-は">⚠️ net.ipv4.tcp_rmem と net.ipv4.tcp_wmem は?</h3>
+
+<p>よく似た名前の sysctl 設定に <strong>net.ipv4.tcp_rmem</strong> と <strong>net.ipv4.tcp_wmem</strong> がありますが、別の設定です.</p>
+
+<ul>
+  <li>TCP の <strong><em>1 ソケット</em></strong> ごとに適用される <strong><em>送信・受信バッファサイズの最大サイズ</em></strong> を設定する sysctl です</li>
+  <li>単位は <strong><em>バイト</em></strong> です ( ややこしい! )</li>
+  <li>net.ipv4.tcp_mem はシステムグローバルな設定ですが、net.ipv4.tcp_rmem , net.ipv4.tcp_wmem は <a href="https://patchwork.ozlabs.org/cover/835151/">net namespace ごとでも設定可能</a> です。</li>
+</ul>
+
+<p>これらの設定を一緒くたに扱ってしまっている説明を見かけますが、異なるものです。ご注意ください。</p>
+
+<h3 id="-netipv4tcp_mem-と-cgroup-の話">📝 net.ipv4.tcp_mem と cgroup の話</h3>
+
+<p>過去、cgroup ごとに tcp_mem を設定できたようですが 実装の不備があったようで <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f594d63199688ad568fb69f6a790b11d6d6d1ba5">このコミット</a> で 削除されています。詳しくは <a href="https://tenforward.hatenablog.com/entry/20120417/1334665370">TenForward - Linux 3.3 の新機能 Per-cgroup TCP buffer limits (2)
+</a> をご参照ください。</p>
+
+<h3 id="-ソフトリミットとハードリミットのデザイン">📝 ソフトリミットとハードリミットのデザイン</h3>
+
+<p>「ハードリミット」という単語を出したところで、 Linux (UNIX)  のソフトリミット と ハードリミットのデザインについて触れたいと思います。</p>
+
+<p>ソフトリミット・ハードリミットの、一例として、Linux では、setrlimit(2) システムコールで RLIMIT_CPU を指定して、プロセスの CPU 時間に制限を課すことができます。 ( シェルの <code>ulimit</code>, PAM の <code>pam_limit</code> の名前を上げた方が思い出せる方が多そうです)</p>
+
+<p>setrlimit(2) + RLIMIT_CPU で制限を課したプロセスの CPU 時間が、<strong>ソフトリミット</strong> に達すると、カーネルは プロセスに SIGXCPU をシグナル送信します。ただし、SIGXCPU はシグナルハンドラで無視できます。さらに、CPU 時間が <strong>ハードリミット</strong> に達すると、カーネルはプロセスに SIGKILL をシグナル送信します。SIGKILL はシグナルハンドラをセットしても無視できず、プロセスは必ず終了します。</p>
+
+<p>ディスククォータにもソフトリミットとハードリミットが存在します。</p>
+
+<p>ディスククォータを用いると、ユーザごとにディスク使用量と inode 数を制限できます。いずれかの使用量が <strong>ソフトリミット</strong> を超えると、ユーザに警告が送られますが、新規のファイル作成や、既存のファイルサイズの拡大は依然として可能です。さらに、 <strong>ハードリミット</strong> を超えると、新たにディスクに書き込みができなくなります。</p>
+
+<p>これらに倣って、TCP メモリクォータのハードリミットのデザインは、ソフトリミットに対してより強制的に、あるいは、エラーを誘発してでも制限をするものと捉えるとよいかと思います。</p>
+
+<h3 id="-kswapd-の閾値モデルとの類似">📝 kswapd の閾値モデルとの類似</h3>
+
+<p>kswapd の閾値のモデルは TCP のソフトリミット・ハードリミットと似たモデルであるように思います。kswapd は、メモリ使用量を WaterMark と比較して動作します。</p>
+
+<p><img src="/blog/2020/06/26/kernel-dive-tcp-mem/2-1-kswapd.png" alt="kswapd の閾値モデル" /></p>
+
+<p>図は <a href="http://www.brendangregg.com/sysperfbook.html">Systems Performance: Enterprise and the Cloud Figure - Brendan Gregg</a> の <code>7.8 kswapd wake-ups and modes</code> を模写・引用しました。</p>
+
+<h2 id="7まとめ">7.まとめ</h2>
+
+<p>障害を発端として <code>TCP: out of memory -- consider tuning tcp_mem</code> を調べたことから以下を記述しました。</p>
+
+<ul>
+  <li>TCP oom を実験環境で再現する</li>
+  <li>sysctl net.ipv4.tcp_mem の説明</li>
+  <li>Linux カーネルの TCP メモリ管理を俯瞰</li>
+  <li>TCP oom と memory pressure に関連する /proc ファイル</li>
+</ul>
+
+<p>正直な話、実践の場で TCP oom や memory pressure モード、net.ipv4.tcp_mem の詳細まで把握しておく必要は無いでしょうが、ここにある文章がトラブルシューティング等の場面で役立ってくれると幸いです。</p>
+
+<h2 id="リンクリファレンス">リンク・リファレンス</h2>
+
+<h3 id="書籍">書籍</h3>
+
+<ul>
+  <li><a href="https://www.amazon.co.jp/dp/429710623X/">TCP技術入門 ――進化を続ける基本プロトコル (WEB+DB PRESS plusシリーズ)   安永 遼真 </a></li>
+  <li><a href="https://www.amazon.co.jp/dp/487311313X">詳解 Linuxカーネル 第3版</a></li>
+  <li><a href="https://www.amazon.co.jp/dp/4894713209">詳解TCP/IP〈Vol.1〉プロトコル</a></li>
+  <li><a href="https://www.amazon.co.jp/dp/0470343435">Professional Linux Kernel Architecture</a></li>
+  <li><a href="https://www.amazon.co.jp/dp/0470147733">TCP/IP Architecture, Design, and Implementation in Linux</a></li>
+  <li><a href="https://www.amazon.co.jp/dp/4797338261">Linuxカーネル2.6解読室</a></li>
+</ul>
+
+<p>『TCP/IP Architecture, Design, and Implementation in Linux』は 2.4 系のソースで Linux の TCP/IP を説明した書籍ですが、ソースを追う際の資料として頻繁に参照しました。</p>
+
+<h3 id="技術ブログ">技術ブログ</h3>
+
+<ul>
+  <li><a href="https://meetup-jp.toast.com/1505">LinuxサーバーのTCPネットワークのパフォーマンスを決定するカーネルパラメータ – 1編 - TOAST Meetup 編集部</a></li>
+  <li><a href="https://gihyo.jp/admin/serial/01/tcp-cc/0001">gihyo.jp 基本から学ぶ　TCPと輻輳制御 ……押さえておきたい輻輳制御アルゴリズム - 中山悠</a></li>
+  <li><a href="https://blog.tsunanet.net/2011/03/out-of-socket-memory.html">The "Out of socket memory" error  - Tsuna's blog</a></li>
+  <li><a href="https://unix.stackexchange.com/questions/33855/kernel-socket-structure-and-tcp-diag">Kernel socket structure and TCP_DIAG - StackExchange</a></li>
+  <li><a href="https://qiita.com/timwata/items/e4a0b0324c8a103a8d8e">Linux TCP/IP parameter note - @timwata</a></li>
+  <li><a href="https://wiki.bit-hive.com/north/pg/UNIXソケットバッファサイズ">UNIXソケットバッファサイズ - Linuxの備忘録とか・・・(目次へ</a></li>
+  <li><a href="https://tenforward.hatenablog.com/entry/20120417/1334665370">TenForward - Linux 3.3 の新機能 Per-cgroup TCP buffer limits (2)</a></li>
+</ul>
+
+<h3 id="その他">その他</h3>
+
+<ul>
+  <li><a href="https://github.com/torvalds/linux/blob/master/Documentation/networking/ip-sysctl.txt">https://github.com/torvalds/linux/blob/master/Documentation/networking/ip-sysctl.txt</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man8/ss.8.html">http://man7.org/linux/man-pages/man8/ss.8.html</a></li>
+  <li><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man7/socket.7.html">https://linuxjm.osdn.jp/html/LDP_man-pages/man7/socket.7.html</a></li>
+  <li><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man7/tcp.7.html">https://linuxjm.osdn.jp/html/LDP_man-pages/man7/tcp.7.html</a></li>
+  <li><a href="https://tools.ietf.org/html/rfc2018">RFC2018 TCP Selective Acknowledgment Options</a></li>
+  <li><a href="http://vger.kernel.org/~davem/skb_sk.html">http://vger.kernel.org/~davem/skb_sk.html</a></li>
+  <li><a href="http://vger.kernel.org/~davem/tcp_output.html">http://vger.kernel.org/~davem/tcp_output.html</a></li>
+  <li><a href="https://github.com/iovisor/bpftrace/blob/master/docs/reference_guide.md#7-stats-stats">bpftrace Reference Guide - GitHub iovisor/bpftrace</a></li>
+  <li><a href="https://github.com/torvalds/linux/commit/efcdbf24fd5daa88060869e51ed49f68b7ac8708">net: Disambiguate kernel message - GitHub torvalds/linux</a></li>
+</ul>
+
+<h3 id="補助資料">補助資料</h3>
+
+<ul>
+  <li><a href="https://github.com/hiboma/hiboma/blob/master/tcp/tcp_oom.md">GitHub hiboma/hiboma TCP oom.md</a></li>
+</ul>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/06/26/kernel-dive-tcp-mem/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/6c6b60f0440e030040a9141cab781ed0?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E4%BC%8A%E8%97%A4%E6%B4%8B%E4%B9%9F/">伊藤洋也</a>
+          </p>
+          <p class="article__author-description">
+            低レイヤでのトラブルシューティングが得意です
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/hiboma" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://www.facebook.com/hiboma" class="article__author-link article__author-link--facebook" target="_blank">              <i class="fa fa-facebook fa-fw"></i>
+</a><a href="https://github.com/hiboma" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

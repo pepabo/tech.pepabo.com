@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>データベースのスキーマ変更と開発環境のデータ管理をいい感じにする - Pepabo Tech Portal</title>
+<meta content="こんにちは。EC事業部カラーミーショップグループの小野です。今回はカラーミーショップにおける「データベーススキーマの変更方法」と「開発環境データベースの管理方法」について紹介します。
+
+アプリケーションの構成
+
+カラーミーショップは複..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@tk_ono" name="twitter:creator" />
+<meta content="データベースのスキーマ変更と開発環境のデータ管理をいい感じにする - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="こんにちは。EC事業部カラーミーショップグループの小野です。今回はカラーミーショップにおける「データベーススキーマの変更方法」と「開発環境データベースの管理方法」について紹介します。
+
+アプリケーションの構成
+
+カラーミーショップは複..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"データベースのスキーマ変更と開発環境のデータ管理をいい感じにする","author":{"@type":"Person","name":"takatoshiono"},"datePublished":"2017-04-16T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-colormeshop-database-development-feel-so-good">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+      <a href="/tags/database/" class="tag-default">database</a>
+      <a href="/tags/php/" class="tag-default">PHP</a>
+      <a href="/tags/ruby/" class="tag-default">Ruby</a>
+  </div>
+  <time class="article__time" datetime="2017-04-17">
+    2017-04-17
+  </time>
+  <h1 class="article__title">
+    <a href="/2017/04/17/colormeshop-database-development-feel-so-good/">データベースのスキーマ変更と開発環境のデータ管理をいい感じにする</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+      <a href="/tags/database/" class="tag-default">database</a>
+      <a href="/tags/php/" class="tag-default">PHP</a>
+      <a href="/tags/ruby/" class="tag-default">Ruby</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2017/04/17/colormeshop-database-development-feel-so-good/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>こんにちは。EC事業部カラーミーショップグループの小野です。今回は<a href="https://shop-pro.jp">カラーミーショップ</a>における「データベーススキーマの変更方法」と「開発環境データベースの管理方法」について紹介します。</p>
+
+<h2 id="アプリケーションの構成">アプリケーションの構成</h2>
+
+<p>カラーミーショップは複数のアプリケーションが1つのデータベースを共有して動作しています。使用言語はPHPとRubyです。PHPで書かれたアプリケーションはサービス開始当初から動き続けており特にWebアプリケーションフレームワークは使用していません。Rubyで書かれたアプリケーションはそれに比べると最近作られたものでRuby on Railsを使用しています。</p>
+
+<p><img src="/blog/2017/04/17/colormeshop-database-development-feel-so-good/colormeshop-database-development-feel-so-good-01.png" alt="アプリケーションの構成" /></p>
+
+<h2 id="この記事の問題領域">この記事の問題領域</h2>
+
+<p>データベースのスキーマ情報はアプリケーションの進化とともに変わっていきます。アプリケーションのコードがgitなどのバージョン管理システムで管理されているように、データベースのスキーマ変更や最新のスキーマ情報もバージョン管理すべきでしょう。そのメリットは以下のとおりです。</p>
+
+<ul>
+  <li>githubのプルリクエストベースで開発ができる</li>
+  <li>最新のスキーマ状態が常にコミットされている安心感</li>
+</ul>
+
+<p>またアプリケーションを正常に動かすためにはデータベースのスキーマ情報の他に初期データ、マスターデータなどが必要になることも多いかと思います。これらのデータは主に開発環境を構築する際に頻繁に使用することになりますが、データがおかしくなっていると以下のような事が起きて無駄な時間が浪費されてしまいます。</p>
+
+<ul>
+  <li>開発環境を作ったけど必要なデータが足りなくてちゃんと動かない</li>
+  <li>マスターデータを更新したけど他の開発メンバーの開発環境には反映されていなかった</li>
+</ul>
+
+<p>Webアプリケーションフレームワークを利用している場合は、この辺の仕組みも機能として備わっているかもしれません。しかしながら何らかの事情でそのような仕組みを利用できていない場合もあるかと思います。この記事ではカラーミーショップではどのようにこれらの問題に対処しているのか紹介していきます。</p>
+
+<h2 id="データベーススキーマの変更方法">データベーススキーマの変更方法</h2>
+
+<p>さて、データベースのスキーマ管理機能を持たないWebアプリケーションフレームワークを使っていたり、そもそもフレームワークを使っていないアプリケーションを運用している皆さんは、データベースのスキーマをどのように管理しているでしょうか？</p>
+
+<ol>
+  <li>特に管理していない。スキーマの変更が必要な時に単にSQLを実行する</li>
+  <li>スキーマの変更内容をソースコードと同じようにバージョン管理している</li>
+  <li>最新のスキーマをダンプしたファイルを生成してバージョン管理している</li>
+  <li>スキーマを変更したり巻き戻すための統一的な仕組みがある</li>
+</ol>
+
+<h3 id="activerecordtasksdatabasetasks-を使う">ActiveRecord::Tasks::DatabaseTasks を使う</h3>
+
+<p>カラーミーショップではそれぞれのアプリケーションとは別にリポジトリを作成し、そこでRuby on Railsの<a href="https://railsguides.jp/active_record_migrations.html">Active Recordマイグレーション</a>の仕組みを使用しています。この仕組みはRailsを利用していなくても単独で使うことができます。 Active Recordマイグレーションの機能は <a href="http://api.rubyonrails.org/classes/ActiveRecord/Tasks/DatabaseTasks.html">ActiveRecord::Tasks::DatabaseTasks</a>クラスに実装されているので、これを使っていきます。</p>
+
+<p>サンプルコードがあったほうが理解しやすいと思うので、この記事では例として<code>my_db_tasks</code>というgemを作成して実装していきながら見ていきましょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle gem my_db_tasks
+$ cd my_db_tasks
+</code></pre></div>
+<p>まずは依存ライブラリにactiverecordとmysql2を追加してから、Rakefileにこんな感じのコードを書いておきます。</p>
+
+<p><code>my_db_tasks.gemspec</code>:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>spec.add_dependency "activerecord", "~&gt; 5.0"
+spec.add_dependency “mysql2"
+</code></pre></div>
+<p><code>Rakefile</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">env</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">[</span><span class="s1">'ENV'</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'development'</span>
+<span class="n">db_config</span> <span class="o">=</span> <span class="no">YAML</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="no">ERB</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">File</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s1">'config/database.yml'</span><span class="p">)).</span><span class="nf">result</span><span class="p">)</span>
+
+<span class="n">task</span> <span class="ss">:environment</span> <span class="k">do</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">logger</span> <span class="o">=</span> <span class="no">Logger</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">STDOUT</span><span class="p">)</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">establish_connection</span><span class="p">(</span><span class="n">db_config</span><span class="p">[</span><span class="n">env</span><span class="p">])</span>
+<span class="k">end</span>
+
+<span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
+  <span class="n">task</span> <span class="ss">:load_config</span> <span class="k">do</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">env</span> <span class="o">=</span> <span class="n">env</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">db_dir</span> <span class="o">=</span> <span class="s1">'db'</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">database_configuration</span> <span class="o">=</span> <span class="n">db_config</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">migrations_paths</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'db/migrate'</span><span class="p">]</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">root</span> <span class="o">=</span> <span class="no">Pathname</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">env</span> <span class="o">!=</span> <span class="s1">'development'</span>
+      <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">dump_schema_after_migration</span> <span class="o">=</span> <span class="kp">false</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="nb">load</span> <span class="s2">"active_record/railties/databases.rake"</span>
+</code></pre></div>
+<p><code>config/database.yml</code>:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">defaults</span><span class="pi">:</span> <span class="nl">&amp;defaults</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">mysql2</span>
+  <span class="na">port</span><span class="pi">:</span> <span class="m">3306</span>
+
+<span class="na">development</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*defaults</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">localhost</span>
+  <span class="na">username</span><span class="pi">:</span> <span class="s">root</span>
+  <span class="na">password</span><span class="pi">:</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">my_db_tasks_development</span>
+</code></pre></div>
+<p>これでデータベースタスクが使えるようになりました。<code>rake db:create</code>を叩くとデータベースが作成されます。かんたんですね。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:create
+Created database 'my_db_tasks_development'
+</code></pre></div>
+<h3 id="マイグレーションファイルの生成">マイグレーションファイルの生成</h3>
+
+<p>タスクの準備ができたので、次は実際にスキーマを変更するためにマイグレーションファイルを作成していきます。Ruby on Railsにはマイグレーションジェネレータが用意されているため<code>bin/rails generate migration</code>というコメンドで作成できますが、今回はActiveRecordしか利用していないので使えません。しかし毎回手でファイルを作るのも面倒です。カラーミーショップでは固定のテンプレートを出力するだけの簡単なジェネレータを<code>bin/generate-migration</code>という名前で用意して運用しています。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bin/generate-migration CreateUsers
+create  db/migrate/20170407170908_create_users.rb
+</code></pre></div>
+<p>これでマイグレーションファイルの雛形ができました。試しに以下のようなテーブルを作ることにします。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">execute</span> <span class="o">&lt;&lt;-</span><span class="no">SQL</span><span class="sh">
+      CREATE TABLE users(
+        id int not null auto_increment,
+        name varchar(255) not null,
+        primary key (id)
+      ) ENGINE=InnoDB
+</span><span class="no">    SQL</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">execute</span> <span class="o">&lt;&lt;-</span><span class="no">SQL</span><span class="sh">
+      DROP TABLE users
+</span><span class="no">    SQL</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><code>rake db:migrate</code>を実行して変更を適用しましょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:migrate
+</code></pre></div>
+<p>これで変更が適用されました。ステータスを見てみましょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:migrate:status
+D, [2017-04-07T17:16:56.533945 #76786] DEBUG -- :    (0.2ms)  SELECT `schema_migrations`.`version` FROM `schema_migrations`
+
+database: my_db_tasks_development
+
+Status   Migration ID    Migration Name
+--------------------------------------------------
+   up     20170407170908  Create users
+</code></pre></div>
+<p>できています。development環境では<code>ActiveRecord::Base.dump_schema_after_migration</code>をtrueにしているので、migrateを実行すると<code>db/structure.sql</code>にスキーマダンプファイルが生成されます。あとはこれらのファイルをバージョン管理システムにコミットすれば終わりです。</p>
+
+<p>ここまででスキーマの変更と最新のスキーマ情報をバージョン管理できるようになりました。</p>
+
+<h3 id="auto_incrementオプションの削除">AUTO_INCREMENTオプションの削除</h3>
+
+<p><code>ActiveRecord::Base.schema_format</code>を<code>:sql</code>にしていると、Rubyのコードではなくそれぞれのデータベース独自の方式でスキーマ情報がダンプされます。MySQLの場合はmysqldumpが使われるわけですが、一点困ったことがあります。テーブルにレコードを幾つか追加したあとに再度ダンプするとテーブルオプションにAUTO_INCREMENT値が含まれてしまうのです。</p>
+
+<p>いくつかレコードを追加して、、</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>mysql&gt; select * from users ;
++----+--------+
+| id | name   |
++----+--------+
+|  1 | ichiro |
+|  2 | jiro   |
++----+--------+
+2 rows in set (0.00 sec)
+</code></pre></div>
+<p>再度ダンプすると、</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:structure:dump
+D, [2017-04-07T17:28:14.434991 #77672] DEBUG -- :    (0.3ms)  SELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY version
+</code></pre></div>
+<p>こういう差分が発生します。</p>
+
+<div class="highlight"><pre class="highlight diff"><code><span class="gh">diff --git a/db/structure.sql b/db/structure.sql
+index d306da4..d721e6b 100644
+</span><span class="gd">--- a/db/structure.sql
+</span><span class="gi">+++ b/db/structure.sql
+</span><span class="p">@@ -55,7 +55,7 @@</span> CREATE TABLE `users` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`id`)
+<span class="gd">-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</span><span class="gi">+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+</span><span class="err">/*!40101</span> SET character_set_client = @saved_cs_client */;
+
+--
+<span class="p">@@ -71,7 +71,7 @@</span> CREATE TABLE `users` (
+<span class="err">/*!40101</span> SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+<span class="err">/*!40111</span> SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+--- Dump completed on 2017-04-07 17:15:25
+<span class="gi">+-- Dump completed on 2017-04-07 17:28:14
+</span><span class="p">INSERT INTO `schema_migrations` (version) VALUES
+</span><span class="err">('20170407170908’);</span>
+</code></pre></div>
+<p>これでは複数人で開発している場合に、それぞれのローカルにあるデータベースの値が反映されてしまうため、意図しない差分が発生してしまいます。この問題への対処としてAUTO_INCREMENT値を削除するためのタスクを追加することにします。</p>
+
+<p><code>Rakefile</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
+  <span class="n">namespace</span> <span class="ss">:structure</span> <span class="k">do</span>
+    <span class="n">desc</span> <span class="s2">"Remove AUTO_INCREMENT table option from the db/structure.sql file"</span>
+    <span class="n">task</span> <span class="ss">:remove_auto_increment_table_option</span> <span class="k">do</span>
+      <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">debug</span> <span class="s2">"Remove AUTO_INCREMENT table option from the db/structure.sql file"</span>
+      <span class="n">structure</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s1">'./db/structure.sql'</span><span class="p">).</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/\sAUTO_INCREMENT=\d+/</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s1">'./db/structure.sql'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+        <span class="n">f</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>そしてそのタスクを<code>db:structure:dump</code>の後に呼んでおきます。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="p">[</span><span class="s1">'db:structure:dump'</span><span class="p">].</span><span class="nf">enhance</span> <span class="k">do</span>
+  <span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="p">[</span><span class="s1">'db:structure:remove_auto_increment_table_option'</span><span class="p">].</span><span class="nf">invoke</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>これで余計な差分が入り込むのを防ぐことができました。</p>
+
+<h3 id="手順">手順</h3>
+
+<p>最終的に以下のような手順でスキーマの変更を行えるようになりました。</p>
+
+<ol>
+  <li>ジェネレータを使ってマイグレーションファイルの雛形を生成する</li>
+  <li>そこにスキーマの変更内容を書く</li>
+  <li>開発環境に適用する</li>
+  <li>生成したマイグレーションファイル、更新されたスキーマダンプファイルをコミットしてプルリクエストを作成する</li>
+  <li>レビューに通してLGTMをもらう</li>
+  <li>インテグレーション環境に適用する</li>
+  <li>本番環境に適用する</li>
+</ol>
+
+<h2 id="開発環境データベースの管理方法">開発環境データベースの管理方法</h2>
+
+<p>カラーミーショップではエンジニアとデザイナーがそれぞれ自分のローカル作業マシン上に開発環境を構築しています。データベースも同様です。ここではその管理方法について紹介します。</p>
+
+<h3 id="データの分類">データの分類</h3>
+
+<p>まず、スキーマ情報以外に管理すべきデータを以下のように定義しました。</p>
+
+<ul>
+  <li>初期データ
+    <ul>
+      <li>データベース構築時に一度だけ設定するデータ。構築後は人手による更新は行わない。</li>
+    </ul>
+  </li>
+  <li>マスターデータ
+    <ul>
+      <li>データベース構築時に設定するデータだが開発・運用していく中で更新されるデータ。</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="初期データの管理方法">初期データの管理方法</h3>
+
+<p>これもActiveRecordのマイグレーション機能にシードデータを管理するためのタスク<code>rake db:seed</code>が定義されているのでこれを使っていきます。方法は簡単で<code>load_seed</code>という名前のメソッドを持ったクラスを定義して<code>ActiveRecord::Taks::DatabaseTasks.seed_loader</code>にインスタンスを渡すだけです。</p>
+
+<p><code>lib/my_db_tasks/seed_loader.rb</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">MyDbTasks</span>
+  <span class="k">class</span> <span class="nc">SeedLoader</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">db_config</span><span class="p">)</span>
+      <span class="vi">@db_config</span> <span class="o">=</span> <span class="n">db_config</span>
+      <span class="vi">@logger</span> <span class="o">=</span> <span class="no">Logger</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">STDOUT</span><span class="p">)</span>
+      <span class="vi">@logger</span><span class="p">.</span><span class="nf">info</span> <span class="s2">"database: </span><span class="si">#{</span><span class="vi">@db_config</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">load_seed</span>
+      <span class="vi">@logger</span><span class="p">.</span><span class="nf">info</span> <span class="s1">'Load seed data start.'</span>
+      <span class="c1"># ここでシードデータをロードする</span>
+      <span class="vi">@logger</span><span class="p">.</span><span class="nf">info</span> <span class="s1">'Load seed data end.'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><code>Rakefile</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Tasks</span><span class="o">::</span><span class="no">DatabaseTasks</span><span class="p">.</span><span class="nf">seed_loader</span> <span class="o">=</span> <span class="no">MyDbTasks</span><span class="o">::</span><span class="no">SeedLoader</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">db_config</span><span class="p">[</span><span class="n">env</span><span class="p">])</span>
+</code></pre></div>
+<p>これでrake db:seedを実行できるようになりました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:seed
+I, [2017-04-07T17:44:45.782157 #78647]  INFO -- : database: {"adapter"=&gt;"mysql2", "host"=&gt;"localhost", "username"=&gt;"root", "password"=&gt;nil, "database"=&gt;"my_db_tasks_development", "port"=&gt;3306}
+D, [2017-04-07T17:44:45.848587 #78647] DEBUG -- :   ActiveRecord::SchemaMigration Load (0.3ms)  SELECT `schema_migrations`.* FROM `schema_migrations`
+I, [2017-04-07T17:44:45.858685 #78647]  INFO -- : Load seed data start.
+I, [2017-04-07T17:44:45.858727 #78647]  INFO -- : Load seed data end.
+</code></pre></div>
+<p>初期データとしてロードするデータは<code>db/seeds/sql</code>ディレクトリにテーブルごとのファイルを作ってそれを読み込んでいます。また、一部のデータは開発者間でidが重複すると不都合が生じるためテーブルのAUTO_INCREMENT値をランダムに設定するなどの工夫をしています。</p>
+
+<h3 id="マスターデータの管理方法">マスターデータの管理方法</h3>
+
+<p>マスターデータは運用中に更新が発生するデータなので、繰り返し作り直しが発生します。それを支える仕組みとして独自のタスク群を用意することにしました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake -T -A | grep master_data
+rake colorme:master_data:create                       # Creates colorme master data
+rake colorme:master_data:drop                         # Drops colorme master data
+rake colorme:master_data:dump                         # Create master data sql files in db/master_data/sql directory
+rake colorme:master_data:load_config                  #
+rake colorme:master_data:reset                        #
+</code></pre></div>
+<p>これらのタスクを使って以下のように運用しています。</p>
+
+<ul>
+  <li>マスターデータをロードしたい
+    <ul>
+      <li><code>rake colorme:master_data:create</code>を実行する</li>
+    </ul>
+  </li>
+  <li>マスターデータを更新したい
+    <ul>
+      <li>自分の開発環境でデータを変更する</li>
+      <li><code>rake colorme:master_data:dump</code>を実行する</li>
+      <li>プルリクエストを作ってレビューする</li>
+      <li>masterブランチにマージする</li>
+    </ul>
+  </li>
+  <li>マスターデータの更新を自分の環境に取り込みたい
+    <ul>
+      <li><code>rake colorme:master_data:reset</code>を実行する</li>
+    </ul>
+  </li>
+</ul>
+
+<p>この運用によってリポジトリにコミットされているデータを「正」として開発者間の同期が取れるようになっています。実装としてはマスターデータとするテーブル群をmysqldumpしてからテーブルごとにファイルを分割してコミットしておき、ロードするときはそれを読み込むだけというシンプルなものにしています。ファイルを分割するのはサイズを小さくして更新時のレビューをしやすくするためです。</p>
+
+<p>（ちなみに本番環境ではこの方法は使用していません。）</p>
+
+<h3 id="セットアップ方法">セットアップ方法</h3>
+
+<p>さて、これらの初期データ、マスターデータの管理方法が出来上がると開発環境のデータベースをセットアップするのはとても簡単になります。</p>
+
+<p>以下の2つのコマンドを実行するだけで完了します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ bundle exec rake db:setup
+$ bundle exec rake colorme:master_data:create
+</code></pre></div>
+<p>これはActiveRecordのタスクに則ることができた恩恵です。ちなみに<code>rake db:setup</code>は実際には以下のことを行うコマンドです。</p>
+
+<ul>
+  <li>データベースの作成(rake db:create)</li>
+  <li>スキーマの読み込み(rake db:structure:load)</li>
+  <li>初期データの作成(rake db:seed)</li>
+</ul>
+
+<h2 id="今後の展望">今後の展望</h2>
+
+<p>データベースのスキーマ変更について現状の課題は、実行に長い時間かかるような変更です。MySQLのバージョンは5.6なのでスキーマ変更中に書き込みをブロックせずに実行できるケースが多いのですが、マスター、スレーブ構成を取っているためスレーブ側でレプリケーション遅延が発生するという問題があります。今後はこのあたりの仕組みも整えていく必要があると考えています。また開発環境データベースの管理方法ももっといい方法があれば改善を続けていくつもりです。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>この記事ではカラーミーショップの「データベーススキーマの変更方法」と「開発環境データベースの管理方法」について紹介しました。</p>
+
+<p>複数のPHPアプリケーションとRubyアプリケーションが1つのデータベースを共有する構成において、データベース周りの管理を別リポジトリとして切り出してRuby on RailsのActive Recordに実装されているデータベースタスクだけ流用することで、いい感じにタスクのレールに乗った運用ができているのではないかと思います。同じような境遇の方々にとって少しでも参考になれば幸いです。</p>
+
+<p>最後にこの記事の中で作成したサンプルコードを以下に公開しています。実装の詳細が気になる方は参考にしてみてください。</p>
+
+<p>https://github.com/takatoshiono/my_db_tasks</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2017/04/17/colormeshop-database-development-feel-so-good/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/8c6d32bcc668f1510da84a5b7c7b4f76?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/takatoshiono/">takatoshiono</a>
+          </p>
+          <p class="article__author-description">
+            ネットショップ作成サービスのカラーミーショップでソフトウェアエンジニアをしています
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/tk_ono" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/takatoshiono" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

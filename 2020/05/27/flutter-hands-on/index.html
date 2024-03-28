@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>社内でFlutterのハンズオンを行ったので、資料を公開します - Pepabo Tech Portal</title>
+<meta content="先日、社内で Flutter のハンズオンを行ったので、その際に使用した資料を公開します。
+
+Flutter とは？
+
+
+
+
+  Made by Google
+Flutter is Google’s UI toolkit for building...
+" property="description" />
+<meta content="https://tech.pepabo.com/blog/2020/05/27/flutter-hands-on/eye_catch.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@osamtimizer" name="twitter:creator" />
+<meta content="社内でFlutterのハンズオンを行ったので、資料を公開します - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="先日、社内で Flutter のハンズオンを行ったので、その際に使用した資料を公開します。
+
+Flutter とは？
+
+
+
+
+  Made by Google
+Flutter is Google’s UI toolkit for building...
+" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"社内でFlutterのハンズオンを行ったので、資料を公開します","author":{"@type":"Person","name":"tokky"},"datePublished":"2020-05-26T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2020/05/27/flutter-hands-on/eye_catch.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-flutter-hands-on">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/flutter/" class="tag-default">flutter</a>
+  </div>
+  <time class="article__time" datetime="2020-05-27">
+    2020-05-27
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/05/27/flutter-hands-on/">社内でFlutterのハンズオンを行ったので、資料を公開します</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/flutter/" class="tag-default">flutter</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2020/05/27/flutter-hands-on/eye_catch.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/05/27/flutter-hands-on/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>先日、社内で Flutter のハンズオンを行ったので、その際に使用した資料を公開します。</p>
+
+<h2 id="flutter-とは">Flutter とは？</h2>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/flutter_logo.png" alt="flutter_logo.png" /></p>
+
+<blockquote>
+  <p>Made by Google
+Flutter is Google’s UI toolkit for building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.</p>
+</blockquote>
+
+<p>Flutter™️ は Google が作った、単一のコードベースで iOS、 Android、Web のアプリケーションを作成できるツールキットのことです。
+アプリケーションの大部分を Dart という言語で記述します。</p>
+
+<p><a href="https://flutter.dev/">Flutter Official Document</a></p>
+
+<p>※Flutter および Flutter のロゴは Google LLC の商標です。</p>
+
+<h3 id="flutter-の特徴">Flutter の特徴</h3>
+
+<ul>
+  <li>全てはウィジェット</li>
+  <li>コードを宣言的に記述する</li>
+</ul>
+
+<h4 id="全てはウィジェット">全てはウィジェット</h4>
+
+<p>Flutter では、以下のようなモバイルアプリ開発においてよく用いられる UI のパーツは全てウィジェットとして定義されています。</p>
+
+<ul>
+  <li>Text</li>
+  <li>Container</li>
+  <li>Row</li>
+  <li>Column</li>
+  <li>Image</li>
+  <li>Icon</li>
+</ul>
+
+<p>これらのウィジェットを組み合わせて階層構造（ウィジェットツリー）を形成することでアプリを開発していくことになります。</p>
+
+<h4 id="コードを宣言的に記述する">コードを宣言的に記述する</h4>
+
+<p>UI プログラミングには、大きく分けて二通りの手法があります。</p>
+
+<ul>
+  <li>手続き型 UI プログラミング</li>
+  <li>宣言型 UI プログラミング</li>
+</ul>
+
+<p>手続き型 UI プログラミングとは、<strong>A が B になったら、このように表示を変える</strong> といったコードの書き方をします。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="c1">// JavaScriptに似たなんらかの言語</span>
+<span class="nx">button</span><span class="p">.</span><span class="nx">onTap</span><span class="p">((</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">currentStatus</span> <span class="o">=</span> <span class="o">!</span><span class="nx">currentStatus</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">currentStatus</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">button</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="nx">Colors</span><span class="p">.</span><span class="nx">blue</span><span class="p">;</span>
+    <span class="nx">button</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">disabled</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">button</span><span class="p">.</span><span class="nx">color</span> <span class="o">=</span> <span class="nx">Colors</span><span class="p">.</span><span class="nx">red</span><span class="p">;</span>
+    <span class="nx">button</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">disabled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>一方で宣言型 UI プログラミングは、<strong>A に B という状態が与えられたら、このように表示する</strong> といったコードの書き方をします。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="c1">// Flutterのコード</span>
+<span class="n">Widget</span> <span class="nf">_button</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">enabled</span><span class="p">,</span> <span class="n">Color</span> <span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">CustomButton</span><span class="p">(</span>
+    <span class="nl">enabled:</span> <span class="n">enabled</span><span class="p">,</span>
+    <span class="nl">color:</span> <span class="n">color</span><span class="p">,</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>宣言的 UI プログラミングでは、状態の更新と UI の描画に関するコードが分離されます。これにより、UI に関するコードは「前の状態」を意識する必要がなくなり、コードが書きやすくなります。
+その代わりに、ボイラープレートコードが手続き型 UI プログラミングと比較して増加する傾向にあります。</p>
+
+<p>Flutter はこのようなボイラープレートコードを簡単に生成できるプラグインを Android Studio/VS Code で提供しているので、面倒なコードの記述を省きながら宣言的プログラミングの恩恵を得ることができます。</p>
+
+<h2 id="flutter-の実行環境を整備する">Flutter の実行環境を整備する</h2>
+
+<p>それでは、Flutter の実行環境を整備していきましょう。
+私は macOS で Flutter アプリの開発を行っているので、macOS での実行環境整備について説明していきます。</p>
+
+<p>Linux, Windows を使っている方は、以下のドキュメントに沿ってインストールを行ってください。</p>
+
+<ul>
+  <li><a href="https://flutter.dev/docs/get-started/install/windows">Windows Install</a></li>
+  <li><a href="https://flutter.dev/docs/get-started/install/linux">Linux Install</a></li>
+</ul>
+
+<h3 id="前提条件">前提条件</h3>
+
+<p>macOS 10.14.5</p>
+
+<h3 id="flutter-sdk-のインストール">Flutter SDK のインストール</h3>
+
+<p>以下のページから、Flutter SDK をインストールします。</p>
+
+<p><a href="https://flutter.dev/docs/get-started/install/macos">Flutter Install</a></p>
+
+<p>iOS / Android それぞれの環境でアプリをビルドできるようにするには、Xcode と Android Studio のインストールとセットアップが必要になります。このハンズオンの内容は特定のプラットフォームに依存してないので、どちらか好きな方を選ぶと良いでしょう。(このハンズオンは iOS をターゲットとして説明していきます）</p>
+
+<p><code>flutter doctor</code>コマンドで、実行したい環境に対して警告が出なくなれば OK です。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>flutter doctor
+Doctor summary <span class="o">(</span>to see all details, run flutter doctor <span class="nt">-v</span><span class="o">)</span>:
+<span class="o">[</span>✓] Flutter <span class="o">(</span>Channel stable, v1.12.13+hotfix.9, on Mac OS X 10.14.5 18F203, locale ja-DE<span class="o">)</span>
+
+<span class="o">[</span>✓] Android toolchain - develop <span class="k">for </span>Android devices <span class="o">(</span>Android SDK version 28.0.3<span class="o">)</span>
+<span class="o">[</span>✓] Xcode - develop <span class="k">for </span>iOS and macOS <span class="o">(</span>Xcode 11.2.1<span class="o">)</span>
+<span class="o">[</span>✓] Android Studio <span class="o">(</span>version 3.5<span class="o">)</span>
+<span class="o">[</span>✓] VS Code <span class="o">(</span>version 1.44.2<span class="o">)</span>
+<span class="o">[</span>✓] Connected device <span class="o">(</span>1 available<span class="o">)</span>
+
+• No issues found!
+</code></pre></div>
+<p>VS Code と VS Code の Flutter Plugin のインストールは Flutter の開発に必須ではありませんが、開発に便利な機能が揃っているのでインストールすることをお勧めします。
+このハンズオンでは、VS Code がインストールされていることを前提に進めていきます。</p>
+
+<h4 id="警告が消えない場合">警告が消えない場合</h4>
+
+<p><code>Connected device</code>の項目で警告が出ることがあるかもしれません。iOS/Android シミュレータを起動することで警告が出なくなります。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>flutter doctor
+Doctor summary <span class="o">(</span>to see all details, run flutter doctor <span class="nt">-v</span><span class="o">)</span>:
+<span class="o">[</span>✓] Flutter <span class="o">(</span>Channel stable, v1.12.13+hotfix.9, on Mac OS X 10.14.5 18F203, locale ja-DE<span class="o">)</span>
+
+<span class="o">[</span>✓] Android toolchain - develop <span class="k">for </span>Android devices <span class="o">(</span>Android SDK version 28.0.3<span class="o">)</span>
+<span class="o">[</span>✓] Xcode - develop <span class="k">for </span>iOS and macOS <span class="o">(</span>Xcode 7076811.2.1<span class="o">)</span>
+<span class="o">[</span>✓] Android Studio <span class="o">(</span>version 3.5<span class="o">)</span>
+<span class="o">[</span>✓] VS Code <span class="o">(</span>version 1.44.2<span class="o">)</span>
+<span class="o">[!]</span> Connected device
+    <span class="o">!</span> No devices available
+
+<span class="o">!</span> Doctor found issues <span class="k">in </span>1 category.
+
+<span class="c"># 以下のコマンドでiOSシミュレータを起動</span>
+<span class="nv">$ </span>open <span class="nt">-a</span> Simulator
+</code></pre></div>
+<h3 id="ハンズオンのリポジトリをフォークする">ハンズオンのリポジトリをフォークする</h3>
+
+<p>ハンズオンに使う<a href="https://github.com/pepabo/flutter-hands-on">リポジトリ</a>をフォークして下さい。</p>
+
+<h3 id="suzuri-のアクセストークンを準備する">SUZURI のアクセストークンを準備する</h3>
+
+<p>このハンズオンでは、SUZURI の公開 API を利用します。API を使うためにはアクセストークンが必要になります。</p>
+
+<h4 id="suzuri-のアカウントを作成する">SUZURI のアカウントを作成する</h4>
+
+<p>まずは 以下のページにアクセスし、SUZURI のアカウントを作成しましょう。</p>
+
+<p>すでにアカウントを持っている方は、このステップを飛ばしても構いません。</p>
+
+<p><a href="https://suzuri.jp/signup">SUZURI サインアップ</a></p>
+
+<h4 id="アクセストークンを取得する">アクセストークンを取得する</h4>
+
+<p>SUZURI にログインした状態で以下のページにアクセスします。</p>
+
+<p><a href="https://suzuri.jp/developer/apps">SUZURI Developer</a></p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/token_description.jpg" alt="token_description.jpg" /></p>
+
+<p><code>表示する</code>ボタンを押し、パスワードを入力するとアクセストークンが表示されます。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/token_image.jpg" alt="token_image.jpg" /></p>
+
+<p>このアクセストークンは、他人に知られないようにしてください。
+もし知られてしまった場合は、<code>再生成する</code>ボタンでアクセストークンを再生成することをお勧めします。</p>
+
+<h4 id="アクセストークンをプロジェクトに組み込む">アクセストークンをプロジェクトに組み込む</h4>
+
+<p>アクセストークンが取得できたら、リポジトリの直下に<code>.env</code>というファイルを作成し、トークンを以下のように記述して保存します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>TOKEN='your_access_token'
+</code></pre></div>
+<h5 id="ご注意">ご注意！</h5>
+
+<p><code>.env</code>はソース管理下に置かれていなかったとしてもビルドの成果物に含まれてしまうため、第三者が容易にトークンを取得できてしまいます。アプリのパッケージを公開する場合は十分にご注意ください。</p>
+
+<p>回避策の一例として、環境変数を使う手法があります。詳しくは<a href="https://api.flutter.dev/flutter/dart-core/String/String.fromEnvironment.html">こちらのドキュメント</a>をご参照ください。</p>
+
+<h4 id="依存パッケージをインストールする">依存パッケージをインストールする</h4>
+
+<p>Flutter では、依存パッケージのインストールに<code>flutter pub get</code>というコマンドを使います。
+リポジトリのディレクトリに移動して、コマンドを実行してみましょう。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>flutter pub get
+Running <span class="s2">"flutter pub get"</span> <span class="k">in </span>flutter_hands_on...                    0.8s
+</code></pre></div>
+<p>上記のようなメッセージが表示されたらインストール完了です。
+依存パッケージは<code>pubspec.yaml</code>に記述されているので、興味のある方は見てみると良いでしょう。</p>
+
+<h3 id="起動してみる">起動してみる</h3>
+
+<p>ここまで準備ができたら、ハンズオン用の Flutter アプリが起動できるはずです。
+VS Code でプロジェクトのディレクトリを開き、<code>lib/main.dart</code>を開いたら、<code>Run and Debug</code>ボタンを押して実行してみましょう。</p>
+
+<p>ボタンが有効になっていない場合は、以下の項目について確認してみてください。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/run_and_debug.jpg" alt="run_and_debug.jpg" /></p>
+
+<ul>
+  <li>Fluter のプラグインがインストールされていることを確認してください。</li>
+  <li>実行デバイスが指定されていることを確認してください。<code>No Device</code>と表示されている場所をクリックし、シミュレータを指定すれば大丈夫です。</li>
+</ul>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/device.jpg" alt="device.jpg" /></p>
+
+<p>また、<code>launch.json</code>を定義していない場合、何らかの Dart ファイルを開いていないと Flutter アプリの実行ができないのでご注意ください。</p>
+
+<p>コマンドラインで実行する場合は、<code>flutter run</code>というコマンドを使ってみましょう。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>flutter run
+
+ Launching lib/main.dart on iPhone 11 Pro Max <span class="k">in </span>debug mode...
+ Running Xcode build...
+
+  ├─Assembling Flutter resources...                          15.7s
+  └─Compiling, linking and signing...                         9.2s
+ Xcode build <span class="k">done</span><span class="nb">.</span>                                           28.9s
+ Syncing files to device iPhone 11 Pro Max...
+ 11,139ms <span class="o">(!)</span>
+
+ 🔥  To hot reload changes <span class="k">while </span>running, press <span class="s2">"r"</span><span class="nb">.</span> To hot restart <span class="o">(</span>and rebuild state<span class="o">)</span>, press <span class="s2">"R"</span><span class="nb">.</span>
+</code></pre></div>
+<p><code>No supported devices connected.</code>と表示される場合は、シミュレータを起動しておきます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>flutter run
+No supported devices connected.
+<span class="nv">$ </span>open <span class="nt">-a</span> Simulator
+</code></pre></div>
+<p>こんな画面が表示されたら、準備完了です。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/hello_suzuri.png" alt="hello_suzuri.png" /></p>
+
+<h2 id="flutter-のコードを書いてみよう">Flutter のコードを書いてみよう！</h2>
+
+<p>それでは、ここから実際に Flutter のコードを書いてアプリケーションを作っていきます。</p>
+
+<h4 id="ご注意-1">ご注意！</h4>
+
+<p>SUZURI の公開 API にはレートリミットが設定されています。短時間に大量のリクエストを送信してしまうと、一時的に API の利用が制限される場合があります。制限の範囲内でご利用ください。</p>
+
+<p>API に関する詳細はこちらをご参照ください。</p>
+
+<p><a href="https://suzuri.jp/developer">SUZURI API Document</a></p>
+
+<h3 id="商品のリストを作成する">商品のリストを作成する</h3>
+
+<p>まずは、<code>Hello, SUZURI</code>の代わりに、商品リストの骨組みを表示させてみましょう。
+<code>lib/main.dart</code>を開いて<code>MyHomePage</code>クラスを変更していきます。</p>
+
+<p>まずは、<code>MyHomePage</code>クラスのコードを見てみましょう。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">MyHomePage</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+        <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s">"SUZURI"</span><span class="p">),</span>
+      <span class="p">),</span>
+      <span class="nl">body:</span> <span class="n">Center</span><span class="p">(</span>
+        <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s">"Hello, SUZURI!"</span><span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>このクラスは <code>StatelessWidget</code> を継承している<strong>ウィジェット</strong>です。この記事の冒頭で説明した通り、Flutter はこのウィジェットを組み合わせて UI を作っていきます。</p>
+
+<p><code>StatelessWidget</code> とは、名前の通り<strong>状態を持たないウィジェット</strong>のことです。</p>
+
+<p><code>StatelessWidget</code> を継承する上で必要なことは 2 つあります。</p>
+
+<ul>
+  <li>ミュータブルなフィールドを持っていないこと</li>
+  <li><code>Widget</code>を返す<code>build</code>メソッドをオーバーライドすること</li>
+</ul>
+
+<p>ミュータブルなフィールドとは、<code>final</code>キーワードが付与されていないフィールドのことです。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">MyWidget</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="c1">// ミュータブルなフィールド。いつでも代入できる。</span>
+  <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+  <span class="c1">// イミュータブルなフィールド。</span>
+  <span class="c1">// インスタンス生成時にコンストラクタで代入され、それ以降代入されることがない。</span>
+  <span class="kd">final</span> <span class="kt">int</span> <span class="n">immutableCount</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Flutter は宣言的にコードを記述します。状態を変えたくなったら、状態を変えるのではなく新しい状態を与えてウィジェットを作り、古いウィジェットを破棄します。</p>
+
+<p><code>build</code>メソッドは、新しい状態を与えてウィジェットを作る時に利用されます。
+このメソッドは<code>BuildContext</code>を引数に取り、<code>Widget</code>オブジェクトを返します。</p>
+
+<p>最も簡単なカスタム<code>StatelessWidget</code>は以下のようになります。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">SimpleCustomWidget</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Containerはウィジェットの一つ</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>これらを踏まえて、<code>MyHomePage</code>を変更していきます。
+いま、<code>MyHomePage</code>ウィジェットは<code>build</code>メソッドで<code>Scaffold</code>というウィジェットを返しています。
+<code>Scaffold</code>はシンプルなマテリアルデザインライクの見た目を提供してくれるウィジェットで、<code>title</code>と<code>body</code>を与えると、それを元に画面を生成します。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/scaffold.jpg" alt="scaffold.jpg" /></p>
+
+<p>では、<code>body</code>を変更して商品のリストを表示する準備をしてみましょう。
+まずは商品を表示する代わりに、タイル表示で四角を描画してみます。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">MyHomePage</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+        <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s">"SUZURI"</span><span class="p">),</span>
+      <span class="p">),</span>
+      <span class="c1">// bodyで表示したいウィジェットを別のメソッドに切り出す</span>
+      <span class="nl">body:</span> <span class="n">_productsList</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Widgetを返すメソッド</span>
+  <span class="c1">// 引数はBuildContextで、呼び出し側のbuildで持っているものを渡す</span>
+  <span class="n">Widget</span> <span class="n">_productsList</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+      <span class="c1">// GridViewはウィジェットをグリッドで表示してくれるウィジェット</span>
+      <span class="c1">// iOS UIKitで言うところの UICollectionView</span>
+      <span class="c1">// GridView.builderというfactory(カスタムコンストラクタ)で初期化する</span>
+      <span class="nl">child:</span> <span class="n">GridView</span><span class="o">.</span><span class="na">builder</span><span class="p">(</span>
+        <span class="nl">gridDelegate:</span> <span class="n">SliverGridDelegateWithFixedCrossAxisCount</span><span class="p">(</span>
+          <span class="c1">// グリッド横方向のウィジェット数</span>
+          <span class="nl">crossAxisCount:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="nl">crossAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="nl">mainAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="c1">// グリッド表示するウィジェットの縦横比</span>
+          <span class="nl">childAspectRatio:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="c1">// グリッドに表示したいウィジェットの数</span>
+        <span class="nl">itemCount:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="c1">// itemBuilderはGridViewのインデックス毎に表示したいウィジェットを返すデリゲート</span>
+        <span class="c1">// context, indexを引数にとり、ウィジェットを返す関数を指定してやる</span>
+        <span class="c1">// itemContの回数だけ呼ばれる、この例では6回</span>
+        <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+        	<span class="c1">// とりあえずグレーのコンテナを表示してみる</span>
+          <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+            <span class="nl">color:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">grey</span><span class="p">,</span>
+            <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span>
+          <span class="p">);</span>
+        <span class="p">}),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>VS Code で作業していれば、変更を保存(Command + S)した時点で、変更がシミュレータで動いているアプリに反映されます。
+反映されない場合は、Hot Reload ボタンを押してみましょう。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/hot_reload.jpg" alt="hot_reload.jpg" /></p>
+
+<p>リロードが終わると、以下のような画面に切り替わります。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/empty_grid_view.png" alt="empty_grid_view.png" /></p>
+
+<h3 id="api-から商品のリストを取得してアプリ内で保持できるようにする">API から商品のリストを取得して、アプリ内で保持できるようにする</h3>
+
+<p>SUZURI の公開 API には、商品のリストを取得するエンドポイントがあります。
+このエンドポイントから商品の情報を取得して、アプリ内で保持できるようにしてみましょう。</p>
+
+<p>商品のリストを取得するためのリクエストは、<code>lib/requests/product_request.dart</code>に用意してあります。</p>
+
+<p>StatelessWidget は状態を持たないと説明しましたが、今回は商品のリストという<strong>状態</strong>を管理する必要があります。</p>
+
+<p>Flutter には<code>Provider</code>という、StatelessWidget が状態を意識することなく状態管理ができる便利なライブラリがあります。
+詳細は省略しますが、<code>ChangeNotifier</code>と<code>ChangeNotifierProvider</code>を使って、状態の管理・状態の変更通知を管理できます。</p>
+
+<p><code>Provider</code>の詳細については、<a href="https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple">こちらのドキュメント</a>をご参照ください。</p>
+
+<p>それでは、商品リストの状態を管理する<code>ProductListStore</code>を作っていきます。
+<code>lib/stores</code>というディレクトリを作成し、その中に<code>product_list_store.dart</code>ファイルを新しく作ります。</p>
+
+<p>ファイルが作れたら、以下の通り実装しましょう。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="c1">// import宣言はコピーペーストしても良いですし、VS Codeならクラス参照の記述を補完すると自動で追加されます</span>
+<span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/models/product.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/requests/product_request.dart'</span><span class="o">;</span>
+
+<span class="c1">// httpライブラリを`http`という名前でimportする</span>
+<span class="kn">import</span> <span class="s">'package:http/http.dart'</span> <span class="k">as</span> <span class="n">http</span><span class="o">;</span>
+
+<span class="c1">// ChangeNotifierを継承して新しいStoreクラスを作る</span>
+<span class="kd">class</span> <span class="nc">ProductListStore</span> <span class="kd">extends</span> <span class="n">ChangeNotifier</span> <span class="p">{</span>
+
+  <span class="c1">// 実際に管理される商品のリスト</span>
+  <span class="kt">List</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="n">_products</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="c1">// 外側から直接変更されないように、getterのみ公開</span>
+  <span class="kt">List</span><span class="p">&lt;</span><span class="n">Product</span><span class="p">&gt;</span> <span class="kd">get</span> <span class="n">products</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">_products</span><span class="p">;</span>
+
+  <span class="c1">// リクエスト実行中に再リクエストしないようにしたい</span>
+  <span class="kt">bool</span> <span class="n">_isFetching</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="kd">get</span> <span class="n">isFetching</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">_isFetching</span><span class="p">;</span>
+
+  <span class="c1">// Storeに変更を要求するインターフェイス</span>
+  <span class="n">fetchNextProducts</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">_isFetching</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">_isFetching</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="c1">// ProductRequestを初期化</span>
+    <span class="c1">// http.Clientは外側から与える</span>
+    <span class="kd">final</span> <span class="n">request</span> <span class="o">=</span> <span class="n">ProductRequest</span><span class="p">(</span>
+      <span class="nl">client:</span> <span class="n">http</span><span class="o">.</span><span class="na">Client</span><span class="p">(),</span>
+      <span class="nl">offset:</span> <span class="n">_products</span><span class="o">.</span><span class="na">length</span><span class="p">,</span>
+    <span class="p">);</span>
+
+    <span class="c1">// request.fetchはList&lt;Product&gt;を返すFutureオブジェクトを返す</span>
+    <span class="kd">final</span> <span class="n">products</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="na">fetch</span><span class="p">()</span><span class="o">.</span><span class="na">catchError</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_isFetching</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">});</span>
+    <span class="c1">// 取得できた商品のリストを追加する</span>
+    <span class="n">_products</span><span class="o">.</span><span class="na">addAll</span><span class="p">(</span><span class="n">products</span><span class="p">);</span>
+    <span class="n">_isFetching</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="c1">// 追加できたら、このStoreを購読しているウィジェットに通知する</span>
+    <span class="n">notifyListeners</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>ChangeNotifier</code>を継承して、新しい Store を作りました。
+この Store を<code>ChangeNotifierProvider</code>というウィジェットに組み込むことで、下位のウィジェットがこの Store を参照できるようになります。</p>
+
+<p>参照できるようになる仕組みの詳細は省きますが、<code>BuildContext</code>に保存されている情報を使っています。興味のある方は<a href="https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple#changenotifierprovider">こちらのドキュメント</a>を参照してみると良いでしょう。</p>
+
+<p>では、実際に<code>ChangeNotifierProvider</code>をウィジェットに組み込んでみましょう。</p>
+
+<p><code>lib/main.dart</code>を編集していきます。</p>
+
+<p><strong>2021/01/29追記</strong></p>
+
+<p>一部のコードにアンチパターンとの指摘があったため、サンプルコードを修正しました。
+このハンズオンを開催した時点では気付けておらず、指摘のコメントをいただき感謝します。</p>
+
+<p>以前のコードでは<code>build</code>メソッド内で<code>Provider.of(context, listen: false)</code>を呼び出していましたが、これにはいくつかの問題があります。まず、<code>build</code>メソッドはウィジェットが描画し直される度に呼ばれるため、APIへのリクエストなどの処理を記述してしまうと意図せず何度も呼ばれ、サービスへの大量リクエストを送信してしまう不具合を入れ込んでしまう懸念があります。</p>
+
+<p>また、<code>build</code>メソッド内でこれらのメソッド呼び出しを行うと、意図せぬ挙動をする可能性があります。Providerの作者も、<code>build</code>メソッドの中で<code>Provider.of(context, listen: false)</code>の呼び出しを避けることを推奨しています。</p>
+
+<ul>
+  <li><a href="https://github.com/rrousselGit/provider/issues/382">https://github.com/rrousselGit/provider/issues/382</a></li>
+  <li><a href="https://github.com/rrousselGit/provider/issues/236">https://github.com/rrousselGit/provider/issues/236</a></li>
+</ul>
+
+<p>Provider v4.0.0からは、<code>context.read</code>というメソッドで<code>listen: false</code>な<code>ChangeNotifierProvider</code>への参照を取得できるようになりました。
+主な違いとしては、<code>context.read</code>を<code>build</code>メソッドの内部で呼び出すと実行時エラーが発生し、間違った使い方であることを開発者に知らせてくれます。
+v4.0.0以降では、<code>Provider.of&lt;T&gt;(context)</code>ではなく、<code>context.read&lt;T&gt;</code>、<code>context.watch&lt;T&gt;</code>といったメソッドで<code>ChangeNotifierProvider</code>への参照を取得することを推奨します。</p>
+
+<p>今回のケースでは「ウィジェットの初回描画時に、APIへのリクエストアクションを実行する」ことを目的としているため、以下のような実装を行うのが適切でした。</p>
+
+<p><code>MyApp</code>ウィジェットを<code>StatefulWidget</code>で作成します。<code>StatefulWidget</code>では<code>initState</code>という、初期化時に一度のみ実行されるメソッドを記述できます。
+次に<code>initState</code>メソッドの中で<code>WidgetBindings.instance.addPostFrameCallback()</code>メソッドを呼びます。これは<code>Function</code>を引数に取り、初回の<code>build</code>メソッドが実行される前に渡されたコールバック関数を実行させるためのメソッドです。もう一つ特徴があり、<code>initState</code>メソッドの中では<code>BuildContext</code>への参照を得られませんが、<code>addPostFrameCallback()</code>に渡されたコールバック関数の中では<code>BuildContext</code>への参照を得られるという違いがあり、安全に<code>context.read</code>を呼び出せます。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_dotenv/flutter_dotenv.dart'</span><span class="o">;</span>
+<span class="c1">// import宣言を追加する</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/stores/product_list_store.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:provider/provider.dart'</span><span class="o">;</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="n">DotEnv</span><span class="p">()</span><span class="o">.</span><span class="na">load</span><span class="p">(</span><span class="s">'.env'</span><span class="p">);</span>
+  <span class="c1">// MultiProviderも、ウィジェットの一種</span>
+  <span class="n">runApp</span><span class="p">(</span><span class="n">MultiProvider</span><span class="p">(</span>
+    <span class="c1">// MultiProviderは複数のChangeNotifierProviderを格納できるProviderのこと</span>
+    <span class="c1">// providersにList&lt;ChangeNotifierProvider&gt;を指定する</span>
+    <span class="nl">providers:</span> <span class="p">[</span>
+      <span class="c1">// ChangeNotifierProviderはcreateにデリゲートを取り、この中でChangeNotifierを初期化して返す</span>
+      <span class="n">ChangeNotifierProvider</span><span class="p">(</span>
+        <span class="nl">create:</span> <span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">ProductListStore</span><span class="p">(),</span>
+      <span class="p">)</span>
+    <span class="p">],</span>
+    <span class="c1">// childにはもともと表示に使っていたウィジェットを配置する</span>
+    <span class="nl">child:</span> <span class="n">MyApp</span><span class="p">(),</span>
+  <span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">StatefulWidget</span> <span class="p">{</span>
+  <span class="n">MyApp</span><span class="p">({</span><span class="n">Key</span> <span class="n">key</span><span class="p">})</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="nl">key:</span> <span class="n">key</span><span class="p">);</span>
+
+  <span class="nd">@override</span>
+  <span class="n">_MyAppState</span> <span class="n">createState</span><span class="p">()</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">_MyAppState</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">_MyAppState</span> <span class="kd">extends</span> <span class="n">State</span><span class="p">&lt;</span><span class="n">MyApp</span><span class="p">&gt;</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="kt">void</span> <span class="n">initState</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="na">initState</span><span class="p">();</span>
+    <span class="c1">// addPostFrameCallbackは、initStateが呼ばれた後に一度のみ実行されるコールバック</span>
+    <span class="c1">// ウィジェットの描画を行う際、最初の一度のみ実行したい処理を記述する</span>
+    <span class="n">WidgetsBinding</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">addPostFrameCallback</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// context.read&lt;T&gt;()メソッドでstoreへの参照を取得する</span>
+      <span class="c1">// Tには、取得したいChangeNotifierのクラスタイプを指定する、今回はProductListStore</span>
+      <span class="c1">// readは、ChangeNotifierのnotifyListeners()が呼ばれてもウィジェットのリビルドフラグを有効にしない</span>
+      <span class="c1">// 副作用を伴うアクションを呼ぶ場合は、必ずbuildメソッドの外でreadを使う</span>
+      <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">read</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="o">.</span><span class="na">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">store</span><span class="o">.</span><span class="na">fetchNextProducts</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+      <span class="nl">title:</span> <span class="s">'Flutter Demo'</span><span class="p">,</span>
+      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+        <span class="nl">primarySwatch:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">blue</span><span class="p">,</span>
+      <span class="p">),</span>
+      <span class="nl">home:</span> <span class="n">MyHomePage</span><span class="p">(),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MyHomePage</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+        <span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s">"SUZURI"</span><span class="p">),</span>
+      <span class="p">),</span>
+      <span class="nl">body:</span> <span class="n">_productsList</span><span class="p">(</span><span class="n">context</span><span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Widget</span> <span class="n">_productsList</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// storeの参照を取得</span>
+    <span class="c1">// ここではStoreに変更があったらウィジェットに反映したいのでwatchを使う</span>
+    <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">watch</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;();</span>
+    <span class="kd">final</span> <span class="n">products</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="p">;</span>
+    <span class="c1">// Storeから取得できた商品の数を見て、表示すべきウィジェットを変える</span>
+    <span class="c1">// 具体的には、0件→空っぽのリスト、1件以上→実際の商品リスト</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">products</span><span class="o">.</span><span class="na">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+        <span class="nl">child:</span> <span class="n">GridView</span><span class="o">.</span><span class="na">builder</span><span class="p">(</span>
+          <span class="nl">gridDelegate:</span> <span class="n">SliverGridDelegateWithFixedCrossAxisCount</span><span class="p">(</span>
+            <span class="nl">crossAxisCount:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nl">crossAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+            <span class="nl">mainAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+            <span class="nl">childAspectRatio:</span> <span class="mf">0.7</span><span class="p">,</span>
+          <span class="p">),</span>
+          <span class="nl">itemCount:</span> <span class="mi">6</span><span class="p">,</span>
+          <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+              <span class="nl">color:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">grey</span><span class="p">,</span>
+              <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span>
+            <span class="p">);</span>
+          <span class="p">},</span>
+        <span class="p">),</span>
+      <span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// 商品のウィジェットをまだ作っていないので、仮でTextを表示してみる</span>
+      <span class="k">return</span> <span class="n">Center</span><span class="p">(</span><span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s">"products"</span><span class="p">));</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>参考までに、修正前のコードを残しておきます。こちらの書き方は非推奨となっているため、ご注意ください。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+   <span class="c1">// Provider.of&lt;T&gt;メソッドでstoreへの参照を取得する</span>
+   <span class="c1">// Tには、取得したいChangeNotifierのクラスタイプを指定する、今回はProductListStore</span>
+   <span class="c1">// 引数のcontextは必須、listen: falseはオプショナル引数</span>
+   <span class="c1">// listenは、「ChangeNotifierのnotifyListeners()が呼ばれたらウィジェットをリビルドするか」のフラグ</span>
+   <span class="c1">// 今回はリビルドされたくないのでfalse</span>
+   <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">Provider</span><span class="o">.</span><span class="na">of</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;(</span><span class="n">context</span><span class="p">,</span> <span class="nl">listen:</span> <span class="kc">false</span><span class="p">);</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="o">.</span><span class="na">isEmpty</span> <span class="o">&amp;&amp;</span> <span class="n">store</span><span class="o">.</span><span class="na">isFetching</span> <span class="o">==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">// 表示すべき商品が空っぽで、かつ取得中でなければStoreに商品を読み込んでもらう</span>
+     <span class="c1">// buildメソッドはウィジェットがリビルドされるたびに呼ばれるため、制御しないと大量のリクエストが飛ぶこともあるので注意</span>
+     <span class="n">store</span><span class="o">.</span><span class="na">fetchNextProducts</span><span class="p">();</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+      <span class="nl">title:</span> <span class="s">'Flutter Demo'</span><span class="p">,</span>
+      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+        <span class="nl">primarySwatch:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">blue</span><span class="p">,</span>
+      <span class="p">),</span>
+      <span class="nl">home:</span> <span class="n">MyHomePage</span><span class="p">(),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>追記終わり</strong></p>
+
+<p>ここまで実装できたら、アプリを Hot Restart させてみましょう。
+Hot Restart は VS Code であれば、以下のボタンから実行できます。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/hot_restart.jpg" alt="hot_restart.jpg" /></p>
+
+<p>Hot Reload との違いは、Hot Reload がウィジェットの見た目などを変えた時にそれを反映するのに対し、Hot Restart はアプリを再起動させるのに近いです。
+Hot Reload した時に「なんか表示がおかしいかも？」と思ったら、Hot Restart することをお勧めします。</p>
+
+<p>Hot Reload に関する詳細は、<a href="https://flutter.dev/docs/development/tools/hot-reload">こちらのドキュメント</a>をご参照ください。</p>
+
+<h4 id="エラーが発生した場合">エラーが発生した場合</h4>
+
+<p>もし<code>ProductRequest</code>で実行時エラーが発生した場合、以下のような原因が考えられます。</p>
+
+<ul>
+  <li><code>.env</code>に格納した SUZURI のアクセストークンに問題がある</li>
+  <li>ネットワーク環境が不安定（例えば、VPN を有効にしている等）</li>
+</ul>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/error.jpg" alt="error.jpg" /></p>
+
+<p>エラーの詳細は<code>response</code>というオブジェクトに格納されています。Debug Console から確認すると調査しやすいでしょう。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/error_desc.jpg" alt="error_desc.jpg" /></p>
+
+<p>例えば上記のようなエラーメッセージが格納されていた場合、アクセストークンが有効ではないためにステータスコード<code>401</code>が返っています。</p>
+
+<h3 id="商品の画像を表示してみよう">商品の画像を表示してみよう</h3>
+
+<p>次は、取得できた商品の情報を使って画面に表示させてみましょう。
+引き続き、<code>lib/main.dart</code>を編集していきます。
+<code>_productList</code>メソッドの中身を変更し、商品の情報を使って UI を構築します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="n">Widget</span> <span class="nf">_productsList</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">watch</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;();</span>
+  <span class="kd">final</span> <span class="n">products</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">products</span><span class="o">.</span><span class="na">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*省略*/</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+      <span class="c1">// EmptyProductListと同じく、GridView.builderでグリッドビューのウィジェットを表示する</span>
+      <span class="nl">child:</span> <span class="n">GridView</span><span class="o">.</span><span class="na">builder</span><span class="p">(</span>
+        <span class="nl">gridDelegate:</span> <span class="n">SliverGridDelegateWithFixedCrossAxisCount</span><span class="p">(</span>
+          <span class="nl">crossAxisCount:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="nl">crossAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="nl">mainAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="nl">childAspectRatio:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="c1">// storeから取得できたproductsの数を使う</span>
+        <span class="nl">itemCount:</span> <span class="n">products</span><span class="o">.</span><span class="na">length</span><span class="p">,</span>
+        <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+            <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span>
+            <span class="c1">// itemBuilderのindexには、表示されるセルの番号が格納されている</span>
+            <span class="c1">// Image.networkは画像のURLを渡すと、画像のダウンロードと表示をいい感じにやってくれる</span>
+            <span class="c1">// product.sampleImageUrlには商品のサンプル画像のURLが格納されている</span>
+            <span class="nl">child:</span> <span class="n">Image</span><span class="o">.</span><span class="na">network</span><span class="p">(</span><span class="n">products</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="na">sampleImageUrl</span><span class="p">),</span>
+          <span class="p">);</span>
+        <span class="p">},</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></div>
+<p>Hot Restart を実行します。
+以下のように、商品の画像がグリッド表示されるはずです。
+API から取得できる商品には個人差があります。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/product_images.png" alt="product_images.png" /></p>
+
+<h3 id="画像以外の商品情報も表示してみる">画像以外の商品情報も表示してみる</h3>
+
+<p>商品の情報は<code>Product</code>というモデルクラスに格納されています。
+次は、商品名と値段を画像の下に表示させてみましょう。</p>
+
+<p>まずは、商品の情報を含んだ<code>ProductCart</code>というウィジェットを作ります。
+<code>lib/components</code>というディレクトリを作り、その中に<code>product_card.dart</code>ファイルを配置します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/models/product.dart'</span><span class="o">;</span>
+
+<span class="c1">// StatelessWidgetを継承</span>
+<span class="kd">class</span> <span class="nc">ProductCard</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">Product</span> <span class="n">product</span><span class="p">;</span>
+
+  <span class="c1">// コンストラクタでProductを受け取り、フィールドに格納</span>
+  <span class="c1">// {}はoptional named parameterと呼ばれるもので、this.productはフィールドにセットするためのシンタックスシュガーです</span>
+  <span class="n">ProductCard</span><span class="p">({</span><span class="k">this</span><span class="o">.</span><span class="na">product</span><span class="p">});</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+      <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span>
+      <span class="c1">// Columnはウィジェットを縦に積むことができるウィジェット</span>
+      <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="c1">// childrenにはList&lt;Widget&gt;を渡す</span>
+        <span class="c1">// 上から表示したい順にウィジェットを配置する</span>
+        <span class="nl">children:</span> <span class="p">&lt;</span><span class="n">Widget</span><span class="p">&gt;[</span>
+          <span class="n">Image</span><span class="o">.</span><span class="na">network</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">sampleImageUrl</span><span class="p">),</span>
+          <span class="c1">// SizedBoxはウィジェットのサイズを固定するためのウィジェット</span>
+          <span class="c1">// heightやwidthを指定すると、childのウィジェットのサイズがその通りになる便利なウィジェット</span>
+          <span class="n">SizedBox</span><span class="p">(</span>
+            <span class="nl">height:</span> <span class="mi">40</span><span class="p">,</span>
+            <span class="c1">// Product.titleは商品名を表す</span>
+            <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">title</span><span class="p">),</span>
+          <span class="p">),</span>
+          <span class="c1">// Product.priceにはその商品の金額が格納されている</span>
+          <span class="n">Text</span><span class="p">(</span><span class="s">"</span><span class="si">${product.price.toString()}</span><span class="s">円"</span><span class="p">),</span>
+        <span class="p">],</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>ProductCard</code>ウィジェットが作れたら、それを<code>GridView</code>の<code>itemBuilder</code>で使ってみましょう。</p>
+
+<p><code>lib/main.dart</code>を以下のように編集します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_dotenv/flutter_dotenv.dart'</span><span class="o">;</span>
+<span class="c1">// ProductCardをimportしておく</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/components/product_card.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/stores/product_list_store.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:provider/provider.dart'</span><span class="o">;</span>
+<span class="cm">/*省略*/</span>
+
+<span class="n">Widget</span> <span class="nf">_productsList</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">watch</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;(</span><span class="n">context</span><span class="p">);</span>
+  <span class="kd">final</span> <span class="n">products</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">products</span><span class="o">.</span><span class="na">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*省略*/</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+      <span class="nl">child:</span> <span class="n">GridView</span><span class="o">.</span><span class="na">builder</span><span class="p">(</span>
+        <span class="nl">gridDelegate:</span> <span class="n">SliverGridDelegateWithFixedCrossAxisCount</span><span class="p">(</span>
+          <span class="nl">crossAxisCount:</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="nl">crossAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="nl">mainAxisSpacing:</span> <span class="mi">16</span><span class="p">,</span>
+          <span class="nl">childAspectRatio:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="nl">itemCount:</span> <span class="n">products</span><span class="o">.</span><span class="na">length</span><span class="p">,</span>
+        <span class="nl">itemBuilder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="c1">// itemBuilderで直接Imageウィジェットを返すのではなく、ProductCardウィジェットを返す</span>
+          <span class="k">return</span> <span class="n">ProductCard</span><span class="p">(</span><span class="nl">product:</span> <span class="n">products</span><span class="p">[</span><span class="n">index</span><span class="p">]);</span>
+        <span class="p">},</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+</code></pre></div>
+<p>Hot Reload を実行すると、商品名と金額が表示されるようになります。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/product_cards.png" alt="product_cards.png" /></p>
+
+<h3 id="商品をタップしたら画面遷移をさせて商品の詳細情報を表示する">商品をタップしたら、画面遷移をさせて商品の詳細情報を表示する</h3>
+
+<p>これまでの実装で、商品の一覧が表示できるようになりました。
+今度は、商品をタップしたら詳細画面が表示されるようにしてみましょう。</p>
+
+<p>商品詳細の表示をするための大まかな流れは以下の通りです。</p>
+
+<ul>
+  <li><code>ProductCard</code>ウィジェットがタップされたら、それを検知する</li>
+  <li>タップされた商品の情報を元に商品詳細画面のウィジェットを用意して、遷移する</li>
+</ul>
+
+<p>では、まずタップを検知できるようにします。
+タップを検知するためには、<code>GestureDetector</code>という便利なウィジェットを使います。</p>
+
+<p><code>lib/components/product_card.dart</code>を編集します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kd">class</span> <span class="nc">ProductCard</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="cm">/*省略*/</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ContainerをGestureDetectorでラップする</span>
+    <span class="k">return</span> <span class="n">GestureDetector</span><span class="p">(</span>
+      <span class="c1">// onTapは、childウィジェットがタップされたら発火する</span>
+      <span class="nl">onTap:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+        <span class="n">print</span><span class="p">(</span><span class="s">"tapped"</span><span class="p">);</span>
+      <span class="p">},</span>
+      <span class="c1">// Container自体は変更不要</span>
+      <span class="nl">child:</span> <span class="n">Container</span><span class="p">(</span>
+        <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span>
+        <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+          <span class="nl">children:</span> <span class="p">&lt;</span><span class="n">Widget</span><span class="p">&gt;[</span>
+            <span class="n">Image</span><span class="o">.</span><span class="na">network</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">sampleImageUrl</span><span class="p">),</span>
+            <span class="n">SizedBox</span><span class="p">(</span>
+              <span class="nl">height:</span> <span class="mi">40</span><span class="p">,</span>
+              <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">title</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">Text</span><span class="p">(</span><span class="s">"</span><span class="si">${product.price.toString()}</span><span class="s">円"</span><span class="p">),</span>
+          <span class="p">],</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>このように<code>GestureDetector</code>ウィジェットでラップするだけで、<code>child</code>のウィジェットに対するタップイベントが検知できます。
+タップイベントが発生したら、<code>onTap</code>に配置したデリゲートが発火します。</p>
+
+<p>今回の例では単純に<code>print</code>するだけの処理が記述されています。これは Debug Console に表示されるので、実際にタップして試してみましょう。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/tap_event.jpg" alt="tap_event.jpg" /></p>
+
+<p>タップが検出できるようになったので、今度は遷移先のウィジェットを作っていきます。
+<code>lib/pages</code>ディレクトリを作り、その中に<code>product_detail.dart</code>ファイルを作成します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/models/product.dart'</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">ProductDetail</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="c1">// 画面を遷移するために必要なウィジェットの名前を定義する</span>
+  <span class="kd">static</span> <span class="kd">const</span> <span class="n">routeName</span> <span class="o">=</span> <span class="s">"/productDetail"</span><span class="p">;</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 画面遷移する際に渡した引数が格納されている（後述）</span>
+    <span class="c1">// この引数はObject型として扱われるので、明示的にProduct型を指定する必要がある</span>
+    <span class="kd">final</span> <span class="n">Product</span> <span class="n">product</span> <span class="o">=</span> <span class="n">ModalRoute</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">settings</span><span class="o">.</span><span class="na">arguments</span><span class="p">;</span>
+    <span class="c1">// 新しい画面を表示したいので、Scaffoldウィジェットを返す</span>
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span>
+        <span class="nl">title:</span> <span class="n">Text</span><span class="p">(</span><span class="s">"商品詳細"</span><span class="p">),</span>
+      <span class="p">),</span>
+      <span class="nl">body:</span> <span class="n">Container</span><span class="p">(</span>
+        <span class="nl">child:</span> <span class="n">Center</span><span class="p">(</span>
+          <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span>
+            <span class="c1">// とりあえず商品名でも表示してみる</span>
+            <span class="n">product</span><span class="o">.</span><span class="na">title</span><span class="p">,</span>
+          <span class="p">),</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>遷移先のウィジェットが作れたので、遷移できるための前準備をします。</p>
+
+<p><strong>2021/01/29追記</strong></p>
+
+<p>こちらのコードもアンチパターンを含んでいたため、修正しました。</p>
+
+<p><strong>追記終わり</strong></p>
+
+<p><code>lib/main.dart</code>を編集します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_dotenv/flutter_dotenv.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/components/product_card.dart'</span><span class="o">;</span>
+<span class="c1">// ProductDetailをimport</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/pages/product_detail.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/stores/product_list_store.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:provider/provider.dart'</span><span class="o">;</span>
+
+<span class="cm">/*省略*/</span>
+<span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">StatefulWidget</span> <span class="p">{</span>
+  <span class="n">MyApp</span><span class="p">({</span><span class="n">Key</span> <span class="n">key</span><span class="p">})</span> <span class="o">:</span> <span class="k">super</span><span class="p">(</span><span class="nl">key:</span> <span class="n">key</span><span class="p">);</span>
+
+  <span class="nd">@override</span>
+  <span class="n">_MyAppState</span> <span class="n">createState</span><span class="p">()</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">_MyAppState</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">_MyAppState</span> <span class="kd">extends</span> <span class="n">State</span><span class="p">&lt;</span><span class="n">MyApp</span><span class="p">&gt;</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="kt">void</span> <span class="n">initState</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">super</span><span class="o">.</span><span class="na">initState</span><span class="p">();</span>
+    <span class="n">WidgetsBinding</span><span class="o">.</span><span class="na">instance</span><span class="o">.</span><span class="na">addPostFrameCallback</span><span class="p">((</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">final</span> <span class="n">store</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">read</span><span class="p">&lt;</span><span class="n">ProductListStore</span><span class="p">&gt;();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="na">products</span><span class="o">.</span><span class="na">isEmpty</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">store</span><span class="o">.</span><span class="na">fetchNextProducts</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+      <span class="nl">title:</span> <span class="s">'Flutter Demo'</span><span class="p">,</span>
+      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+        <span class="nl">primarySwatch:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">blue</span><span class="p">,</span>
+      <span class="p">),</span>
+      <span class="nl">home:</span> <span class="n">MyHomePage</span><span class="p">(),</span>
+      <span class="c1">// MaterialAppのroutesに、遷移したいウィジェットの情報を格納する</span>
+      <span class="c1">// { ルーティング名: (context) =&gt; 表示したいウィジェット, }という形式で記述する</span>
+      <span class="c1">// {}はMapを表す、ここでは Map&lt;String, Widget Function(BuildContext)&gt;のこと</span>
+      <span class="nl">routes:</span> <span class="p">{</span>
+        <span class="n">ProductDetail</span><span class="o">.</span><span class="na">routeName</span><span class="o">:</span> <span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">ProductDetail</span><span class="p">(),</span>
+      <span class="p">},</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>routes</code>が記述できたら遷移の準備は完了です。<code>onTap</code>で遷移させる処理を書きましょう。</p>
+
+<p><code>lib/components/product_card.dart</code>を編集します。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/models/product.dart'</span><span class="o">;</span>
+<span class="c1">// ProductDetailをimport</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/pages/product_detail.dart'</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">ProductCard</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">Product</span> <span class="n">product</span><span class="p">;</span>
+
+  <span class="n">ProductCard</span><span class="p">({</span><span class="k">this</span><span class="o">.</span><span class="na">product</span><span class="p">});</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">GestureDetector</span><span class="p">(</span>
+      <span class="nl">onTap:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+        <span class="c1">// Navigator.of(context).pushNamedで遷移を実行する</span>
+        <span class="c1">// 第一引数はルーティング名、argumentsはoptionalでパラメータを渡せる</span>
+        <span class="c1">// ProductDetailで書いた通り、遷移先のウィジェットでは、</span>
+        <span class="c1">// ModalRoute.of(context).settings.arguments でこの引数が取得できる</span>
+        <span class="n">Navigator</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">pushNamed</span><span class="p">(</span>
+          <span class="n">ProductDetail</span><span class="o">.</span><span class="na">routeName</span><span class="p">,</span>
+          <span class="nl">arguments:</span> <span class="k">this</span><span class="o">.</span><span class="na">product</span><span class="p">,</span>
+        <span class="p">);</span>
+      <span class="p">},</span>
+      <span class="nl">child:</span> <span class="n">Container</span><span class="p">(</span>
+        <span class="cm">/*省略*/</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>ここまで実装できたら、タップで画面遷移ができるようになっているはずです。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/empty_product_detail.png" alt="empty_product_detail.png" /></p>
+
+<p>左上の戻るボタンを押すと、前の画面に戻れます。
+このボタンは<code>Scaffold</code>が自動で追加してくれています。とても便利ですね。</p>
+
+<h3 id="商品詳細を充実させる">商品詳細を充実させる</h3>
+
+<p>ここまでの実装で、画面遷移ができるようになりましたが、まだ詳細と言えるような情報は表示できていません。
+拡充させましょう。</p>
+
+<p><code>lib/pages/product_detail.dart</code>を編集して、情報を追加していきます。</p>
+
+<div class="highlight"><pre class="highlight dart"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_hands_on/models/product.dart'</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">ProductDetail</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="kd">const</span> <span class="n">routeName</span> <span class="o">=</span> <span class="s">"/productDetail"</span><span class="p">;</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*省略*/</span>
+  <span class="p">}</span>
+
+  <span class="n">Widget</span> <span class="n">_body</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">Product</span> <span class="n">product</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// SingleChildScrollViewは、childウィジェットが画面に収まりきらない時にスクロールで表示できるようにするウィジェット</span>
+    <span class="k">return</span> <span class="n">SingleChildScrollView</span><span class="p">(</span>
+      <span class="c1">// Columnは下にどんどん伸びていくので、ScrollViewと相性が良い</span>
+      <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="nl">children:</span> <span class="p">&lt;</span><span class="n">Widget</span><span class="p">&gt;[</span>
+          <span class="n">Center</span><span class="p">(</span>
+            <span class="nl">child:</span> <span class="n">Image</span><span class="o">.</span><span class="na">network</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">sampleImageUrl</span><span class="p">),</span>
+          <span class="p">),</span>
+          <span class="n">Text</span><span class="p">(</span>
+            <span class="n">product</span><span class="o">.</span><span class="na">title</span><span class="p">,</span>
+            <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+              <span class="nl">fontWeight:</span> <span class="n">FontWeight</span><span class="o">.</span><span class="na">bold</span><span class="p">,</span>
+            <span class="p">),</span>
+          <span class="p">),</span>
+          <span class="n">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">item</span><span class="o">.</span><span class="na">humanizeName</span><span class="p">),</span>
+          <span class="n">Text</span><span class="p">(</span><span class="s">"</span><span class="si">${product.price.toString()}</span><span class="s">円"</span><span class="p">),</span>
+          <span class="n">Text</span><span class="p">(</span><span class="s">"作った人: </span><span class="si">${product.material.user.name}</span><span class="s">"</span><span class="p">),</span>
+          <span class="c1">// product.material.descriptionは商品の説明</span>
+          <span class="c1">// 空っぽであることもあるので、三項演算子で出すウィジェットを変える</span>
+          <span class="c1">// String.isEmtpyは空文字の時trueを返す</span>
+          <span class="n">product</span><span class="o">.</span><span class="na">material</span><span class="o">.</span><span class="na">description</span><span class="o">.</span><span class="na">isEmpty</span>
+            <span class="o">?</span> <span class="n">Container</span><span class="p">()</span>
+            <span class="o">:</span> <span class="n">_descriptionSection</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">product</span><span class="p">),</span>
+        <span class="p">],</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Widget</span> <span class="n">_descriptionSection</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">Product</span> <span class="n">product</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">Container</span><span class="p">(</span>
+      <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">only</span><span class="p">(</span><span class="nl">top:</span> <span class="mf">16.0</span><span class="p">),</span>
+      <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="nl">children:</span> <span class="p">&lt;</span><span class="n">Widget</span><span class="p">&gt;[</span>
+          <span class="n">Text</span><span class="p">(</span>
+            <span class="s">"このアイテムについて"</span><span class="p">,</span>
+            <span class="nl">style:</span> <span class="n">TextStyle</span><span class="p">(</span>
+              <span class="nl">color:</span> <span class="n">Colors</span><span class="o">.</span><span class="na">grey</span><span class="p">,</span>
+            <span class="p">),</span>
+          <span class="p">),</span>
+          <span class="n">Container</span><span class="p">(</span>
+            <span class="nl">margin:</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mf">16.0</span><span class="p">),</span>
+            <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="na">material</span><span class="o">.</span><span class="na">description</span><span class="p">),</span>
+          <span class="p">),</span>
+        <span class="p">],</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>ここまで実装できたら、商品詳細を開いてみましょう。
+説明が存在する商品であれば、こんな感じに表示されるはずです。
+説明がない商品もあるので、表示されていなかったら別の商品を選んでみてください。</p>
+
+<p><img src="/blog/2020/05/27/flutter-hands-on/product_detail.png" alt="product_detail.png" /></p>
+
+<p>これで商品一覧を表示して、タップで商品詳細に移動できるミニ SUZURI クライアントの完成です。
+お疲れ様でした！</p>
+
+<h2 id="next-step">Next Step</h2>
+
+<p>Flutter への理解と興味が深まった方は、タブによる複数ページの出しわけや、ログイン機能の実装にもチャレンジしてみましょう。
+<code>login</code>というブランチが用意されているので、そちらをチェックアウトするとどんな機能か確認ができます。</p>
+
+<h2 id="おわりに">おわりに</h2>
+
+<p>先日、<a href="https://pepabo.connpass.com/event/174331/">ペパボ・はてな技術大会〜@オンライン</a> にて登壇しました。</p>
+
+<script async="" class="speakerdeck-embed" data-id="2e7a25e43d6345e2bcd470ea613fa5dd" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+
+<p>発表した内容の通り、現在 SUZURI の Android アプリを Flutter で作っています。
+Flutter に興味がある方の採用募集をしていますので、気になった方はぜひご連絡ください！</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/05/27/flutter-hands-on/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/23190387d424e33d6a1a807cea1e0469?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/tokky/">tokky</a>
+          </p>
+          <p class="article__author-description">
+            SUZURIのアプリケーションエンジニアです。この間電子ピアノを買いました。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/osamtimizer" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/osamtimizer" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>PRPLパターンで「ロリポップ！」「ヘテムル」のWordPressを爆速にしよう - Pepabo Tech Portal</title>
+<meta content="リモートワークを長期的に続けるには、何かと工夫が必要だなと感じていて、ずっと筋トレ不足を解消したいと考えていました。昨日、懸垂バーを買ったらネジが一本しか入ってなくて、全く使えない鉄屑を前にネジが一式送られてくるのをまだかと待ちわびて..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/gatsby-lolipop-wordpress.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@linyows" name="twitter:creator" />
+<meta content="PRPLパターンで「ロリポップ！」「ヘテムル」のWordPressを爆速にしよう - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="リモートワークを長期的に続けるには、何かと工夫が必要だなと感じていて、ずっと筋トレ不足を解消したいと考えていました。昨日、懸垂バーを買ったらネジが一本しか入ってなくて、全く使えない鉄屑を前にネジが一式送られてくるのをまだかと待ちわびて..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"PRPLパターンで「ロリポップ！」「ヘテムル」のWordPressを爆速にしよう","author":{"@type":"Person","name":"linyows"},"datePublished":"2020-04-30T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/gatsby-lolipop-wordpress.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/gatsby/" class="tag-default">Gatsby</a>
+      <a href="/tags/wordpress/" class="tag-default">WordPress</a>
+      <a href="/tags/github/" class="tag-default">GitHub</a>
+      <a href="/tags/ロリポップ/" class="tag-default">ロリポップ</a>
+      <a href="/tags/ヘテムル/" class="tag-default">ヘテムル</a>
+  </div>
+  <time class="article__time" datetime="2020-05-01">
+    2020-05-01
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/">PRPLパターンで「ロリポップ！」「ヘテムル」のWordPressを爆速にしよう</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/gatsby/" class="tag-default">Gatsby</a>
+      <a href="/tags/wordpress/" class="tag-default">WordPress</a>
+      <a href="/tags/github/" class="tag-default">GitHub</a>
+      <a href="/tags/ロリポップ/" class="tag-default">ロリポップ</a>
+      <a href="/tags/ヘテムル/" class="tag-default">ヘテムル</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/gatsby-lolipop-wordpress.png" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>リモートワークを長期的に続けるには、何かと工夫が必要だなと感じていて、ずっと筋トレ不足を解消したいと考えていました。昨日、懸垂バーを買ったらネジが一本しか入ってなくて、全く使えない鉄屑を前にネジが一式送られてくるのをまだかと待ちわびているlinyowsです。みなさん元気にお過ごしですか？</p>
+
+<p>今日は、「<a href="https://tech.pepabo.com/2020/03/11/github-actions-for-lolipop-and-heteml/">GitHub Actionsで「ロリポップ！」「ヘテムル」をもっと便利に使おう</a>」の記事の続編？にあたる、ブログやサイトを作る上で欠かせない<a href="https://ja.wordpress.org/">WordPress</a>を、低コストに爆速にする方法をご紹介します。少し、難易度は上がるかもしれません。</p>
+
+<p><a href="https://ja.wordpress.org/">WordPress</a>は、利用方法の一つとしてレンタルサーバーに設置して使います。レンタルサーバーは、サーバーリソースを利用者と共有することで安価になるのですが、リソースを共有している以上、パフォーマンスに優れているわけではありません。Googleは、マルチデバイス時代における、Webサイトの新しいアーキテクチャであるPRPL（パープル）パターンを提唱しています。ちなみに、PRPLパターンは、<a href="https://en.wikipedia.org/wiki/Progressive_web_application">Progressive Web Application（PWA）</a>を実現する手法になります。この、PRPLパターンを<a href="https://ja.wordpress.org/">WordPress</a>に組み合わせることで、WordPressで管理するサイトが体感的に速く表示されるようになるのです。</p>
+
+<h2 id="prplパターン">PRPLパターン</h2>
+
+<p>PRPL（パープル）パターンは、信頼性の低いネットワークを使うことがあるスマートフォンやその他のデバイスのために、Googleがユーザー体験向上のために提唱しているWebサイトのアーキテクチャです。具体的には以下のキーワードとなります。</p>
+
+<ul>
+  <li><strong>P</strong>ush or <strong>P</strong>reload</li>
+  <li><strong>R</strong>ender</li>
+  <li><strong>P</strong>re-cache</li>
+  <li><strong>L</strong>azy-load</li>
+</ul>
+
+<p>重要なリソースをPush（現状現実的にはPreload（事前ロード））し、初期ルートをRendering。他のリソースをPre-cache（事前キャッシュ）して、最後に重要では無いリソースをLazy-load（遅延ロード）するというものです。要は、リソースの読み込みに優先度をつけて表示し、リソースを事前にキャッシュしておくことでサイトを高速に表示するというものです。詳細については、<a href="https://web.dev/apply-instant-loading-with-prpl/">web.dev</a>の記事を読んでいただければと思います。</p>
+
+<h2 id="gatsbyとgridsome">GatsbyとGridsome</h2>
+
+<p><a href="https://ja.reactjs.org/">React</a>や<a href="https://jp.vuejs.org/">Vue.js</a>もしくは<a href="https://ja.nuxtjs.org/">Nuxt.js</a>などを使えば、PRPLパターンなアプリを作ることはできますが、自前で一からやろうとするとそれなりに大変です。もちろん、自由度は高いので仕事で使う分にはいいのですが、個人ブログや小規模のサイトだとコストと見合わずあまりマッチしません。そこで、<a href="https://www.gatsbyjs.org/">Gatsby</a>や<a href="https://gridsome.org/">Gridsome</a>の登場です。<a href="https://www.gatsbyjs.org/">Gatsby</a>は、<a href="https://jekyllrb.com/">Jekyll</a>や<a href="https://gohugo.io/">Hugo</a>といった静的サイトジェネレーターといわれる部類のもので、先述の<a href="https://www.gatsbyjs.org/docs/prpl-pattern/">PRPLパターンに近い形式で静的サイトが作られるのが特徴</a>です。つまり、<a href="https://www.gatsbyjs.org/">Gatsby</a>を使うだけで楽して高速なサイトを構築できるのです。また、データをQueryで操作できる<a href="https://graphql.org/">GraphQL</a>によって、必要なものだけを効率的に取得するというのもユニークなとこです。では、データソースはどうするのかというと、MarkdownやJSON、YAMLのようなファイルやCMSやその他のAPIから選択して使うことになります。それらを自作することもできます。<a href="https://www.gatsbyjs.org/">Gatsby</a>は<a href="https://ja.reactjs.org/">React</a>を使って実装されており、<a href="https://gridsome.org/">Gridsome</a>は<a href="https://www.gatsbyjs.org/">Gatsby</a>インスパイアの<a href="https://jp.vuejs.org/">Vue.js</a>で実装されているツールです。今回は、<a href="https://www.gatsbyjs.org/">Gatsby</a>を使用して説明しますが、<a href="https://jp.vuejs.org/">Vue.js</a>に馴染み深い方は<a href="https://gridsome.org/">Gridsome</a>を選択するのも良いでしょう。同様のことができます。</p>
+
+<h2 id="wordpressと組み合わせ">WordPressと組み合わせ</h2>
+
+<p>前置きはそれくらいにして、「<a href="https://lolipop.jp/">ロリポップ！</a>」や「<a href="https://heteml.jp/">ヘテムル</a>」のWordPressを爆速にするという本題に戻りましょう。今回は、ロリポップ！に用意したWordPressとGatsbyリポジトリをGitHubホストする構成で進めます。ハイレベルアーキテクチャとして以下の図になります。上の3つの黒い部分がユースケースです。ロリポップ側のNginxやApacheまたはMySQLは、サービス側の仕様になります。</p>
+
+<p>WordPressで記事を書いたり、サイトのコードを変更し <code>git push</code> したら自動的にロリポップ！にある静的ファイルが更新されるシステムです。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0002.png" alt="200430-0002.png" /></p>
+
+<h3 id="使用するもの">使用するもの</h3>
+
+<p>以下のサービスやツールを使用します。</p>
+
+<ul>
+  <li>ロリポップ！スタンダードプラン（SSHが使えるプランで一番安価なのがスタンダード。可能であればハイスピードプランの方が好ましいでしょう）
+    <ul>
+      <li>WordPress
+        <ul>
+          <li>Plugin: WPGraphQL</li>
+          <li>Plugin: GitHub Actions Hooks</li>
+          <li>Plugin: Headless Mode</li>
+        </ul>
+      </li>
+      <li>独自ドメイン（ロリポップ！が提供するドメインでもOKです）</li>
+    </ul>
+  </li>
+  <li>Gatsby App
+    <ul>
+      <li>Gatsby WPGraphQL Starter</li>
+    </ul>
+  </li>
+  <li>GitHub Repository
+    <ul>
+      <li>GitHub Actions（GatsbyのビルドとSCPでデプロイ）</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="wordpressのセットアップ">WordPressのセットアップ</h2>
+
+<p>まずは、<a href="https://lolipop.jp/order/form/?plan_5">ロリポップ！のスタンダードプラン</a>で申込みます（安心してください！クレカ登録無しでお試しで10日間使えます）。申込みが完了するとユーザー専用ページというコンソールサイトへ遷移します。</p>
+
+<h3 id="独自ドメインの設定">独自ドメインの設定</h3>
+
+<p>独自ドメインを持っている場合は、左のナビゲーションから <code>サーバーの管理・設定</code> →  <code>独自ドメインの設定</code> から進んで、ドメインのセットアップを行いましょう。公開フォルダーは、わかりやすいようにドメインに <code>public</code> フォルダを掘った形にします。静的サイトをホストする想定なので、アクセラレーターを利用します。ちなみに、ドメインのセットアップは最長で1時間かかるので少し待ちます。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0005.png" alt="200430-0005.png" /></p>
+
+<h3 id="sshの有効化">SSHの有効化</h3>
+
+<p>ドメインの設定を待っている間に、次に進みましょう。後に行うWordPressのプラグインインストールに <code>git</code> を使ったり、ビルドした静的サイトをSCPでデプロイしたりするので、 <code>サーバーの管理・設定</code> → <code>SSH</code> から SSHを有効にします。有効にすると、SSHの接続情報が表示されます。この情報はいつでもこのページから参照できます。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0006.png" alt="200430-0006.png" /></p>
+
+<h3 id="サブドメインの設定">サブドメインの設定</h3>
+
+<p>WordPressを動かすためのサブドメインを設定します。ここでは、 <code>assets</code> というサブドメインにしました。また、このサブドメインはWordPressを使うので、Webサーバーのキャッシュはしない方が好ましいです。念のために <code>アクセラレーターを有効にする</code> のチェックを外しておきます。公開フォルダーは、Bare Domainと同じくドメインと同様にしておきます。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0009.png" alt="200430-0009.png" /></p>
+
+<h3 id="ssl証明書の設定">SSL証明書の設定</h3>
+
+<p>独自ドメインを設定したら、SSLで通信したいので、Let's Encryptの証明書を発行します。 <code>セキュリティ</code> →  <code>独自SSL証明書導入</code> からドメインを選択して設定ボタンを押しましょう。</p>
+
+<p>ロリポップ！提供ドメインを使用する場合は、コンソールサイトのホームに SSL用のドメインが表示されています。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0007.png" alt="200430-0007.png" /></p>
+
+<h3 id="wordpress簡単インストール">WordPress簡単インストール</h3>
+
+<p>WordPressをインストールしていきましょう。 <code>サイト作成ツール</code> → <code>WordPress簡単インストール</code> から行います。先ほど設定したサブドメインを選択し、WordPressで使うデータベースは自動作成、WordPressで作るサイトのタイトルやユーザ情報を入力します。メールアドレスは、利用するGatsby Starterがアイコン表示にGravatarを使うので、Gravatarの登録があるものが良いです。</p>
+
+<p>今回、WordPressの作るページ（View）は使わずGatsbyによって作られる静的サイトを使用します。WordPressはCMSとしての役割のみで、Headless APIとして使用します。このため、"検索エンジンによるサイトのインデックスを許可する" はチェックを外します。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0010.png" alt="200430-0010.png" /></p>
+
+<h3 id="wordpressのpluginをインストール">WordPressのPluginをインストール</h3>
+
+<p>WordPressにログインしたくなる気持ちを差し置いて、WordPressのPluginをCLIでインストールていきます。なぜCLIなのかというと、WordPress Plugin LibraryにUploadされていないPluginを使うので、Gitリポジトリからcloneして入れます。 <code>git clone</code> するために、SSHの有効化で取得した接続情報を使ってホストされたWebサーバーにログインし、先ほどインストールしたWordPressのPluginディレクトリで各プラグインを <code>git clone</code> します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c">## ssh boy.jp-linyows@ssh.lolipop.jp -p2222</span>
+boy.jp-linyows@ssh.lolipop.jp<span class="s1">'s password:
+$ cd web/assets.lolipo.me/public/wp-content/plugins
+$ git clone --depth 1 https://github.com/Shelob9/headless-mode.git
+$ git clone --depth 1 https://github.com/wp-graphql/wp-graphql.git
+$ git clone --depth 1 https://github.com/wp-graphql/wp-graphiql.git
+$ git clone --depth 1 https://github.com/linyows/wp-github-actions-hooks.git
+</span></code></pre></div>
+<h4 id="headless-mode">Headless Mode</h4>
+
+<p>WordPressが作るページにリダイレクトを入れてWordPressをHeadlessにしてくれるPluginです。</p>
+
+<h4 id="wpgraphql">WPGraphQL</h4>
+
+<p>WordPressは、標準でREST APIを提供していて、GatsbyもDataSourceをWordPressにする機能があります。しかし、Gatsbyのビルド時にWordPress REST APIに対してリクエストが増えてしまうので、あまりレンタルサーバー向きではありません。そこで、GraphQL APIを提供するPluginを使います。</p>
+
+<h4 id="wpgraphiql">WPGraphiQL</h4>
+
+<p>WPGraphQLをWordPress内でクエリを確認できるプラグインです。確認するのに便利というだけで、GatsbyにもGraphQLのクエリを見るインターフェースがありますので、必須ではありません。</p>
+
+<h4 id="github-actions-hooks">GitHub Actions Hooks</h4>
+
+<p>WordPressの記事や個別ページを公開したり更新したりすると、指定のリポジトリのGitHub Action用のWorkflow実行Endpointを叩くプラグインです。GitHubのPersonal Access Tokenが必要です。</p>
+
+<h3 id="wordpress-pluginの設定">WordPress Pluginの設定</h3>
+
+<p>WordPressの設定ファイルである <code>wp-config.php</code> は、簡単インストールからのちにパーミッションが OwnerのRead Onlyに設定されています。一時的に変更したら元に戻しておきます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">cd </span>web/assets.lolipo.me/public
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> wp-config.php
+<span class="nt">-r--------</span> 1 boy.jp-linyows LolipopUser 4308 2020-04-28 22:34 wp-config.php
+<span class="nv">$ </span><span class="nb">chmod </span>600 wp-config.php
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; wp-config.php
+&gt; define('GITHUB_ACTIONS_HOOKS_API', 'https://api.github.com/repos/linyows/blog-on-lolipop/dispatches');
+&gt; define('GITHUB_ACTIONS_HOOKS_TOKEN', 'xxxxxxxxxxxxxxxxxxxxx');
+&gt; define('HEADLESS_MODE_CLIENT_URL', 'https://assets.lolipo.me/wp-admin');
+&gt; EOF
+</span><span class="nv">$ </span><span class="sh">chmod 400 wp-config.php
+</span></code></pre></div>
+<p>後で、Gatsbyで作成するAppをGitHubへ <code>git push</code> する予定ですが、ここでもうAPIの実行先としてRepositoryを設定しておきます。GitHubのTokenは、RepositoryへのRead権限を付与したPersonal Access Tokenを発行して使います。</p>
+
+<p>Personal Access Token: <a href="https://github.com/settings/tokens">https://github.com/settings/tokens</a></p>
+
+<p>ここでは、Headless Client URLをWordPressのログインURLとすることでWordPressのViewを非表示にしつつログインしやすくしましたが、静的サイトのドメインにしても良いでしょう。</p>
+
+<h3 id="wordpress-pluginの有効化">WordPress Pluginの有効化</h3>
+
+<p>Pluginの有効化は、WordPressにログインして先ほど <code>git clone</code> で入れた4つのPluginをポチポチ有効化していきます。WordPressの左ナビゲーションに、GraphiQLが現れています。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0011.png" alt="200430-0011.png" /></p>
+
+<h2 id="gatsby-appの作成">Gatsby Appの作成</h2>
+
+<p>手元のマシンにNode.jsが入っている想定で、GatsbyのCLIツールをインストールします。そして、WPGraphQLを使う前提になっているGatsby Starterを使ってプロジェクトを作成します。このStarterは <code>GATSBY_API</code> という環境変数をみるようになっているので、WordPressのドメインを設定します。では、Gatsbyを開発モードで起動し、 <code>[localhost:8000](http://localhost:8000)</code> を見てみましょう。</p>
+
+<div class="highlight"><pre class="highlight jsx"><code><span class="nx">$</span> <span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">gatsby</span><span class="o">-</span><span class="nx">cli</span>
+<span class="nx">$</span> <span class="nx">gatsby</span> <span class="k">new</span> <span class="nx">blog</span><span class="o">-</span><span class="nx">on</span><span class="o">-</span><span class="nx">lolipop</span> <span class="nx">https</span><span class="p">:</span><span class="c1">//github.com/linyows/gatsby-starter-wpgraphql</span>
+<span class="nx">$</span> <span class="nx">cd</span> <span class="nx">blog</span><span class="o">-</span><span class="nx">on</span><span class="o">-</span><span class="nx">lolipop</span>
+<span class="nx">$</span> <span class="k">export</span> <span class="nx">GATSBY_API</span><span class="o">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//assets.lolipo.me</span>
+<span class="nx">$</span> <span class="nx">npm</span> <span class="nx">run</span> <span class="nx">develop</span>
+<span class="nx">$</span> <span class="nx">open</span> <span class="nx">http</span><span class="p">:</span><span class="c1">//localhost:8000</span>
+</code></pre></div>
+<p>WordPressのデフォルト記事が見えていたら成功です。WordPressのGraphQL APIから取得した情報によってサイトが表示されています。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0012.png" alt="200430-0012.png" /></p>
+
+<p>このStarterは、TypeScriptで作れられているため、GatsbyのBuildのタイミングでGraphQLのクエリの型情報を動的に <code>./types/graphql-types.d.ts</code> へ出力します。これは <code>git commit</code> します。</p>
+
+<h2 id="github-repositoryとworkflowの準備">GitHub RepositoryとWorkflowの準備</h2>
+
+<p>Gatsby Starterには、 <code>.github/workflows/deploy-and-deploy.yml</code> という<a href="https://github.com/actions/setup-node">node.jsランタイムでビルドを行うWorkflow</a>と <a href="https://github.com/appleboy/scp-action">SCP deployを行うWorkflow</a>が用意されています。実際には、ymlファイルを見ると後半がコメントアウトされているのでコメントアウトを解除し <code>git commit</code> します。</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">name</span><span class="pi">:</span> <span class="s">Build and Deploy</span>
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">repository_dispatch</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">master</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">build</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">strategy</span><span class="pi">:</span>
+      <span class="na">matrix</span><span class="pi">:</span>
+        <span class="na">node-version</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">12.x</span><span class="pi">]</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v1</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run builds and deploys with ${{ matrix.node-version }}</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-node@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">node-version</span><span class="pi">:</span> <span class="s">${{ matrix.node-version }}</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">npm install and build</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">GATSBY_API</span><span class="pi">:</span> <span class="s">${{ secrets.GATSBY_API }}</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">npm i -D</span>
+        <span class="s">npm run build</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">deploy by scp</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">appleboy/scp-action@master</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">${{ secrets.HOST }}</span>
+        <span class="na">username</span><span class="pi">:</span> <span class="s">${{ secrets.USERNAME }}</span>
+        <span class="na">password</span><span class="pi">:</span> <span class="s">${{ secrets.PASSWORD }}</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="s">${{ secrets.PORT }}</span>
+        <span class="na">source</span><span class="pi">:</span> <span class="s">${{ secrets.SOURCE }}</span>
+        <span class="na">target</span><span class="pi">:</span> <span class="s">${{ secrets.TARGET }}</span>
+</code></pre></div>
+<p>続いて、GitHubに <code>blog-on-lolipop</code> という名前で新しいRepositoryを作ります。作成したら、GitHub Secretsに以下の環境変数を追加しましょう。先ほどのGitHub Actions内で定義した環境変数の呼び出し先になります。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c">## For gatsby build</span>
+<span class="nv">GATSBY_API</span><span class="o">=</span>assets.lolipo.me
+
+<span class="c">## For deploy by SCP</span>
+<span class="nv">HOST</span><span class="o">=</span>ssh.lolipop.jp
+<span class="nv">USERNAME</span><span class="o">=</span>boy.jp-linyows
+<span class="nv">PASSWORD</span><span class="o">=</span>xxxxxxxxxxxxxxxxxxxx
+<span class="nv">PORT</span><span class="o">=</span>2222
+<span class="nv">SOURCE</span><span class="o">=</span>public/<span class="k">*</span>
+<span class="nv">TARGET</span><span class="o">=</span>web/lolipo.me
+</code></pre></div>
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0015.png" alt="200430-0015.png" /></p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0016.png" alt="200430-0016.png" /></p>
+
+<p>ここまで完了したら、手元のGatsby AppをPush しましょう。GitHub Workflowが動いて、しばらくすると指定したロリポップ！のディレクトリに、ビルド済みの静的ファイルがデプロイされているはずです。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>git remote add origin git@github.com:linyows/blog-on-lolipop.git
+<span class="nv">$ </span>git push <span class="nt">-u</span> origin master
+</code></pre></div>
+<p>実際にアクセスしてみましょう。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>open https://lolipo.me
+</code></pre></div>
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0017.png" alt="200430-0017.png" /></p>
+
+<h2 id="記事を書いて動作確認">記事を書いて動作確認</h2>
+
+<p>WordPressの管理ページから新規投稿を行いましょう。投稿を公開するボタンからGitHub Actionsが実行され、何分かのちに投稿がサイトの方に自動的に反映されるのが確認できるでしょう。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0019.png" alt="200430-0019.png" /></p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0020.png" alt="200430-0020.png" /></p>
+
+<p>Gatsby Starter WPGraphQLは、WordPressのメニューの設定と連動しているので、メニューに個別ページを割り当てることで、サイトのグローバルナビゲーションが反映されます。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0022.png" alt="200430-0022.png" /></p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0023.png" alt="200430-0023.png" /></p>
+
+<h2 id="パフォーマンスの変化">パフォーマンスの変化</h2>
+
+<p>WordPressのプラグインページからHeadless Modeプラグインを停止して、WordPress生のページとGatsbyが作った静的サイトをLighthouseで評価してみましょう。</p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0025.png" alt="200430-0025.png" /></p>
+
+<p><img src="/blog/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/200430-0026.png" alt="200430-0026.png" /></p>
+
+<p>記事数が少ないのと記事中に画像を使ってないため、素のWordPressでもいい線いってる模様です（実はもっと評価低いと思っていたのでした）。しかし、体感的にはWordPressのサイトはページ遷移時に少しもたつくかなという感じはあります。Gatsbyの方は、PRPLパターンでコンテンツを先読みしているので、申し分ないページ表示速度です。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p><a href="https://ja.wordpress.org/">WordPress</a>に<a href="https://www.gatsbyjs.org/">Gatsby</a>を組み合わせることで、レンタルサーバーの「<a href="https://heteml.jp/">ロリポップ！</a>」でも体感的に表示が速いサイトを構築できました。また、WordPressのプラグイン、<a href="https://github.co.jp/features/actions">GitHub Actions</a>を使うことで、記事の公開や更新を自動的にサイトに反映することができました。別ブランドレンタルサーバーの「<a href="https://heteml.jp/">ヘテムル</a>」でも同様にできるはずです。</p>
+
+<p>ここで使っているサービスは「<a href="https://lolipop.jp/">ロリポップ！</a>」と<a href="https://github.co.jp/features/actions">GitHub Actions</a>なのですが、Webサーバーに依存しない形式でサイトを提供することができています。古くからあるレンタルサーバーがモダンな<a href="https://jamstack.org/">JAMStack</a>（JavaScript、API、Markupの構成のもの）になったと言えるでしょう。COVID-19のゴールデンウィーク真っ只中ではありますが、皆様が守るべき <a href="https://twitter.com/hashtag/stayhome">#stayhome</a> の糧になれば幸いです。(…このサイトを速くしないといけないなぁ）</p>
+
+<h3 id="今回の成果物">今回の成果物</h3>
+
+<ul>
+  <li>https://lolipo.me/</li>
+  <li>https://github.com/linyows/blog-on-lolipop</li>
+</ul>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/05/01/wordpress-on-lolipop-and-heteml-to-faster-by-prpl-parttern/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/5d769d109697012317c09c6a27a6a4bf?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/linyows/">linyows</a>
+          </p>
+          <p class="article__author-description">
+            最近はDIYに力を注いでいて、庭に設置するガーデニング用の花壇を設計中。ジグゾーと丸ノコが欲しい。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/linyows" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/linyows" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

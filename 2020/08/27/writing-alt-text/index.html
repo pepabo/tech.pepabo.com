@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>alt属性をよくわかっていなかった私が代替テキストを書けるようになった話 - Pepabo Tech Portal</title>
+<meta content="こんにちは。最近の猛暑に生存の危機を感じています、コーポレートデザインチームのmewmo(@mewmoppel)です。
+
+突然ですがみなさん、alt属性ってご存知ですか？
+
+alt属性とは、HTML文書においてimg要素に付随する属性..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2020/08/27/writing-alt-text/eye-catch.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@mewmoppel" name="twitter:creator" />
+<meta content="alt属性をよくわかっていなかった私が代替テキストを書けるようになった話 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="こんにちは。最近の猛暑に生存の危機を感じています、コーポレートデザインチームのmewmo(@mewmoppel)です。
+
+突然ですがみなさん、alt属性ってご存知ですか？
+
+alt属性とは、HTML文書においてimg要素に付随する属性..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"alt属性をよくわかっていなかった私が代替テキストを書けるようになった話","author":{"@type":"Person","name":"mewmo"},"datePublished":"2020-08-26T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2020/08/27/writing-alt-text/eye-catch.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-writing-alt-text">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/ライティング/" class="tag-default">ライティング</a>
+      <a href="/tags/アクセシビリティ/" class="tag-default">アクセシビリティ</a>
+      <a href="/tags/alt/" class="tag-default">alt</a>
+  </div>
+  <time class="article__time" datetime="2020-08-27">
+    2020-08-27
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/08/27/writing-alt-text/">alt属性をよくわかっていなかった私が代替テキストを書けるようになった話</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/ライティング/" class="tag-default">ライティング</a>
+      <a href="/tags/アクセシビリティ/" class="tag-default">アクセシビリティ</a>
+      <a href="/tags/alt/" class="tag-default">alt</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2020/08/27/writing-alt-text/eye-catch.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/08/27/writing-alt-text/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>こんにちは。最近の猛暑に生存の危機を感じています、コーポレートデザインチームのmewmo(<a href="https://twitter.com/mewmoppel">@mewmoppel</a>)です。</p>
+
+<p>突然ですがみなさん、alt属性ってご存知ですか？</p>
+
+<p>alt属性とは、HTML文書においてimg要素に付随する属性のひとつで、画像によって伝えたい内容を説明するための代替テキストを提供します。最近ではTwitterやInstagramといったSNSでも代替テキストを用意できるようになり、より私たちの生活にとって身近なものになっているのではないでしょうか。</p>
+
+<p>そんなalt属性について、最近私がやってしまった失敗とその改善から学んだことをこの場で紹介したいと思います。</p>
+
+<ol id="markdown-toc">
+  <li><a href="#alt属性はなぜ必要なの" id="markdown-toc-alt属性はなぜ必要なの">alt属性はなぜ必要なの？</a></li>
+  <li><a href="#alt属性のここがよくわかっていなかった" id="markdown-toc-alt属性のここがよくわかっていなかった">alt属性のここがよくわかっていなかった！</a></li>
+  <li><a href="#代替テキストを適切に書くためのコツ" id="markdown-toc-代替テキストを適切に書くためのコツ">代替テキストを適切に書くためのコツ</a>    <ol>
+      <li><a href="#1-画像をなくしてもページの文意が同等レベルで伝わる" id="markdown-toc-1-画像をなくしてもページの文意が同等レベルで伝わる">1. 画像をなくしてもページの文意が同等レベルで伝わる</a></li>
+      <li><a href="#2-スクリーンリーダーで読み上げたときに何の画像なのかが通じる" id="markdown-toc-2-スクリーンリーダーで読み上げたときに何の画像なのかが通じる">2. スクリーンリーダーで読み上げたときに何の画像なのかが通じる</a></li>
+    </ol>
+  </li>
+  <li><a href="#代替テキストの改善トライ" id="markdown-toc-代替テキストの改善トライ">代替テキストの改善トライ</a></li>
+  <li><a href="#まとめ" id="markdown-toc-まとめ">まとめ</a></li>
+</ol>
+
+<h2 id="alt属性はなぜ必要なの">alt属性はなぜ必要なの？</h2>
+
+<p>冒頭でも簡単にalt属性について説明しましたが、そもそもalt属性はなぜ必要なのでしょうか？</p>
+
+<p>alt属性が担う役割として、以下の3つがおおまかに挙げられるかと思います。</p>
+
+<ol>
+  <li>画像を利用できない場合に表示する代替テキストを提供する</li>
+  <li>スクリーンリーダーやウェブブラウザの音声読み上げ機能を利用するときに要求される代替テキストを提供する</li>
+  <li>画像に対して代替テキストがない場合に、代替テキストが空の値であることを伝える</li>
+</ol>
+
+<p>これら3つはいずれも、アクセシビリティや情報の伝達性の観点から非常に重要です。</p>
+
+<p>ウェブコンテンツを対象とするアクセシビリティガイドラインのWCAG2.0でも、達成基準1.1.1において画像を含む非テキストコンテンツに代替テキストを提供することが求められています。</p>
+
+<blockquote>
+  <p>1.1.1 Non-text Content: All non-text content that is presented to the user has a text alternative that serves the equivalent purpose, except for the situations listed below. (Level A)<br />「Web Content Accessibility Guidelines (WCAG) 2.0」より引用</p>
+</blockquote>
+
+<p>利用するブラウザの仕様やネットワークエラー、コンテンツがブロックされた、リンク切れ、といった何らかの理由で画像が読み込めない場合に表示されたり、スクリーンリーダーなどで音声読み上げに使用されるテキストが代替テキストであり、この代替テキストがないと正しい情報にアクセスできません。</p>
+
+<p>そうしたアクセシビリティ向上のためにも、WCAG2.0からの引用文にもあるとおりalt属性では非テキストコンテンツと同等の目的を果たす代替テキストが提供されている必要があります。</p>
+
+<p>また、代替テキストがない場合でも<code>alt=""</code>の形で空の値を示すことで、スムーズに情報を伝えることにつながる場合があります。</p>
+
+<p>HTML5ではある特定の条件を満たした場合にalt属性の省略が可能となっており、「<a href="https://html.spec.whatwg.org/multipage/">HTML Living Standard</a>」の<a href="https://html.spec.whatwg.org/multipage/images.html#alt">4.8.4.4 Requirements for providing text to act as an alternative for images</a>ではこのように規定されています。</p>
+
+<blockquote>
+  <p>In such cases, the alt attribute may be omitted, but one of the following conditions must be met as well:<br />- The img element is in a figure element that contains a figcaption element that contains content other than inter-element whitespace, and, ignoring the figcaption element and its descendants, the figure element has no flow content descendants other than inter-element whitespace and the img element.<br />- The title attribute is present and has a non-empty value.<br />「HTML Living Standard」4.8.4.4 Requirements for providing text to act as an alternative for imagesより引用</p>
+</blockquote>
+
+<p>しかしalt属性自体が存在しない場合、ブラウザの仕様など環境によっては画像のURLやファイル名などが代替テキストとして扱われてしまう場合があり、本来意図する情報伝達を阻害してしまう可能性があります。こうした意図しない挙動を防ぐためには、alt属性に空文字列を入れる方法が有効です。必要に応じて判断するとよいでしょう。</p>
+
+<h2 id="alt属性のここがよくわかっていなかった">alt属性のここがよくわかっていなかった！</h2>
+
+<p>ここまでの説明を踏まえて、今回の失敗について見ていきたいと思います。</p>
+
+<p>以前公開したデザイナーの勉強会のレポート記事「<a href="https://tech.pepabo.com/2020/07/07/designers-meeting-issue10/">OOUIからユーザビリティテストまで、スキル横断的にUIデザインを見る！Designer's MTG #10 UI Design編 レポート！</a>」について、公開後に社外から「いい記事だけど代替テキストはもっとよく書けるのでは？」というフィードバックをいただいたので、まずはその中の1つの画像の例を詳しく見てみます。</p>
+
+<p>まずは改善前の状態をご覧ください。</p>
+
+<p><img src="/blog/2020/08/27/writing-alt-text/img_01.jpg" alt="デザミ#10のレポート記事で使用している発表スライドの画像。画像内容：ユーザーがタスクを選んでからオブジェクトを選択するタスクベースのUIは動詞→名詞の構文になっており、ユーザーがオブジェクトを選んでからそれに対するアクションを自由に選ぶオブジェクトベースのUIは名詞→動詞の構文になっていてユーザーがオブジェクトを直接操作できます。" /></p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="c">&lt;!-- 改善前の代替テキスト --&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_05.jpg"</span> 
+<span class="na">alt=</span><span class="s">"タスクベースとオブジェクトベース"</span><span class="nt">&gt;&lt;/p&gt;</span>
+</code></pre></div>
+<p>改善前の代替テキストは、画像の内容の表題のようになっています。</p>
+
+<p>前述のとおり、alt属性では非テキストコンテンツと同等の目的を果たす代替テキストが提供されている必要があるとWCAG2.0で基準が設けられており、ペパボ社内のWebアクセシビリティ・ガイドラインでも「情報を伝えている画像には、代替テキストを提供する」と定められています。</p>
+
+<p>この画像はタスクベースとオブジェクトベースについて詳しい内容を述べている発表スライドの一部ですが、「タスクベースとオブジェクトベース」という代替テキストだけでは、その詳しい内容についてユーザーは知ることができません。</p>
+
+<p><strong>非テキストコンテンツと同等の目的を果たすためには、その画像を使用している文脈に合わせて、代替テキストで過不足なく説明することが重要なのです。</strong></p>
+
+<h2 id="代替テキストを適切に書くためのコツ">代替テキストを適切に書くためのコツ</h2>
+
+<p>改善のためにあれこれ調べて勉強した結果、代替テキストを適切に書くためには次の2つを意識するとよさそうだということがわかりました。</p>
+
+<ol>
+  <li>画像をなくしてもページの文意が同等レベルで伝わる</li>
+  <li>スクリーンリーダーで読み上げたときに何の画像か通じる</li>
+</ol>
+
+<p>どのように考えたらよいか、ひとつずつ説明していきたいと思います。</p>
+
+<h3 id="1-画像をなくしてもページの文意が同等レベルで伝わる">1. 画像をなくしてもページの文意が同等レベルで伝わる</h3>
+
+<p>冒頭でも説明したとおり、環境やユーザーによっては画像を利用できない場合があり、その場合は画像の代わりに代替テキストが表示されます。その場合でも、ページの文意が画像を見たときと同等レベルで伝わるかどうかがポイントです。そのため代替テキストは必ずしも簡潔に短く書かなければいけないというものではなく、むしろ画像を過不足なく説明するためであれば長いテキストになっても問題はないのです。</p>
+
+<p>たとえば、改善前の例で示したスライド資料の画像の場合、スライドに含まれる文字を起こして代替テキストとすることで、ページの文意を同等に伝えることができます。グラフなどの図を含む資料の場合も、数値などを代替テキストに書き起こすことが望ましいでしょう。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="c">&lt;!-- 改善後の代替テキスト --&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_05.jpg"</span> 
+<span class="na">alt=</span><span class="s">"ユーザーがタスクを選んでからオブジェクトを選択するタスクベースのUIは動詞→名詞の構文になっており、
+ユーザーがオブジェクトを選んでからそれに対するアクションを自由に選ぶオブジェクトベースのUIは名詞→動詞の構文になっていて
+ユーザーがオブジェクトを直接操作できます。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+</code></pre></div>
+<p>ページの文意が同等に伝わるかどうかを脳内だけでイメージするのは難しいので画像を非表示にして代替テキストを表示させるシミュレーションツールを使用すると便利です。Chrome拡張機能「<a href="https://chrome.google.com/webstore/detail/web-developer/bfbameneiokkgbdmiekhjnmfkcnldhhm?hl=ja">Web Developer</a>」を教えてもらったのでインストールしてみました。</p>
+
+<p>Images &gt; Disable Imegesを選択すると、画像が非表示になり、代わりに画像のアイコンと代替テキストが表示されます。見え方は次の画像のような感じなので、前後の文章とのつながりも含めて確認しやすいです。</p>
+
+<p><img src="/blog/2020/08/27/writing-alt-text/img_02.jpg" alt="Chrome拡張機能「Web Developer」で画像を非表示、代わりに画像のアイコンと代替テキストを表示した場合のブラウザの見え方" /></p>
+
+<p>また、逆に代替テキストを空の値でalt属性を設定するほうが、伝えたい文意に沿う場合もあります。</p>
+
+<p>たとえば、イメージ画像として女性の人物写真が使用されている場合、「白い服を着た女性が座って作業をしている」などといった代替テキストを書くことは、逆に情報伝達の混乱を招きかねません。あくまでイメージを沸かせる補助的な位置づけで画像が使用されている場合は、その画像が無くても情報が伝わるため、代替テキストは必要ないのです。</p>
+
+<p>画像を使用している文脈によって、適切なalt属性の書き方は変わります。より具体的にシーンごとのalt属性の書き方を学びたい方は「<a href="https://yuugop.com/articles/practicalaccessiblehtml/pah01.html">altはつけるだけじゃなくて - 実践アクセシブルHTML 第一回</a>」を読んでみてください。</p>
+
+<h3 id="2-スクリーンリーダーで読み上げたときに何の画像なのかが通じる">2. スクリーンリーダーで読み上げたときに何の画像なのかが通じる</h3>
+
+<p>音声読み上げのみで情報を受け取るユーザーにとって、音声を聞き取ったときに十分に伝わる文章となっているかどうかはかなり重要です。読み上げた際にどんな画像なのか、内容がイメージできるかどうかを考えながら代替テキストを書きましょう。</p>
+
+<p>WebアクセシビリティAdvent Calendar2017の5日目の記事「<a href="https://docs.google.com/presentation/d/10MjLH0mqXy3p4qTFNOPoaFz_PAOc0k9nLP_ID4mvnd0/edit#slide=id.p">入門者向け alt属性の書き方アドバイス</a>」では、alt属性を入れるポイントとして次の3つが書かれています。</p>
+
+<blockquote>
+  <p>その1 電話で画像を説明して伝わる<br />その2 画像が表示されてなくてもわかる<br />その3 スクリーンリーダーで読み上げて何の画像なのかが通じる<br />「入門者向け alt属性の書き方アドバイス」より引用</p>
+</blockquote>
+
+<p>「電話で画像を説明して伝わる」は、音声のみを聞き取る相手がイメージしやすい文章になっているかどうかを考えるにあたって、わかりやすい基準になるのではないでしょうか。また、alt属性で提供するのはあくまで画像の代替テキストなので、ページ全体として文意が伝わる状態になっているかどうかは、地の文も含めて全体的に検討するとよいでしょう。</p>
+
+<h2 id="代替テキストの改善トライ">代替テキストの改善トライ</h2>
+
+<p>ここまでのことを踏まえて今回トライした代替テキスト改善のBefore/Afterです。</p>
+
+<p>画像を表示するとさらに長くなってしまうのでこの場では割愛させていただきますが、記事「<a href="https://tech.pepabo.com/2020/07/07/designers-meeting-issue10/">OOUIからユーザビリティテストまで、スキル横断的にUIデザインを見る！Designer's MTG #10 UI Design編 レポート！</a>」では実際の画像も見られますので、気になる方はぜひあわせてご覧ください。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="c">&lt;!-- Before: 改善前の代替テキスト --&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_01.jpg"</span> <span class="na">alt=</span><span class="s">"UXのハニカム構造・UXの4つのレベル"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_02.jpg"</span> <span class="na">alt=</span><span class="s">"ペパボデザインスキームから見るUIの役割"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_03.jpg"</span> <span class="na">alt=</span><span class="s">"Designer's ModelとUser's Model"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_04.jpg"</span> <span class="na">alt=</span><span class="s">"UIデザイン+α"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_05.jpg"</span> <span class="na">alt=</span><span class="s">"タスクベースとオブジェクトベース"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_06.jpg"</span> <span class="na">alt=</span><span class="s">"見極めをミスっている例"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_07.jpg"</span> <span class="na">alt=</span><span class="s">"最初の概念清書図とアップデートした関係"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_08.jpg"</span> <span class="na">alt=</span><span class="s">"UIのワイヤーフレームのBefore/After"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_09.jpg"</span> <span class="na">alt=</span><span class="s">"minneの検索結果の2列表示と3列表示"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_10.jpg"</span> <span class="na">alt=</span><span class="s">"ベリーピッキングモデル"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_11.jpg"</span> <span class="na">alt=</span><span class="s">"試験内容（シチュエーション）と被験者の操作モチベーション"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_12.jpg"</span> <span class="na">alt=</span><span class="s">"実際のユーザビリティテストの様子"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_13.jpg"</span> <span class="na">alt=</span><span class="s">"新卒デザイナーの自己紹介一部"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_14.jpg"</span> <span class="na">alt=</span><span class="s">"Webアクセシビリティ・ガイドラインの位置づけ"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_15.jpg"</span> <span class="na">alt=</span><span class="s">"Webアクセシビリティ・ガイドラインの内容 - インタラクションラベル"</span><span class="nt">&gt;&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- After: 改善後の代替テキスト --&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_01.jpg"</span> <span class="na">alt=</span><span class="s">"UXのハニカム構造では図の中心にvaluable（価値がある）が配置され、その周囲に残りの6つの要素であるaccessible（アクセスできる）、usable（使える）、useful（役に立つ）、findable（見つけられる）、credible（信頼できる）、desirable（望ましい）が等しく配置されています。この周囲に配置された6つの要素によって体験が構成され、これらの組み合わせによって中心のvaluable（価値がある）な体験が生まれます。逆に、これらの6つの要素のうちどれかが欠ければ価値を損なう体験となってしまいます。ここではvaluable（価値がある）を中心に残り6つの要素を均等に配置していますが、7つの要素をピラミッド状に配置した図がUXの4つのレベルです。下から順に、アクセスしやすい、利用しやすい、安心しやすい、満足しやすいの4つのレベルに分けて、アクセスしやすいのレベルにaccessible（アクセスできる）、利用しやすいのレベルにusable（使える）とfindable（見つけられる）、安心しやすいのレベルにuseful（役に立つ）とcredible（信頼できる）、満足しやすいのレベルにvaluable（価値がある）とdesirable（望ましい）がそれぞれ配置されています。このピラミッド構造を見ると下部のレベルに配置された要素が上部のレベルの要素の前提となっており、そのすべての前提としてアクセスできることが体験の土台にあることがわかります。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_02.jpg"</span> <span class="na">alt=</span><span class="s">"ペパボデザインスキームはペパボにおけるデザインという仕事の構造図ですが、その中でもプロダクトの部分を拡大して注目します。サービスとして私たちペパボが提供するツールと、そのツールをユーザーが使うという行動によってプロダクトが成り立ち、ツールを使って起きたことをユーザーが知覚・認識し、意識・行動が変化する一連の流れを体験としてこのプロダクト部分の図では表しています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_03.jpg"</span> <span class="na">alt=</span><span class="s">"システムがどのように動作しているようにみえるか」というメンタルモデルは、「こう思わせたい」というデザイナーの意図（デザイナーズモデル）と、「こう思った」という実際にツールを使ったユーザーの認知（ユーザーズモデル）によって構成されています。この両者のモデルの間にUIが境界面として存在しています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_04.jpg"</span> <span class="na">alt=</span><span class="s">"他のエキスパートスキルから多角的にUIデザインにアプローチする例としては次のようなことが考えられます。たとえば、IAの観点ではユーザーがシステムを理解して使えるためのオブジェクト設計、コミュニケーションデザインの観点ではコンテキストに沿ってユーザーを理解に導くマイクロコピー、エンジニアリングの観点ではシステムモデルを理解したオブジェクト設計と実現可能なUI設計、リサーチの観点では検証に基づく優れたユーザビリティのUI、最後にビジュアルデザインの観点ではユーザーが思わず使ってみたくなる外観のデザインにアプローチすることができます。このようなUIデザイン+αでより良い体験につなげられます。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_05.jpg"</span> <span class="na">alt=</span><span class="s">"ユーザーがタスクを選んでからオブジェクトを選択するタスクベースのUIは動詞→名詞の構文になっており、ユーザーがオブジェクトを選んでからそれに対するアクションを自由に選ぶオブジェクトベースのUIは名詞→動詞の構文になっていてユーザーがオブジェクトを直接操作できます。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_06.jpg"</span> <span class="na">alt=</span><span class="s">"見極めをミスっている例として、「タスクベースのほうが道順もあるし説明的だから、多くのユーザーにとってわかりやすそう！」「オブジェクトベースだと自由度が高すぎて使いこなすまで時間がかかるし、ユーザーは不安になるだろう」といった理由から「とっつきやすさだけをとってタスクベースを採用してしまう」ことが挙げられます。しかしユーザーは時間軸によって変化するものです。最初はタスクベースのほうがわかりやすいかもしれませんが、長期的に使われたり接触頻度の高いプロダクトの場合は自由度が高いOOUIのほうが結果的に生産性を高められます。なのでユーザーの状態を見定めるのが大事です。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_07.jpg"</span> <span class="na">alt=</span><span class="s">"最初の概念清書図では、最初に切り分けた概念だけを並べてオブジェクトの関係性を示そうとしており、ユーザーの操作やその操作を束ねるオブジェクトが抜けています。アップデートした関係図では、用語集をレベル1（概念）とレベル2（UIとユーザ行動）に分割し、関係図もレベル1（概念）にかぶせる形でレベル2（UIとユーザ行動）を追加しています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_08.jpg"</span> <span class="na">alt=</span><span class="s">"UIのワイヤーフレームのBefore/Afterを比較します。Beforeでは左側に検証する文章があり、右側にトーンの名称と校正の提案内容が表示されています。しかし外観では左側はエディターになっているわけではなく、トーンも名称が表示されているだけなので入力できることや選択できることなど、ユーザーの操作が明示されていません。AfterではRaw Text EditorやTone Selectorなど新しく追加されたインタラクションレベルのオブジェクトが反映され、ユーザーの操作とオブジェクトの関係性が明確になり、わかりやすいUIになりました。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_09.jpg"</span> <span class="na">alt=</span><span class="s">"minneの検索結果の2列表示と3列表示を並べて比較してみます。たしかに2列表示では一画面で4点の作品が見えるのに対して、3列表示では一画面で9点の作品が一覧できており、その差は2倍以上です。一方で、3列表示では作品の写真もかなり小さくなり、作品の詳細が2列表示よりも見づらかったり、なかにはお気に入りボタンが作品に被ってしまっているものも見受けられます。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_10.jpg"</span> <span class="na">alt=</span><span class="s">"人は情報を知ろうとする時、そもそも何を知ろうとしているかわかっていません。答えは自明ではありませんし、そもそも問いも自明ではありません。探索する中でインタラクティブに問いを確立していき、そしてそのインタラクションを通して物事を理解していく探索行動のプロセスをベリーピッキングモデルと言います。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_11.jpg"</span> <span class="na">alt=</span><span class="s">"今回のムームードメインのカレンダー連携機能を実装した事例でのユーザービリティテストでは、試験内容（シチュエーション）と被験者の操作モチベーションを次のように設定します。試験内容：「カレンダー連携機能がリリースされたと知ったユーザーは、ログイン後、要素の多いトップページの中でその機能を試すことができるか？」というシチュエーション設定で、存在を認知できるのかを検証。被験者の操作モチベーション：被験者は全員ムームードメインでドメインを取得・所持しているユーザーで、「あなたはexample.comというドメインを所持しており、自動更新は設定しないタイプである。そんな中、ドメインの有効期限をカレンダーに登録できる機能がリリースされた、という情報を得たユーザーは、自動更新設定はしないけど継続する・しないの検討はしたいので、検討し忘れを防ぐためにカレンダー機能を試してみようと思った」という設定で操作をしてもらう。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_12.jpg"</span> <span class="na">alt=</span><span class="s">"実際のユーザビリティテストの様子。ターゲットユーザーと同じ条件で、かつ今回の設計の背景・詳細を一切知らない人物であるkotarokさんを被験者に、実装する前にプロトタイピングツール「Prott」でプロトタイプしたUIを実際に操作してもらっています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_13.jpg"</span> <span class="na">alt=</span><span class="s">"新卒デザイナーの自己紹介スライドから一部抜粋。まりりんは大学院で「公園に旗をさすことで居心地の良い空間と新しいコミュニティを作る提案」をしたことがあり、その提案に使用されているイラストからは提案のメッセージやストーリーが伝わってきます。ぐーちーは「特文」というペンネームで漫画家・イラストレーターをしていて、Webサイト「electromonkey」（https://electromonkey.net/）にその活動内容が掲載されています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_14.jpg"</span> <span class="na">alt=</span><span class="s">"ペパボのWebアクセシビリティ・ガイドラインの位置づけを示すと、WCAGを参照しているAmeba Accessibility Guidelinesやfreeeアクセシビリティー・ガイドラインをさらに参照する形でペパボのWebアクセシビリティ・ガイドラインが成り立っており、ペパボのデザインプリンシプルで規定されている「アクセシブルであること」はこのペパボのWebアクセシビリティ・ガイドラインを参照しています。ペパボデザインプリンシプル→ペパボのWebアクセシビリティ・ガイドライン→Ameba Accessibility Guidelinesやfreeeアクセシビリティー・ガイドライン→WCAGの順に、その内容はシンプルものから複雑なものになっています。"</span><span class="nt">&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"/blog/2020/07/07/designers-meeting-issue10/img_15.jpg"</span> <span class="na">alt=</span><span class="s">"ペパボのWebアクセシビリティ・ガイドラインの内容を一部抜粋した、インタラクションラベルについての記述部分のスクリーンショットです。内容は次のとおりです。見出し：「インタラクションラベル」本文：「インタラクションラベルとは、リンクテキストや、UIの操作を導くボタンのラベルなど、そのラベルを契機にアクションを誘発するような要素、およびそのラベルのことを指します。・インタラクションラベルの予測と期待を合わせる。リンクテキストは、リンク先のページタイトルを使用する。コンテキストによっては、リンク先のタイトルがユーザーの予測に必ずしもマッチしないことがある。その場合はユーザーにとって正しい予測を導くラベルを設定する。・「スクロール」「〜をクリック」「〜ボタンを押してください」のような自己言及的なラベルは避ける。「〜について」「〜はこちら」は書いても情報が増えないので、原則使用しない。・ボタンなどのUIラベルやマイクロコピーについての詳細は、ガイドラインを参照すること。」詳しく学べる資料（それぞれ参照先にリンク）：「エー イレブン ワイ［WebA11y.jp］: リンクテキスト［テキストリンク］、Ameba Accessibility Guidelines: 2.4.4 リンクの目的を理解できるようにする、freeeアクセシビリティー・ガイドライン: リンク・テキストの文言、freeeアクセシビリティー・ガイドライン: テキスト情報の文言とアクセシビリティー"</span><span class="nt">&gt;&lt;/p&gt;</span>
+</code></pre></div>
+<h2 id="まとめ">まとめ</h2>
+
+<p>以上、mewmoから代替テキストの書き方についての失敗と、改善から学んだことについてお届けしました。</p>
+
+<p>まだまだ地の文を含めて見ると改善の余地がある箇所もありますが、alt属性についてしっかり学んだことで画像も含めて記事全体の意図をしっかり考えることができた気がします。ペパボでは社内でWebアクセシビリティ・ガイドラインを制定するなどアクセシビリティの取り組みにも力を入れているところなので、今後もより伝わる記事を目指して適切な代替テキストを心がけていきたいです！</p>
+
+<p>また、今回社外からフィードバックをくださりalt属性の考え方や有効なツールについてレクチャーしてくださったfreee株式会社の伊原力也さん（<a href="https://twitter.com/magi1125">@magi1125</a>）に心より感謝を申し上げます。</p>
+
+<p>それではまた！</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/08/27/writing-alt-text/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/8daf88f56af55f1b68942689f775a25c?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/mewmo/">mewmo</a>
+          </p>
+          <p class="article__author-description">
+            みゅーもと申します。｜元編集者のデザイナー｜コーポレートデザインチーム所属
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/mewmoppel" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/mewmo" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

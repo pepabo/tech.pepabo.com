@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>0xとChatGPTを活用したNode.jsアプリケーションの最適化 - Pepabo Tech Portal</title>
+<meta content="こんにちは！SUZURI事業部デジタルコンテンツチームのyukunです。
+
+最近、SUZURIの一部の機能に使っているNode.jsのアプリケーションが重くなりエラーやタイムアウトが頻発するという事象が起こりました。
+そのアプリケーシ..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/eye_catch.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@hyuta555" name="twitter:creator" />
+<meta content="0xとChatGPTを活用したNode.jsアプリケーションの最適化 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="こんにちは！SUZURI事業部デジタルコンテンツチームのyukunです。
+
+最近、SUZURIの一部の機能に使っているNode.jsのアプリケーションが重くなりエラーやタイムアウトが頻発するという事象が起こりました。
+そのアプリケーシ..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"0xとChatGPTを活用したNode.jsアプリケーションの最適化","author":{"@type":"Person","name":"yukun"},"datePublished":"2023-12-08T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/eye_catch.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-optimizing-nodejs-applications-using-0x-and-chatgpt">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/javascript/" class="tag-default">javascript</a>
+      <a href="/tags/nodejs/" class="tag-default">nodejs</a>
+      <a href="/tags/suzuri/" class="tag-default">suzuri</a>
+  </div>
+  <time class="article__time" datetime="2023-12-09">
+    2023-12-09
+  </time>
+  <h1 class="article__title">
+    <a href="/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/">0xとChatGPTを活用したNode.jsアプリケーションの最適化</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/javascript/" class="tag-default">javascript</a>
+      <a href="/tags/nodejs/" class="tag-default">nodejs</a>
+      <a href="/tags/suzuri/" class="tag-default">suzuri</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/eye_catch.png" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>こんにちは！SUZURI事業部デジタルコンテンツチームのyukunです。</p>
+
+<p>最近、SUZURIの一部の機能に使っているNode.jsのアプリケーションが重くなりエラーやタイムアウトが頻発するという事象が起こりました。
+そのアプリケーションはpuppeteerを使ってHTMLのスクリーンショットを撮りPNG画像として返すExpressサーバーです。</p>
+
+<p>しかし、開発環境やステージング環境では動作していたので、原因はコードの変更によるものではなく、アクセス数の増加によるものだと推測しました。
+まずは、水平スケーリングを行いコンピューティングリソースを増やすことを検討しましたが、アプリケーションの処理自体はそんなに遅くないはずだと思い最適化を試みました。</p>
+
+<p>Node.jsのプロファイリングツールの0xとChatGPTを活用して、数時間で重い処理を特定してレスポンスを２倍速くする改善ができたので紹介します！</p>
+
+<hr />
+<p>この記事は<a href="https://adventar.org/calendars/8997">GMOペパボエンジニア Advent Calendar 2023</a>の9日目になります🎄</p>
+
+<p>おもしろい記事がたくさんあるので、ぜひご覧ください!!</p>
+
+<hr />
+
+<ol id="markdown-toc">
+  <li><a href="#測定ツールの紹介" id="markdown-toc-測定ツールの紹介">測定ツールの紹介</a>    <ol>
+      <li><a href="#heyでベンチマーク" id="markdown-toc-heyでベンチマーク">heyでベンチマーク</a></li>
+      <li><a href="#0xでプロファイリング" id="markdown-toc-0xでプロファイリング">0xでプロファイリング</a></li>
+    </ol>
+  </li>
+  <li><a href="#アプリケーションのパフォーマンスを計測する" id="markdown-toc-アプリケーションのパフォーマンスを計測する">アプリケーションのパフォーマンスを計測する</a>    <ol>
+      <li><a href="#重い処理を特定する" id="markdown-toc-重い処理を特定する">重い処理を特定する</a></li>
+    </ol>
+  </li>
+  <li><a href="#重い処理を改善する" id="markdown-toc-重い処理を改善する">重い処理を改善する</a>    <ol>
+      <li><a href="#chatgptにやってもらう" id="markdown-toc-chatgptにやってもらう">ChatGPTにやってもらう</a></li>
+      <li><a href="#ベンチマーク" id="markdown-toc-ベンチマーク">ベンチマーク</a></li>
+    </ol>
+  </li>
+  <li><a href="#終わりに" id="markdown-toc-終わりに">終わりに</a></li>
+</ol>
+
+<h2 id="測定ツールの紹介">測定ツールの紹介</h2>
+<p>今回の対象のアプリケーションはあまり積極的に開発されているものではなかったので、自分は内部の処理について詳しくありませんでした。
+そこで、コードを読み始めるのではなく、どの処理が重い原因になっているのかを突き止めるために計測をすることにしました。</p>
+
+<p>まずは使った2つのツールを紹介します。</p>
+
+<h3 id="heyでベンチマーク">heyでベンチマーク</h3>
+<p>hey はApacheBenchのようなURLに対してリクエストをして負荷をかけたり、レスポンスを測定してくれるCLIツールです。
+使い勝手や測定結果が見やすいことから個人的に好んで使っています。</p>
+
+<p>GitHubリポジトリ: <a href="https://github.com/rakyll/hey">https://github.com/rakyll/hey</a></p>
+
+<p>例えば、次のようなコマンドで100回のリクエストを50並列で引数に渡したURLに対してリクエストを送ることができます。また、実行結果を集計して、レスポンスタイムやステータスを分かりやすく表示してくれます。実際の測定結果はベンチマークの項目に示します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>hey <span class="nt">-n</span> 100 <span class="nt">-c</span> 50 http://localhost:4000/image.png?id<span class="o">=</span>123456
+</code></pre></div>
+<h3 id="0xでプロファイリング">0xでプロファイリング</h3>
+<p>今回のアプリケーションは本番環境にDatadogやNewRelicなどAPMを導入していなかったので、開発環境でプロファイリングを計測してフレームグラフを表示できるツールを探しました。
+Node.jsの公式ガイドのフレームグラフのページで 0x というパッケージが簡単に使うことができると紹介されていたので採用しました。</p>
+
+<p><a href="https://nodejs.org/en/guides/diagnostics-flamegraph#use-a-pre-packaged-tool">https://nodejs.org/en/guides/diagnostics-flamegraph#use-a-pre-packaged-tool</a></p>
+
+<p>GitHubリポジトリ: <a href="https://github.com/davidmarkclements/0x">https://github.com/davidmarkclements/0x</a></p>
+
+<p>簡単に使い方を紹介すると、npmでグローバルにインストールし、計測対象のJavaScriptのファイルを <code>node</code> コマンドの代わりに <code>0x</code> を指定するだけです。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>0x index.js
+</code></pre></div>
+<p>この状態でNode.jsのアプリケーションが実行されているので、何度か計測したい対象にアクセスを繰り返し、実行を止めます。コマンドを実行したディレクトリに、計測された結果のjsonやフレームグラフを表示するためのhtmlファイルが出力されます。これをブラウザで開くことでフレームグラフの表示と、拡大や表示対象の絞り込みなどの操作ができます。
+実際の画像は次の項目に示します。</p>
+
+<h2 id="アプリケーションのパフォーマンスを計測する">アプリケーションのパフォーマンスを計測する</h2>
+
+<h3 id="重い処理を特定する">重い処理を特定する</h3>
+<p>実際に0xでアプリケーションを実行しながら、heyでベンチマークをかけます。ここでheyを使いベンチマークをするのは計測という意味ではなく、手動でやるよりもプロファイラーの改善の前後の比較をより正確にするためです。</p>
+
+<p>今回のアプリケーションはTypeScriptで書かれているためJavaScriptにプリコンパイルした上で実施します。また、0xの結果が保存されるディレクトリ名がデフォルトでPIDとなっており、複数回やると分かり辛いので <code>--output-dir</code> オプションで任意の名前を指定します。また、 <code>-o</code> オプションをつけることで、計測後にブラウザで計測したHTMLファイルを開いてくれます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>0x <span class="nt">--output-dir</span> before <span class="nt">-o</span> dist/index.js
+🔥  Profiling::1 - - <span class="o">[</span>28/Nov/2023:06:53:59 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:00 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:00 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:01 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:01 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:02 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:02 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:03 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:03 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+::1 - - <span class="o">[</span>28/Nov/2023:06:54:04 +0000] <span class="s2">"GET /iamge.png?id=1234 HTTP/1.1"</span> 200 117609
+🔥  Flamegraph generated <span class="k">in
+</span>file:///Users/yukun/dev/node-app/before/flamegraph.html
+</code></pre></div>
+<p>ここで生成されたフレームグラフは次のようになりました。右上の凡例にあるように重い(hotな)処理ほどピンク色で表示されます。</p>
+
+<p>しかし、大量に処理が積み上がっており重い処理を探すのが困難です。ここで便利な機能があり、下の方にある「app」や「deps」というボタンを操作することでグラフに表示するコードの対象を切り替えることができます。
+<img src="/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/before_graph.png" alt="パフォーマンス改善前の0xが生成したフレームグラフ" /></p>
+
+<p>依存パッケージである「deps」の表示をオフにした結果が以下のグラフです。一気にシンプルになり、実際のアプリケーションの重い処理が一目瞭然になりました。ここでは <code>browser.js</code> に記述してある <code>getScreenshot</code> という関数の実行時間が長く、ピンク色になっていることから、重い処理であると特定できます。
+<img src="/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/before_app_only_graph.png" alt="パフォーマンス改善前の0xが生成したフレームグラフ depsをオフにしてappのグラフを分かりやすく" /></p>
+
+<h2 id="重い処理を改善する">重い処理を改善する</h2>
+<h3 id="chatgptにやってもらう">ChatGPTにやってもらう</h3>
+<p>重い処理の関数が判明したので、とりあえずそのコードを用いてChatGPT(GPT-4)と以下のようなやりとりをしました。</p>
+
+<hr />
+
+<p>自分:</p>
+<blockquote>
+  <p>nodejs, Express, puppeteerを使って、スクリーンショット画像を返すWebサーバーを開発しています。CPUの使用時間が少なくなる様に最適化してください。</p>
+</blockquote>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="nx">puppeteer</span><span class="p">,</span> <span class="p">{</span> <span class="nx">Browser</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">puppeteer</span><span class="dl">'</span>
+
+<span class="k">export</span> <span class="k">async</span> <span class="kd">function</span> <span class="nx">getScreenshot</span><span class="p">(</span><span class="nx">html</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">browser</span><span class="p">:</span> <span class="nx">Browser</span>
+  <span class="kd">let</span> <span class="nx">screenshot</span><span class="p">:</span> <span class="nx">string</span> <span class="o">|</span> <span class="k">void</span> <span class="o">|</span> <span class="nx">Buffer</span>
+
+  <span class="kd">const</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="dl">'</span><span class="s1">--enable-font-antialiasing</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--no-first-run</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--no-sandbox</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--no-zygote</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--disable-gpu</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--disable-dev-shm-usage</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--disable-setuid-sandbox</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">--single-process</span><span class="dl">'</span>
+  <span class="p">]</span>
+
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="nx">browser</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">puppeteer</span><span class="p">.</span><span class="nx">launch</span><span class="p">({</span> <span class="nx">args</span> <span class="p">})</span>
+    <span class="kd">const</span> <span class="nx">page</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">browser</span><span class="p">.</span><span class="nx">newPage</span><span class="p">()</span>
+
+    <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">setViewport</span><span class="p">({</span> <span class="na">width</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="na">height</span><span class="p">:</span> <span class="mi">630</span> <span class="p">})</span>
+    <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span>
+
+    <span class="nx">screenshot</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">screenshot</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">browser</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">await</span> <span class="nx">browser</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">screenshot</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>ChatGPT:</p>
+
+<blockquote>
+  <p>Node.js、Express、およびPuppeteerを使用したWebサーバーでスクリーンショット画像を効率的に取得するために、いくつかの最適化を行うことができます。以下に、パフォーマンス向上に役立つ提案をいくつか挙げます。</p>
+
+  <ol>
+    <li>
+      <p>ブラウザの再利用: 現在のコードでは、getScreenshot関数が呼び出されるたびに新しいブラウザインスタンスが作成されています。これはCPUとメモリの使用率を増加させる要因となります。ブラウザインスタンスを再利用することで、リソースの使用量を減らすことができます。</p>
+    </li>
+    <li>
+      <p>キャッシュとリソースの制限: PuppeteerはデフォルトでWebページのキャッシュやその他のリソースをロードしますが、これらはスクリーンショット取得時には不要です。page.setCacheEnabled(false)を使用してキャッシュを無効化し、不要なリソースのロードを回避します。</p>
+    </li>
+    <li>
+      <p>ページの設定の最適化: ページのビューポートやその他の設定は、必要最小限に保つことが重要です。例えば、スクリーンショットのサイズが小さければ小さいほど、処理にかかる時間とリソースが少なくなります。</p>
+    </li>
+    <li>
+      <p>同時実行の制御: 多数のリクエストが同時に発生した場合、サーバーのリソースが枯渇する可能性があります。リクエストの同時実行数を制限することで、サーバーの安定性を保つことができます。</p>
+    </li>
+  </ol>
+
+  <p>以下に、上記の提案を取り入れた改良版のコード例を示します。</p>
+</blockquote>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="nx">puppeteer</span><span class="p">,</span> <span class="p">{</span> <span class="nx">Browser</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">puppeteer</span><span class="dl">'</span>
+
+<span class="kd">let</span> <span class="nx">browser</span><span class="p">:</span> <span class="nx">Browser</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">getBrowserInstance</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">browser</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="dl">'</span><span class="s1">--no-sandbox</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">--disable-setuid-sandbox</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">--disable-gpu</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">--disable-dev-shm-usage</span><span class="dl">'</span><span class="p">,</span>
+      <span class="dl">'</span><span class="s1">--single-process</span><span class="dl">'</span><span class="p">,</span>
+      <span class="c1">// その他の必要な引数</span>
+    <span class="p">]</span>
+    <span class="nx">browser</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">puppeteer</span><span class="p">.</span><span class="nx">launch</span><span class="p">({</span> <span class="nx">args</span> <span class="p">})</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">browser</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="k">async</span> <span class="kd">function</span> <span class="nx">getScreenshot</span><span class="p">(</span><span class="nx">html</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">browser</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getBrowserInstance</span><span class="p">()</span>
+  <span class="kd">const</span> <span class="nx">page</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">browser</span><span class="p">.</span><span class="nx">newPage</span><span class="p">()</span>
+
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">setCacheEnabled</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">setViewport</span><span class="p">({</span> <span class="na">width</span><span class="p">:</span> <span class="mi">1200</span><span class="p">,</span> <span class="na">height</span><span class="p">:</span> <span class="mi">630</span> <span class="p">})</span>
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span>
+
+  <span class="kd">const</span> <span class="nx">screenshot</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">screenshot</span><span class="p">()</span>
+
+  <span class="k">await</span> <span class="nx">page</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
+
+  <span class="k">return</span> <span class="nx">screenshot</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+  <p>このコードでは、ブラウザインスタンスを再利用し、ページのキャッシュを無効化しています。また、各リクエストで新しいページを作成し、スクリーンショット取得後にはそのページを閉じています。これにより、リソースの使用効率が向上します。</p>
+</blockquote>
+
+<hr />
+
+<p>4つの改善の提案と改良後のコードを示してくれたので、アプリケーションコードを関数を置き換えた結果、特に問題なく動作していました。
+ただ、puppeteerの起動の際に指定するオプション <code>args</code> の項目が少なくなっていたのでそこは修正しました。</p>
+
+<p>そして、0xで再度プロファイリングをした結果が次のようになります。</p>
+
+<p><img src="/blog/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/images/after_app_only_graph.png" alt="パフォーマンス改善後の0x 生成したフレームグラフ depsをオフにしてappのグラフを分かりやすく" /></p>
+
+<p>改善前に比べて <code>getScreenshot</code> の処理時間が短くなり、hotとして表示されなくなりました。ChatGPTの提案通りにブラウザインスタンスを使い回すようにしたことが大きく改善につながったようです。単純な改善ではありますが、あまり慣れていない技術やコードベースで、一から自分でコードリーディングをして特定するよりも圧倒的に速くこの改善策に辿り着くことができました。</p>
+
+<h3 id="ベンチマーク">ベンチマーク</h3>
+
+<p>改善前と改善後のコードにheyでベンチマークをかけて、実際にレスポンスがどのくらい改善されたかを検証します。
+同じURLに100リクエストを50並列で実行しています。</p>
+
+<p>改善前のベンチーマークは以下の通りで、トータルで15.2秒、平均で5.9秒かかっています。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>hey <span class="nt">-n</span> 100 <span class="nt">-c</span> 50 http://localhost:4000/image.png?id<span class="o">=</span>123456
+
+Summary:
+  Total:        15.2360 secs
+  Slowest:      8.3189 secs
+  Fastest:      1.1257 secs
+  Average:      5.9729 secs
+  Requests/sec: 6.5634
+
+  Total data:   11760900 bytes
+  Size/request: 117609 bytes
+
+Response <span class="nb">time </span>histogram:
+  1.126 <span class="o">[</span>1]     |■
+  1.845 <span class="o">[</span>7]     |■■■■■■
+  2.564 <span class="o">[</span>4]     |■■■■
+  3.284 <span class="o">[</span>5]     |■■■■
+  4.003 <span class="o">[</span>4]     |■■■■
+  4.722 <span class="o">[</span>4]     |■■■■
+  5.442 <span class="o">[</span>6]     |■■■■■
+  6.161 <span class="o">[</span>6]     |■■■■■
+  6.880 <span class="o">[</span>4]     |■■■■
+  7.600 <span class="o">[</span>45]    |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  8.319 <span class="o">[</span>14]    |■■■■■■■■■■■■
+
+
+Latency distribution:
+  10% <span class="k">in </span>2.4469 secs
+  25% <span class="k">in </span>4.9068 secs
+  50% <span class="k">in </span>7.1909 secs
+  75% <span class="k">in </span>7.3942 secs
+  90% <span class="k">in </span>7.6566 secs
+  95% <span class="k">in </span>7.8064 secs
+  99% <span class="k">in </span>8.3189 secs
+
+Details <span class="o">(</span>average, fastest, slowest<span class="o">)</span>:
+  DNS+dialup:   0.0125 secs, 1.1257 secs, 8.3189 secs
+  DNS-lookup:   0.0112 secs, 0.0000 secs, 0.0228 secs
+  req write:    0.0000 secs, 0.0000 secs, 0.0001 secs
+  resp <span class="nb">wait</span>:    5.9602 secs, 1.1018 secs, 8.2921 secs
+  resp <span class="nb">read</span>:    0.0001 secs, 0.0000 secs, 0.0001 secs
+
+Status code distribution:
+  <span class="o">[</span>200] 100 responses
+</code></pre></div>
+<p>そして、改善後のベンチーマークが以下の通りで、トータルで7.9秒、平均で3.1秒かかっています。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>hey <span class="nt">-n</span> 100 <span class="nt">-c</span> 50 http://localhost:4000/image.png?id<span class="o">=</span>123456
+
+Summary:
+  Total:        7.9396 secs
+  Slowest:      4.3049 secs
+  Fastest:      0.7439 secs
+  Average:      3.1067 secs
+  Requests/sec: 12.5951
+
+  Total data:   11760900 bytes
+  Size/request: 117609 bytes
+
+Response <span class="nb">time </span>histogram:
+  0.744 <span class="o">[</span>1]     |■
+  1.100 <span class="o">[</span>4]     |■■■
+  1.456 <span class="o">[</span>5]     |■■■■
+  1.812 <span class="o">[</span>5]     |■■■■
+  2.168 <span class="o">[</span>5]     |■■■■
+  2.524 <span class="o">[</span>5]     |■■■■
+  2.881 <span class="o">[</span>5]     |■■■■
+  3.237 <span class="o">[</span>5]     |■■■■
+  3.593 <span class="o">[</span>7]     |■■■■■
+  3.949 <span class="o">[</span>53]    |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  4.305 <span class="o">[</span>5]     |■■■■
+
+
+Latency distribution:
+  10% <span class="k">in </span>1.4903 secs
+  25% <span class="k">in </span>2.5670 secs
+  50% <span class="k">in </span>3.6467 secs
+  75% <span class="k">in </span>3.6946 secs
+  90% <span class="k">in </span>3.8101 secs
+  95% <span class="k">in </span>4.0181 secs
+  99% <span class="k">in </span>4.3049 secs
+
+Details <span class="o">(</span>average, fastest, slowest<span class="o">)</span>:
+  DNS+dialup:   0.0128 secs, 0.7439 secs, 4.3049 secs
+  DNS-lookup:   0.0114 secs, 0.0000 secs, 0.0236 secs
+  req write:    0.0000 secs, 0.0000 secs, 0.0002 secs
+  resp <span class="nb">wait</span>:    3.0938 secs, 0.7194 secs, 4.2789 secs
+  resp <span class="nb">read</span>:    0.0001 secs, 0.0000 secs, 0.0002 secs
+
+Status code distribution:
+  <span class="o">[</span>200] 100 responses
+</code></pre></div>
+<p>平均値で比較すると、レスポンスタイムが約２倍高速化されたという結果になりました🔥</p>
+
+<p>そしてレスポンスタイムが速くなると、スループットも上昇し、サーバーを水平スケーリングしなくても、エラーやタイムアウトが起こるという問題が解消されました。</p>
+
+<p>さらに、サーバーに余裕ができて今まで水平スケールしていたサーバー(コンテナ)の台数を2割ほど減らしてもリクエストを捌けることが分かりコスト削減をすることもできました。</p>
+
+<h2 id="終わりに">終わりに</h2>
+<p>プロファイリングでアプリケーションの重い処理を特定し、ChatGPTに最適化してもらうというフローは、パフォーマンス改善において非常に有効な手段になるという気づきを得ました。</p>
+
+<p>もはや重い処理を特定するという作業もコードとプロファイリングをGPTなどのLLMにそのまま入力して、改善結果を出力するツールとかも実現できそうですね。</p>
+
+<p>ChatGPTはうまく使うとエンジニアにとって強い武器になるので、これからも活用方法を模索していきます。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/12/09/optimizing-nodejs-applications-using-0x-and-chatgpt/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/01c28ada49e15d42d80b7760649b969d?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/yukun/">yukun</a>
+          </p>
+          <p class="article__author-description">
+            新卒3年目Webエンジニア。最近の趣味はパフォーマンスチューニングです。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/hyuta555" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/yuta-hayashi" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

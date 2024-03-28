@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>minne iOSアプリを 90% Swiftにした道のり - Pepabo Tech Portal</title>
+<meta content="2014 年に Apple の新しい汎用的なプログラミング言語として Swift が発表されました。Swift は、それまで Apple プラットフォームのアプリ開発で主流だった言語 Objective-C に比べてモダンで安全性が高..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2020/01/27/swifty/swifty_cake.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@komaji504" name="twitter:creator" />
+<meta content="minne iOSアプリを 90% Swiftにした道のり - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="2014 年に Apple の新しい汎用的なプログラミング言語として Swift が発表されました。Swift は、それまで Apple プラットフォームのアプリ開発で主流だった言語 Objective-C に比べてモダンで安全性が高..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"minne iOSアプリを 90% Swiftにした道のり","author":{"@type":"Person","name":"kojikoji"},"datePublished":"2020-01-26T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2020/01/27/swifty/swifty_cake.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-swifty">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+  </div>
+  <time class="article__time" datetime="2020-01-27">
+    2020-01-27
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/01/27/swifty/">minne iOSアプリを 90% Swiftにした道のり</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2020/01/27/swifty/swifty_cake.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/01/27/swifty/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>2014 年に Apple の新しい汎用的なプログラミング言語として Swift が発表されました。Swift は、それまで Apple プラットフォームのアプリ開発で主流だった言語 Objective-C に比べてモダンで安全性が高いというメリットがあります。それだけでなく、今後 Objective-C が deprecate されてアプリ開発に完全に必要となることも考えられます。</p>
+
+<p>minne では 2015 年に導入し、機能開発と並列してコツコツと Swift 化を行ってきました。
+2017 年には 38% のコードが Swift 化されていましたが、このままのペースで進んでいくと Swift 化を終えるのが 5 年後になってしまうので、改めて目標を「Swift の割合 90 % 達成」として定め、これを推進する体制を整え、 より Swift 化のペースを上げて作業してきました。</p>
+
+<p>そして…</p>
+
+<p>令和元年、2019 年 11 月に…</p>
+
+<p>遂に！！ 目標として定めていた Swift の割合 90% を達成することができました！！！</p>
+
+<p>minne の iOSアプリは 2013 年に誕生し、6 年もの間運用され、コードの行数は 6 万行を超える大規模アプリにまで成長しています。この 90% なので約 54,000 行ものコードを置き換えたことになります。</p>
+
+<p>今回は、長い年月を費やしてこれだけのコードを私たちがどのようにして Swift 化をしてきたのかを紹介していきます。</p>
+
+<h2 id="objective-c-と-swift-の相互利用">Objective-C と Swift の相互利用</h2>
+<p>minne における Swift 化のやり方を紹介する前に、まずは Objective-C と Swift の相互利用する方法を紹介していきます。</p>
+
+<h3 id="swift-in-objective-c">Swift in Objective-C</h3>
+<h4 id="クラスプロトコル">クラス・プロトコル</h4>
+<p>Swift で定義されたクラスやプロトコルを Objective-C コードで利用する方法は以下のエントリに書いているので、そちらをご参照ください。</p>
+
+<p><a href="http://komaji504.hateblo.jp/entry/2016/09/18/021640">Swift の Class, Protocol を Objective-C で使う - ドン・エンジニーア</a></p>
+
+<h4 id="メソッド--プロパティ">メソッド &amp; プロパティ</h4>
+<p>Objective-C から利用する Swift コードには <code>@objc</code> アノテーションを付与します。Swift コードをコンパイルすると、自動で <code>\(プロジェクト名)-Swift.h</code> というヘッダファイルが生成されます。
+これを利用したい <code>.m</code> ファイルで import することでコードを呼び出せるようになります。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">MinneClass</span><span class="p">:</span> <span class="kt">NSObject</span> <span class="p">{</span>
+    <span class="kd">@objc</span> <span class="kd">func</span> <span class="nf">printMinne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"minne"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight objective_c"><code><span class="c1">// MinneClass.m</span>
+<span class="cp">#import &lt;UIKit/UIKit.h&gt;
+#import "minne-Swift.h"
+</span><span class="k">@implementation</span> <span class="nc">ViewController</span><span class="p">:</span> <span class="nc">UIViewController</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">super</span> <span class="nf">viewDidLoad</span><span class="p">];</span>
+    <span class="p">[[</span><span class="n">MinneClass</span> <span class="nf">new</span><span class="p">]</span> <span class="nf">printMinne</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>@objc</code> をクラスの全てのメソッドやプロパティに適用する <code>@objcMembers</code> もありますが、不要なものに対してもつけてしまいやすいので個別に <code>@objc</code> をつけるようにしています。</p>
+
+<p>なお、Objective-C でサポートされていない struct や Bool の Optional 等をプロパティやメソッドの引数の型に指定することはできないので、その場合には別途メソッドを生やしたりする必要があります。</p>
+
+<h3 id="objective-c-in-swift">Objective-C in Swift</h3>
+<p>Objective-C のコードを Swift で利用するには、 Bridging Header を作成する方法と Module Map を作成する方法の2通りがあります。</p>
+
+<h4 id="bridging-header">Bridging Header</h4>
+<p><code>\(プロジェクト名)-Bridging-Header.h</code> というファイルを作り、そこに利用したいコードのある .h ファイルを import します。Bridging Header はグローバルに import されるため、それだけで Swift から利用できるようになります。</p>
+
+<div class="highlight"><pre class="highlight objective_c"><code><span class="c1">// MinneClass.h</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">printMinne</span><span class="p">;</span>
+
+<span class="c1">// MinneClass.m</span>
+<span class="k">@implementation</span> <span class="nc">MinneClass</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">printMinne</span>
+<span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"minne"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">@end</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight objective_c"><code><span class="c1">// minne-Bridging-Header.h</span>
+<span class="cp">#import &lt;MinneClass.h&gt;
+</span></code></pre></div>
+<div class="highlight"><pre class="highlight swift"><code><span class="c1">// ViewController.swift</span>
+<span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="kt">MinneClass</span><span class="p">()</span><span class="o">.</span><span class="nf">printAppName</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="module-map">Module Map</h4>
+<p>Module Map は Bridging Header の上位互換と言え、Module Map により、.h ファイルをモジュール化し、そのモジュールを import することで Objective-C のコードを参照できるようになります。
+Bridging Header とは異なってグローバルに import されず、必要な箇所でのみ import を記述することになるため、依存関係が分かりやすくなります。
+ただ、アプリケーションターゲットでしか使えないため、 Framework 開発には利用できません。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="n">module</span> <span class="n">MinneObjC</span> <span class="p">{</span>
+    <span class="n">header</span> <span class="s">"MinneClass.h"</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight swift"><code><span class="c1">// ViewController.swift</span>
+<span class="kd">import</span> <span class="kt">UIKit</span>
+<span class="kd">import</span> <span class="kt">MinneObjC</span>
+
+<span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+        <span class="kt">MinneClass</span><span class="p">()</span><span class="o">.</span><span class="nf">printAppName</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="お約束">お約束</h2>
+<p>ここからは minne での取り組みについてご紹介します。</p>
+
+<p>Swift 化を進めるにあたって、お約束（ルール）を定めていました。お約束を事前に定めておくことで、効率よく作業を進められたり、同じ議論の繰り返しを避けることができました。</p>
+
+<h3 id="新たに-objective-c-のコードを書かない">新たに Objective-C のコードを書かない</h3>
+
+<p>minne に Swift を導入した当初から定めている、基本的な約束事です。<br />
+Objective-C のクラスに新しくメソッドを追加する必要が出てきた時には、Swift で Extension を生やしてそこにメソッドを定義していきます。</p>
+
+<div class="highlight"><pre class="highlight objective_c"><code><span class="c1">// NG</span>
+<span class="c1">// MinneClass.m</span>
+<span class="k">@implementation</span> <span class="nc">MinneClass</span>
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">printMinne</span>
+<span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"minne"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">@end</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight swift"><code><span class="c1">// OK</span>
+<span class="c1">// MinneClass.swift</span>
+<span class="kd">extension</span> <span class="kt">MinneClass</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">printMinne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">NSLog</span><span class="p">(</span><span class="s">"minne"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Objective-C のコードに手を加える必要が出てきた時には、 最初に関係するコードを Swift 化をしてから新たな処理を追加していきます。
+ただ、特に Objective-C の割合が多い状況では、関係するコードを Swift 化すると芋づる式に Swift 化する箇所が出てきてしまい、影響範囲が広くなり過ぎてしまう場合には、 Objective-C のコードを記述することを妥協していました。</p>
+
+<h3 id="リファクタリングはしない">リファクタリングはしない</h3>
+<p>「新たに Objective-C のコードを書かない」ということもあり、 Objective-C のコードは昔に書かれたもの多く、設計も現在のプロダクトの状況に適していないことがほとんどです。こういうコードを見るとエンジニアである以上リファクタリングをしたくなりますよね。
+ですが、ここはぐっと堪えます。</p>
+
+<p>Swift 化において最も重要なのは、「等価に置き換えること」です。
+リファクタリングをしてしまうと、元のコードと等価であるかという点がコードの差分を見た際に分かりづらくなってしまいます。これを避けるためにリファクタリングは行わないというお約束を設けています。
+ただ、リファクタリングといっても種類も規模も様々なので、変数名のリネームであったり、一部の処理をメソッドに切り出したりといった細かいものに関しては許容しています。</p>
+
+<p>また、Swift 化する人もレビュワーもこうした方がよさそうということは皆思うので、ここのコードをこうしたいとか、今後こうするともっと良いよねという議論も行わないということではなく、むしろ推奨しています。</p>
+
+<h2 id="pull-request-の作り方">Pull Request の作り方</h2>
+<p>Swift 化の手順を書くと、ざっくり以下のようなフローになります。
+この手順を適切な単位でまとめて Pull Request として完成させます。</p>
+
+<ol>
+  <li><strong>Nullability の指定</strong></li>
+  <li><strong>extension 用 Swift ファイルの作成</strong></li>
+  <li><strong>置き換えるメソッドのテストを書く</strong></li>
+  <li><strong>Swift へ書き換え</strong></li>
+  <li><strong>テストを通す</strong></li>
+  <li><strong>呼び出し箇所の置き換え</strong></li>
+  <li><strong>Objectvie-C メソッドの削除</strong></li>
+  <li><strong>3〜7 を繰り返す</strong></li>
+  <li><strong>プロパティを Swift クラスへ移動</strong></li>
+  <li><strong>Objective-C クラスの削除</strong></li>
+  <li><strong>クラスのリネーム</strong></li>
+</ol>
+
+<p>この中からいくつかピックアップして説明していきます。</p>
+
+<h3 id="1-nullability-の指定">1. Nullability の指定</h3>
+<p>Objective-C は Swift と異なって型安全ではありません。そのため、 どんな型の変数に対しても nil を代入できます。型安全な言語と型安全でない言語を相互に利用する場合には型の不一致によるバグが発生し得るため、可能な限り機械的に検知できるように、 Objective-C の段階で Nullable, Nonnull を指定しておきます。
+非常に重要な作業なので、ここの指定に焦点を絞ることができるように、単一の Pull Request にするようにしています。</p>
+
+<p>どのように Nullability を判断するかですが、これはコードを読むしかありません。
+Xcode の Find Call Hierarchy によって対象のプロパティの利用箇所を調査して、nil の代入、初期化処理や nil のハンドリングの有無を確認していきます。</p>
+
+<p>正しく指定できたら利用箇所を修正します。Nullable を指定したプロパティを Swift の文字列リテラル内で展開している場合には <code>Optional(こんにちは)</code> のように表示されてしまうので、文字列リテラル内での参照の有無も要注意です。</p>
+
+<h3 id="3-置き換えるメソッドのテストを書く">3. 置き換えるメソッドのテストを書く</h3>
+
+<p>Swift 化は言語仕様が異なるので想定していない挙動が起こりやすく、これを防ぐためにテストが大活躍します。
+Swift コードに書き換える前に Objective-C のコードを理解して仕様を把握し、それを担保するテストを書きます。これができればもう Swift化 できたようなものです。
+なお、ビュー周り等の箇所で、テストを書くためにやらないといけないことが多すぎる場合はその限りではなく、書けるところだけ書きながら進めていました。</p>
+
+<h3 id="4-swift-へ書き換え">4. Swift へ書き換え</h3>
+
+<p>メインとなる置き換え作業です。ただひたすら Objective-C のコードを Swift に書き換えるだけですが、インターフェースについて注意する必要があります。インターフェースを Swift らしく修正すると、利用箇所を置き換える必要が出てきてしまうことがあります。</p>
+
+<p>例えば、以下のメソッドの Swift へ提供されるインターフェースは、</p>
+
+<div class="highlight"><pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateWithProduct</span><span class="p">:(</span><span class="n">Product</span> <span class="o">*</span><span class="p">)</span><span class="nv">product</span><span class="p">;</span>
+</code></pre></div>
+<p>以下のように、 前置詞 with が引数のラベルへと自動でコンバートされており、 Swift らしくなっています。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">with</span> <span class="nv">product</span><span class="p">:</span> <span class="kt">Product</span><span class="p">)</span>
+</code></pre></div>
+<p>そのため、このメソッドを Swift する際にも上記と同様に定義してあげることで、 呼び出し箇所を修正する必要なく Swift らしさを保つことができます。</p>
+
+<p>一方、以下のメソッドの Swift へ提供されるインターフェースは、</p>
+
+<div class="highlight"><pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">printProduct</span><span class="p">:(</span><span class="n">Product</span> <span class="o">*</span><span class="p">)</span><span class="nv">product</span><span class="p">;</span>
+</code></pre></div>
+<p>以下のように Objective-C と同様のインターフェースとなるため、これを修正してしまうと利用箇所まで修正する必要が出てしまいます。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">printProduct</span><span class="p">(</span><span class="n">_</span> <span class="nv">product</span><span class="p">:</span> <span class="kt">Product</span><span class="p">)</span>
+</code></pre></div>
+<p>そうすると他の作業とコンフリクトが生じやすくなるので、これを避けたい場合には極力インターフェースを変更しないようにします。
+他の作業との調整が取れている場合にはこのタイミングでインターフェースも Swift らしく変えて問題ありません。</p>
+
+<p>また、Objective-C からしか呼ばれていないメソッドに対しては @obj アノテーションを指定する方法もオススメです。これを使うと Objective-C へのインターフェースを別途指定することができるので、 Swift のメソッド定義は Swift らしく行いつつも、 Objective-C は異なるインターフェースを提供し、呼び出し箇所の修正を防ぐことができます。
+ 例えば先ほどのメソッドを以下のように Swift らしく定義したとしても、 @objc アノテーションを用いてインターフェースを別途指定すると、</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">@objc</span><span class="p">(</span><span class="nv">printProduct</span><span class="p">:)</span> <span class="kd">func</span> <span class="nf">print</span><span class="p">(</span><span class="n">_</span> <span class="nv">product</span><span class="p">:</span> <span class="kt">Product</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+</code></pre></div>
+<p>以下のように Objective-C 用のインターフェースが提供され、利用箇所の修正が不要となります。</p>
+
+<div class="highlight"><pre class="highlight objective_c"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">printProduct</span><span class="p">:(</span><span class="n">Product</span> <span class="o">*</span> <span class="n">_Nonnull</span><span class="p">)</span><span class="nv">product</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="9-プロパティを-swift-クラスへ移動">9. プロパティを Swift クラスへ移動</h3>
+<p>メソッドが全て Swift 化されたら残るはプロパティです。
+まずは extension をクラスに書き換えて、</p>
+
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">- extension MinneClass {
+</span><span class="gi">+ class MinneClass {
+</span></code></pre></div>
+<p>プロパティたちを全て Swift クラスに移動します。
+Swift らしくない命名のプロパティはこの時に変えたくなりますが、 4. で書いたように、他の作業とのコンフリクトを調整しながら行います。</p>
+
+<h3 id="11-クラスのリネーム">11. クラスのリネーム</h3>
+<p>この作業だけは必ず単一の PR で行います。
+他の修正が含まれていると、作業ファイルや作業量によっては Git が元のファイルを削除して新しいファイルを作ったと判断する場合があり、そうなると実際に修正した部分の特定が難しくなり、レビューに余計なコストが生じます。
+これを回避し、 Git がリネームのみと判断できるようにするために、リネームのみを単一の Pull Request として出します。</p>
+
+<h2 id="レビュー">レビュー</h2>
+<h3 id="pull-request-の見方">Pull Request の見方</h3>
+<p>「PR の作り方」で書いた通りに作業を進めて Pull Request を出すと、1つの Pull Request に Objective-C のコードの削除と Swift のコードの追加が含まれます。
+削除されたコードと追加されたコードが等価な処理をするかどうかをレビュワーは確認します。
+それぞれコードを比較できると確認しやすいので、以下のようにディスプレイを左右に2分割して、削除したコードと追加したコードを並べて行なうのがオススメです。</p>
+
+<p><img src="/blog/2020/01/27/swifty/swifty_review.png" alt="Pull Request の見方" /></p>
+
+<h3 id="レビュワー">レビュワー</h3>
+<p>私たちのチームは全ての Pull Request のレビュワーを2人で運用しており、Swift 化の Pull Request においても同様に2人としています。</p>
+
+<p>Swift 化を始めた当初は、「書き換えるだけ」なので1人としていました。
+しかし、その「書き換えるだけ」をするためには、両言語の仕様を把握している必要があり、加えて、単調な作業のため思わぬ見落としが発生しやすいです。主にこの2点を要因にバグを生じさせてしまったことがあり、それ以降はレビュワーを2人にして運用するようにしています。</p>
+
+<hr />
+
+<p>ここまでが Swift 化のお作法です。<br />
+<a href="https://twitter.com/yhkaplan">@josh</a> が勉強会で発表した際の資料もあるので、こちらもよかったら見てみてください。</p>
+
+<div class="embed-responsive embed-responsive--17by10 embed-responsive--border">
+  <iframe src="//speakerdeck.com/player/cf60652ccfab47228de4c9399afb85f0" allowfullscreen=""></iframe>
+</div>
+
+<h2 id="時間の確保">時間の確保</h2>
+<p>Swift 化は非常に多くの時間を要する作業です。そこで課題となるのが、この時間をどのようにして確保するかです。<br />
+以下では、 minne で時間確保のために行なった取り組みについてご紹介します。</p>
+
+<h3 id="swift-化スプリント">Swift 化スプリント</h3>
+<p>minne の開発チームは、スクラムをベースに開発を進めており、スプリントの単位を2週間として定めています。<br />
+Swift 化スプリントとは、1つのスプリントを丸々 Swift 化にあてようというものです。当時 iOS アプリエンジニアは3名おり、 全員が Swift 化に取り組みます。
+もちろん機能開発もあるため、 Swift 化スプリントは 3 回に1回の頻度として定めました。</p>
+
+<p>初めのうちは上手く回っていたものの、機能開発とのリソースの取り合いとなってしまいました。</p>
+
+<p>開発する機能の規模によっては、スプリントをまたぐことがあります。そういった場合には、コンテキストスイッチによるコストを少なくしたり、他の施策とコンフリクトしないために、着手したものは最後まで作りきることを優先していました。そうすると、Swift 化を進める人数が 2人、1人と減っていってしまうという事態が発生しました。しかも、頻度としては決して少なくありませんでした。</p>
+
+<p>さらに、事業である以上、緊急度の高い施策が挙がることもあり、こちらも同様に Swift 化を行う人数が減ってしまうことがありました。</p>
+
+<p>こういった場合には、減った分の代わりとして通常スプリントを Swift 化にあてることにしたのですが、管理が複雑になり、徐々に機能しなくなってしまいました。</p>
+
+<h3 id="swift-化担当">Swift 化担当</h3>
+<p>そこで、定期的に Swift 化を全員でガッと進めるやり方ではなく、Swift 化担当を1人置き、一定のペースで常に Swift 化を行う方法に切り替えました。担当はもちろん固定ではなく、持ち回りで行なっていきます。</p>
+
+<p>加えて、見積もりしたタスクをアサインする際には、事前に Swift 化分の時間を事前に確保しておくようにしました。</p>
+
+<p>この方法は以前の Swift 化スプリントに比べて上手くいき、最後までこの方法で運用することができました。</p>
+
+<h3 id="合宿">合宿</h3>
+<p>Swift 化を推進していく中で、2回の合宿を行いました。合宿をすること、そして平日ではなくてあえて休日に行なったこと（もちろん代休有りで費用は会社負担）で、以下のような効果があったと感じています。</p>
+
+<ul>
+  <li>休日なので Swift 化のみに集中できる</li>
+  <li>まとまった時間を確保ででるため影響範囲の広いところに取り掛かりやすい</li>
+  <li>普段と異なる環境でモチベーションアップ</li>
+</ul>
+
+<p>それぞれの合宿の詳細については以下のエントリに書いていますので、興味のある方をそちらをご参照ください。</p>
+
+<ul>
+  <li><a href="http://komaji504.hateblo.jp/entry/2017/03/23/003925">Swift化開発合宿 in 熱海♨️ - ドン・エンジニーア</a></li>
+  <li><a href="https://tech.pepabo.com/2019/11/18/minne-develop-camp-2019/">minneの開発合宿2019に行ってきました - ペパボテックブログ</a></li>
+</ul>
+
+<h2 id="進捗確認">進捗確認</h2>
+<p>進捗の確認するためにツールを導入しました。これらのツールを導入して進捗が分かりやすくすることでモチベーションの維持にも効果があったと思います。</p>
+
+<h3 id="kachikachi">kachikachi</h3>
+<p>Swift 化の目標を割合を 90% と書いていますが、正確には、削除する Objective-C のコードの空行・コメントを除いた行数を目標として定めていました。
+理由としては、以下の通りです。</p>
+
+<ul>
+  <li>Swift コードを大量に追加するだけで割合が増える
+    <ul>
+      <li>既存の Objective-C のコードが削除することが目的</li>
+    </ul>
+  </li>
+  <li>空行・コメントは削除しても意味がない（全くないわけじゃないけど）</li>
+</ul>
+
+<p>これを計測する方法として <a href="https://github.com/komaji/kachikachi">kachikachi</a> という CLI ツールを作りました。以下のようにして利用できます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>kachikachi count —repo<span class="o">={</span>REPO<span class="o">}</span> —milestones<span class="o">={</span>1.0.0 2.0.0<span class="o">}</span> or pull-request-numbers<span class="o">={</span>1 2 3<span class="o">}</span>
+
+path/to/file: deleted 1 lines
+path/to/file: deleted 1 lines
+path/to/file: deleted 6 lines
+path/to/file: deleted 150 lines
+path/to/file: deleted 1 lines
+👋👋👋 total 159 lines 👋👋👋
+</code></pre></div>
+<p>これを申請毎に実行して issue へコメントしています。もちろん CI を用いて自動化しています。</p>
+
+<p><img src="/blog/2020/01/27/swifty/swifty_kachikachi.png" alt="kachikachi の実行結果" /></p>
+
+<h3 id="lattnerbot">LattnerBot</h3>
+<p>Swift の割合は <a href="https://twitter.com/yhkaplan">@josh</a> 作の LattnerBot というボットを用いて通知していました。こちらはリリースフローに合わせてリリースが完了すると Slack へ通知されるように自動化しています。
+視覚的にわかりやすいので、 iOS アプリエンジニア以外からもリアクションが付きやすくてわいわいしやすいです。</p>
+
+<p>90% を達成した際のめでたい通知がこちらです。</p>
+
+<p><img src="/blog/2020/01/27/swifty/swifty_lattnerbot.png" alt="LattnerBot の実行結果" /></p>
+
+<h3 id="tokei">tokei</h3>
+<p>プロジェクト全体の Objectvie-C, Swift のコードの行数を確認する際には <a href="https://github.com/XAMPPRocky/tokei">tokei</a> という CLI ツールを使用していました。
+実行すると下記のように、各言語ごとの空行・コメントを除いた行数が結果が得られます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nt">-------------------------------------------------------------------------------</span>
+ Language            Files        Lines         Code     Comments       Blanks
+<span class="nt">-------------------------------------------------------------------------------</span>
+ C Header               78         2058         1094          558          406
+ JSON                    5            5            5            0            0
+ Objective C            76         6800         4642          721         1437
+ Swift                 718        82273        57451         7172        17650
+ Plain Text              1          227          227            0            0
+ YAML                    1            7            7            0            0
+<span class="nt">-------------------------------------------------------------------------------</span>
+ Total                 879        91370        63426         8451        19493
+<span class="nt">-------------------------------------------------------------------------------</span>
+
+</code></pre></div>
+<h2 id="最後に">最後に</h2>
+<p>以上が私たちの Swift 化の道のりです。</p>
+
+<p>Swift 化 90% を達成した今では、 Objective-C のコードを書くことも読むこともほとんどなくなっており、Swift の新機能もすぐに使うことができたり、言語間によるコンテキストスイッチが無くなったり、安全性を高めることができたりと、日々 Swift 最高だなと思いながら開発できています。</p>
+
+<p>残りの 10% をどうするのかについてですが、Swift 化の目標を 90% として定めたのは、全体のコードのうち 10% のコードはほとんど手を加えない箇所であり、集中的に Swift へ書き換えても恩恵は少ないということが理由だったので、これらのコードを積極的に Swift へ書き換えるということはせずに、触る機会があれば都度書き換えていくことで 100% を目指していきたいと考えています。</p>
+
+<p>Swift を書きたい、minne を開発したいという方がいらっしゃいましたら、お気軽にご連絡ください。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/01/27/swifty/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/fbc1c44860e0fc0b79365766cd498d46?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kojikoji/">kojikoji</a>
+          </p>
+          <p class="article__author-description">
+            筋トレにハマっています。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/komaji504" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/komaji" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

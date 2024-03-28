@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>サービスを停止せずにデータベースリファクタリングする - Pepabo Tech Portal</title>
+<meta content="2022年7月13日にカラーミーショップで提供開始した「副管理者機能」のアップデートにあたって、従前の挙動を変えずにデータベーススキーマの構造を変える必要がありました。また、サービスの提供を停止することなく、スキーマの構造の変更を進め..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@kymmt90" name="twitter:creator" />
+<meta content="サービスを停止せずにデータベースリファクタリングする - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="2022年7月13日にカラーミーショップで提供開始した「副管理者機能」のアップデートにあたって、従前の挙動を変えずにデータベーススキーマの構造を変える必要がありました。また、サービスの提供を停止することなく、スキーマの構造の変更を進め..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"サービスを停止せずにデータベースリファクタリングする","author":{"@type":"Person","name":"kymmt"},"datePublished":"2022-07-20T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-online-database-refactoring">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+      <a href="/tags/データベース/" class="tag-default">データベース</a>
+      <a href="/tags/rails/" class="tag-default">Rails</a>
+  </div>
+  <time class="article__time" datetime="2022-07-21">
+    2022-07-21
+  </time>
+  <h1 class="article__title">
+    <a href="/2022/07/21/online-database-refactoring/">サービスを停止せずにデータベースリファクタリングする</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+      <a href="/tags/データベース/" class="tag-default">データベース</a>
+      <a href="/tags/rails/" class="tag-default">Rails</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/07/21/online-database-refactoring/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p><a href="https://shop-pro.jp/news/20220713_managing-staff/">2022年7月13日にカラーミーショップで提供開始した「副管理者機能」のアップデート</a>にあたって、従前の挙動を変えずにデータベーススキーマの構造を変える必要がありました。また、サービスの提供を停止することなく、スキーマの構造の変更を進める必要がありました。</p>
+
+<p>この記事では、サービスを停止せずにデータベースの構造を徐々に変更する<strong>データベースリファクタリング</strong>をどのように進めたかについて紹介します。</p>
+
+<h2 id="データベースリファクタリングとは">「データベースリファクタリング」とは</h2>
+
+<p>データベースリファクタリングについて体系的に述べた書籍として<a href="https://databaserefactoring.com/">"Refactoring Databases"</a>があります。この本では、データベースリファクタリングのさまざまなパターンにおいて、スキーマの変更、データマイグレーション（既存データの移行）、アプリケーションの変更それぞれをどのように進めるべきかについて解説しています。ここでは、"Refactoring Databases"からデータベースリファクタリングの定義といえそうな文を引用します。</p>
+
+<blockquote>
+  <p>a database refactoring is a simple change to a database schema that improves its design while retaining both its behavioral and informational semantics</p>
+</blockquote>
+
+<p>（Pramod Sadalage "Database Refactoring" 1.1 Database Refactoringより）</p>
+
+<p>要約すると、データベースリファクタリングとは「データのふるまいの変更や情報の増減なくデータベーススキーマの設計を改善する単純な変更」といえます。</p>
+
+<h2 id="データベースリファクタリングする理由">データベースリファクタリングする理由</h2>
+
+<p>データベースリファクタリングをうまく適用すると、データベースのメンテナンスウィンドウを設ける（すなわちサービスを一時停止する）ことなくスキーマに変更を加えていくことができます。つまり、サービスを一時停止することでユーザーにご迷惑をおかけすることがなくなります。また、少しずつスキーマやアプリケーションの変更を積み重ねることで、ある程度安心感を持って作業を進めることができます。</p>
+
+<p>一方、細かい変更の積み重ねは手数が増えるので開発期間が長くなるという短所にもなります。また、大規模なテーブルだとオンラインでスキーマを変更するために相当時間がかかってしまい現実的ではないケースもあります。そのような場合は、サービスにメンテナンスウィンドウを設けて一気にスキーマ変更するほうが現実的なケースもありえます<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
+
+<p>今回は、サービス運営の観点からメンテナンスウィンドウを設けたくなかったことと、事前の調査で改善作業に支障があるテーブルの規模ではないとわかっていたことから、データベースリファクタリングを実施することにしました。</p>
+
+<h2 id="サービスの技術的な構成">サービスの技術的な構成</h2>
+
+<p>今回データベースリファクタリングするサービスの技術的な構成について簡単に説明します。</p>
+
+<p>データベースはAmazon RDS for MySQLを利用しています。MySQLのバージョンは5.7系です。レプリケーションを利用しており、リードレプリカを複数台持っています。今回の開発でスキーマを変更する必要があるテーブルのうち、もっとも大きいもので数十万行の規模があります。</p>
+
+<p>アプリケーションはPHPで書かれたものとRuby on Railsで書かれたものの両方が存在します。どちらのアプリケーションも同じデータベースを利用します。ただし、今回スキーマを変更する必要があるテーブルはRailsアプリケーションだけがレコードを挿入、更新、削除しています。PHPアプリケーションは該当テーブルのレコードを参照するだけとなっています。</p>
+
+<p>スキーマの変更はRailsアプリケーションのマイグレーション機能を使ってデプロイなどのタイミングで実行するのではなく、アプリケーションの変更とは独立した作業として実施しています。</p>
+
+<h2 id="データベースリファクタリングに使うツール">データベースリファクタリングに使うツール</h2>
+
+<h3 id="pt-online-schema-change">pt-online-schema-change</h3>
+
+<p><a href="https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html">pt-online-schema-change (pt-osc)</a>は、メンテナンスウィンドウを設けず（つまりオンラインで）大規模なテーブルのスキーマを変更するときに使うMySQL用のツールです。</p>
+
+<p>もともと、MySQL 5.6以降のInnoDBはオンラインDDLの機能を持ちます<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。この機能を使うと、ディスクのIO負荷を抑えつつスキーマを変更できます。しかし、プライマリDBの大規模なテーブルに対して素朴に時間のかかるDDLを発行すると、レプリカでも同じ時間をかけてSQLスレッドでDDLを実行し、結果としてSQLスレッドにおける通常のレプリケーション用クエリの実行が遅延してしまいます。結果として、レプリケーション遅延が発生し、サービスの障害につながってしまいます<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>。Rolling Schema Upgradeを利用してレプリケーション遅延を回避しながらオンラインDDLを使うことも可能ですが、適用可能な変更の種類が限られるうえ、作業に手間がかかります。</p>
+
+<p>一方、pt-oscを使うと、レプリケーション遅延の監視機能を利用してを遅延を防ぎつつスキーマを変更できます。pt-oscとオンラインDDLと比較すると一長一短があり、pt-oscと同種のツールもいくつかあります。現段階での知見の得やすさも考慮して、カラーミーショップで大規模なテーブルのスキーマを変更するときはpt-oscを利用することにしています。</p>
+
+<h3 id="active-recordの機能">Active Recordの機能</h3>
+
+<p>今回変更を入れることになったテーブルは、RailsアプリケーションがActive Recordを通じて更新しています。Active Recordの機能にはデータベースリファクタリングの作業におけるデータマイグレーションとアプリケーションの書き換えに役立つものが存在します。</p>
+
+<p>まずはコールバックです。Active Recordはモデルオブジェクトのライフサイクルに応じたフックを実行できる仕組みをコールバックとして提供しています。データベースリファクタリングでスキーマを変更するときは、移行期間としてスキーマに移行前後のカラムが存在する状態になることがあります。このとき、移行前のカラムに値を保存する際に <del><code>after_validation</code></del><sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">4</a></sup> <code>before_validation</code>コールバックで移行後のカラムにも値を入れるようにしておくことで、リアルタイムで新旧のカラムどちらにも値を入れられます。</p>
+
+<p><a href="https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-ignored_columns-3D"><code>ignored_columns=</code></a>もデータベースリファクタリングに便利な機能です。このメソッドにカラム名の配列を渡すと、Active Recordがそのカラムを利用しないようになります。モデルはそのカラムが存在しないものとみなすので、アプリケーション中でそのカラムを利用していないことを確かなものにできます。リファクタリングの終盤で、利用しなくなったカラムをアプリケーションで使っていないことを確実にしてから削除するときに役立ちます。</p>
+
+<h2 id="データベースリファクタリングの事例">データベースリファクタリングの事例</h2>
+
+<p>今回のデータベースリファクタリングの事例を2件紹介します。具体的には次の変更を入れました。</p>
+
+<ul>
+  <li>事例1: あるテーブルに外部キー制約を持つ新たなカラムを追加し、古いカラムの利用をやめる</li>
+  <li>事例2: あるテーブルのカラムの名前は変えずに型を文字列から整数に変更する</li>
+</ul>
+
+<p>どちらも"Refactoring Databases"の<a href="https://databaserefactoring.com/ReplaceColumn.html">"Replace Column"</a>パターンと<a href="https://databaserefactoring.com/AddForeignKey.html">"Add Foreign Key Constraint"</a>パターンが関係するものになっています。</p>
+
+<p>それぞれの事例について説明します。ここから示すテーブル名は架空のものです。また、DDLはテーブルの規模に応じてpt-oscを使って実行しています。</p>
+
+<h3 id="事例1-あるテーブルに外部キー制約を持つ新たなカラムを追加し古いカラムの利用をやめる">事例1: あるテーブルに外部キー制約を持つ新たなカラムを追加し、古いカラムの利用をやめる</h3>
+
+<p>2要素認証（2FA）設定テーブル（<strong>mfas</strong>とします）は、従来はショップ主管理者テーブル（<strong>manager_accounts</strong>とします）に対して外部キー制約を持っていました。しかし、副管理者の認証強化に伴い、ショップを管理する主副管理者を抽象化したショップ管理者テーブル（<strong>accounts</strong>とします）に対して外部キー制約を持つカラムを追加する必要が生じました。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case1.png" alt="" /></p>
+
+<p>mfaからmanager_accountへの外部キー制約を削除し、accountへ新たな外部キー制約を張るために、次の手順で作業を進めました。</p>
+
+<ol>
+  <li>新しいカラムを追加して適切な値が入るようにする</li>
+  <li>新しいカラムにNOT NULLを付与する</li>
+  <li>新しいカラムを使うようにアプリケーションを書き換える</li>
+  <li>古いカラムを削除する</li>
+</ol>
+
+<h4 id="1-新しいカラムを追加して適切な値が入るようにする">1. 新しいカラムを追加して適切な値が入るようにする</h4>
+
+<p>リファクタリング開始前のmfaテーブルは次のような状態です。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case1_1.png" alt="" /></p>
+
+<p>まず、accountへの外部キーとなる値を入れるカラムを新規に追加します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">mfas</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">account_id</span> <span class="nb">INT</span><span class="p">,</span>
+<span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="n">account_id</span> <span class="p">(</span><span class="n">account_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">accounts</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">CASCADE</span><span class="p">;</span>
+</code></pre></div>
+<p>mfaテーブルは次のような状態になります。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case1_2.png" alt="" /></p>
+
+<p>次に、全レコードのこのカラムに古いカラムと同期した値が入るようにします。このような場合、"Database Refactoring"ではデータベースのトリガー機能を使うように説明されています。しかし、少なくともカラーミーショップではトリガー機能を運用することはなく、テスト容易性などの観点からアプリケーションのレイヤーで次のようにデータを投入しています。</p>
+
+<ul>
+  <li>新規に追加されるmfaのレコード
+    <ul>
+      <li>Active Recordのコールバックを利用して、親となるmanager_accountsのレコードに対応するaccountsのレコードのIDを入れる</li>
+    </ul>
+  </li>
+  <li>既存のmfaのレコード
+    <ul>
+      <li>親となるmanager_accountsのレコードに対応するaccountsのレコードのIDを入れるためのワンショットのスクリプトを作成して、実行する</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Active Recordのコールバックとして<code>before_validation</code>コールバックを使うことで、レコードを保存するとき新しいカラムに値が入るようになります。擬似コードを次に示します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Mfa</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_validation</span> <span class="ss">:set_account_id</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">set_account_id</span>
+    <span class="c1"># self.account_id = &lt;manager_accountからaccountをたどって取得したID&gt;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>新しいカラムをaccountsのIDで埋めるためのスクリプトの作成は単純な作業なので詳細については省略します。</p>
+
+<h4 id="2-新しいカラムにnot-nullを付与する">2. 新しいカラムにNOT NULLを付与する</h4>
+
+<p>手順1でmfasの全レコードのaccount_idに値が入るようになりました。このタイミングで該当のカラムにNOT NULL制約を付与しておきます。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">mfas</span> <span class="k">MODIFY</span> <span class="k">COLUMN</span> <span class="n">account_id</span> <span class="nb">INT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="3-新しいカラムを使うようにアプリケーションを書き換える">3. 新しいカラムを使うようにアプリケーションを書き換える</h4>
+
+<p>ここまでで、新しいカラムにつねに値が入っており、さらに外部キーも張られています。一方で、アプリケーションはいまだに古いカラムを利用しているので、新しいカラムを外部キーとして利用するようにアプリケーションを書き換えてデプロイします。この作業が完了すれば、当初の目的をほぼ達成できたことになります。</p>
+
+<p>もし、このタイミングで不具合を発見した場合、デプロイを切り戻せば従来どおりのアプリケーションの挙動に戻せます。</p>
+
+<h4 id="4-古いカラムを削除する">4. 古いカラムを削除する</h4>
+
+<p>新しいカラムを使うようになったアプリケーションをしばらく運用して問題がなければ、mfasのレコードを保存するとき古いカラムを使わないようにアプリケーションを書き換えます。また、<code>before_validation</code>を利用したデータの同期も削除します。</p>
+
+<p>Active Recordであれば、<code>ignored_columns</code>を利用して古いカラムを使わずにアプリケーションが動くことを確実に検証できます。擬似コードを次に示します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Mfa</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="nb">self</span><span class="p">.</span><span class="nf">ignored_columns</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:manager_account_id</span><span class="p">]</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>このような変更をデプロイして問題がなければ、該当のカラムを削除します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">mfas</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">manager_account_id</span><span class="p">;</span>
+</code></pre></div>
+<p>これでリファクタリングは完了です。サービスを停止せずに外部キーを張り替えることができました。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case1_3.png" alt="" /></p>
+
+<h3 id="事例2-あるテーブルのカラムの名前は変えずに型を文字列から整数に変更する">事例2: あるテーブルのカラムの名前は変えずに型を文字列から整数に変更する</h3>
+
+<p>2つ目の事例として、サービスの認可機構に関するテーブルのカラムの型を変更し、外部キーを別テーブルへ張り替える必要がありました。また、利用しているライブラリの都合上、カラム名は同じものに保つ必要がありました。</p>
+
+<p>この事例について、仮にauthorizationsというテーブルの文字列型のカラムauthorized_account_idの名前を変えずに整数型のカラムに変える、という状況を想定して説明します。</p>
+
+<p>今回は事例1よりさらに手数が増えます。</p>
+
+<ol>
+  <li>新しい型の一時カラムを追加して適切な値が入るようにする</li>
+  <li>一時カラムを使うようにする</li>
+  <li>元のカラムを削除する</li>
+  <li>元のカラムを新しい型で再追加する</li>
+  <li>元のカラムに一時カラムと同じ値が常に入るようにする</li>
+  <li>元のカラムを使うようにする</li>
+  <li>一時カラムを削除する</li>
+</ol>
+
+<h4 id="1-新しい型の一時カラムを追加して適切な値が入るようにする">1. 新しい型の一時カラムを追加して適切な値が入るようにする</h4>
+
+<p>リファクタリング開始前のmfaテーブルは次のような状態です。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case2_1.png" alt="" /></p>
+
+<p>まず、変更後の型を持つカラムを一時的に追加します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">authorizations</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">tmp_authorized_account_id</span> <span class="nb">INT</span><span class="p">,</span>
+<span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="n">tmp_authorized_account_id</span> <span class="p">(</span><span class="n">tmp_authorized_account_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">account</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">CASCADE</span><span class="p">;</span>
+</code></pre></div>
+<p><img src="/blog/2022/07/21/online-database-refactoring/case2_2.png" alt="" /></p>
+
+<p>次に、事例1と同様に全レコードのこのカラムに値が入るようにします。必要に応じてNOT NULLも付与します。</p>
+
+<ul>
+  <li>新規に追加されるauthorizationsのレコード
+    <ul>
+      <li>Active Recordのコールバックを利用して、元のカラムaccount_idと同じIDが入るようにする</li>
+    </ul>
+  </li>
+  <li>既存のauthorizationsのレコード
+    <ul>
+      <li>元のカラムaccount_idと同じIDを入れるワンショットのスクリプトを作成して、実行する</li>
+    </ul>
+  </li>
+</ul>
+
+<p>詳細については事例1と同じなので省略します。</p>
+
+<h4 id="2-一時カラムを使うようにする">2. 一時カラムを使うようにする</h4>
+
+<p>次に、追加した一時カラムを使うようにアプリケーションを書き換えていきます。</p>
+
+<p>Railsアプリケーションでは、Active Recordの<a href="https://api.rubyonrails.org/classes/ActiveModel/AttributeMethods/ClassMethods.html#method-i-alias_attribute"><code>alias_attribute</code></a>という機能を使います。<code>alias_attribute &lt;新しいカラム名&gt; &lt;元のカラム名&gt;</code>という形式でDSLを書くと、元のカラム名を新しいカラム名で扱えるようになります。また、新しいカラム名と既存のカラム名が重複するときは、<code>alias_attribute</code>が優先されます<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">5</a></sup>。これにより、モデルでの<code>authorized_account_id</code>はテーブルにおける<code>tmp_authorized_account_id</code>を指すようになります。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Authorization</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">alias_attribute</span> <span class="ss">:authorized_account_id</span><span class="p">,</span> <span class="ss">:tmp_authorized_account_id</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>今回はこのテーブルの該当カラムを使っているのがRailsアプリケーションだけだったので、この対応だけで済みました。もし、PHPアプリケーションも該当のカラムを使っていたら、そちらでもモデルの属性とカラムのマッピングを一時的に変更する必要があります。</p>
+
+<h4 id="3-元のカラムを削除する">3. 元のカラムを削除する</h4>
+
+<p>一時カラムに移行し終えたら、カラム名と型を変更するために、いったん古い型を持つ元のカラムを削除します。</p>
+
+<p>Active Recordを使っているときは、カラムを実際に削除する前に、<code>ignored_columns</code>でそのカラムが確実に使われないようにします。その後、本番でアプリケーションが問題なく動いていることを確かめて、カラムを削除します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">authorizations</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">authorized_account_id</span><span class="p">;</span>
+</code></pre></div>
+<p>この時点でテーブルは次のようになります。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case2_3.png" alt="" /></p>
+
+<h4 id="4-元のカラムを新しい型で再追加する">4. 元のカラムを新しい型で再追加する</h4>
+
+<p>元のカラムを新しい型であらためて追加します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">authorizations</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">authorized_account_id</span> <span class="nb">INT</span><span class="p">,</span>
+<span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="n">authorized_account_id</span> <span class="p">(</span><span class="n">authorized_account_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">account</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">CASCADE</span><span class="p">;</span>
+</code></pre></div>
+<p><img src="/blog/2022/07/21/online-database-refactoring/case2_4.png" alt="" /></p>
+
+<h4 id="5-元のカラムに一時カラムと同じ値が常に入るようにする">5. 元のカラムに一時カラムと同じ値が常に入るようにする</h4>
+
+<p>全レコードの元のカラムに一時カラムと同じ値が同期されるように、アプリケーションでデータを投入します。</p>
+
+<ul>
+  <li>新規に追加されるauthorizationsのレコード
+    <ul>
+      <li>Active Recordのコールバックを利用して、一時カラムtmp_account_idと同じIDが入るようにする</li>
+    </ul>
+  </li>
+  <li>既存のauthorizationsのレコード
+    <ul>
+      <li>一時カラムtmp_account_idと同じIDを入れるワンショットのスクリプトを作成して、実行する</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="6-元のカラムを使うようにする">6. 元のカラムを使うようにする</h4>
+
+<p>つねに元のカラムに値が入るようになったら、元のカラムを使うようにアプリケーションを書き換えてデプロイします。</p>
+
+<p>一時カラムと型は同じなので、ステップ2で説明した<code>alias_attribute</code>を外したり、利用するカラムの名前を一括で書き換えたりすれば同じ挙動を得られるはずです。アプリケーションの書き換えが終わったあと、Railsアプリケーションでは念のため一時カラムを<code>ignored_columns</code>で無視しておきます。</p>
+
+<h4 id="7-一時カラムを削除する">7. 一時カラムを削除する</h4>
+
+<p>一時カラムに完全にアクセスしなくなったアプリケーションが本番で問題なく動いていることを確認したら、その一時カラムをテーブルから削除します。</p>
+
+<div class="highlight"><pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">authorizations</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">tmp_authorized_account_id</span><span class="p">;</span>
+</code></pre></div>
+<p>これでリファクタリングは完了です。サービスを停止せず、カラムの名前が同一のまま型と外部キーを変更できました。</p>
+
+<p><img src="/blog/2022/07/21/online-database-refactoring/case2_5.png" alt="" /></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>この記事では、サービスを停止せずにデータベースのスキーマを徐々に変更していくデータベースリファクタリングについて、その概要とカラーミーショップでの実事例を紹介しました。</p>
+
+<p>コードのリファクタリングは、開発を通じてコードに対する理解が深まったときに、その理解を反映して、コードの構造を改善するために実行します。同様に、データベースリファクタリングも、開発を通じてよりよいスキーマを見つけ、そのスキーマへと変更する作業です。このような作業はWebサービスを進化させながら運用していくうえで重要なものだと思います。</p>
+
+<p>このようなWebサービスの漸進的な改善に興味があるかたは、ぜひ<a href="https://recruit.pepabo.com/info/career/">応募ページ</a>からご連絡ください。</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>規模が大きすぎるテーブル自体に問題があるのは事実ですが、歴史のあるサービスにはそのようなテーブルがしばしば存在します <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>詳しくは<a href="https://gihyo.jp/dev/serial/01/mysql-road-construction-news/0030">MySQL道普請便りの「InnoDBオンラインDDLについて」</a>などをご覧ください <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>詳しくは<a href="https://yoku0825.blogspot.com/2015/12/pt-online-schema-change56-innodbalter.html">「pt-online-schema-changeと5.6 InnoDBのオンラインALTER TABLE使い分け」</a>をご覧ください <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>2022-07-22追記: <a href="https://twitter.com/yuji_developer/status/1550057248155906048">誤りをご指摘いただいた</a>ので修正しました。ありがとうございます <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>この挙動はドキュメントに記載がないので仕様ではないかもしれません <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/07/21/online-database-refactoring/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/1604058c93731a1f795ce62d37d19fd5?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kymmt/">kymmt</a>
+          </p>
+          <p class="article__author-description">
+            カラーミーショップを構成するさまざまなWebアプリケーションを横断した改善活動をおこなっています
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/kymmt90" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kymmt90" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>【Go】OpenAPI Generatorを用いて自動で生成したAPIサーバーのコードにミドルウェア層を導入する - Pepabo Tech Portal</title>
+<meta content="
+こんにちは。ホスティング事業部の@matsusukeです。
+
+今年もサッカーのプレミアリーグが開幕しましたね。
+日本代表の冨安選手が在籍しているアーセナルを高校生の頃から応援しています。
+今年はワールドカップも開催されるので、より一..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@mtfuji0mtske" name="twitter:creator" />
+<meta content="【Go】OpenAPI Generatorを用いて自動で生成したAPIサーバーのコードにミドルウェア層を導入する - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="
+こんにちは。ホスティング事業部の@matsusukeです。
+
+今年もサッカーのプレミアリーグが開幕しましたね。
+日本代表の冨安選手が在籍しているアーセナルを高校生の頃から応援しています。
+今年はワールドカップも開催されるので、より一..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"【Go】OpenAPI Generatorを用いて自動で生成したAPIサーバーのコードにミドルウェア層を導入する","author":{"@type":"Person","name":"matsusuke"},"datePublished":"2022-09-08T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-go-middleware">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/go/" class="tag-default">go</a>
+      <a href="/tags/openapi-specification/" class="tag-default">OpenAPI Specification</a>
+      <a href="/tags/middleware/" class="tag-default">middleware</a>
+  </div>
+  <time class="article__time" datetime="2022-09-09">
+    2022-09-09
+  </time>
+  <h1 class="article__title">
+    <a href="/2022/09/09/go-middleware/">【Go】OpenAPI Generatorを用いて自動で生成したAPIサーバーのコードにミドルウェア層を導入する</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/go/" class="tag-default">go</a>
+      <a href="/tags/openapi-specification/" class="tag-default">OpenAPI Specification</a>
+      <a href="/tags/middleware/" class="tag-default">middleware</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/09/09/go-middleware/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        
+<p>こんにちは。ホスティング事業部の<a href="https://twitter.com/mtfuji0mtske">@matsusuke</a>です。</p>
+
+<p>今年もサッカーのプレミアリーグが開幕しましたね。
+日本代表の冨安選手が在籍しているアーセナルを高校生の頃から応援しています。
+今年はワールドカップも開催されるので、より一層活躍してほしいですね。</p>
+
+<p>今回は、<a href="https://github.com/OpenAPITools/openapi-generator">OpenAPI Generator</a> を用いて自動で生成したAPIサーバーのコードにミドルウェア層を導入した事例を紹介します。</p>
+
+<h2 id="ミドルウェア層を導入する理由">ミドルウェア層を導入する理由</h2>
+
+<p>Webアプリケーション開発において、開発の初期段階からプロジェクトの規模が大きくなってコードの量が増えると、各APIの処理の共通化を行えそうなコードが発生します。<br />
+例えば、「認証ができなかった場合、その後のアプリケーションロジックの処理を行わず、エラーを返す」といった認証処理が例として挙げられます。</p>
+
+<p>上記のようなケースだと、そもそも認証ができなかった場合にはアプリケーションロジックが関わるコードを呼ばずにエラーを返した方がオーバーヘッドが少なくなるといったメリットがあります。</p>
+
+<h2 id="openapi-generator-を用いたgoのコード生成">OpenAPI Generator を用いたGoのコード生成</h2>
+
+<p><a href="https://github.com/OpenAPITools/openapi-generator">OpenAPI Generator</a>は、yamlファイルにAPIの仕様を定義することで各開発言語でAPIクライアント/サーバーのコードを自動で生成できるツールです。</p>
+
+<p>下記のような、<a href="https://swagger.io/specification/">OpenAPI Specification v3</a>の仕様に沿ったドキュメントから自動でコードを生成できます。</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="c1"># api.yaml</span>
+<span class="na">openapi</span><span class="pi">:</span> <span class="s">3.0.3</span>
+<span class="na">info</span><span class="pi">:</span>
+  <span class="na">version</span><span class="pi">:</span> <span class="s">0.0.1</span>
+  <span class="na">title</span><span class="pi">:</span> <span class="s">XXX API</span>
+  <span class="na">description</span><span class="pi">:</span> <span class="s">XXXについてのAPI</span>
+<span class="na">tags</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Login</span>
+    <span class="na">description</span><span class="pi">:</span> <span class="s">Login</span>
+<span class="na">paths</span><span class="pi">:</span>
+  <span class="na">/login</span><span class="pi">:</span>
+    <span class="na">get</span><span class="pi">:</span>
+      <span class="na">summary</span><span class="pi">:</span> <span class="s">Login</span>
+      <span class="na">description</span><span class="pi">:</span> <span class="s">ログイン</span>
+      <span class="na">tags</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">Login</span>
+      <span class="na">operationId</span><span class="pi">:</span> <span class="s">startLogin</span>
+      <span class="na">responses</span><span class="pi">:</span>
+        <span class="s1">'</span><span class="s">200'</span><span class="err">:</span>
+          <span class="na">description</span><span class="pi">:</span> <span class="s">OK</span>
+        <span class="s1">'</span><span class="s">400'</span><span class="err">:</span>
+          <span class="na">description</span><span class="pi">:</span> <span class="s">Bad Request</span>
+          <span class="na">content</span><span class="pi">:</span>
+            <span class="na">application/json</span><span class="pi">:</span>
+              <span class="na">schema</span><span class="pi">:</span>
+                <span class="na">$ref</span><span class="pi">:</span> <span class="s1">'</span><span class="s">#/components/schemas/defaultErrorResponse'</span>
+      <span class="na">requestBody</span><span class="pi">:</span>
+        <span class="na">content</span><span class="pi">:</span>
+          <span class="na">application/json</span><span class="pi">:</span>
+            <span class="na">schema</span><span class="pi">:</span>
+              <span class="na">$ref</span><span class="pi">:</span> <span class="s1">'</span><span class="s">#/components/schemas/loginBody'</span>
+<span class="na">components</span><span class="pi">:</span>
+  <span class="na">schemas</span><span class="pi">:</span>
+    <span class="na">loginBody</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+      <span class="na">properties</span><span class="pi">:</span>
+        <span class="na">id</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="na">defaultErrorResponse</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+      <span class="na">properties</span><span class="pi">:</span>
+        <span class="na">errors</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+          <span class="na">items</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+            <span class="na">properties</span><span class="pi">:</span>
+              <span class="na">message</span><span class="pi">:</span>
+                <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+              <span class="na">detail</span><span class="pi">:</span>
+                <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+            <span class="na">required</span><span class="pi">:</span>
+              <span class="pi">-</span> <span class="s">message</span>
+      <span class="na">required</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">errors</span>
+</code></pre></div>
+<p>今回は<a href="https://github.com/OpenAPITools/openapi-generator#16---docker">Docker Image</a>を用いてコードを生成する方法をご紹介します。</p>
+
+<p>コードを生成するプロジェクト上で</p>
+<div class="highlight"><pre class="highlight plaintext"><code>docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:$(GENERATOR_VERSION) generate \
+     -i /local/spec/api.yaml 
+     -g go-server 
+     -p packageVersion=0.0.1 
+     -o /local
+</code></pre></div><p>を実行します。
+上記のコマンドの各オプションの意味は以下の通りです。</p>
+
+<ul>
+  <li>i
+    <ul>
+      <li>使用するyamlファイルの指定をします。</li>
+      <li>今回、使用するyamlファイルは/spec/api.yamlとしています。</li>
+    </ul>
+  </li>
+  <li>g
+    <ul>
+      <li>生成するコードの指定。<a href="https://openapi-generator.tech/docs/generators/go-server">go-server</a>は、Go言語でAPIサーバーのコードを生成するための指定ワードです。</li>
+    </ul>
+  </li>
+  <li>p
+    <ul>
+      <li>プロパティを追加することができます。ここではpackageVersionをプロパティに指定していますが、このプロパティはgo-serverでコードを生成する時に使用できるプロパティです。</li>
+      <li>go-serverで設定できるプロパティの一覧については<a href="https://openapi-generator.tech/docs/generators/go-server/#config-options">go-serverのCONFIG OPTIONS</a>でご参照ください。</li>
+    </ul>
+  </li>
+</ul>
+
+<p>OpenAPI GeneratorはMacを使っている場合、Homebrewでinstallすることも可能です。
+詳しくは<a href="https://github.com/OpenAPITools/openapi-generator#15---homebrew">GitHub</a>をご参照ください。</p>
+
+<p>また、生成されるコードについては<a href="https://openapi-generator.tech/docs/templating/">テンプレートの仕組み</a>を用いてカスタマイズすることも可能です。<br />
+コードは以下のような形式で生成されます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>/project
+├─ .openapi-generator
+│    └─ VERSION
+├─ api
+│   └─ openapi.yaml
+├─ go
+│   ├─ api_login_service.go
+│   ├─ api_login.go
+│   ├─ api.go
+│   ├─ error.gp
+│   ├─ helpers.go
+│   ├─ impl.go
+│   ├─ logger.go
+│   ├─ model_default_error_response_errors.go│   
+│   ├─ model_default_error_response.go
+│   └─ routers.go
+├─ .openapi-generator-ignore
+├─ go.mod
+├─ go.sum
+├─ main.go
+└─ README.md
+</code></pre></div>
+<p><code>api_login_service.go</code>では<code>LoginApiService</code>構造体が定義され、「引数として受け取った情報をもとにAPIで返したいデータを作る」というビジネスロジックを<code>LoginApiService</code>構造体のメソッドとして記述します。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// api_login_service.go</span>
+
+<span class="c">// LoginApiService is a service that implements the logic for the LoginApiServicer</span>
+<span class="c">// This service should implement the business logic for every endpoint for the LoginApi API.</span>
+<span class="c">// Include any external packages or services that will be required by this service.</span>
+<span class="k">type</span> <span class="n">LoginApiService</span> <span class="k">struct</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c">// StartLogin - Login</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">s</span> <span class="o">*</span><span class="n">LoginApiService</span><span class="p">)</span> <span class="n">StartLogin</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">loginBody</span> <span class="n">LoginBody</span><span class="p">)</span> <span class="p">(</span><span class="n">ImplResponse</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c">// TODO - update StartLogin with the required logic for this service method.</span>
+  <span class="c">// Add api_login_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.</span>
+  
+  <span class="c">//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...</span>
+  <span class="c">//return Response(200, nil),nil</span>
+  
+  <span class="c">//TODO: Uncomment the next line to return response Response(400, DefaultErrorResponse{}) or use other options such as http.Ok ...</span>
+  <span class="c">//return Response(400, DefaultErrorResponse{}), nil</span>
+  
+  <span class="c">// リクエストパラメータのloginBody構造体からIDを取得</span>
+  <span class="n">id</span> <span class="o">:=</span> <span class="n">loginBody</span><span class="o">.</span><span class="n">id</span>
+
+  <span class="c">// idを使って何らかの処理を行うビジネスロジックを記述する</span>
+
+  <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">StatusNotImplemented</span><span class="p">,</span> <span class="no">nil</span><span class="p">),</span> <span class="n">errors</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="s">"StartLogin method not implemented"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="https://openapi-generator.tech/docs/generators/go-server">go-server</a>の特徴として、各APIは<code>api.yaml</code>の</p>
+<div class="highlight"><pre class="highlight plaintext"><code>tags:
+  - Login
+</code></pre></div><p>で指定したtagのService構造体のメソッドとして定義されます。
+tagが<code>Login</code>のAPIを増やすと、<code>LoginApiService</code>構造体にメソッドが随時生成されます。</p>
+
+<p>別のService構造体にメソッドを生成したい場合、APIのtagを任意のものに指定することで、メソッドを生成することができます。</p>
+
+<h2 id="生成したコードのルーティング">生成したコードのルーティング</h2>
+
+<p><code>api_login.go</code>は「<code>/login</code>のパスにGETリクエストがきたら、所定の<code>api_login_service.go</code>の<code>StartLogin</code>メソッドを呼び出し、レスポンスのもとになるデータを作り、返す」という処理を担っています。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// api_login.go</span>
+
+<span class="c">// LoginApiController binds http requests to an api service and writes the service results to the http response</span>
+<span class="k">type</span> <span class="n">LoginApiController</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">service</span>      <span class="n">LoginApiServicer</span>
+  <span class="n">errorHandler</span> <span class="n">ErrorHandler</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">c</span> <span class="o">*</span><span class="n">LoginApiController</span><span class="p">)</span> <span class="n">StartLogin</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">loginBodyParam</span> <span class="o">:=</span> <span class="n">LoginBody</span><span class="p">{}</span>
+  <span class="n">d</span> <span class="o">:=</span> <span class="n">json</span><span class="o">.</span><span class="n">NewDecoder</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+  <span class="n">d</span><span class="o">.</span><span class="n">DisallowUnknownFields</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">d</span><span class="o">.</span><span class="n">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">loginBodyParam</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">errorHandler</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ParsingError</span><span class="p">{</span><span class="n">Err</span><span class="o">:</span> <span class="n">err</span><span class="p">},</span> <span class="no">nil</span><span class="p">)</span>
+    <span class="k">return</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">AssertLoginBodyRequired</span><span class="p">(</span><span class="n">loginBodyParam</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">errorHandler</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="no">nil</span><span class="p">)</span>
+    <span class="k">return</span>
+  <span class="p">}</span>
+  <span class="n">result</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">c</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">StartLogin</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Context</span><span class="p">(),</span> <span class="n">loginBodyParam</span><span class="p">)</span>
+  <span class="c">// If an error occurred, encode the error with the status code</span>
+  <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">errorHandler</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span>
+  <span class="p">}</span>
+  <span class="c">// If no error, encode the body and the result code</span>
+  <span class="n">EncodeJSONResponse</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">Body</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="o">.</span><span class="n">Code</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">Headers</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>LoginApiController</code>構造体のメソッドとして、各API(StartLogin)が定義されています。</p>
+
+<p>また、LoginApiController構造体には<code>Routes()</code>メソッドも定義されています。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// api_login.go</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">c</span> <span class="o">*</span><span class="n">LoginApiController</span><span class="p">)</span> <span class="n">Routes</span><span class="p">()</span> <span class="n">Routes</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">Routes</span> <span class="p">{</span>
+    <span class="p">{</span>
+      <span class="n">Name</span><span class="o">:</span>        <span class="s">"StartLogin"</span><span class="p">,</span>
+      <span class="n">Method</span><span class="o">:</span>      <span class="n">strings</span><span class="o">.</span><span class="n">ToUpper</span><span class="p">(</span><span class="s">"Get"</span><span class="p">),</span>
+      <span class="n">Pattern</span><span class="o">:</span>     <span class="s">"/api/login/"</span><span class="p">,</span>
+      <span class="n">HandlerFunc</span><span class="o">:</span> <span class="n">c</span><span class="o">.</span><span class="n">StartLogin</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>「<code>/api/login/</code>のパスにGETリクエストが来ると、controllerのStartLoginを呼び出す」、といった処理が記載されています。</p>
+
+<p><code>router.go</code>の中で、この対応関係から実際のルーティングを生成する関数が定義されています。<br />
+go-serverは、特に何も設定しなければ、<a href="https://openapi-generator.tech/docs/generators/go-server/#config-options">デフォルト</a>のルーターとして<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>が使用され、それを組み立てるNewRouter関数が生成されます。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// router.go</span>
+
+<span class="k">func</span> <span class="n">NewRouter</span><span class="p">(</span><span class="n">routers</span> <span class="o">...</span><span class="n">Router</span><span class="p">)</span> <span class="o">*</span><span class="n">mux</span><span class="o">.</span><span class="n">Router</span> <span class="p">{</span>
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">api</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">routers</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">route</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">api</span><span class="o">.</span><span class="n">Routes</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">var</span> <span class="n">handler</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span>
+      <span class="n">handler</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">HandlerFunc</span>
+      <span class="n">handler</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+
+      <span class="n">router</span><span class="o">.</span>
+        <span class="n">Methods</span><span class="p">(</span><span class="n">ro</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">ro</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Name</span><span class="p">(</span><span class="n">ro</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>NewRouterメソッドの戻り値である<code>*mux.Router</code>型は<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>で</p>
+<div class="highlight"><pre class="highlight go"><code><span class="k">type</span> <span class="n">Router</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="c">// 省略</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span><span class="n">Router</span><span class="p">)</span> <span class="n">ServeHTTP</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">req</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c">// 省略</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>のように定義されています。</p>
+
+<p>また、Goの標準パッケージである<a href="https://pkg.go.dev/net/http">net/http</a>のinterfaceである<code>http.Handler</code>は下記のように定義されています。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="k">type</span> <span class="n">Handler</span> <span class="k">interface</span> <span class="p">{</span>
+  <span class="n">ServeHTTP</span><span class="p">(</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="n">Request</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p><code>ResponseWriter</code>と<code>*Request</code>を引数に持つ<code>ServeHTTP()</code>というメソッドを持つ構造体であれば、
+この<code>http.Handler</code>interfaceを満たします。<br />
+つまり、<code>ServeHTTP(w http.ResponseWriter, req *http.Request)</code>メソッドを持つ<code>*mux.Router</code>型は<code>http.Handler</code>interfaceを満たしています。
+(<a href="https://pkg.go.dev/net/http">net/http</a>についてはGoでHTTPサーバーを作る時には必須と言っても過言ではないパッケージですが、ここでは詳細の説明は割愛します)</p>
+
+<p>サーバーを動かす処理については、<a href="https://pkg.go.dev/net/http">net/http</a>で定義されている<code>ListenAndServe</code>メソッドを使って実装します。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// ListenAndServe listens on the TCP network address addr and then calls</span>
+<span class="c">// Serve with handler to handle requests on incoming connections.</span>
+<span class="c">// Accepted connections are configured to enable TCP keep-alives.</span>
+<span class="c">//</span>
+<span class="c">// The handler is typically nil, in which case the DefaultServeMux is used.</span>
+<span class="c">//</span>
+<span class="c">// ListenAndServe always returns a non-nil error.</span>
+<span class="k">func</span> <span class="n">ListenAndServe</span><span class="p">(</span><span class="n">addr</span> <span class="kt">string</span><span class="p">,</span> <span class="n">handler</span> <span class="n">Handler</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+  <span class="n">server</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">Server</span><span class="p">{</span><span class="n">Addr</span><span class="o">:</span> <span class="n">addr</span><span class="p">,</span> <span class="n">Handler</span><span class="o">:</span> <span class="n">handler</span><span class="p">}</span>
+  <span class="k">return</span> <span class="n">server</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>ListenAndServe</code>は第2引数に<code>http.Handler</code>interfaceを取るので、NewRouterメソッドの戻り値を使用することが可能です。</p>
+
+<p>go-serverがデフォルトで生成する<code>main.go</code>では、</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// main.go</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Server started"</span><span class="p">)</span>
+  
+  <span class="n">LoginApiService</span> <span class="o">:=</span> <span class="n">openapi</span><span class="o">.</span><span class="n">NewLoginApiService</span><span class="p">()</span>
+  <span class="n">LoginApiController</span> <span class="o">:=</span> <span class="n">openapi</span><span class="o">.</span><span class="n">NewLoginApiController</span><span class="p">(</span><span class="n">LoginApiService</span><span class="p">)</span>
+  
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">openapi</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">(</span><span class="n">LoginApiController</span><span class="p">)</span>
+  <span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">ListenAndServe</span><span class="p">(</span><span class="s">":8080"</span><span class="p">,</span> <span class="n">router</span><span class="p">))</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p>のように記述されており、ルーティングを実装しています。</p>
+
+<h2 id="ミドルウェア層の実装">ミドルウェア層の実装</h2>
+
+<p>開発の規模が大きくなると、APIの数が増え、<code>api_*_service.go</code>が肥大化していきます。
+ミドルウェア層を導入することで、認証処理などの各APIで共通している処理を統合・リファクタリングすることができます。
+ミドルウェアの実装はGoのミドルウェアパターンとしてよく知られる方法を用いますが、改めて下記で詳細を説明しようと思います。</p>
+
+<h2 id="goのミドルウェアパターンについて">Goのミドルウェアパターンについて</h2>
+
+<p>Goのミドルウェアパターンを満たす最低限の実装は</p>
+<div class="highlight"><pre class="highlight go"><code><span class="k">func</span> <span class="n">exampleMiddleware</span><span class="p">(</span><span class="n">next</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">next</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>のように、<code>http.Handler</code>interfaceを引数として受け取り、<code>http.Handler</code>interfaceを返却する関数として定義します。</p>
+
+<p><code>http.Handler</code>と似たような名前の<code>http.HandlerFunc</code>も<a href="https://pkg.go.dev/net/http">net/http</a>で定義されている型です。
+<code>http.HandlerFunc</code>型については、下記のように定義されています。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// The HandlerFunc type is an adapter to allow the use of</span>
+<span class="c">// ordinary functions as HTTP handlers. If f is a function</span>
+<span class="c">// with the appropriate signature, HandlerFunc(f) is a</span>
+<span class="c">// Handler that calls f.</span>
+<span class="k">type</span> <span class="n">HandlerFunc</span> <span class="k">func</span><span class="p">(</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="n">Request</span><span class="p">)</span>
+
+<span class="c">// ServeHTTP calls f(w, r).</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">f</span> <span class="n">HandlerFunc</span><span class="p">)</span> <span class="n">ServeHTTP</span><span class="p">(</span><span class="n">w</span> <span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">f</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>http.HandlerFunc</code>型は<code>ResponseWriter</code>と<code>*Request</code>を引数に取る<code>ServeHTTP()</code>というメソッドを持つ構造体です。
+そのため、<code>http.HandlerFunc</code>型は<code>http.Handler</code>interfaceを満たしていることになります。</p>
+
+<p>また、<code>http.HandlerFunc</code>型の説明文を日本語訳すると、</p>
+<blockquote>
+  <p>HandlerFunc 型は、通常の関数を HTTP ハンドラとして使用できるようにするためのアダプタです。f が適切なシグネチャを持つ関数である場合、HandlerFunc(f) はf を呼び出すハンドラです。</p>
+</blockquote>
+
+<p>と書かれています。</p>
+
+<p>これは、<code>http.HandlerFunc</code>は<code>ResponseWriter</code>と<code>*Request</code>を引数に取る関数であり、ある関数<code>f</code>が<code>ResponseWriter</code>と<code>*Request</code>を引数に取る場合、<code>http.HandlerFunc(f)</code>は<code>f</code>を呼び出す関数ということになります。</p>
+
+<p>つまり、<code>exampleMiddleware</code>については、</p>
+<ul>
+  <li>引数・戻り値は<code>http.Handler</code>interfaceを満たしているため、<code>http.HandlerFunc</code>型の関数でも良い。</li>
+  <li>戻り値の<code>http.HandlerFunc</code>型の関数については、「任意の処理を行う関数(f)を呼び出す<code>http.HandlerFunc</code>型の関数」でもよい
+ということになり、下記のようなコードで表現できます。</li>
+</ul>
+
+<div class="highlight"><pre class="highlight go"><code><span class="k">func</span> <span class="n">exampleMiddleware</span><span class="p">(</span><span class="n">next</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// 任意の処理を記述する</span>
+    
+    <span class="c">// 引数で渡したhttp.HandlerFuncを実行する</span>
+    <span class="n">next</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>このようなミドルウェアを作ることで、「任意の処理を実行した後に、次の処理を呼ぶ」という実装を表現することができます。</p>
+
+<h2 id="生成したmuxrouterに対してのミドルウェアパターンの導入">生成したmux.Routerに対してのミドルウェアパターンの導入</h2>
+
+<p><code>router.go</code>の<code>NewRouter</code>で生成した*mux.Routerに対して、どのようにミドルウェアパターンを導入するのかについてご紹介します。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// router.go</span>
+
+<span class="k">func</span> <span class="n">NewRouter</span><span class="p">(</span><span class="n">routers</span> <span class="o">...</span><span class="n">Router</span><span class="p">)</span> <span class="o">*</span><span class="n">mux</span><span class="o">.</span><span class="n">Router</span> <span class="p">{</span>
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">api</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">routers</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">route</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">api</span><span class="o">.</span><span class="n">Routes</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">var</span> <span class="n">handler</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span>
+      <span class="n">handler</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">HandlerFunc</span>
+      <span class="n">handler</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+
+      <span class="n">router</span><span class="o">.</span>
+        <span class="n">Methods</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Name</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>router.go</code>内では</p>
+<div class="highlight"><pre class="highlight go"><code><span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+</code></pre></div><p>という記述で、<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>のRouter型の<code>router</code>変数を定義しています。<br />
+ループ内の<code>handler</code>変数は、<code>http.Handler</code>interfaceで初期化後、<code>http.HandlerFunc</code>型の<code>route.HandlerFunc</code>が代入されています。</p>
+
+<p>また、生成したデフォルトの<code>router.go</code>内では<code>Logger()</code>メソッドを使うことでミドルウェアパターンを既に実装しています。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// logger.go</span>
+
+<span class="k">func</span> <span class="n">Logger</span><span class="p">(</span><span class="n">inner</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="p">,</span> <span class="n">name</span> <span class="kt">string</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">start</span> <span class="o">:=</span> <span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span>
+
+    <span class="n">inner</span><span class="o">.</span><span class="n">ServeHTTP</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span>
+      <span class="s">"%s %s %s %s"</span><span class="p">,</span>
+      <span class="n">r</span><span class="o">.</span><span class="n">Method</span><span class="p">,</span>
+      <span class="n">name</span><span class="p">,</span>
+      <span class="n">time</span><span class="o">.</span><span class="n">Since</span><span class="p">(</span><span class="n">start</span><span class="p">),</span>
+    <span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>Logger()</code>メソッドは「引数の<code>http.Handler</code>interfaceの<code>ServeHTTP()</code>メソッドを実行後にlogの出力を行う、<code>http.HandlerFunc</code>型の関数を返す」関数です。</p>
+
+<p>つまり、戻り値の<code>handler</code>変数はこの段階で「引数の<code>handler</code>を実行後logの出力を行う、<code>http.HandlerFunc</code>型の関数」となっています。</p>
+
+<p>さらに、この<code>handler</code>変数を引数にして</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="n">router</span><span class="o">.</span>
+  <span class="n">Methods</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+  <span class="n">Path</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+  <span class="n">Name</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+  <span class="n">Handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</code></pre></div>
+<p><code>router</code>の<code>Handler()</code>メソッドを呼び出しています。
+<code>router</code>は<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>のRouter型で定義されていましたが、<code>Methods()</code>メソッドが</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// Methods registers a new route with a matcher for HTTP methods.</span>
+<span class="c">// See Route.Methods().</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span><span class="n">Router</span><span class="p">)</span> <span class="n">Methods</span><span class="p">(</span><span class="n">methods</span> <span class="o">...</span><span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="n">Route</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">NewRoute</span><span class="p">()</span><span class="o">.</span><span class="n">Methods</span><span class="p">(</span><span class="n">methods</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c">// NewRoute registers an empty route.</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span><span class="n">Router</span><span class="p">)</span> <span class="n">NewRoute</span><span class="p">()</span> <span class="o">*</span><span class="n">Route</span> <span class="p">{</span>
+  <span class="c">// initialize a route with a copy of the parent router's configuration</span>
+  <span class="n">route</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">Route</span><span class="p">{</span><span class="n">routeConf</span><span class="o">:</span> <span class="n">copyRouteConf</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">routeConf</span><span class="p">),</span> <span class="n">namedRoutes</span><span class="o">:</span> <span class="n">r</span><span class="o">.</span><span class="n">namedRoutes</span><span class="p">}</span>
+  <span class="n">r</span><span class="o">.</span><span class="n">routes</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">route</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>と定義されているため、<code>Handler()</code>メソッドを呼び出している型は<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>のRoute型になっています。<br />
+<a href="https://github.com/gorilla/mux">github.com/gorilla/mux</a>のRoute型の<code>Handler()</code>メソッドは</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// Handler sets a handler for the route.</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span><span class="n">Route</span><span class="p">)</span> <span class="n">Handler</span><span class="p">(</span><span class="n">handler</span> <span class="n">http</span><span class="o">.</span><span class="n">Handler</span><span class="p">)</span> <span class="o">*</span><span class="n">Route</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">err</span> <span class="o">==</span> <span class="no">nil</span> <span class="p">{</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">r</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>と定義されており、引数は<code>http.Handler</code>interfaceとなっています。</p>
+
+<p>これらのことから、<code>Handler()</code>メソッドの引数については、<code>http.Handler</code>interfaceを満たすものであればよい、ということがわかりました。</p>
+
+<p><code>Handler()</code>メソッドの引数には<code>Logger()</code>メソッドのようなミドルウェアパターンを使えることがわかったので、共通化したい処理をミドルウェアとして新たに作成します。<br />
+今回は例として、認証処理のミドルウェアである<code>AuthMiddleware</code>を実装します。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// middleware/auth_middleware.go</span>
+
+<span class="k">func</span> <span class="n">AuthMiddleware</span><span class="p">(</span><span class="n">next</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span> <span class="p">{</span>
+  <span class="c">// http.HandlerFunc 型の関数を返す処理</span>
+  <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// リクエストヘッダーからアクセストークンなどを取得</span>
+    <span class="n">ah</span> <span class="o">:=</span> <span class="n">r</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="s">"Authentication"</span><span class="p">)</span>
+
+    <span class="c">// アクセストークンなどを使って認証処理</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">service</span><span class="o">.</span><span class="n">Auth</span><span class="p">(</span><span class="n">ah</span><span class="p">);</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+      <span class="c">// アクセストークンを使った認証に失敗した場合、errorを返す</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">EncodeJSONResponse</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">errors</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="s">"unauthorized"</span><span class="p">),</span> <span class="no">nil</span><span class="p">)</span>
+      <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="c">// 認証に成功した場合、引数であるhttp.HandlerFuncを実行する</span>
+    <span class="n">next</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>AuthMiddleware</code>のポイントは、「認証に成功した場合は、引数の<code>http.HandlerFunc</code>をコールし、認証に失敗した場合は、エラーを返す」関数を作っている、という点です。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// router.go</span>
+
+<span class="k">func</span> <span class="n">NewRouter</span><span class="p">(</span><span class="n">routers</span> <span class="o">...</span><span class="n">Router</span><span class="p">)</span> <span class="o">*</span><span class="n">mux</span><span class="o">.</span><span class="n">Router</span> <span class="p">{</span>
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">api</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">routers</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">route</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">api</span><span class="o">.</span><span class="n">Routes</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">router</span><span class="o">.</span>
+        <span class="n">Methods</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Name</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Handler</span><span class="p">(</span><span class="n">middleware</span><span class="o">.</span><span class="n">AuthMiddleware</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">))</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>AuthMiddleware</code>の戻り値は<code>http.Handler</code>interfaceを満たすため、<code>Handler()</code>メソッドの引数として上記のように使用することができます。</p>
+
+<h2 id="ミドルウェアのテスト">ミドルウェアのテスト</h2>
+
+<p><code>middleware/auth_middleware.go</code>の<code>AuthMiddleware</code>のテストを、「認証に成功した場合は、mockした<code>http.HandlerFunc</code>が呼ばれているかどうか、失敗した場合は呼ばれていないかどうか」という観点で書いてみます。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// middleware/auth_middleware_test.go</span>
+
+<span class="k">func</span> <span class="n">TestAuthMiddleware</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">const</span> <span class="n">okMessage</span> <span class="o">=</span> <span class="s">"OK"</span>
+ <span class="k">const</span> <span class="n">errMessage</span> <span class="o">=</span> <span class="s">"unauthorized"</span>
+  <span class="n">tests</span> <span class="o">:=</span> <span class="p">[]</span><span class="k">struct</span> <span class="p">{</span>
+    <span class="n">name</span>               <span class="kt">string</span>
+    <span class="n">accessToken</span>        <span class="kt">string</span>
+    <span class="n">isValidAccessToken</span> <span class="kt">bool</span>
+    <span class="n">message</span>            <span class="kt">string</span>
+  <span class="p">}{</span>
+    <span class="p">{</span><span class="s">"認証に成功した場合、mockしたハンドラが呼ばれる"</span><span class="p">,</span> <span class="s">"validAccessToken"</span><span class="p">,</span> <span class="no">true</span><span class="p">,</span> <span class="n">okMessage</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">"認証に失敗した場合、mockしたハンドラが呼ばれない"</span><span class="p">,</span> <span class="s">"invalidAccessToken"</span><span class="p">,</span> <span class="no">false</span><span class="p">,</span> <span class="n">errMessage</span><span class="p">},</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">tt</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">tests</span> <span class="p">{</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">Run</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="k">func</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c">// http.HandlerFunc型であるAuthMiddlewareを引数に、テストサーバを作る</span>
+      <span class="n">ts</span> <span class="o">:=</span> <span class="n">httptest</span><span class="o">.</span><span class="n">NewServer</span><span class="p">(</span><span class="n">AuthMiddleware</span><span class="p">(</span><span class="n">getMockHandler</span><span class="p">()))</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">Cleanup</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+      <span class="p">})</span>
+      <span class="c">// リクエストを作る</span>
+      <span class="n">p</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="n">RequestParam</span><span class="p">)</span>
+      <span class="n">jsonStr</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">json</span><span class="o">.</span><span class="n">Marshal</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+      <span class="p">}</span>
+      <span class="n">req</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">http</span><span class="o">.</span><span class="n">NewRequest</span><span class="p">(</span>
+        <span class="s">"GET"</span><span class="p">,</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">URL</span><span class="o">+</span><span class="s">"/api/login"</span><span class="p">,</span>
+        <span class="n">bytes</span><span class="o">.</span><span class="n">NewBuffer</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="n">jsonStr</span><span class="p">)),</span>
+      <span class="p">)</span>
+      <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+      <span class="p">}</span>
+      <span class="c">// Content-Type 設定</span>
+      <span class="n">req</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,</span> <span class="s">"application/json"</span><span class="p">)</span>
+      <span class="c">// AccessToken 設定</span>
+      <span class="n">req</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="s">"Authentication"</span><span class="p">,</span> <span class="s">"Bearer "</span><span class="o">+</span><span class="n">tt</span><span class="o">.</span><span class="n">accessToken</span><span class="p">)</span>
+
+      <span class="c">// リクエスト</span>
+      <span class="n">client</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">http</span><span class="o">.</span><span class="n">Client</span><span class="p">{}</span>
+      <span class="n">resp</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">client</span><span class="o">.</span><span class="n">Do</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+      <span class="p">}</span>
+
+      <span class="n">t</span><span class="o">.</span><span class="n">Cleanup</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">err</span> <span class="o">:=</span> <span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+          <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="p">}</span>
+      <span class="p">})</span>
+
+      <span class="c">// モックした getMockHandler が呼ばれているかどうかの検証</span>
+      <span class="c">// AccessTokenが正当なものである場合、後続のhandlerがcallされる</span>
+      <span class="c">// AccessTokenが不正なものである場合、後続のhandlerがcallされず、errorが返却される</span>
+      <span class="p">{</span>
+        <span class="k">var</span> <span class="n">got</span> <span class="kt">string</span>
+        <span class="k">if</span> <span class="n">tt</span><span class="o">.</span><span class="n">isValidAccessToken</span> <span class="p">{</span>
+          <span class="n">buf</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">io</span><span class="o">.</span><span class="n">ReadAll</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+          <span class="p">}</span>
+          <span class="n">got</span> <span class="o">=</span> <span class="kt">string</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="n">buf</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">io</span><span class="o">.</span><span class="n">ReadAll</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+          <span class="p">}</span>
+          <span class="k">var</span> <span class="n">errRespBody</span> <span class="n">errRespBody</span>
+          <span class="k">if</span> <span class="n">json</span><span class="o">.</span><span class="n">Unmarshal</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">errRespBody</span><span class="p">)</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+          <span class="p">}</span>
+          <span class="n">got</span> <span class="o">=</span> <span class="n">errRespBody</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">want</span> <span class="o">:=</span> <span class="n">tt</span><span class="o">.</span><span class="n">message</span><span class="p">;</span> <span class="n">got</span> <span class="o">!=</span> <span class="n">want</span> <span class="p">{</span>
+          <span class="n">t</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">got %v</span><span class="se">\n</span><span class="s">want %v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">got</span><span class="p">,</span> <span class="n">want</span><span class="p">)</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">})</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">errRespBody</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">errors</span> <span class="p">[]</span><span class="n">respError</span> <span class="s">`json:"errors"`</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">respError</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">message</span> <span class="kt">string</span> <span class="s">`json:"message"`</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">getMockHandler</span><span class="p">()</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span> <span class="p">{</span>
+  <span class="n">fn</span> <span class="o">:=</span> <span class="k">func</span><span class="p">(</span><span class="n">w</span> <span class="n">http</span><span class="o">.</span><span class="n">ResponseWriter</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span><span class="n">http</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// レスポンスにメッセージを記録する</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"OK"</span><span class="p">))</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>net/http/httptest</code>パッケージの<code>NewServer</code>でテスト用のモックサーバーを立ち上げます。
+<code>NewServer</code>の引数には<code>http.Handler</code>をとるため、モックハンドラーを返すミドルウェアを引数に使ってモックサーバを作ることができます。</p>
+
+<p>テストではこのモックサーバに対してリクエストを行います。<br />
+認証に成功すればモックした<code>getMockHandler()</code>がコールされ、失敗すればコールされない、というテストを書くことで、ミドルウェアの正当性を担保します。</p>
+
+<h2 id="複数のミドルウェアの導入">複数のミドルウェアの導入</h2>
+
+<p>開発が進むと、認証処理以外にも、ロギングやレート制限など、アプリケーションロジック以外に共通化したい処理が複数出てくるケースもあると思います。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// router.go</span>
+
+<span class="k">func</span> <span class="n">NewRouter</span><span class="p">(</span><span class="n">routers</span> <span class="o">...</span><span class="n">Router</span><span class="p">)</span> <span class="o">*</span><span class="n">mux</span><span class="o">.</span><span class="n">Router</span> <span class="p">{</span>
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">api</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">routers</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">route</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">api</span><span class="o">.</span><span class="n">Routes</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">router</span><span class="o">.</span>
+        <span class="n">Methods</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Name</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Handler</span><span class="p">(</span><span class="n">middleware</span><span class="o">.</span><span class="n">LoggingMiddleware</span><span class="p">(</span><span class="n">middleware</span><span class="o">.</span><span class="n">RateLimitMiddleware</span><span class="p">(</span><span class="n">middleware</span><span class="o">.</span><span class="n">AuthMiddleware</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">))))</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">router</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>上記のように、ミドルウェアをネストして複数のミドルウェアを実装することも可能です。<br />
+しかし、可読性が低く、新しくミドルウェアを追加するたびにrouter.goを更新しなければならないため、実装コストが高くなってしまいます。</p>
+
+<p>そこで、使用するミドルウェアの定義と複数のミドルウェアを使うための関数をミドルウェア層に切り出します。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// middleware/middleware.go</span>
+
+<span class="c">// http.HandlerFuncを引数に取り、http.HandlerFuncを返す型を定義する</span>
+<span class="k">type</span> <span class="n">middleware</span> <span class="k">func</span><span class="p">(</span><span class="n">next</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span>
+
+<span class="k">type</span> <span class="n">middlewares</span> <span class="p">[]</span><span class="n">middleware</span>
+
+<span class="k">func</span> <span class="n">FetchMiddlewares</span><span class="p">()</span> <span class="n">middlewares</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="n">ms</span> <span class="n">middlewares</span>
+
+  <span class="n">ms</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">loggingMiddleware</span><span class="p">)</span>
+  <span class="n">ms</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">rateLimitMiddleware</span><span class="p">)</span>
+  <span class="n">ms</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">authMiddleware</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">m</span> <span class="n">middlewares</span><span class="p">)</span> <span class="n">Then</span> <span class="p">(</span><span class="n">h</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">)</span> <span class="n">http</span><span class="o">.</span><span class="n">HandlerFunc</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">m</span> <span class="p">{</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">-</span><span class="m">1</span><span class="o">-</span><span class="n">i</span><span class="p">](</span><span class="n">h</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">h</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>FetchMiddlewares()</code>で使用するミドルウェアの一覧を定義し、<code>Then()</code>で、定義したすべてのミドルウェアを使用した後、最後にAPIのメソッドを呼ぶという実装を行うことができます。</p>
+
+<div class="highlight"><pre class="highlight go"><code><span class="c">// router.go</span>
+
+<span class="k">func</span> <span class="n">NewRouter</span><span class="p">(</span><span class="n">routers</span> <span class="o">...</span><span class="n">Router</span><span class="p">)</span> <span class="o">*</span><span class="n">mux</span><span class="o">.</span><span class="n">Router</span> <span class="p">{</span>
+  <span class="n">ms</span> <span class="o">:=</span> <span class="n">middleware</span><span class="o">.</span><span class="n">FetchMiddlewares</span><span class="p">()</span>
+  <span class="n">router</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewRouter</span><span class="p">()</span><span class="o">.</span><span class="n">StrictSlash</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">api</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">routers</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">route</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">api</span><span class="o">.</span><span class="n">Routes</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">r</span><span class="o">.</span>
+        <span class="n">Methods</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Pattern</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Name</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">Handler</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">Then</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">HandlerFunc</span><span class="p">))</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div>
+<p><code>router.go</code>の可読性が高まっただけでなく、使用するミドルウェアが何であるかが<code>router.go</code>からは隠蔽された形になり、使用するミドルウェアに変更があった場合に<code>router.go</code>が影響を受けることがなくなりました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>開発を進めていく上で処理を共通化し、リファクタリングを適宜進めるのは開発スピードを維持するためにもとても重要なことです。既存の設計に新しくミドルウェア層を導入することで、処理の共通化とアプリケーションロジック/認証の切り離しをうまく進めることができました。</p>
+
+<p>今後、さらに新しい共通処理を作る必要があった場合にも、開発コストをあまりかけずにミドルウェアを導入できるようになったので、とてもいい取り組みができたかなと感じました。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/09/09/go-middleware/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/ffd086e407f3e0c883fa209299c93ee3?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/matsusuke/">matsusuke</a>
+          </p>
+          <p class="article__author-description">
+            サッカーチーム「Arsenal」の大ファンです
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/mtfuji0mtske" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/keisuke-matsufuji" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>やわらかVault - Pepabo Tech Portal</title>
+<meta content="最近、5kgの重しを背負って懸垂していますプリンシパルエンジニアの @linyows です。
+みなさん、NHKの「筋肉は裏切らない！」（正しくは筋肉体操）見てますか？ … はい。ですよね。
+
+GMOペパボは、ロリポップ！やminneな..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2018/09/06/vault-workshop/eye_catch.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@linyows" name="twitter:creator" />
+<meta content="やわらかVault - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="最近、5kgの重しを背負って懸垂していますプリンシパルエンジニアの @linyows です。
+みなさん、NHKの「筋肉は裏切らない！」（正しくは筋肉体操）見てますか？ … はい。ですよね。
+
+GMOペパボは、ロリポップ！やminneな..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"やわらかVault","author":{"@type":"Person","name":"linyows"},"datePublished":"2018-09-05T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2018/09/06/vault-workshop/eye_catch.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-vault-workshop">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/hashicorp/" class="tag-default">hashicorp</a>
+      <a href="/tags/vault/" class="tag-default">vault</a>
+      <a href="/tags/consul/" class="tag-default">consul</a>
+      <a href="/tags/workshop/" class="tag-default">workshop</a>
+      <a href="/tags/docker/" class="tag-default">docker</a>
+  </div>
+  <time class="article__time" datetime="2018-09-06">
+    2018-09-06
+  </time>
+  <h1 class="article__title">
+    <a href="/2018/09/06/vault-workshop/">やわらかVault</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/hashicorp/" class="tag-default">hashicorp</a>
+      <a href="/tags/vault/" class="tag-default">vault</a>
+      <a href="/tags/consul/" class="tag-default">consul</a>
+      <a href="/tags/workshop/" class="tag-default">workshop</a>
+      <a href="/tags/docker/" class="tag-default">docker</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2018/09/06/vault-workshop/eye_catch.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2018/09/06/vault-workshop/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>最近、5kgの重しを背負って懸垂していますプリンシパルエンジニアの <a href="https://github.com/linyows">@linyows</a> です。
+みなさん、NHKの「筋肉は裏切らない！」（正しくは筋肉体操）見てますか？ … はい。ですよね。</p>
+
+<p>GMOペパボは、ロリポップ！やminneなど様々なサービス（microservices的なものではない）を運営しており、それぞれにおいて、秘密情報を管理している状態にあります。この秘密情報を独自に管理するのは、専門のスキルやノウハウとしてあらゆるコストがかかります。</p>
+
+<p>そこで僕（ら）は、秘密情報管理ソフトウェアであるHashiCorp Vaultを各サービスに導入し、サービスを堅牢にするというゴールをもとに社内でVaultのWorkshopを幾度となく開催しています。</p>
+
+<p>今回は、そのWorkshop「やわらかVault」のご紹介です。</p>
+
+<h2 id="やわらかvault">やわらかVault</h2>
+
+<p>これは、HashiCorp Vaultを正しく理解して、実務で導入／運用をできるようにするワークショップです。
+なお、なぜ秘密情報管理すべきなのかに関しては、<a href="https://www.amazon.co.jp/gp/product/4774196886/ref=as_li_tl?ie=UTF8&amp;tag=linyows-22&amp;camp=247&amp;creative=1211&amp;linkCode=as2&amp;creativeASIN=4774196886&amp;linkId=290fe95e6d3a4406ab3dde986b101f55">WEB+DB PRESS Vol.104</a>を <strong>買って</strong>「Hashicorp Vaultで秘密情報管理」の記事を読んでおくとバッチリでしょう。</p>
+
+<h2 id="目次">目次</h2>
+
+<ol>
+  <li>はじめに</li>
+  <li>座学
+    <ol>
+      <li>Vaultとは</li>
+      <li>Vaultのアーキテクチャ</li>
+      <li>Vaultのセキュリティに対する設計</li>
+    </ol>
+  </li>
+  <li>ハンズオン
+    <ol>
+      <li>Vaultの冗長構成</li>
+      <li>Vaultで通信を安全にする</li>
+      <li>VaultでDatabaseに素の個人情報を入れないようにする</li>
+      <li>VaultでWrite権限ユーザを発行する</li>
+    </ol>
+  </li>
+  <li>おわりに</li>
+</ol>
+
+<h2 id="はじめに">はじめに</h2>
+
+<p>本ワークショップのゴール</p>
+
+<ul>
+  <li>Vaultが何なのか説明できるようになる</li>
+  <li>Vaultの<del>運用</del>操作ができるようになる</li>
+  <li>実務においてVaultの使い所、使うべき所がわかる</li>
+</ul>
+
+<h2 id="座学">座学</h2>
+
+<p>Vaultを使う上で必要な基礎知識をお話しします。</p>
+
+<h3 id="vaultとは">Vaultとは</h3>
+
+<ul>
+  <li>DevOpsなソフトウェアを作り出すHashiCorpの秘密情報管理のソフトウェア</li>
+  <li>平たくいうと暗号化されたKey-Value Store</li>
+  <li>たくさんの機能とともにセキュリティに対するプラクティスが詰まっている（最小権限の原則や職務分掌など）</li>
+  <li>ほかのHashicorpソフトウェアと併用することで秘密情報管理を自動化できる</li>
+</ul>
+
+<h3 id="vaultのアーキテクチャ">Vaultのアーキテクチャ</h3>
+
+<blockquote>
+  <p><img src="/blog/2018/09/06/vault-workshop/vault-architecture.png" alt="architecture" /></p>
+
+  <p>via: https://www.vaultproject.io/docs/internals/architecture.html</p>
+</blockquote>
+
+<ul>
+  <li>KVS（ストレージ）という括りで、認証／秘密／監査／ポリシー という仕組み</li>
+  <li>Seal／Unsealという仕組みがあってひとたびSealになると分散した鍵が閾値数以上つかってUnsealすることになる</li>
+  <li>HTTP APIを通じてあらゆる機能を操作する</li>
+  <li>ポリシーはファイル管理なのでgitなどでバージョン管理できる</li>
+</ul>
+
+<h3 id="vaultのセキュリティに対する設計">Vaultのセキュリティに対する設計</h3>
+
+<ul>
+  <li>Vault内部は全て暗号化され暗号化の鍵は外へ出せない</li>
+  <li>暗号化の鍵利用はマスターキーにより使用でき、マスターキーは分割して保管できる</li>
+  <li>ポリシーによって秘密情報へのアクセス権限のスコープを小さくすること、監査ログをとること、でインシデントのインパクトを最小限にする</li>
+  <li>秘密情報のTTLを短く設定しrenewという延長処理を行って運用する</li>
+  <li>秘密情報の権限は子孫関係があり親をrevokeすると伝播してrevokeされる</li>
+</ul>
+
+<h2 id="ハンズオン">ハンズオン</h2>
+
+<p>実際に手を動かし、Vaultの機能を体験してみましょう。今回作るシステムの全体図は以下の通りです。</p>
+
+<p>HA構成にしたVaultのバックエンドとしてConsul Serverをたて、Consul DNSで割り当てられたVaultにアクセスするためのドメインでTLS通信するために、VaultをPKIとして機能させます。次に、WebアプリケーションからDatabaseに接続する資格情報をVaultから発行し、Webアプリケーションへ入力された個人情報をVaultを利用して暗号化／復号を行うシステムです。各秘密情報の自動化に関してはconsul-templateを使い、各コンテナ上に複数プロセス動かすのでsupervisordを使用します。</p>
+
+<p><img src="/blog/2018/09/06/vault-workshop/system-architecture.png" alt="architecture-for-handon" /></p>
+
+<h3 id="ご注意">ご注意</h3>
+
+<ul>
+  <li>環境変数を使う前提で進みますので、複数のターミナルを使うと環境変数がなくてエラーというのに気をつけてください</li>
+  <li>手元のアプリとポートが被っているとコンテナが起動しない場合があるので確認しながら進めてください</li>
+</ul>
+
+<h3 id="step1--準備">Step.1 – 準備</h3>
+
+<p>まず、dockerコンテナを使ってのハンズオンなので、以下のdockerイメージをpullしておきます。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>docker pull linyows/consul:1.2-agent
+<span class="nv">$ </span>docker pull linyows/consul:1.2-server
+<span class="nv">$ </span>docker pull linyows/consul:1.2-node
+</code></pre></div>
+<p>次に、VaultとConsulをclientとして使うのでhomebrewからインストールしておきます。また、Vault CLIを補完出来るようにしておくと便利です。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>brew <span class="nb">install </span>vault consul
+<span class="nv">$ </span>vault <span class="nt">-autocomplete-install</span>
+</code></pre></div>
+<p>そして、使用するファイル群を<code>git clone</code>します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>git clone https://github.com/linyows/vault-yawaraka.git
+<span class="nv">$ </span><span class="nb">cd </span>vault-yawaraka
+</code></pre></div>
+<h3 id="step2--vaultの冗長構成">Step.2 – Vaultの冗長構成</h3>
+
+<ul>
+  <li>ストレージバックエンドにConsulを使用</li>
+  <li>HA構成のVault同士はストレージを通じてコミュニケーション</li>
+  <li>VIPをシェアする必要ないしstandbyにrequestを投げてもmasterにredirectされる</li>
+  <li>HA構成にするには各VaultをUnsealにしておく必要</li>
+</ul>
+
+<h4 id="consul-serverコンテナを起動する">consul serverコンテナを起動する</h4>
+
+<p>今回作るコンテナはconsul clusterとして起動するので、まず最初にConsul serverを起動する</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>docker run <span class="nt">-p</span> 8500:8500 <span class="nt">--name</span> consul <span class="nt">-h</span> consul <span class="nt">-d</span> linyows/consul:1.2-server
+<span class="nv">$ </span>open http://localhost:8500/ui
+</code></pre></div>
+<h4 id="vaultコンテナを起動する">vaultコンテナを起動する</h4>
+
+<p>イメージをビルドしてVaultを2台起動する</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">cd</span> ./vault
+<span class="nv">$ </span>docker build <span class="nt">-t</span> linyows/vault <span class="nb">.</span>
+<span class="nv">$ ip</span><span class="o">=</span><span class="si">$(</span>docker inspect <span class="nt">-f</span> <span class="s2">"{{.NetworkSettings.IPAddress}}"</span> consul<span class="si">)</span>
+<span class="nv">$ </span>docker run <span class="nt">-p</span> 8200:8200 <span class="nt">--dns</span><span class="o">=</span>127.0.0.1 <span class="nt">--dns</span><span class="o">=</span>8.8.8.8 <span class="nt">--add-host</span><span class="o">=</span>consul:<span class="nv">$ip</span> <span class="nt">--name</span> vault-1 <span class="nt">-h</span> vault-1 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">VAULT_REDIRECT_ADDR</span><span class="o">=</span>https://vault.service.consul:8200 <span class="nt">-d</span> linyows/vault
+<span class="nv">$ </span>docker run <span class="nt">-p</span> 8201:8200 <span class="nt">--dns</span><span class="o">=</span>127.0.0.1 <span class="nt">--dns</span><span class="o">=</span>8.8.8.8 <span class="nt">--add-host</span><span class="o">=</span>consul:<span class="nv">$ip</span> <span class="nt">--name</span> vault-2 <span class="nt">-h</span> vault-2 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">VAULT_REDIRECT_ADDR</span><span class="o">=</span>https://vault.service.consul:8200 <span class="nt">-d</span> linyows/vault
+
+<span class="c"># この状態をconsulから確認してみる</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">CONSUL_HTTP_ADDR</span><span class="o">=</span>localhost:8500
+<span class="nv">$ </span>consul members
+Node     Address          Status  Type    Build  Protocol  DC   Segment
+consul   172.17.0.2:8301  alive   server  1.2.0  2         dc1  &lt;all&gt;
+vault-1  172.17.0.3:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+vault-2  172.17.0.4:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+</code></pre></div>
+<p>vaultの初期化と設定を行う</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># localhostで信頼できるのでverify skip</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">VAULT_SKIP_VERIFY</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">VAULT_ADDR</span><span class="o">=</span>https://localhost:8200
+
+<span class="c"># 初期化で大事な情報が出力されます</span>
+<span class="nv">$ </span>vault operator init | <span class="nb">tee </span>keys
+Unseal Key 1: SNvELrGymFguSf9rb4L9mpF0/0Yg+sBBjwzE54Ig+xmo
+Unseal Key 2: s6fDWUERp032ffcyt7/nOIl4HxC2WLRBa8YMe9rV2zuO
+Unseal Key 3: X+GMJ9yUO/foxRFWXtWFN2MMfEqQ4kZpfg3pi7tP0l+u
+Unseal Key 4: IX6UEDy+0ksp5GtKIGutcbcLT5os3+0jsmc5Tappcuy9
+Unseal Key 5: H8uWa1oNQUgax3skFM7WxSZHNEoMXjKXWsWMHQOqqpiL
+
+Initial Root Token: 3f20a2c3-dfbf-2abf-022d-7e1cb887781b
+
+<span class="c"># 閾値までunseal</span>
+<span class="nv">$ </span>vault operator unseal
+
+<span class="c"># 状態確認 =&gt; active</span>
+<span class="nv">$ </span>vault status
+Key             Value
+<span class="nt">---</span>             <span class="nt">-----</span>
+Seal Type       shamir
+Sealed          <span class="nb">false
+</span>Total Shares    5
+Threshold       3
+Version         0.10.3
+Cluster Name    vault-cluster-81b8b861
+Cluster ID      499c5059-23d5-04d3-2f92-6977d154e212
+HA Enabled      <span class="nb">true
+</span>HA Cluster      https://vault.service.consul:8201
+HA Mode         active
+
+<span class="c"># unsealされていないとクラスタにjoinしないので2台目も設定</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">VAULT_ADDR</span><span class="o">=</span>https://localhost:8201
+
+<span class="c"># おなじく閾値までunseal</span>
+<span class="nv">$ </span>vault operator unseal
+
+<span class="c"># 状態確認 =&gt; standby</span>
+<span class="nv">$ </span>vault status
+Key                    Value
+<span class="nt">---</span>                    <span class="nt">-----</span>
+Seal Type              shamir
+Sealed                 <span class="nb">false
+</span>Total Shares           5
+Threshold              3
+Version                0.10.3
+Cluster Name           vault-cluster-81b8b861
+Cluster ID             499c5059-23d5-04d3-2f92-6977d154e212
+HA Enabled             <span class="nb">true
+</span>HA Cluster             https://vault.service.consul:8201
+HA Mode                standby
+Active Node Address    https://vault.service.consul:8200
+
+<span class="c"># ハンズオンでは便宜上root tokenを使います `~/.vault-token`</span>
+<span class="nv">$ </span>vault login
+Token <span class="o">(</span>will be hidden<span class="o">)</span>:
+Success! You are now authenticated. The token information displayed below
+is already stored <span class="k">in </span>the token helper. You <span class="k">do </span>NOT need to run <span class="s2">"vault login"</span>
+again. Future Vault requests will automatically use this token.
+
+Key                  Value
+<span class="nt">---</span>                  <span class="nt">-----</span>
+token                3f20a2c3-dfbf-2abf-022d-7e1cb887781b
+token_accessor       be43dba5-7b41-c861-4e92-79606c3c816a
+token_duration       ∞
+token_renewable      <span class="nb">false
+</span>token_policies       <span class="o">[</span><span class="s2">"root"</span><span class="o">]</span>
+identity_policies    <span class="o">[]</span>
+policies             <span class="o">[</span><span class="s2">"root"</span><span class="o">]</span>
+</code></pre></div>
+<h4 id="おかわり-">おかわり 🍚</h4>
+
+<p>Vaultコンテナを全部削除し、再作成したらどうなるか？ 🤔</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>docker stop vault-1 <span class="o">&amp;&amp;</span> docker <span class="nb">rm </span>vault-1
+<span class="nv">$ </span>docker stop vault-2 <span class="o">&amp;&amp;</span> docker <span class="nb">rm </span>vault-2
+</code></pre></div>
+<h3 id="step3--vaultで通信を安全にする">Step.3 – Vaultで通信を安全にする</h3>
+
+<ul>
+  <li>サービスの大小あるが内部通信は必ずある</li>
+  <li>暗号化はしても通信先が正しいかどうかは疎かにされがち</li>
+  <li>VaultをRoot CAまたはIntermediate CAとして機能させる</li>
+  <li>Let's Encryptでもよいが、各設定が可能なVaultを自動化するほうが便利</li>
+</ul>
+
+<h4 id="pki-secretの設定">PKI secretの設定</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># Root CAを有効にする（pkiは自分でdescriptionを設定しないとsecrets listでn/aと表示される）</span>
+<span class="nv">$ </span>vault secrets <span class="nb">enable</span> <span class="nt">-description</span><span class="o">=</span><span class="s2">"root ca"</span> pki
+
+<span class="c"># TTLの最大値を設定しておく</span>
+<span class="nv">$ </span>vault secrets tune <span class="nt">-max-lease-ttl</span><span class="o">=</span>87600h pki/
+
+<span class="c"># CAのcertificateとprivate keyを作成する</span>
+<span class="nv">$ </span>vault write pki/root/generate/internal <span class="nv">common_name</span><span class="o">=</span>service.consul <span class="nv">ttl</span><span class="o">=</span>8760h
+
+<span class="c"># 証明証発行とCRLのパスを変更</span>
+<span class="nv">$ </span>vault write pki/config/urls <span class="nv">issuing_certificates</span><span class="o">=</span><span class="s2">"https://vault.service.consul:8200/v1/pki/ca"</span> <span class="se">\</span>
+  <span class="nv">crl_distribution_points</span><span class="o">=</span><span class="s2">"https://vault.service.consul:8200/v1/pki/crl"</span>
+
+<span class="c"># 証明証を発行するロールを作成する</span>
+<span class="nv">$ </span>vault write pki/roles/service-dot-consul <span class="nv">allowed_domains</span><span class="o">=</span>service.consul <span class="nv">allow_subdomains</span><span class="o">=</span><span class="nb">true </span><span class="nv">max_ttl</span><span class="o">=</span>72h
+
+<span class="c"># 証明証を発行</span>
+<span class="nv">$ </span>vault write pki/issue/service-dot-consul <span class="nv">common_name</span><span class="o">=</span>vault.service.consul
+</code></pre></div>
+<h4 id="consul-templateを利用する">consul-templateを利用する</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># 名前解決しつつ、証明書のエラーが出ることを確認する</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 curl https://vault.service.consul:8200/v1/
+
+<span class="c"># supervisordの状態確認</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 supervisorctl status
+consul                           RUNNING   pid 10, <span class="nb">uptime </span>0:07:44
+consul-template                  STOPPED   Not started
+vault                            RUNNING   pid 9, <span class="nb">uptime </span>0:07:44
+
+<span class="c"># consul-templateが使うtokenを設定するためにlogin</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 vault login
+Token <span class="o">(</span>will be hidden<span class="o">)</span>:
+Success! You are now authenticated. The token information displayed below
+is already stored <span class="k">in </span>the token helper. You <span class="k">do </span>NOT need to run <span class="s2">"vault login"</span>
+again. Future Vault requests will automatically use this token.
+
+Key                  Value
+<span class="nt">---</span>                  <span class="nt">-----</span>
+token                052f8bdc-738b-5032-4074-7443e206694f
+token_accessor       8528fe1a-0a04-b8c1-93b0-b4314992d9ba
+token_duration       ∞
+token_renewable      <span class="nb">false
+</span>token_policies       <span class="o">[</span><span class="s2">"root"</span><span class="o">]</span>
+identity_policies    <span class="o">[]</span>
+policies             <span class="o">[</span><span class="s2">"root"</span><span class="o">]</span>
+
+<span class="c"># consul-templateを起動する</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 supervisorctl start consul-template
+
+<span class="c"># 状態確認</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 supervisorctl status
+consul                           RUNNING   pid 10, <span class="nb">uptime </span>0:13:17
+consul-template                  RUNNING   pid 101, <span class="nb">uptime </span>0:04:00
+vault                            RUNNING   pid 9, <span class="nb">uptime </span>0:13:17
+
+<span class="c"># 名前解決しつつ、証明書のエラーが出ないかを確認する</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> vault-1 curl https://vault.service.consul:8200/v1/
+<span class="o">{</span><span class="s2">"errors"</span>:[]<span class="o">}</span>
+</code></pre></div>
+<p>vault-2も同様の手順を行う</p>
+
+<h3 id="step4--vaultでdatabaseのユーザを発行する">Step.4 – VaultでDatabaseのユーザを発行する</h3>
+
+<ul>
+  <li>databaseシークレットは様々なdatabaseの資格情報をVaultが動的に管理する</li>
+  <li>ユーザやアプリケーションはTTLつきの資格情報をVaultから取得する</li>
+  <li>資格情報cd の動的な管理により、資格情報のハードコードがなくなる</li>
+</ul>
+
+<h4 id="イメージをビルドして起動">イメージをビルドして起動</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">cd</span> ../mysql
+<span class="nv">$ </span>docker build <span class="nt">-t</span> linyows/mysql <span class="nb">.</span>
+<span class="nv">$ </span>docker run <span class="nt">-e</span> <span class="nv">MYSQL_DATABASE</span><span class="o">=</span>express <span class="nt">-p</span> 13306:3306 <span class="nt">--dns</span><span class="o">=</span>127.0.0.1 <span class="nt">--dns</span><span class="o">=</span>8.8.8.8 <span class="se">\</span>
+  <span class="nt">--add-host</span><span class="o">=</span>consul:<span class="nv">$ip</span> <span class="nt">--name</span> mysql <span class="nt">-h</span> mysql <span class="nt">-d</span> linyows/mysql
+
+<span class="c"># 状態確認</span>
+<span class="nv">$ </span>consul members
+Node     Address          Status  Type    Build  Protocol  DC   Segment
+consul   172.17.0.2:8301  alive   server  1.2.0  2         dc1  &lt;all&gt;
+mysql    172.17.0.5:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+vault-1  172.17.0.3:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+vault-2  172.17.0.4:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+</code></pre></div>
+<h4 id="database-secretを有効にする">database secretを有効にする</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>vault secrets <span class="nb">enable </span>database
+Success! Enabled the database secrets engine at: database/
+
+<span class="c"># プラグインの指定とDatabaseへの接続情報を設定する</span>
+<span class="nv">$ </span>vault write database/config/mysql-database <span class="nv">plugin_name</span><span class="o">=</span>mysql-database-plugin <span class="se">\</span>
+  <span class="nv">connection_url</span><span class="o">=</span><span class="s2">"{{username}}:{{password}}@tcp(mysql.node.consul:3306)/"</span> <span class="nv">allowed_roles</span><span class="o">=</span><span class="s2">"express"</span> <span class="nv">username</span><span class="o">=</span><span class="s2">"root"</span> <span class="nv">password</span><span class="o">=</span><span class="s2">"secret"</span>
+
+<span class="c"># ロールの作成とロールのTTLや発行するコマンドの設定</span>
+<span class="nv">$ </span>vault write database/roles/express <span class="nv">db_name</span><span class="o">=</span>mysql-database <span class="nv">default_ttl</span><span class="o">=</span><span class="s2">"1h"</span> <span class="nv">max_ttl</span><span class="o">=</span><span class="s2">"24h"</span> <span class="se">\</span>
+  <span class="nv">creation_statements</span><span class="o">=</span><span class="s2">"CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT ALL ON *.* TO '{{name}}'@'%';"</span>
+Success! Data written to: database/roles/express
+
+<span class="c"># ユーザ発行</span>
+<span class="nv">$ </span>vault <span class="nb">read </span>database/creds/express
+Key                Value
+<span class="nt">---</span>                <span class="nt">-----</span>
+lease_id           database/creds/express/d2f89c12-1df5-66d1-d62e-a562ed79fbef
+lease_duration     1h
+lease_renewable    <span class="nb">true
+</span>password           A1a-2T4GrUg0sAZREKrV
+username           v-root-express-eAyhwKO10Ma0ceDl3
+
+<span class="c"># 発行された資格情報から接続確認</span>
+<span class="nv">$ </span>mysql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-P</span> 13306 <span class="nt">-u</span> v-root-express-eAyhwKO10Ma0ceDl3 <span class="nt">-p</span>
+Enter password:
+Welcome to the MySQL monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span><span class="nb">.</span>
+Your MySQL connection <span class="nb">id </span>is 8
+Server version: 5.5.5-10.1.32-MariaDB MariaDB Server
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type <span class="s1">'help;'</span> or <span class="s1">'\h'</span> <span class="k">for </span>help. Type <span class="s1">'\c'</span> to clear the current input statement.
+
+mysql&gt;
+</code></pre></div>
+<h3 id="step5--vaultでappからdatabaseに素の個人情報を入れないようにする">Step.5 – VaultでAppからDatabaseに素の個人情報を入れないようにする</h3>
+
+<p><img src="/blog/2018/09/06/vault-workshop/transit.png" alt="transit" /></p>
+
+<ul>
+  <li>Transitシークレットとは、transitキーを設定し、設定したキーに対して暗号化／復号する仕組み</li>
+  <li>HMAC暗号</li>
+  <li>同じキーでもcontext（別アプリケーションの復号するシーンが違う場合）で暗号用の鍵を派生鍵として利用できる</li>
+  <li><a href="https://github.com/hashicorp/vault-rails">Rails用のGem</a>はHashiCorpが出している</li>
+  <li><a href="https://github.com/linyows/sequelize-vault">NodeのSequelize版</a>を作った</li>
+</ul>
+
+<h4 id="イメージをビルドして起動-1">イメージをビルドして起動</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">cd</span> ../express
+<span class="c"># CA公開鍵をイメージに含める</span>
+<span class="nv">$ </span>curl <span class="nt">-H</span> <span class="s2">"X-Vault-Token: </span><span class="si">$(</span><span class="nb">cat</span> ~/.vault-token<span class="si">)</span><span class="s2">"</span> <span class="nt">-s</span> <span class="nt">-X</span> PUT <span class="nt">-k</span> <span class="nt">-d</span> <span class="s1">'{"common_name":"vault.service.consul"}'</span> <span class="se">\</span>
+  https://127.0.0.1:8200/v1/pki/issue/service-dot-consul | jq  <span class="nt">-r</span> <span class="s1">'.data.issuing_ca'</span> <span class="o">&gt;</span> ca.crt
+
+<span class="c"># ビルド</span>
+<span class="nv">$ </span>docker build <span class="nt">-t</span> linyows/express <span class="nb">.</span>
+
+<span class="c"># トークンを環境変数に設定する</span>
+<span class="nv">$ </span>docker run <span class="nt">-e</span> <span class="nv">VAULT_TOKEN</span><span class="o">=</span><span class="si">$(</span><span class="nb">cat</span> ~/.vault-token<span class="si">)</span> <span class="nt">-e</span> <span class="nv">VAULT_ADDR</span><span class="o">=</span>https://vault.service.consul:8200 <span class="se">\</span>
+  <span class="nt">-e</span> <span class="nv">DB_HOST</span><span class="o">=</span>mysql.node.consul <span class="nt">-e</span> <span class="nv">DB_PORT</span><span class="o">=</span>3306 <span class="se">\</span>
+  <span class="nt">-p</span> 3000:3000 <span class="nt">--dns</span><span class="o">=</span>127.0.0.1 <span class="nt">--dns</span><span class="o">=</span>8.8.8.8 <span class="nt">--add-host</span><span class="o">=</span>consul:<span class="nv">$ip</span> <span class="nt">--name</span> express <span class="nt">-h</span> express <span class="nt">-d</span> linyows/express
+
+<span class="c"># ビルド時にcaの公開鍵を配置しているので、Vaultサーバを認証できる確認</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express curl https://vault.service.consul:8200/v1/
+<span class="o">{</span><span class="s2">"errors"</span>:[]<span class="o">}</span>
+
+<span class="c"># 状態確認</span>
+<span class="nv">$ </span>consul members
+Node     Address          Status  Type    Build  Protocol  DC   Segment
+consul   172.17.0.2:8301  alive   server  1.2.0  2         dc1  &lt;all&gt;
+express  172.17.0.6:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+mysql    172.17.0.5:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+vault-1  172.17.0.3:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+vault-2  172.17.0.4:8301  alive   client  1.2.0  2         dc1  &lt;default&gt;
+</code></pre></div>
+<h4 id="transit-secretを設定">transit secretを設定</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># 有効化</span>
+<span class="nv">$ </span>vault secrets <span class="nb">enable </span>transit
+Success! Enabled the transit secrets engine at: transit/
+
+<span class="c"># 暗号化を一意にするには以下の2つのオプションが必要になる</span>
+<span class="nv">$ </span>vault write <span class="nt">-f</span> transit/keys/express_users_email <span class="nv">convergent_encryption</span><span class="o">=</span><span class="nb">true </span><span class="nv">derived</span><span class="o">=</span><span class="nb">true
+</span>Success! Data written to: transit/keys/express_users_email
+</code></pre></div>
+<h4 id="consul-templateによって得られたdatabase接続情報をもとにexpressを起動">consul-templateによって得られたDatabase接続情報をもとにexpressを起動</h4>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express supervisorctl start consul-template
+consul-template: started
+
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express supervisorctl status
+consul                           RUNNING   pid 9, <span class="nb">uptime </span>0:03:27
+consul-template                  RUNNING   pid 48, <span class="nb">uptime </span>0:00:21
+express                          STOPPED   Not started
+
+<span class="c"># consul-templateにより作成されたDatabase接続情報を確認</span>
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express <span class="nb">cat</span> .env
+<span class="nv">DB_USER</span><span class="o">=</span><span class="s1">'v-root-express-yJYCFHG8lHIrQUjW1'</span>
+<span class="nv">DB_PASS</span><span class="o">=</span><span class="s1">'A1a-68LCi7xme2qpijfY'</span>
+
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express supervisorctl start express
+express: started
+
+<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> express supervisorctl status
+consul                           RUNNING   pid 9, <span class="nb">uptime </span>0:06:11
+consul-template                  RUNNING   pid 51, <span class="nb">uptime </span>0:02:01
+express                          RUNNING   pid 99, <span class="nb">uptime </span>0:00:08
+
+<span class="c"># webで暗号化／復号を確認してみましょう</span>
+<span class="nv">$ </span>open http://localhost:3000/
+
+<span class="c"># 実際に暗号化したもののみが保存されているか確認しよう</span>
+<span class="c"># mysql -u root -h localhost -P 13306 -p express</span>
+<span class="o">&gt;</span> <span class="k">select</span> <span class="k">*</span> from <span class="nb">users</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="step6--github認証">Step.6 – GitHub認証</h3>
+
+<ul>
+  <li>認証する対象が違うケースがあるので、ユーザやアプリケーション用など分けられている</li>
+  <li>GUIを通して認証し、認証ユーザのpolicyをさわってみよう</li>
+</ul>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># 有効化</span>
+<span class="nv">$ </span>vault auth <span class="nb">enable </span>github
+
+<span class="c"># GitHubの認証に使う組織を指定</span>
+<span class="nv">$ </span>vault write auth/github/config <span class="nv">organization</span><span class="o">=</span>yourorg
+<span class="c"># GitHub EnterpriseであればAPI urlを設定</span>
+<span class="nv">$ </span>vault write auth/github/config <span class="nv">organization</span><span class="o">=</span>yourorg <span class="nv">base_url</span><span class="o">=</span>https://ghe.yourdomain.com/api/v3/
+
+<span class="c"># 既存ポリシーの確認</span>
+<span class="nv">$ </span>vault <span class="nb">read </span>sys/policy
+Key         Value
+<span class="nt">---</span>         <span class="nt">-----</span>
+keys        <span class="o">[</span>default root]
+policies    <span class="o">[</span>default root]
+
+<span class="c"># ポリシーを作成</span>
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh"> &gt; dev.hcl
+path "pki/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+
+path "auth/token/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+
+path "sys/policy/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+
+path "sys/auth/*" {
+  capabilities = [ "create", "read", "update", "delete", "sudo" ]
+}
+
+#path "transit/*" {
+#  capabilities = [ "create", "read", "update", "delete", "list" ]
+#}
+</span><span class="no">EOF
+
+</span><span class="c"># ポリシーを登録する</span>
+vault policy write dev dev.hcl
+
+<span class="c"># チームにポリシーを割り当てる</span>
+<span class="nv">$ </span>vault write auth/github/map/teams/yourteam <span class="nv">value</span><span class="o">=</span>dev
+
+<span class="c"># GitHubのpersonal access tokenを発行する（admin:orgに権限付与）</span>
+<span class="nv">$ </span>open https://github.com/settings/tokens
+
+<span class="c"># vault uiのログインでGitHub tokenを使ってログインしてみる（ローカルなので証明書のエラーは無視）</span>
+<span class="nv">$ </span>open https://localhost:8200/ui/
+
+<span class="c"># policyのtransitのコメントアウトを戻しVaultに再読み込みしたらGUIはどう表示されるか</span>
+</code></pre></div>
+<h2 id="おわりに">おわりに</h2>
+
+<p>ハンズオンなので、便宜上rootトークンを使い回しましたが、実際の導入では、各トークンをpolicyと紐づけて発行して利用することになります。また、導入するシステムに応じて、鍵やトークンの受け渡しをまず最初にどうするか、一連のルーチンをどう自動化するかを設計することが重要になります。</p>
+
+<p>Vaultは秘密情報管理という特性上、比較的とっつきにくいソフトウェアだと思います。しかし、これを使いこなすことによってシステムがより堅牢になるのは間違いないので、脆弱なところ、導入しやすいところなどから取り組んでいきましょう。</p>
+
+<p>これらのハンズオンをもっと簡略化した<a href="https://github.com/linyows/vault-workshop">docker-compose版</a>も用意していますので、みなさんも是非試してはいかがでしょうか？</p>
+
+<hr />
+
+<h3 id="宣伝-第3回-hashicorpジャパンmeetup-に登壇">宣伝: 第3回 HashiCorpジャパンMeetup に登壇</h3>
+
+<p>9月11日 19時から渋谷ヒカリエにおいて、<a href="https://hashicorp.connpass.com/event/98386/">HashiCorpジャパンMeetup</a>が開催されます。</p>
+
+<p>タイトルは「DevOpsを支える今話題のHashiCorpツール群について」で、私 <a href="https://github.com/linyows">@linyows</a> も登壇して「コンテナ基盤を支えるHashiCorpソフトウェア」と題しましてお話しいたします。既に定員に達してはおりますが、当日キャンセルが出る可能性もございますので興味があればご参加ください。</p>
+
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2018/09/06/vault-workshop/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/5d769d109697012317c09c6a27a6a4bf?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/linyows/">linyows</a>
+          </p>
+          <p class="article__author-description">
+            整備技術と開発力でGMOペパボ技術基盤チームを支えるエンジニア。OCTOPASS, capistrano-github-release など現場の問題を解決するOSSの作者。宗教上の理由から頑なに避けてたNetflixやSpotifyを近頃利用するようになって文明を感じている。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/linyows" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/linyows" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

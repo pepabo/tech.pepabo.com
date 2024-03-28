@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>インスタンス数を最大化するためのハードウェア選定の工夫 - Pepabo Tech Portal</title>
+<meta content="はじめに
+
+初めまして。技術部プラットフォームグループの馬崎と申します。
+
+ペパボではOpenStackを利用したプライベートクラウドを運用しており、今回はそのサーバハードウェア選定についての記事です。
+
+
+  ペパボのプライベートク...
+" property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+<meta content="インスタンス数を最大化するためのハードウェア選定の工夫 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="はじめに
+
+初めまして。技術部プラットフォームグループの馬崎と申します。
+
+ペパボではOpenStackを利用したプライベートクラウドを運用しており、今回はそのサーバハードウェア選定についての記事です。
+
+
+  ペパボのプライベートク...
+" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"インスタンス数を最大化するためのハードウェア選定の工夫","author":{"@type":"Person","name":"馬崎裕二"},"datePublished":"2021-07-19T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-private-cloud-hardware">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/インフラ/" class="tag-default">インフラ</a>
+      <a href="/tags/ハードウェア/" class="tag-default">ハードウェア</a>
+      <a href="/tags/サーバ/" class="tag-default">サーバ</a>
+  </div>
+  <time class="article__time" datetime="2021-07-20">
+    2021-07-20
+  </time>
+  <h1 class="article__title">
+    <a href="/2021/07/20/private-cloud-hardware/">インスタンス数を最大化するためのハードウェア選定の工夫</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/インフラ/" class="tag-default">インフラ</a>
+      <a href="/tags/ハードウェア/" class="tag-default">ハードウェア</a>
+      <a href="/tags/サーバ/" class="tag-default">サーバ</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2021/07/20/private-cloud-hardware/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <h1 id="はじめに">はじめに</h1>
+
+<p>初めまして。技術部プラットフォームグループの馬崎と申します。</p>
+
+<p>ペパボではOpenStackを利用したプライベートクラウドを運用しており、今回はそのサーバハードウェア選定についての記事です。</p>
+
+<ol id="markdown-toc">
+  <li><a href="#ペパボのプライベートクラウドのサーバ概要" id="markdown-toc-ペパボのプライベートクラウドのサーバ概要">ペパボのプライベートクラウドのサーバ概要</a></li>
+  <li><a href="#各世代の製品を選んだときの選定ポイント" id="markdown-toc-各世代の製品を選んだときの選定ポイント">各世代の製品を選んだときの選定ポイント</a>    <ol>
+      <li><a href="#第一世代から第二世代への更新時の選定2016年" id="markdown-toc-第一世代から第二世代への更新時の選定2016年">第一世代から第二世代への更新時の選定(2016年)</a></li>
+      <li><a href="#第二世代から第三世代への更新時の選定2018" id="markdown-toc-第二世代から第三世代への更新時の選定2018">第二世代から第三世代への更新時の選定(2018)</a></li>
+      <li><a href="#第三世代から第四世代への更新時の選定2019" id="markdown-toc-第三世代から第四世代への更新時の選定2019">第三世代から第四世代への更新時の選定(2019)</a></li>
+    </ol>
+  </li>
+  <li><a href="#サーバ消費電力と熱の問題とその対応" id="markdown-toc-サーバ消費電力と熱の問題とその対応">サーバ消費電力と熱の問題とその対応</a></li>
+  <li><a href="#終わりに" id="markdown-toc-終わりに">終わりに</a></li>
+</ol>
+
+<h3 id="ペパボのプライベートクラウドのサーバ概要">ペパボのプライベートクラウドのサーバ概要</h3>
+
+<p>採用しているサーバは一般的な1Uサーバです。データセンターに現在は46Uラックを7棟利用しており、2021年7月現在合計で80台のサーバを運用しています。</p>
+
+<h4 id="プライベートクラウドで採用しているサーバ遍歴">プライベートクラウドで採用しているサーバ遍歴</h4>
+
+<p>プライベートクラウドのサーバはまずレンタルのサーバで開始しました。便宜的にこちらを第一世代、以降採用ごとに第二、第三、第四世代と呼称します。</p>
+
+<p>レンタルで開始したのは積極的に選択したものではなく、当時サーバを準備できる選択肢が他にないための消極的な採用でした。</p>
+
+<p>レンタル可能な機種が数世代前の古いものだったこともあり、プライベートクラウドに採用しているOpenStackのバージョンをHavanaからMitakaにアップデートする際にハードウェアの更新や構成の自由さ、コストの都合で資産として扱いたいなどの理由から購入に切り替えました。</p>
+
+<p>以降も主に採用CPUの世代切り替わりタイミング発生するモデルチェンジを契機に、比較検討検証を行い採用サーバの更新を行っており、現在は第四世代サーバを運用しています。</p>
+
+<h4 id="プライベートクラウド用のサーバ選定の難しいところ">プライベートクラウド用のサーバ選定の難しいところ</h4>
+
+<p>プライベートクラウドサーバの選定の難しさは、特定の単一用途ではないために性能選定が難しい点があります。</p>
+
+<p>例えばWebサーバやDBサーバであればそれぞれで動かすミドルウェアの処理性能が指標になります。WEBサーバであれば単位時間あたりの処理リクエスト数、データベースであれば社内で利用される規模のDBインスタンスでのクエリ処理数、応答性能などが該当します。このように異なる役割を持つVMインスタンスが複数稼働するプライベートクラウドでは、特定の性能指標や用途に限定したベンチマークテストだけでは計ることは難しく、用途を限定せずに安定してパフォーマンスを引き出せる必要があります。</p>
+
+<p>そのため性能検証時のベンチマークもアプリケーションに特化したものよりも全体を俯瞰しやすいものをメインに利用しており、CPUはUnixBench、ディスクIO性能はfioを軸にその他にもGeekBenchやSysBench、STREAMなど複数のベンチマークソフトウェアを利用しています。</p>
+
+<h2 id="各世代の製品を選んだときの選定ポイント">各世代の製品を選んだときの選定ポイント</h2>
+
+<p>共通しているポイントとしてはより安価に、より稼働インスタンス数を最大化することです。</p>
+
+<p>それに加えて各モデル更新時の選定基準や採用理由については世代ごとに異なる要件がありました。</p>
+
+<h3 id="第一世代から第二世代への更新時の選定2016年">第一世代から第二世代への更新時の選定(2016年)</h3>
+
+<p>レンタルだった第一世代から購入へ切り替えた最初の選定です。</p>
+
+<p>GMOペパボの他のサービスでの購入経験はありましたが、データセンターのロケーションの違いや用途の違いからほぼ白紙からの選定となりました。</p>
+
+<h4 id="第一世代のスペックでの稼働状況を確認して問題点を洗い出す">第一世代のスペックでの稼働状況を確認して問題点を洗い出す</h4>
+
+<p>第一世代機はCPU 16スレッド(4コア8スレッドCPU 2基)、メモリ 64GB、ストレージ 1.44TB(480GB SAS HDD 6本 RAID1+0)のサーバを採用していました。この構成では1サーバ当たりの平均VMインスタンス数は4〜6程度の稼働状態でした。</p>
+
+<p>社内でのプライベートクラウドの利用拡大もあり稼働インスタンス数は増加が予想され、この平均稼働インスタンスではサーバ筐体が多数必要になり、ラック利用増によるランニングコストの増加や、筐体数が増えることによる管理コストの増加などが懸念されました。</p>
+
+<p>このため1サーバあたりの稼働インスタンス数を増加することを選定の目標としました。</p>
+
+<h5 id="第二世代のスペックの選定">第二世代のスペックの選定</h5>
+
+<p>稼働インスタンス数を増やすためにはCPUモデルをCPUコア数の多いものが向いていることから、当時の最新世代のXeon V4世代からコア数に優れたXeon E5 2650V4 (12コア/24スレッド)を2基搭載を選択しました。</p>
+
+<p>当時のペパボのVMインスタンスで利用の多かったフレーバーサイズを元に、1インスタンスの基準値として <code>4vCPU</code> <code>8GBメモリ</code> と定め、CPUのオーバーコミット率(ハードウェアのスレッド数に対してVMインスタンスの仮想CPU数を何%まで搭載するかという指標)を200%まで許容する計算で <code>24(1CPUのスレッド数) * 2(CPU搭載数) * 2.00(オーバーコミット率) / 4(基準インスタンスvCPU数) = 24(搭載可能インスタンス)</code> を計算しました。実際にはインスタンスの利用vCPU数は基準からブレるため20インスタンス程度での稼働を目安として設計しました。</p>
+
+<p>24インスタンスの場合、メモリについては1インスタンス8GB計算で192GBで足りるため、当初256GBで検討していましたが、仮想CPUと異なりオーバーコミットが難しいことや、見積もりの結果512GBとの価格差が許容できる範囲であったため512GB構成の採用を決めました。</p>
+
+<p>ストレージについては第一世代が2.5インチSAS HDDでしたが当時の社内でもSSDの利用が進んでおり、NANDの書き込み寿命に関してもメーカー発表の書き込み上限(TBW)に収まるIO量が想定されたため、第二世代では2.5インチSATA SSDドライブを6本でSoftwareRAID、RAID5を採用しました。</p>
+
+<p>当時の採用のためのベンチマークテストの結果、SoftwareRAIDでの構成にて必要としていたIOPS要求を満たしており、コスト的にもRAIDカードなしの方が安価であったための選択でした。</p>
+
+<h4 id="スペック以外の選定基準">スペック以外の選定基準</h4>
+
+<p>レンタルから購入への切り替えということもあり、データセンタでの保守業務も自社でハンドリングをしなければいけません。</p>
+
+<p>そのため性能面以外でも検討項目は複数あり、以下の項目について比較検討し選定を進めていました。</p>
+
+<ul>
+  <li>サポート
+    <ul>
+      <li>サポート期間とサポートレベル</li>
+      <li>標準の保守プランでサポートされる補償範囲</li>
+      <li>サポートの保守プランの種別と対応内容(4H対応保証、24x365対応、エンジニア派遣の有無など)</li>
+    </ul>
+  </li>
+  <li>供給
+    <ul>
+      <li>標準的な納品期間</li>
+      <li>供給期間</li>
+      <li>供給停止後の保守期間</li>
+      <li>価格の見直しタイミング</li>
+    </ul>
+  </li>
+  <li>構成
+    <ul>
+      <li>ハードウェア的なメンテナンスのしやすさ</li>
+      <li>構成カスタマイズの柔軟さ</li>
+      <li>社外製品の取り付けなどの対応の柔軟さ</li>
+      <li>IPMIの機能や対応分類、オプション範囲</li>
+      <li>ハードウェア的な冗長性のレベル</li>
+      <li>サーバラックの耐荷重を考慮して重量の軽さ</li>
+    </ul>
+  </li>
+  <li>サービス、その他
+    <ul>
+      <li>ラッキングやケーブリングの実施などのサービスの実施可否</li>
+    </ul>
+  </li>
+</ul>
+
+<p>スペックが決まり各社のサーバを比較した際には、価格や上記項目以外にIPMIベースの管理ツールも大きな焦点でした。</p>
+
+<p>サーバをデータセンターで遠隔運用する場合、IPMI経由で仮想的にコンソール接続できるリモートコンソール機能があると便利です。電源は入るがOSは起動しないような障害や、エラー出力がコンソールのみの場合など、遠隔地から操作できるリモートコンソールに命を救われたという経験がある方も多いと思います。</p>
+
+<p>このリモートコンソールですが検討当時はJavaベース実装を採用しているメーカーと、HTML5ベース実装を採用しているメーカーが混在していました。検討を行った結果、環境を選ばずブラウザで完結するという恩恵が大きいHTML5ベース実装を採用しました。</p>
+
+<p>上記の条件を元に固めた構成から9社製品10製品に候補を絞り、初回の概算見積もり価格から特に有力な３製品について検証機をレンタルし物理的な使い勝手の確認やベンチマークテストなどを行い採用を決めました。</p>
+
+<h3 id="第二世代から第三世代への更新時の選定2018">第二世代から第三世代への更新時の選定(2018)</h3>
+
+<h4 id="第二世代を運用して見えてきた課題">第二世代を運用して見えてきた課題</h4>
+
+<p>第二世代の稼働は順調でしたが、順調故に1サーバあたりの作成インスタンス数に制限を設けずにいたところ当初の想定の20を超え、比較的小さいフレーバーが多いサーバに多い時は60インスタンス以上が稼働している状態になりました。</p>
+
+<p>vCPUのオーバーコミット率も高い時には300%(48スレッドのサーバに対し稼働しているインスタンスのvCPU数が合計144)以上になる場合もありました。結果、第三世代次への更新タイミングの頃から、特定の高負荷インスタンスと同じサーバに収容された他のインスタンスのパフォーマンスが低下する、いわゆる「ノイジーネイバー問題」が発生するようになりました。</p>
+
+<p>新規インスタンスの作成可否のフラグをオーバーコミット不可のメモリ利用可能残量で閾値設定していたことにより、搭載メモリが512GBと多かったこともインスタンスの過剰搭載として裏目に出ていました。</p>
+
+<h4 id="第三世代を選定するにあたって決めたこと">第三世代を選定するにあたって決めたこと</h4>
+
+<p>2018年にXeonのモデルチェンジのため発生したサーバ更新の際、新たな機種選定に合わせてスペック構成の見直しも行いました。</p>
+
+<p>ノイジーネイバー問題の発生を回避することを最大の目標に、1母艦あたりの搭載インスタンス数を減らしつつCPUのスペックアップを検討しました。</p>
+
+<h4 id="第三世代のcpuの選定">第三世代のCPUの選定</h4>
+
+<p>CPUのスペックアップといっても大きく分けて二つのアプローチがあります。</p>
+
+<p>コア数・スレッド数の強化とクロック周波数の強化です。ざっくりとですがインスタンスの稼働数を増やしたいときは前者を増やし、インスタンスあたりの負荷を軽減したい場合は後者を選択します。今回の場合はインスタンス数を減らしインスタンスの負荷を軽減するため後者のスペックアップを採用しています。</p>
+
+<p>1サーバあたりの稼働インスタンス数は再び20と仮定し、監視ツールから実際に利用されているサーバリソースを確認し必要スペックの定義を行いました。</p>
+
+<p>CPU新製品のリリースに合わせ各メーカーから資料をいただいたり、Intel製品仕様ページを確認しながら有力なCPUをピックアップし、検討を重ねXeon Scalable Processor(以下XeonSP)Gold 6126を採用しました。</p>
+
+<h4 id="cpuの選び方---クロック周波数のブーストについて">CPUの選び方 - クロック周波数のブーストについて</h4>
+
+<p>コア数・スレッド数は第二世代のXeon E5 2650V4と同等ですが、クロック周波数が高く、何よりもクロックのブーストが多コアで発生した時の下り幅が小さいことが1番の採用要因となりました。</p>
+
+<p>CPUは電力消費量の削減と高性能両立のために一時的に処理能力を引き上げるためクロック周波数を上げる機能を有していますが、この機能に対する理解不足がノイジーネイバー問題の原因の一つでもありました。</p>
+
+<p>カタログに記載されたクロック周波数のブースト時の値をそのまま受け取ってしまっていたため、実際の処理能力を多く見積りすぎていたのです。</p>
+
+<p>例えばXeon E5 2650V4は前述の<a href="https://ark.intel.com/content/www/jp/ja/ark/products/91767/intel-xeon-processor-e5-2650-v4-30m-cache-2-20-ghz.html">Inte製品 仕様ページの記載</a>ではBase 2.2GHz ターボブースト利用時 2.9GHzとなっています。しかしより<a href="https://www.intel.co.jp/content/www/jp/ja/processors/xeon/xeon-e5-v4-spec-update.html">詳細な仕様のデータシート</a>を確認すると、2.9GHzが出るのは2コアまでの稼働時のみで3コアでブーストが利用されたときは2.7GHz, 4コアで2.6GHz, 5コア以上の場合は2.5GHzとベースクロックとさほど差のない状態となってしまいます。</p>
+
+<p>最終的に採用したXeonSP Gold6126はこの点で最大ブースト時3.7GHzに対して最小ブースト幅の9コア以上ブースト時でも3.3GHzとE5 2650V4の最大ブースト時、2.9GHz以上の高クロック周波数を保っていることが採用の一番大きなポイントになっていました。</p>
+
+<h5 id="xeonの対象モデルの稼働コア毎のturbo-mode最大周波数intel-avx未使用時">Xeonの対象モデルの稼働コア毎のturbo mode最大周波数(Intel AVX未使用時)</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model Number</th>
+      <th>Core 1-2</th>
+      <th>Core 3</th>
+      <th>Core 4</th>
+      <th>Core 5</th>
+      <th>Core 6</th>
+      <th>Core 7</th>
+      <th>Core 8</th>
+      <th>Core 9</th>
+      <th>Core 10</th>
+      <th>Core 11+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>E5 2650V4</td>
+      <td>2.9GHz</td>
+      <td>2.7GHz</td>
+      <td>2.6GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+      <td>2.5GHz</td>
+    </tr>
+    <tr>
+      <td>Gold 6126</td>
+      <td>3.7GHz</td>
+      <td>3.5GHz</td>
+      <td>3.5GHz</td>
+      <td>3.4GHz</td>
+      <td>3.4GHz</td>
+      <td>3.4GHz</td>
+      <td>3.4GHz</td>
+      <td>3.3GHz</td>
+      <td>3.3Ghz</td>
+      <td>3.3GHz</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>数値は共に以下の資料より引用抜粋
+    <ul>
+      <li><a href="https://www.intel.co.jp/content/www/jp/ja/processors/xeon/xeon-e5-v4-spec-update.html">Intel® Xeon® Processor E5-2600 v4 Product Family Specification Update</a></li>
+      <li><a href="http://www.intel.com/content/www/xa/en/processors/xeon/scalable/xeon-scalable-spec-update.html">Intel® Xeon® Processor Scalable Family Specification Update</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="第三世代のメモリとストレージ">第三世代のメモリとストレージ</h4>
+
+<p>メモリについては第二世代に対して稼働する想定インスタンス数の低下により512GBでは完全にオーバースペックとなり、CPUにかかる費用が高額化したため容量削減をし384GB(32GBモジュール12枚)にしました。</p>
+
+<p>ストレージも同じくコスト対策と想定稼働インスタンス数の削減による必要量の低下により、SSDのサイズは変えずにRAIDの構成本数を6本から4本に減らすことで容量と価格の削減をしました。</p>
+
+<h4 id="第三世代の採用について">第三世代の採用について</h4>
+
+<p>Intel CPU以外にも新たに発売されたAMD EPYCの検討も行いましたが、採用した場合Intel CPUのサーバで作成されたインスタンスとAMD CPUのサーバで作成されたインスタンス間の仮想CPUの互換性が失われ、仮想化の大きな利点であるライブマイグレーションが行えなくなるため情報収集にとどまりました。</p>
+
+<p>第二世代の選定時にある程度絞ったメーカーの2社2機種に絞り、同様に検証を行い最終的には第二世代と同メーカーの後継機種の採用を決めました。</p>
+
+<p>CPU単価が大きく上がったためメモリとSSDの削減をしても1台当たりの購入価格が大きく上がりました。しかしノイジーネイバー問題はそれだけの解決すべき問題でした。</p>
+
+<h3 id="第三世代から第四世代への更新時の選定2019">第三世代から第四世代への更新時の選定(2019)</h3>
+
+<h4 id="第三世代を運用して見えてきた課題">第三世代を運用して見えてきた課題</h4>
+
+<p>第三世代はCPU性能を重点に選定し、結果ノイジーネイバーの発生頻度は大きく抑えることができました。</p>
+
+<p>しかし第二世代に対してサーバ1台当たりの価格が上がり、その上でサーバ1台当たりの搭載インスタンス数を少なくしたため、稼働している1インスタンス当たりのハードウェア調達コストは大きく悪化しました。</p>
+
+<h4 id="第四世代の構成の方針決定">第四世代の構成の方針決定</h4>
+
+<p>第三世代で達成したノイジーネイバーを発生しない状況を維持しつつ、1インスタンスあたりのハードウェア費用を最大限下げることを指針としましました。</p>
+
+<p>またこの年はサーバ本体以外にもネットワーク環境などへの投資があり、サーバに割ける予算が前年より減少してしまったため価格の優先度がより高くなっていました。</p>
+
+<p>1インスタンス当たりのハードウェアコストは <code>(サーバ価格 / 稼働インスタンス数)</code> で求められるため、ハードウェアコストを下げる手法は大きく分けて二つに分けられます。</p>
+
+<p>一つはサーバ価格が同じであればより多くのインスタンスが稼働できる性能にすること。二つ目が稼働インスタンス数が同じであればサーバ価格を安価なものにすることです。</p>
+
+<p>第四世代はこれらどちらか、もしくは両立によるハードウェアコストの削減を目指してのサーバ検討となりました。</p>
+
+<h4 id="第四世代のcpuの選定">第四世代のCPUの選定</h4>
+
+<p>ペパボのプライベートクラウドのサーバで一番価格に直結するパーツはCPUです。</p>
+
+<p>CPU単体の価格だけでなく、CPUのスレッド数に合わせて稼働可能なインスタンス数上限を計算することから、それに合わせてメモリやストレージのサイズも連動しているため、CPU選定次第でサーバ価格が決まると言っても過言ではありません。</p>
+
+<p>サーバ1台あたりの価格を下げるため比較的安価なCPUであるXeonSPのBronzeクラスから、反面稼働インスタンス数を最大化するための最上位のPlatinumクラスまで、前述のIntel製品詳細ページで目的に合致しそうな製品をピックアップし比較し、一時期はPlatinumの採用も本気で検討していました。</p>
+
+<p>しかし検証終盤に滑り込みでIntel XeonのCascadeLake世代のCPUにRefreshモデルが発表され、これが価格的にも性能的にも優れていました。</p>
+
+<p>特に良かった製品は第三世代で採用した6126の直系後継モデルである6226の更にリフレッシュモデルに当たる6226Rで、価格は6226より安価でコア数もクロック周波数も強化されていました。特にコア数が12から16に増えた事が大きく、1インスタンスの基準値を4vCPUで計算しているため64スレッドでオーバーコミット率300%なら48インスタンスの稼働が見込めます。</p>
+
+<p>リフレッシュモデル発売前の候補のひとつ、第二世代で採用していた6126の後継モデル6226は12コア24スレッドでした。これを2基搭載してインスタンス稼働見込みを前段と同条件の1インスタンス4vCPU+オーバーコミット率300%で計算すると36インスタンスとなり、リフレッシュモデルの6226Rの稼働見込み48インスタンスは6226の1.3倍です。</p>
+
+<p>価格面でもIntalの定価ベース(米ドル)ですが1CPUあたり6226が$1776、6226Rが$1306とリフレッシュモデルの方が3割以上も安くなっています。CPUは2基搭載するため差額の重要度はより高く、この差額によりインスタンス稼働数増加を支えるメモリやSSDなどの増強をしつつもサーバ1台あたりの値段を維持する事ができました。</p>
+
+<p>安価なCPUを採用してサーバ数を増やす方針や、より高価なCPUを採用してサーバ当たりの稼働インスタンス数を更に上げることも検討しましたが、価格と稼働インスタンス数を計算していくと今回採用した6226Rでの構成が安価なCPUを採用した場合やより高価なCPUを採用した場合と比較して、一番コストパフォーマンスに優れる構成でした。</p>
+
+<p>一見良いところばかりのこのCPUの最大の問題点は消費電力です。現在利用しているデータセンタのラックは電力が2kVA3系統の契約となっており、1基で150WのこのCPUはラックあたりの搭載数という点で大きな欠点でした。しかし過去のサーバ運用上、TDP上限まで電力を消費しているサーバというのは意外と少ないため最終的にこのCPUを選択しました。</p>
+
+<h4 id="cpuの選定時のベンチマークの一例">CPUの選定時のベンチマークの一例</h4>
+
+<p>CPU選定時には検証機を借りて様々な構成でベンチマークテストを行っています。次の画像は一例としてUnixBenchにて整数演算処理と不動小数点演算処理を1並列〜128並列までテストし、スコアをグラフにしたものです。第四世代の選定初期に計測したもので、主に第三世代より高性能なCPUの比較検討に用いたグラフです。</p>
+
+<p>グラフ中では4種類のCPUをテストしていますが、第三世代で採用した6126以外の製品名は非公表とさせていただきます。</p>
+
+<p><img src="/blog/2021/07/20/private-cloud-hardware/images/4th-gen-benchmark.png" alt="第四世代のCPUベンチマークの一例" /></p>
+
+<p>ペパボではハイパースレッディング(HTT)を有効にしています。第三世代の6126は12コア24スレッドのCPUで2基搭載しています(青と赤のライン)。24並列のテストまではリニアにスコアが上昇したものの、1物理コアで2スレッドが稼働することになる24並列以上のテストではスコアの伸びがなだらかになり、スレッド数上限の48並列のテストで頭打ちに。以降は並列数を上げても誤差範囲の数値のブレに止まっていることが見て取れます。</p>
+
+<p>6126よりも高性能なCPUとの比較のため、グラフ上では第三世代の採用のCPU性能が低く見えますが、価格的には約2.3倍〜約4.8倍と高コスト帯のCPUとの比較のため、価格まで含めたトータルバランスでは6126は優秀でした。</p>
+
+<p>この後6126の後継である6226を中心に同クラスのCPUを中心とした検証を行い、前述の6226Rの採用に繋がりました。</p>
+
+<p>このようにベンチマークのスコア以外にも価格や作業中のサーバの熱量、消費電力など様々な要素を検討しCPUの選定を行っています。</p>
+
+<h4 id="第四世代のメモリとストレージについて">第四世代のメモリとストレージについて</h4>
+
+<p>CPUが決まり、稼働可能なインスタンス数を最大化する方針となったため、メモリとストレージについても同様に多数のインスタンスを支るために強化します。</p>
+
+<p>第二世代選定時の基準フレーバーサイズ 8GBメモリ以上のメモリを利用するインスタンスも増えてきたため、オーバーコミットなく多数のインスタンスを実行する場合512GBでは不安が残ります。丁度選定時に64GBなど大容量のメモリモジュールの価格が下がってきたことや対象のCPUのメモリチャネルが6(ざっくりとメモリの搭載枚数が6の倍数を搭載時にメモリの性能を一番引き出せる)ため、64GBモジューのメモリを12枚(1CPUあたり6枚を2CPU分)搭載した768GB構成の採用を決めました。</p>
+
+<p>ストレージについても同様に増加を行いましたが、ディスク1本あたりの単体容量は第三世代から変えずに搭載本数を4本から6本に増やす方向で構成を決めました。1.92TBでRAID5を構成しているため、利用可能なディスクサイズはおおよそ5.76TBから9.6TBへの増加になります。</p>
+
+<h4 id="hardwareraidの選択">HardWareRAIDの選択</h4>
+
+<p>当初SoftwareRAIDで開始したプライベートクラウドでしたが、選定したサーバ機種がRAIDカード越しでないと管理ツール上から見れるデータが少なく、また故障時に保守サービスとのやりとりがRAIDカード搭載前提の場合が多く微妙な使いにくさを感じていました。</p>
+
+<p>第二世代の頃よりRAIDカードの搭載キャッシュメモリの容量も増え、搭載することでWriteの性能向上も期待できることからRAIDカード搭載を選択、第四世代からHardWareRAIDへと切り替えました。</p>
+
+<h4 id="第四世代の採用について">第四世代の採用について</h4>
+
+<p>選定に当たってはCPUの項目で記載した様々な構成での見積もりを行った記録の一端がこちらの画像になります。</p>
+
+<p><img src="/blog/2021/07/20/private-cloud-hardware/images/spreadsheet.png" alt="コストを最適化するための見積もりスプレッドシート" /></p>
+
+<p>金額や製品名が記載されているものなのでそのままお見せできないのが残念ですが、スプレッドシートでCPUスレッド数やメモリ容量ストレージ容量などなどを1行目の第三世代と比較し、搭載量やCPUコア単価などの価格の増減を可視化しました。</p>
+
+<p>予算面で特に気を使った第四世代ですが上記のような検討を経て最終的には第三世代から単体の費用が微増するものの稼働インスタンス数が倍近くに増え、結果として1インスタンスあたりのサーバ費用の軽減を達成するとができました。</p>
+
+<h2 id="サーバ消費電力と熱の問題とその対応">サーバ消費電力と熱の問題とその対応</h2>
+
+<p>CPU選定の項目で記載した通り、今回のCPUはTDP150Wの高消費電力CPUでしたがこれが導入後にネックとなりました。</p>
+
+<p>既存の第二世代、第三世代のサーバのカタログスペック上のサーバ消費電力と、実際の稼働中サーバで計測した消費電力の差異から算定した比率を第四世代に当てはめ、実効消費電力は1台500W台程度を予想していました。しかし導入早々に600W〜最大700Wと想定に対し大幅に大きい電力消費を計測しました。</p>
+
+<p>また重ねて想定外だったのが熱の問題です。今までのペパボの運用ではデータセンターのサーバにて熱による問題が発生したことなかったため完全に不意打ちでした。ログに熱によるCPU速度制限(サーマルスロットル)が現れるようになり、電力と熱の双方の問題解決が必要になりました。</p>
+
+<h4 id="ファンオフセット設定と電力制限powercapping">ファンオフセット設定と電力制限（PowerCapping)</h4>
+
+<p>サーバ1台あたりの電力が過大になると1ラック当たりのサーバ搭載数が絞られ、1台の稼働インスタンス数が多くなってもラックあたりの稼働インスタンス数は伸びないという問題につながります。これを解決するためにPowerCappingを導入しました。</p>
+
+<p>PowerCappingとはハードウェア・ソフトウェアいずれかの制御で消費電力を一定以上にならないよう抑える機能で、採用しているサーバでは管理ツールに実装されているため、管理ツール上から電力を制限する事としました。</p>
+
+<p>とはいえ無闇に電力を制限してサーバの性能が劣化してしまったら高性能なCPUを選んだ意味がなく元も子もありません。そこで電力の制限値をを小刻みに設定し、都度ベンチマークツールで性能計測、電力制限と速度のバランスの良い落とし所を探しました。</p>
+
+<p>また合わせて熱問題解決のため、冷却ファンの速度設定としてオフセット設定の変更にも着手しました。こちらも管理ツール上からのファン設定の変更で行えましたが、想定外だったのはファンの設定変更による消費電力の変動です。ファンの回転数などそこまで影響しないだろうと未設定の状態から一段上の冷却設定に変更したところ、60Wも消費電力が上昇しシビアな電力状況に追い討ちとなりました。</p>
+
+<p>しかし熱問題も解決しないとサーマルスロットルによる性能劣化が発生する恐れがあるため、PowerCappingと複合で設定と検証を行いました。</p>
+
+<p>はなはだ簡易ではありますが行った様々なテストのうちPowerCappingの簡単な表になります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定最大ワット制限値</th>
+      <th>UnixBench dhry2reg index</th>
+      <th>管理ツール計測実効ワット</th>
+      <th>最大CPU温度</th>
+      <th>出力比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>設定なし</td>
+      <td>125459.6</td>
+      <td>569W</td>
+      <td>91</td>
+      <td>100%</td>
+    </tr>
+    <tr>
+      <td>513W</td>
+      <td>121482.2</td>
+      <td>515W</td>
+      <td>83</td>
+      <td>90%</td>
+    </tr>
+    <tr>
+      <td>456W</td>
+      <td>113432.8</td>
+      <td>463W</td>
+      <td>86</td>
+      <td>80%</td>
+    </tr>
+    <tr>
+      <td>399W</td>
+      <td>104215.4</td>
+      <td>404W</td>
+      <td>78</td>
+      <td>70%</td>
+    </tr>
+    <tr>
+      <td>342W</td>
+      <td>87052.3</td>
+      <td>347W</td>
+      <td>68</td>
+      <td>60%</td>
+    </tr>
+    <tr>
+      <td>285W</td>
+      <td>60607.6</td>
+      <td>296W</td>
+      <td>60</td>
+      <td>50%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>冷却ファンの設定を変更し、PowerCappingと組み合わせてのベンチマークスコアの検証も行いました。</p>
+
+<p><img src="/blog/2021/07/20/private-cloud-hardware/images/fan_pc_bench.png" alt="設定を組み合わせてのベンチマーク" /></p>
+
+<p>面白い点としてファンの回転数が電力をある程度消費するため、PowerCappingを導入した状態でより強い冷却設定を行った場合に冷却ファンに電力リソースを奪われ、弱い冷却設定よりもCPU性能が出ないことが分かりました。</p>
+
+<p>結果を知っていれば当然だと思える内容ですがベンチマークを実行してこの結果が出たときには意外性を感じました。これらのベンチマークの結果、現在は550W制限+ファンオフセット弱の組み合わせてで設定し安定して稼働しています。</p>
+
+<h2 id="終わりに">終わりに</h2>
+
+<p>ペパボのプライベートクラウドのサーバハードウェア選定、如何でしたでしょうか。</p>
+
+<p>サービスが稼働する土台でありながら意外と知られていないサーバやハードウェア事情。最近はクラウドの隆盛で自社で購入ということは減ってきた感もありますが、運用によってはクラウドの利用より大幅なコストダウンを図れるかもしれませんよ。</p>
+
+<p>一歩間違えると性能が出ずにサービス全体に悪影響を及ぼしたり、構成の煩雑さやミスマッチから運用コストの悪化などを招く怖さがあり、選定には大きな緊張を伴います。</p>
+
+<p>ソフトウェアに対してハードウェアはインターネット上での情報共有も少なく、各社各人で持っている苦悩や工夫、ノウハウにナレッジを学べる機会は意外と限られているように感じます。私も他の方や他の会社の話を聞いてみたいですね。また興味があるという方は是非お声がけください。</p>
+
+<p>春にIntel、AMD共にサーバ向けCPU新製品を販売開始し、メーカー各社が対応した新製品の販売を開始したためペパボでも第四世代からの更新時期となってきました。2022年以降に採用する第五世代の検討、ペパボでご一緒にサーバをいじり回してみませんか？</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2021/07/20/private-cloud-hardware/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/6f97865fc81df195cc2bd621d295a623?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E9%A6%AC%E5%B4%8E%E8%A3%95%E4%BA%8C/">馬崎裕二</a>
+          </p>
+          <p class="article__author-description">
+            プラットフォームグループ エンジニア
+          </p>
+        </div>
+        <div class="article__author-links">
+        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

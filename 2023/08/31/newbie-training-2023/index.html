@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>ペパボ新卒エンジニア研修2023 - Pepabo Tech Portal</title>
+<meta content="こんにちは、新卒 13 期の @donokun です。5 月中旬から参加していた新卒技術研修が 7 月末に終了しました！
+ペパボの新卒技術研修では、Rails やコンテナのような Web サービスを作る上で基礎的な技術と、
+機械学習や..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@khiroyuki1993" name="twitter:creator" />
+      <meta content="@myumura3" name="twitter:creator" />
+      <meta content="@furudono2" name="twitter:creator" />
+      <meta content="@n01e0" name="twitter:creator" />
+<meta content="ペパボ新卒エンジニア研修2023 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="こんにちは、新卒 13 期の @donokun です。5 月中旬から参加していた新卒技術研修が 7 月末に終了しました！
+ペパボの新卒技術研修では、Rails やコンテナのような Web サービスを作る上で基礎的な技術と、
+機械学習や..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"ペパボ新卒エンジニア研修2023","author":{"@type":"Person","name":"kromiii"},"datePublished":"2023-08-30T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-newbie-training-2023">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/エンジニア/" class="tag-default">エンジニア</a>
+      <a href="/tags/研修/" class="tag-default">研修</a>
+  </div>
+  <time class="article__time" datetime="2023-08-31">
+    2023-08-31
+  </time>
+  <h1 class="article__title">
+    <a href="/2023/08/31/newbie-training-2023/">ペパボ新卒エンジニア研修2023</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/エンジニア/" class="tag-default">エンジニア</a>
+      <a href="/tags/研修/" class="tag-default">研修</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/08/31/newbie-training-2023/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>こんにちは、新卒 13 期の <a href="https://twitter.com/furudono2">@donokun</a> です。5 月中旬から参加していた新卒技術研修が 7 月末に終了しました！
+ペパボの新卒技術研修では、Rails やコンテナのような Web サービスを作る上で基礎的な技術と、
+機械学習やセキュリティのような近年重要性が増している技術を学びます。
+この記事では新卒 13 期の 4 名で、技術研修で何を行い学んだかを紹介します。</p>
+
+<p>新卒研修は、技術研修以外のコンテンツもあります。そちらも紹介記事を書いているので、よかったらご覧ください。</p>
+
+<ul>
+  <li><a href="https://hr.pepabo.com/report/2023/05/26/8831">GMO Launcher 2023 新卒研修レポート</a></li>
+  <li><a href="https://hr.pepabo.com/report/2023/06/23/8940">2023 年ペパボ新卒研修レポート</a></li>
+</ul>
+
+<ol id="markdown-toc">
+  <li><a href="#rails-tutorial" id="markdown-toc-rails-tutorial">Rails Tutorial</a>    <ol>
+      <li><a href="#技術研修でのコミュニケーション" id="markdown-toc-技術研修でのコミュニケーション">技術研修でのコミュニケーション</a></li>
+    </ol>
+  </li>
+  <li><a href="#aws-jumpstart" id="markdown-toc-aws-jumpstart">AWS JumpStart</a></li>
+  <li><a href="#データエンジニアリング機械学習" id="markdown-toc-データエンジニアリング機械学習">データエンジニアリング・機械学習</a>    <ol>
+      <li><a href="#データエンジニアリング研修" id="markdown-toc-データエンジニアリング研修">データエンジニアリング研修</a></li>
+      <li><a href="#機械学習研修" id="markdown-toc-機械学習研修">機械学習研修</a></li>
+    </ol>
+  </li>
+  <li><a href="#コンテナdc-見学" id="markdown-toc-コンテナdc-見学">コンテナ・DC 見学</a>    <ol>
+      <li><a href="#dc-見学" id="markdown-toc-dc-見学">DC 見学</a></li>
+      <li><a href="#コンテナ研修のゴール" id="markdown-toc-コンテナ研修のゴール">コンテナ研修のゴール</a></li>
+      <li><a href="#研修の内容" id="markdown-toc-研修の内容">研修の内容</a></li>
+    </ol>
+  </li>
+  <li><a href="#セキュリティ" id="markdown-toc-セキュリティ">セキュリティ</a>    <ol>
+      <li><a href="#kenro" id="markdown-toc-kenro">KENRO</a></li>
+    </ol>
+  </li>
+  <li><a href="#isucon" id="markdown-toc-isucon">ISUCON</a></li>
+  <li><a href="#フロントエンド" id="markdown-toc-フロントエンド">フロントエンド</a></li>
+  <li><a href="#ai-わいわい" id="markdown-toc-ai-わいわい">AI わいわい</a>    <ol>
+      <li><a href="#yumu-suzuri-事業部" id="markdown-toc-yumu-suzuri-事業部">yumu @SUZURI 事業部</a></li>
+      <li><a href="#donokun--kromiii-ec-事業部" id="markdown-toc-donokun--kromiii-ec-事業部">donokun &amp; kromiii @EC 事業部</a></li>
+      <li><a href="#n01e0-minne-事業部" id="markdown-toc-n01e0-minne-事業部">n01e0 @minne 事業部</a></li>
+    </ol>
+  </li>
+  <li><a href="#おわりに" id="markdown-toc-おわりに">おわりに</a></li>
+</ol>
+
+<h2 id="rails-tutorial">Rails Tutorial</h2>
+
+<p>ここまでに引き続き、13 期の <a href="https://twitter.com/furudono2">@donokun</a> が Rails Tutorial 研修の紹介をします！
+技術研修は Rails Tutorial からスタートしました。
+12 日間をかけてじっくり取り組み、今後の研修の基礎を築きます。
+この研修の目標は以下の三つです。</p>
+
+<ul>
+  <li>Rails アプリケーションのコードを読み書きできるようになること</li>
+  <li>フレームワークを用いた開発手法を知ること</li>
+  <li>コミュニケーションを取りながら学び、アウトプットすること</li>
+</ul>
+
+<p>Rails Tutorial 研修を通じて、Ruby や Rails、MVC アーキテクチャの知識に加えて Web 開発の共通語彙を獲得しました。</p>
+
+<h3 id="技術研修でのコミュニケーション">技術研修でのコミュニケーション</h3>
+
+<p>この記事では三つ目の「コミュニケーションを取りながら学び、アウトプットすること」に関して
+研修中のエピソードを紹介します。</p>
+
+<p>研修期間中はそれぞれの新卒パートナーが自身の「分報スレッド」を毎日 Slack に作成し、
+疑問や質問、Rails への賞賛や文句、お腹の空き具合など、感じたことや考えたことを共有します。
+メンターとの質疑応答を含めたほとんどのコミュニケーションは分報スレッドで完結するのが技術研修の特徴です。
+ほんの小さな困りごとでも気軽に共有できるので、議論が活発に起こります。</p>
+
+<p>研修中に投げかけた疑問から議論が発展して Rails のソースコードを読み解くこともしばしばありました。
+ちょっと不思議な Rails の挙動とその仕組みを 13 期の kromiii が<a href="https://qiita.com/kromiii/items/ba1a6e864c50f922210a">ブログにまとめてくれた</a>ので、よかったら覗いてみてください。</p>
+
+<p>Rails Tutorial 研修では 3 人のメンターが分報スレに張り付いて僕たちをサポートしてくれました。
+<a href="https://twitter.com/yoshikouki_">@yoshikouki</a>さん、
+<a href="https://twitter.com/hyuta555">@yukun</a>さん、
+<a href="https://twitter.com/yana_gis">@yanagi</a>さん、ありがとうございました！</p>
+
+<h2 id="aws-jumpstart">AWS JumpStart</h2>
+
+<p><a href="https://twitter.com/myumura3">@yumu</a>です。
+AWS JumpStart では、オンラインで他の会社の新卒社員と一緒に AWS のソリューションアーキテクトの方々から講義を受けました。</p>
+
+<h4 id="内容">内容</h4>
+
+<p>研修は三日間行われました。
+1 日目は AWS に関する基礎的な内容の講義から始まり、その後は ALB+ECS+RDS を使用したハンズオンに移りました。</p>
+
+<p>2 日目は EC2 を中心とした構成でハンズオンが行われました。加えてアーキテクチャの検討も行われ、与えられたお題に基づいたアーキテクチャを個人やグループで設計しました。このアーキテクチャ検討の際に、他の会社の新卒社員との交流ができる機会もあり、有意義な時間となりました。</p>
+
+<p>そして、最終日の 3 日目は Lambda を用いてサーバレスなアーキテクチャのハンズオンを体験しました。また、2 日目に考えた構成を更にアップデートするという形で、アーキテクチャ検討も行いました。</p>
+
+<p><img src="/blog/2023/08/31/newbie-training-2023/images/aws.png" alt="アーキテクチャ検討で作成した構成図" /></p>
+
+<h4 id="学んだこと">学んだこと</h4>
+
+<p>私は AWS に触れるのがほぼ初めてでしたが、研修を通じて多くの知識を身につけることができました。
+特に、さまざまな状況や要件に応じた構成図を自分で描けるようになったことは大きな成果と感じています。
+以前は理解が難しかった AWS 特有の略語や専門用語に対する恐怖感もなくなりました。
+さらに、リファレンスアーキテクチャの理解と応用ができるようになったことで、より具体的なシステム設計や問題解決に役立てることができる自信がつきました。</p>
+
+<h4 id="感想">感想</h4>
+
+<p>研修の内容自体は比較的簡単で理解しやすかったのですが、同時に、掘り下げようと思えば深く掘り下げることができる複雑さも感じました。
+全体を通して学びが多く、とても満足感のある研修となりました。</p>
+
+<h2 id="データエンジニアリング機械学習">データエンジニアリング・機械学習</h2>
+
+<p>新卒 13 期の <a href="https://twitter.com/khiroyuki1993">@kromiii</a>です。私からはデータエンジニアリング研修と機械学習研修について紹介します。</p>
+
+<h3 id="データエンジニアリング研修">データエンジニアリング研修</h3>
+
+<p>データエンジニアリング研修では Web サービスから得られるデータを分析するための基礎となる技術を学びました</p>
+
+<p>技術要素としては大きく分けて３つあります。</p>
+
+<p>一つめは BigQuery です。BigQuery はいわゆるデータウェアハウスと呼ばれるものの一つで、列指向でデータを格納することで高速にデータを処理できるようになっています。大規模な Web サービスを提供する会社では自ずとログデータの数も膨大になるため通常のリレーショナルデータベースでは処理が追いつかなくなってしまうことがありますが、そういった場合に BigQuery のようなデータウェアハウスを使うことでデータの分析を高速に行うことができるということを実際にクエリを書きながら学びました。</p>
+
+<p>二つ目は Locker Studio です。Locker Studio は BigQuery で取得したデータを可視化するためのダッシュボードで、リアルタイムにクエリを発行して最新のデータを可視化することができます。研修では BigQuery で取得したデータを Locker Studio で可視化することで、データの分析をより効率的に行う方法を学びました。</p>
+
+<p>三つ目は Embulk です。Embulk はデータ分析の基礎である ELT (Extract-Load-Transform) の Extract と Load に当たる部分を効率化するツールです。データを取得する部分はこれまであまり意識してこなかったのですが、Embulk のようなツールを使うことでデータの取得を効率化できるということを学びました。</p>
+
+<h3 id="機械学習研修">機械学習研修</h3>
+
+<p>機械学習研修では機械学習モデルの基礎と大規模言語モデルの基礎を学びました。基礎的な事項については Google の Machine Learning Handson を使って勉強しましたが、最近のトレンドである大規模言語モデルについてはペパボ研究所の <a href="https://twitter.com/ae14watanabe">@watasan</a> から直々に講義を受けて学びました。</p>
+
+<p>当日の資料はこちらに公開されているので、興味のある方はぜひご覧ください。</p>
+
+<script defer="" class="speakerdeck-embed" data-id="16bbfe58356c46cfadf35664987e87cc" data-ratio="1.77725118483412" src="//speakerdeck.com/assets/embed.js"></script>
+
+<p>私が一番印象的だったのは ChatGPT に代表される大規模言語モデルでは単にデータを学習するだけでなく、人間にとって好ましい回答を生成するように人力のチューニングが行われているというところで、LLM も意外と泥臭い作業が積み重なってできているんだなということを学びました。</p>
+
+<p>LLM についてはまだまだ研究が進んでいる段階なので、今後も引き続き注目していきたいと思います。</p>
+
+<h2 id="コンテナdc-見学">コンテナ・DC 見学</h2>
+
+<p>新卒 13 期生の<a href="https://twitter.com/n01e0">@n01e0</a>です。コンテナ研修の真実をお話します。</p>
+
+<p>コンテナ研修は 6/13 ~ 6/23 の日程で行いました。</p>
+
+<p>期間中にはデータセンターの見学にも行きました。</p>
+
+<h3 id="dc-見学">DC 見学</h3>
+
+<p>具体的な場所は書くことができませんが、コンテナ研修の一環としてデータセンターへ行き、私たちが普段触っているコンテナや VM が実際に動いているサーバーを見てきました。データセンターへ行くのは初めての経験です。クラウドネイティブな Z 世代である私たちにとって、サーバーの排熱を肌で感じるのはなかなかできることではありません。普段、ソフトウェアの冗長性について考えたり学んだりすることはありますが、ハードウェア・電気のレベルで冗長化された設備の説明は圧巻でした。</p>
+
+<p>サーバーを担ぐという貴重な体験もさせて頂きました。自分は 1/4U より大きいサーバーを持ち上げるのは初めてだったので緊張したものの、腰もサーバーも無事でした。</p>
+
+<h3 id="コンテナ研修のゴール">コンテナ研修のゴール</h3>
+
+<ul>
+  <li>コンテナ関連技術に触れることができる
+    <ul>
+      <li>自分でコンテナをやってみたい！と思ったときに何をやればいいかが分かる</li>
+      <li>自分でアプリケーションをコンテナを用いて動かすことができる</li>
+      <li>コンテナを使う利点と欠点を理解できる</li>
+    </ul>
+  </li>
+  <li>クラウド関連技術に触れることができる</li>
+  <li>デプロイ関連技術に触れることができる
+    <ul>
+      <li>コードを用いてデプロイを自動化できる</li>
+      <li>デプロイ自動化の利点を手を動かして理解できる</li>
+    </ul>
+  </li>
+  <li>標準化、抽象化について実践で使える理解を得られる
+    <ul>
+      <li>標準化を実際のプロダクトに適用できる素養を養う</li>
+      <li>抽象化を実際のプロダクトに適用できる素養を養う</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="研修の内容">研修の内容</h3>
+
+<ul>
+  <li>Docker Hands on</li>
+  <li>Infrastructure as a Code Hands on</li>
+  <li>GitHub Actions Hands on</li>
+  <li>Kubernetes を利用したアプリケーション公開</li>
+</ul>
+
+<p>具体的な研修の内容については<a href="https://github.com/pepabo/training">公開されている資料</a>をご覧ください。</p>
+
+<p>コンテナ(物理)の歴史から始まった研修は、各セクションが演習と追加課題で構成されており、時間内に演習を終えた後は追加課題に取り組むことができる構成でした。</p>
+
+<p>Dockerfile を記述してコンテナをビルド、起動する演習から「<strong>コンテナランタイムを使わずにコンテナを立てる</strong>」追加課題まで走り切ることができました。</p>
+
+<p>Kubernetes を利用したアプリケーション公開では、AWS JumpStart で学んだ知識も活用し、Rails Tutorial で作成したアプリケーションを EKS 上にデプロイしました。</p>
+
+<h2 id="セキュリティ">セキュリティ</h2>
+
+<p>セキュリティ研修では Flatt Security のサービスである KENRO を使って、脆弱性への攻撃および修正の仕方を学びました。</p>
+
+<p>また、それ以外にも社内のセキュリティ対策組織やインシデントレスポンスの流れについても講義を受けました。</p>
+
+<h3 id="kenro">KENRO</h3>
+
+<p>KENRO では、6 つの言語で作成されたアプリケーションの脆弱性に対して、実際に攻撃を行った後、ソースコードを読んで修正を行う演習にも取り組みます。</p>
+
+<p>せっかくなので普段触らない言語にも取り組もうと思い、すべてのソースコードに目を通しましたが、基本的に修正は「フレームワークの機能を正しく使う」という対応が多く、あえて道を外れるならば相当な覚悟が必要になることがわかりました。</p>
+
+<p>Web アプリケーションの脆弱性に関する知識に乏しい自分でも、テキストを読みながら攻撃を行い、ソースコードの修正まで体験できる非常に良い教材でした。</p>
+
+<h2 id="isucon">ISUCON</h2>
+
+<p><a href="https://twitter.com/khiroyuki1993">@kromiii</a>です。ISUCON 研修では本番の ISUCON を模した設定でパフォーマンスチューニングの基礎を学びました。ISUCON とはコンテスト形式で Web サービスのパフォーマンス改善スキルを競うものです。研修では仮想の写真投稿サービスを対象に、サイトのレスポンスタイムを短くするためのチューニングを行いました。具体的には Web サーバーの設定を変更したり、データベースのインデックスを追加したり、アプリケーションのコードを書き換えたりすることでレスポンスタイムを短くするなどです。</p>
+
+<p>２人 1 組でチームを組んで参加するのですが、私は <a href="https://twitter.com/h0mirun_deux">@homirun</a> さんとペアを組んで「古代インデックス神社」という名前で参加しました。</p>
+
+<p>研修で <a href="https://twitter.com/h0mirun_deux">@homirun</a> さんから学んだことは ISUCON の真髄とも言える「推測するな、計測せよ」ということです。研修中は htop や alp を使ってボトルネックになっていそうな箇所を特定して、そこを優先的に改善することでサイト全体のパフォーマンスを上げていくというアプローチをとりました。このアプローチが功を奏し、古代インデックス神社は最終的に全体の中で 6 位に入賞することができました。スコアが上がるたびに二人で歓喜したのはいい思い出です。</p>
+
+<h2 id="フロントエンド">フロントエンド</h2>
+
+<p><a href="https://twitter.com/myumura3">@yumu</a>です。
+フロントエンド研修は、<a href="https://twitter.com/tascript">@tascript</a>さん、<a href="https://twitter.com/kazuhi_ra">@kazuhi-ra</a>さん、<a href="https://twitter.com/ksu_302">@sangun</a>さんのご指導のもと、6 日間ほど行われました。</p>
+
+<h4 id="内容-1">内容</h4>
+
+<p>JavaScript や TypeScript、宣言的 UI の概要を学んだ後、「自由にフロントエンド技術を使用して何かを作成する」というテーマで開発を行いました。</p>
+
+<p>私は「不動産投資のキャッシュフロー（CF）シミュレータ」を作りました。
+このシミュレータには、物件価格や家賃を入力すると CF をシミュレーションする機能や、シミュレーション条件を保存・再呼び出しする機能が含まれています。
+フロントエンドは React×TypeScript、バックエンドは express と prisma を使用しました。
+Jest と React Testing Library を使ったテストも書きました。</p>
+
+<p><img src="/blog/2023/08/31/newbie-training-2023/images/frontend.png" alt="フロントエンド研修で作成したアプリ" /></p>
+
+<h4 id="学んだこと-1">学んだこと</h4>
+
+<p>静的型付けになじみがなかったため、TypeScript の「型」というのが最初は難しく感じましたが、慣れてくると型を定義するメリットが感じられるようになりました。
+また、適切な技術の選択、データベースとの連携、ディレクトリ構成、コンポーネントの分割など、多くの学びを得ることができました。</p>
+
+<h4 id="感想-1">感想</h4>
+
+<p>以前はフロントエンド技術に慣れておらず、少し抵抗感がありましたが、この研修を経て、その魅力を存分に感じることができました。
+特に、TypeScript の型の恩恵を受けて、コードの可読性が向上したのは大きな収穫でした。</p>
+
+<h2 id="ai-わいわい">AI わいわい</h2>
+
+<p>AI わいわいでは研修の総仕上げとして、事業部に分かれて OpenAI API を用いたサービスの開発を行いました。
+研修で身につけた技術をもとに実際にサービスを開発することで、サービス開発の難しさを体感するとともに、研修の成果を確認しました。</p>
+
+<h3 id="yumu-suzuri-事業部">yumu @SUZURI 事業部</h3>
+
+<p><a href="https://twitter.com/myumura3">@yumu</a>です。
+私は SUZURI 事業部で開発を行いました。</p>
+
+<h4 id="取り組んだ内容">取り組んだ内容</h4>
+
+<p>SUZURI のキャラクターであるスリスリくんと対話可能な web アプリケーション、<a href="https://chat.suzuri.jp/">スリスリ AI チャット</a>（以下、スリチャ）の改良を行いました。
+スリチャの内部では、LangChain という LLM の機能を拡張できるライブラリを利用し、OpenAI API を利用して各種処理を行っています。
+ここでは、今回開発した機能の中で代表的なものをご紹介します。</p>
+
+<ul>
+  <li>
+    <p>キーワード検索機能：「花柄のスマホケースが欲しい！」といった入力に対し、「花々」「花束」などのキーワードを表示します。キーワードをクリックすると、チャット上にそのキーワードに関連するアイテムが展開され、よりスムーズに商品を検索できるようになりました。</p>
+  </li>
+  <li>
+    <p>類似画像検索機能：SUZURI の Web アプリに元々存在していた T シャツの類似画像検索機能を API 化しました。これにより、スリチャで T シャツの類似画像検索が可能になり、お目当ての商品に素早くたどり着くことができます。</p>
+  </li>
+  <li>
+    <p>ベクターサーチ：LangChain の Vector Stores 機能を導入し、アイテムに関する質問に答えられるようになりました。アイテム情報をベクトルデータに変換し、質問が入力されたときに、その質問に近いデータをベクトルデータの中から引き出すことで回答しています。</p>
+  </li>
+</ul>
+
+<p><img src="/blog/2023/08/31/newbie-training-2023/images/ai_suzuri.png" alt="改良されたスリチャ" /></p>
+
+<h4 id="難しかった点">難しかった点</h4>
+
+<p>開発中、特に難しかったのはプロンプトの調整と Agents の設定です。
+プロンプトは、言い回しを変えただけで出力が全く変わるなど、思わぬ動きをすることが多かったため、さまざまな表現を試して適切なプロンプトを模索しました。
+また、ユーザーの入力に応じて最適なツールを選択する LangChain の機能である Agents の扱いも大変でした。
+ツールの選択の判断基準となる description を過不足なく記述するのが難しかったです。</p>
+
+<h4 id="感想-2">感想</h4>
+
+<p>AI わいわい開発を通して、12 日間で 12 個のリリースを行い、スリチャを大きく進化させることができました。
+中にはささいなアップデートも含まれていましたが、限られた時間の中で最大の成果を追求することができたと思っています。
+これから始まる OJT でもスピード感を持って開発に取り組んでいきます！</p>
+
+<h3 id="donokun--kromiii-ec-事業部">donokun &amp; kromiii @EC 事業部</h3>
+
+<p><a href="https://twitter.com/furudono2">@donokun</a> と <a href="https://twitter.com/khiroyuki1993">@kromiii</a> は EC 事業部で開発を行いました。</p>
+
+<h4 id="取り組んだ内容-1">取り組んだ内容</h4>
+
+<p>私たちが取り組んだ内容は AI による商品宣伝文の生成です。カラーミーショップではこれまで iOS アプリで AI による商品宣伝文の生成を行ってきましたが、今回は Web アプリケーションでの実装を行いました。</p>
+
+<p>アーキテクチャとしてはこのような感じです。</p>
+
+<p><img src="/blog/2023/08/31/newbie-training-2023/images/ai_ec.png" alt="商品宣伝文生成アーキテクチャ" /></p>
+
+<p>商品の説明文をもとに Open AI API に独自のプロンプトを含むリクエストを行うことによって SNS での拡散に最適な商品の宣伝文を生成します。</p>
+
+<p>具体的な機能の詳細についてはこちらのプレスリリースをご覧ください。</p>
+
+<p><a href="https://shop-pro.jp/news/release-colorme-ai-assistant/">【7/25 更新】商品の宣伝文を自動生成！「カラーミー AI アシスタント(β)」の提供を開始しました</a></p>
+
+<h4 id="難しかった点-1">難しかった点</h4>
+
+<ul>
+  <li>文字コード（どのくん）: カラーミーショップは 長年に渡り開発されているサービスで、アプリケーションの開発やデータのエンコードに EUC-JP と UTF-8 が併用されています。そのため機能追加をする際には、単に文字列として認識するのではなく、その文字コードを意識したコードを書く必要があります。OpenAI API への入力となる文字列を加工する処理で、文字コード起因のバグを作ってしまい、AI が予期せぬ結果を返す不具合に悩みました。不具合の原因自体は単純なのですが、当初は AI に渡すプロンプトが悪いのだろうと思い込んでしまったことが事態を難しくした原因です。問題解決に取り組む前に、問題の切り分けを正確に完了すべきだったと、身をもって学びました。</li>
+  <li>工数の見積もり（くろみー）: カラーミーショップのような大規模なアプリではボタンを一つ追加するにしても影響範囲の調査も含めて個人開発と比較して工数を多めに見積もる必要があると感じました。私はフロントエンド側を担当しましたが、既存のコードと一貫性があるように実装することが難しかったです。</li>
+</ul>
+
+<h4 id="感想-3">感想</h4>
+
+<ul>
+  <li>くろみー：カラーミーショップのような膨大なユーザーを抱えるアプリケーションで、実際に自分の書いたコードが動いているという事実に感動するとともにやりがいを感じました。LLM を利用したチャット型のサービスは今後の EC サービスにおいて必須になると思うので、今後この機能がどのように進化していくのか楽しみです。</li>
+  <li>どのくん：サポートしていただいたメンターをはじめ、事業部の皆さんの力を借りて、サービスに初めて貢献しました。
+仕事の進め方や質問するとなんでも答えてくれるさまを目の当たりにして先輩はすごいんだと改めて実感しています。
+仕事をする上で目指す像がより具体的になりました。
+EC 事業部の皆さん、ありがとうございました！</li>
+</ul>
+
+<h3 id="n01e0-minne-事業部">n01e0 @minne 事業部</h3>
+
+<p>minne 事業部で開発を行った<a href="https://x.com/n01e0">@n01e0</a>です。</p>
+
+<h4 id="取り組んだ内容-2">取り組んだ内容</h4>
+
+<p>どのような箇所で OpenAI API を活用できるか、どこでどう使うべきか。という段階から考え、実装まで行いました。</p>
+
+<p>また、検証時には形態素解析などの自然言語処理を用いてトークンの消費を抑える方法についても考察しました。</p>
+
+<p>今回は作品についたレビューからアドバイスを作成し、作家に送信するような機能を開発しました。</p>
+
+<h4 id="難しかった点-2">難しかった点</h4>
+
+<p>まずは環境構築が大変でした。</p>
+
+<p>minneはマイクロサービスで、複数のリポジトリに依存しています。セットアップ用のスクリプトがあるとはいえ、ローカルで環境が立ち上がるまでにかなりの時間を要します。</p>
+
+<p>また、GraphQLなどの今までほとんど触れてこなかった技術が使われている点も難しかったです。とはいえそこは楽しく学ぶことができました。</p>
+
+<h4 id="感想-4">感想</h4>
+
+<p>リリースに至らなかった機能もいくつかありますが、要件定義から実装までの流れを実感できて楽しかったです。</p>
+
+<h2 id="おわりに">おわりに</h2>
+
+<p>この記事では 2023 年度のペパボ新卒エンジニア研修の様子を紹介しました。</p>
+
+<p>研修を終えた私たち 13 期はサイクル OJT という形で社内の部署を周り仕事に取り組んでいます。
+研修での学びが生きていると感じる毎日です。</p>
+
+<p>研修に携わってくれた皆さん、ここまで読んでくれた皆さん、ありがとうございました！！</p>
+
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/08/31/newbie-training-2023/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/c149351688cd05d20fcb0919d8383550?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kromiii/">kromiii</a>
+          </p>
+          <p class="article__author-description">
+            最近カレーにハマってます
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/khiroyuki1993" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kromiii" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/8a3f6f5da6ba3f04c45ac8b4b5bf6549?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/yumu/">yumu</a>
+          </p>
+          <p class="article__author-description">
+            コレステロール値に気をつけて生きていきたいです
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/myumura3" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/myumura" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/a42d80b763413f5b315c5d069ac457ae?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/donokun/">donokun</a>
+          </p>
+          <p class="article__author-description">
+            好きな食べ物はアイスです
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/furudono2" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/naoyafurudono" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/bc2b74581660589ac5c0d4366b8fe9d8?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/n01e0/">n01e0</a>
+          </p>
+          <p class="article__author-description">
+            コンビニ袋を三角形に折りたたむことを生業としています
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/n01e0" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/n01e0" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

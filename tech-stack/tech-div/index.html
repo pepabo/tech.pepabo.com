@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>GMOペパボの技術スタック · 技術部 - Pepabo Tech Portal</title>
+<meta content="技術部は特定サービスによらない全社横断の技術施策を行う事業部です。具体的には4つのチームで組織されています（技術基盤チーム / データ基盤チーム / プラットフォームグループ / コーポレートエンジニアリンググループ）それぞれのチーム、グループの役割について詳しくは採用目的 2021 技術部編をご覧ください。" property="description" />
+<meta content="https://tech.pepabo.com/images/tech-stack/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+  <meta content="@pepabo" name="twitter:creator" />
+<meta content="GMOペパボの技術スタック · 技術部 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="技術部は特定サービスによらない全社横断の技術施策を行う事業部です。具体的には4つのチームで組織されています（技術基盤チーム / データ基盤チーム / プラットフォームグループ / コーポレートエンジニアリンググループ）それぞれのチーム、グループの役割について詳しくは採用目的 2021 技術部編をご覧ください。" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link --current">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class=" --current">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="tech-stack">
+      <div class="wrapper">
+        <main class="main">
+          <article class="tech-stach__body">
+            <header class="tech-stack__header">
+  <h1 class="tech-stack__title">
+    技術部
+  </h1>
+</header>
+
+<div class="tech-stack__description">
+  <p>
+    技術部は特定サービスによらない全社横断の技術施策を行う事業部です。具体的には以下4つのチームで組織されています。
+  </p>
+
+  <ul>
+    <li>技術基盤チーム</li>
+    <li>データ基盤チーム</li>
+    <li>プラットフォームグループ</li>
+    <li>コーポレートエンジニアリンググループ</li>
+  </ul>
+
+  <p>
+    それぞれのチーム、グループの役割について詳しくは<a href="/2021/06/25/hiring-tech-division-2021/">採用目的 2021 技術部編</a>をご覧ください。
+  </p>
+
+  <p>
+    技術部で担当する技術領域は大きく分けて、GMOペパボの「サービスインフラ基盤」「データ基盤」「社内情報システム」となります。このため、扱う技術スタックも多岐に渡ります。
+  </p>
+
+  <p>
+    サービスインフラ基盤では、主にOpenStackを利用したプライベートクラウド「Nyah」と、近年ではその上で内製のツール「NKE(Nyah Kubernetes Engine)」を利用したSelf-hosted Kubernetesクラスタを構築、運用し、周辺ツールの開発や実際のGMOペパボのサービス運用を行っています。ユースケースに合わせてパブリッククラウド/PaaSの併用も進めています。
+  </p>
+
+  <p>
+    データ基盤では、社内のデータ基盤「bigfoot」の開発や各事業部が扱うデータのETLの実行、bigfootのデータ加工などを行っています。既存の IaaS, PaaS の利用に加えて、ETLツールの開発、運用も進めています。
+  </p>
+
+  <p>
+    社内情報システムでは、全社で使う社内システムやツールの開発や運用を PaaS, 内製での開発を取捨選択しながら進めています。GMOペパボで働くパートナーの業務用マシン・機器のキッティングも行っています。
+  </p>
+</div>
+
+<section class="tech-stack-table">
+  <h2 class="tech-stack-table__title">
+    技術スタックのリスト
+  </h2>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Programming languages / Frameworks / Libraries etc.
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <div class="tech-stack-table__sub-section">
+        <h4 class="tech-stack-table__sub-section-title">
+          Backend
+        </h4>
+
+        <ul class="tech-stack-table__list">
+          <li>Ruby</li>
+          <li>Ruby on Rails</li>
+          <li>PHP</li>
+        </ul>
+      </div>
+
+      <div class="tech-stack-table__sub-section">
+        <h4 class="tech-stack-table__sub-section-title">
+          DataPlatform
+        </h4>
+
+        <ul class="tech-stack-table__list">
+          <li>Ruby</li>
+          <li>Python</li>
+          <li>Rust</li>
+        </ul>
+      </div>
+
+      <div class="tech-stack-table__sub-section">
+        <h4 class="tech-stack-table__sub-section-title">
+          Other
+        </h4>
+
+        <ul class="tech-stack-table__list">
+          <li>Go</li>
+          <li>TypeScript</li>
+          <li>JavaScript</li>
+          <li>Google App Script</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Infrastructure
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Self-hosted Kubernetes</li>
+        <li>Heroku</li>
+        <li>Amazon Web Service</li>
+        <li>Google Cloud Platform</li>
+        <li>F5 BIG-IP</li>
+        <li>Cisco</li>
+        <li>YAMAHA RTX</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Middleware
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Consul</li>
+        <li>Nginx</li>
+        <li>Airbyte</li>
+        <li>Fluent Bit</li>
+        <li>Embulk</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Database
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>MySQL</li>
+        <li>Amazon RDS</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Monitoring
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Prometheus</li>
+        <li>Grafana</li>
+        <li>Mackerel</li>
+        <li>Crowd Strike Falcon</li>
+        <li>Microsoft Intune</li>
+        <li>Google Cloud Monitoring</li>
+        <li>Sentry</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Data analytics
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Google BigQuery</li>
+        <li>Google Cloud Dataflow</li>
+        <li>Google DataStudio</li>
+        <li>Google Colaboratory</li>
+        <li>Streamlit</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Environment setup（環境構築）
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Terraform</li>
+        <li>AWS CloudFormation</li>
+        <li>Puppet</li>
+        <li>Chef</li>
+        <li>Ansible</li>
+        <li>Jamf Cloud</li>
+        <li>Windows Autopilot</li>
+        <li>Google Cloud Build</li>
+        <li>AWS Fargate</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Container Orchestration
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Kubernetes</li>
+        <li>Kustomize</li>
+        <li>Google Kubernetes Engine</li>
+        <li>AWS Batch</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      CI/CD
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>GitHub Actions</li>
+        <li>ArgoCD</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Machine learning Library
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>scikit-learn</li>
+        <li>TensorFlow</li>
+        <li>Keras</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      CDN
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Amazon CloudFront</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Workflow Engine
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Google Cloud Composer</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tech-stack-related-article">
+  <h2 class="tech-stack-related-article__title">
+    事例紹介
+  </h2>
+
+    <div class="digest slug-hiring-tech-division-2021">
+    <div class="digest__eye-catch">
+  <div class="digest__eye-catch-inner">
+    <a href="/2021/06/25/hiring-tech-division-2021/" class="digest__eye-catch-img" style="background-image: url(/blog/2021/06/25/hiring-tech-division-2021/tech-eye-catch.jpg);"></a>
+  </div>
+</div>
+<div class="digest__body">
+<a href="/2021/06/25/hiring-tech-division-2021/" class="digest__title-link">    <time class="digest__date">
+      2021-06-25
+    </time>
+    <h2 class="digest__title">
+      採用目的 2021 技術部編
+    </h2>
+</a>  <ul class="digest__tags">
+    <li class="digest__tag tag-default">
+      <a href="/tags/採用目的/" class="digest__tag-link">採用目的</a>
+    </li>
+  </ul>
+  <p class="digest__summary">
+    <a href="/2021/06/25/hiring-tech-division-2021/" class="digest__summary-link">執行役員 VP of Engineering 兼技術部長の @hsbt です。前回のエントリから、モンスターハンターストーリーズ2の発売の前に執筆...</a>
+  </p>
+  <ul class="digest__authors">
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/f2748d34b03ed11330f2a2218904eb2d?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/hsbt/">hsbt</a>
+        </span>
+      </li>
+  </ul>
+</div>
+
+  </div>
+  <div class="digest slug-retrospective-techconf-14">
+    <div class="digest__eye-catch">
+  <div class="digest__eye-catch-inner">
+    <a href="/2021/04/14/retrospective-techconf-14/" class="digest__eye-catch-img" style="background-image: url(/images/eyecatch-placeholder.png);"></a>
+  </div>
+</div>
+<div class="digest__body">
+<a href="/2021/04/14/retrospective-techconf-14/" class="digest__title-link">    <time class="digest__date">
+      2021-04-14
+    </time>
+    <h2 class="digest__title">
+      データ基盤チームの振り返り〜ペパボテックカンファレンス#14
+    </h2>
+</a>  <ul class="digest__tags">
+    <li class="digest__tag tag-default">
+      <a href="/tags/データ基盤/" class="digest__tag-link">データ基盤</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/データ分析/" class="digest__tag-link">データ分析</a>
+    </li>
+  </ul>
+  <p class="digest__summary">
+    <a href="/2021/04/14/retrospective-techconf-14/" class="digest__summary-link">技術部 データ基盤チームに所属している@tosh2230です。2/25にペパボテックカンファレンス#14が開催されましたが、実は私も登壇しておりま...</a>
+  </p>
+  <ul class="digest__authors">
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/a1391fea7feb81a26c333c05f831dbf3?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/tosh2230/">tosh2230</a>
+        </span>
+      </li>
+  </ul>
+</div>
+
+  </div>
+  <div class="digest slug-storage-management">
+    <div class="digest__eye-catch">
+  <div class="digest__eye-catch-inner">
+    <a href="/2021/04/13/storage-management/" class="digest__eye-catch-img" style="background-image: url(/images/eyecatch-placeholder.png);"></a>
+  </div>
+</div>
+<div class="digest__body">
+<a href="/2021/04/13/storage-management/" class="digest__title-link">    <time class="digest__date">
+      2021-04-13
+    </time>
+    <h2 class="digest__title">
+      4ペタバイトの巨大ストレージを支える運用について紹介します
+    </h2>
+</a>  <ul class="digest__tags">
+    <li class="digest__tag tag-default">
+      <a href="/tags/インフラ/" class="digest__tag-link">インフラ</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/ストレージ/" class="digest__tag-link">ストレージ</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/bayt/" class="digest__tag-link">Bayt</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/30days-album/" class="digest__tag-link">30days Album</a>
+    </li>
+  </ul>
+  <p class="digest__summary">
+    <a href="/2021/04/13/storage-management/" class="digest__summary-link">こんにちは。
+技術部プラットフォームグループの@rsym1290です。
+先月、「S3のAPIと互換性を持ったオブジェクトストレージの運用についてお...</a>
+  </p>
+  <ul class="digest__authors">
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/0840b50e2827fae3cbb7247cc1b09ac1?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/rsym1290/">rsym1290</a>
+        </span>
+      </li>
+  </ul>
+</div>
+
+  </div>
+
+
+    <div class="tech-stack-external-article">
+    <div class="tech-stack-external-article__media">
+      <div class="tech-stack-external-article__media-inner">
+      </div>
+    </div>
+    <div class="tech-stack-external-article__body">
+<a href="https://speakerdeck.com/pyama86/is-kubernetes-on-premises-hardway" class="tech-stack-external-article__title-link" target="_blank" rel="noreferrer noopener">        <div class="tech-stack-external-article__title">
+          Is Kubernetes On-premises Hardway? - Speaker Deck
+        </div>
+</a>    </div>
+  </div>
+  <div class="tech-stack-external-article">
+    <div class="tech-stack-external-article__media">
+      <div class="tech-stack-external-article__media-inner">
+      </div>
+    </div>
+    <div class="tech-stack-external-article__body">
+<a href="https://logmi.jp/tech/articles/324510" class="tech-stack-external-article__title-link" target="_blank" rel="noreferrer noopener">        <div class="tech-stack-external-article__title">
+          OpenStackからKubernetesへ NyahとAWSをつないだGMOペパボのインフラの歴史 - ログミーTech
+        </div>
+</a>    </div>
+  </div>
+  <div class="tech-stack-external-article">
+    <div class="tech-stack-external-article__media">
+      <div class="tech-stack-external-article__media-inner">
+      </div>
+    </div>
+    <div class="tech-stack-external-article__body">
+<a href="https://logmi.jp/tech/articles/324393" class="tech-stack-external-article__title-link" target="_blank" rel="noreferrer noopener">        <div class="tech-stack-external-article__title">
+          GMOペパボのインフラ担当が感じた“Kubernetes”化の不安 “GitOps”でアプリケーション稼働は快適になる - ログミーTech
+        </div>
+</a>    </div>
+  </div>
+  <div class="tech-stack-external-article">
+    <div class="tech-stack-external-article__media">
+      <div class="tech-stack-external-article__media-inner">
+      </div>
+    </div>
+    <div class="tech-stack-external-article__body">
+<a href="https://atmarkit.itmedia.co.jp/ait/articles/2112/01/news004.html" class="tech-stack-external-article__title-link" target="_blank" rel="noreferrer noopener">        <div class="tech-stack-external-article__title">
+          GitHub Actionsで業務効率化――開発現場以外でも便利なCI/CDの実践例：GMOペパボに学ぶ「CI/CD」活用術（終） - ＠IT
+        </div>
+</a>    </div>
+  </div>
+
+</section>
+
+          </article>
+        </main>
+
+        <div class="sidebar">
+          <div class="sidebar__sections">
+            <h2 class="sidebar__title">
+              技術スタック
+            </h2>
+            <ul class="sidebar__list">
+              <li class="sidebar__list-item">
+<a href="/tech-stack/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    トップページ
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/ec/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    EC事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/hosting/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    ホスティング事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/minne/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    minne事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/suzuri/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    SUZURI事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/tech-div/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    技術部
+                  </span>
+</a>              </li>
+            </ul>
+          </div>
+
+          <div class="sidebar__sections">
+            <ul class="sidebar__list">
+              <li class="sidebar__list-item">
+<a href="/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    ペパボテックブログ トップ
+                  </span>
+</a>              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay"></div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

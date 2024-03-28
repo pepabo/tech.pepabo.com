@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Pepabo Tech Portal</title>
+  <id>https://tech.pepabo.com/</id>
+  <link href="https://tech.pepabo.com/"/>
+  <link href="https://tech.pepabo.com/feed.xml" rel="self"/>
+  <updated>2024-03-26T15:00:00+00:00</updated>
+  <author>
+    <name>GMO Pepabo, Inc.</name>
+  </author>
+  <entry>
+    <title>画像配信を WebP にした際にやったことと困ったこと</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/27/webp-conversion-postmortem/"/>
+    <id>https://tech.pepabo.com/2024/03/27/webp-conversion-postmortem/</id>
+    <published>2024-03-26T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>takutaka</name>
+    </author>
+    <content type="html">&lt;p&gt;こんにちは。takutaka と申します。最近良かったことはMOTHER3をクリアしたことです。&lt;br /&gt;
+最近、画像配信を WebP に動的変換するという施策を担当したので、その話をします。&lt;/p&gt;
+
+&lt;h2 id="ペパボにおける画像配信"&gt;ペパボにおける画像配信&lt;/h2&gt;
+
+&lt;p&gt;GMO ペパボでは、クリエイターさんがアップロードした画像でTシャツなどのステキなアイテムが販売できる &lt;a href="https://suzuri.jp/"&gt;SUZURI&lt;/a&gt; というサービスや、EC支援サービスである&lt;a href="https://shop-pro.jp/"&gt;カラーミーショップ&lt;/a&gt;やハンドメイドマーケット &lt;a href="https://minne.com"&gt;minne&lt;/a&gt; など、様々なサービスを運営しており、それぞれに画像の扱いは特徴があります。&lt;br /&gt;
+SUZURI では、クリエイターさんに提供いただいた画像をペパボで独自で合成し画像を作成していますが、対してカラーミーショップや minne では、ショップオーナーさんや作家さんがペパボのシステムアップロードした画像をエンドユーザーさんに配信しています。&lt;/p&gt;
+
+&lt;h2 id="施策を実施したサービス"&gt;施策を実施したサービス&lt;/h2&gt;
+
+&lt;p&gt;今回はEC支援サービスであるカラーミーショップの配信する画像を対象として施策を実施しました。&lt;/p&gt;
+
+&lt;h2 id="カラーミーショップにおける画像"&gt;カラーミーショップにおける画像&lt;/h2&gt;
+
+&lt;p&gt;前述の通り、カラーミーショップではショップオーナーさんがアップロードした画像をショップに訪れたユーザーさんに閲覧してもらっています。&lt;br /&gt;
+ショップオーナーさんが様々な仕様の画像をアップロードされるため、サービスの品質を維持するために、配信容量や表示速度をカラーミーショップでコントローラブルに保つ仕組みが必要となります。&lt;br /&gt;
+従来、jpg の画像に対し動的変換を実施することにより配信環境の最適化を行っていました。&lt;br /&gt;
+2023年、多くのメジャーなブラウザが WebP の表示に対応したため、更に圧縮効率や表示速度に優れる WebP への変換を実施することになりました。&lt;/p&gt;
+
+&lt;h2 id="作業内容"&gt;作業内容&lt;/h2&gt;
+
+&lt;p&gt;以下、どのようなことをやっていったかを解説します。&lt;/p&gt;
+
+&lt;h3 id="1-効果の見積もり"&gt;1. 効果の見積もり&lt;/h3&gt;
+
+&lt;p&gt;WebP に変換することにより、良さがないとやる意味はないですよね。効果の見積もりは重要です。&lt;br /&gt;
+カラーミーショップで運営されているショップのなかでも画像を多く使用しているショップから、実際に画像を取得し変換をすることにより効果を測定することにしました。&lt;br /&gt;
+トップページから2階層回遊することを想定し画像URLを収集し、表示されやすい画像はその分重みを付けて変換前後の容量を推定しました。&lt;br /&gt;
+結果、55% ほどの容量削減効果があることがわかりました。&lt;br /&gt;
+ECサイトという特性上、画像の傾向はどのショップでも大きく変わることはありません。カラーミーショップ全体に適用しても55%の容量削減効果が期待できると結論付けました。&lt;/p&gt;
+
+&lt;h3 id="2-実装方針の決定"&gt;2. 実装方針の決定&lt;/h3&gt;
+
+&lt;p&gt;ほとんどのブラウザが WebP を表示できるとはいえ、非互換ブラウザの考慮も行わなくてはなりません。&lt;br /&gt;
+アクセスするブラウザが送信する Accept ヘッダを確認することで、画像の出し分けを行うこととしました。&lt;br /&gt;
+先行事例が非常に参考になりました。ありがとうございます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://engineering.mercari.com/blog/entry/20201211-image-optim-webp/"&gt;Webサービス上の画像変換とWebPの利用について - mercari engineering&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;さて、カラーミーショップでは、CDN で Amazon CloudFront を使用しています。&lt;br /&gt;
+Accept ヘッダをオリジンまで到達させ、オリジンで画像を出し分けることで上記仕様を実現しました。&lt;/p&gt;
+
+&lt;p&gt;例えば https://example.com/cat.jpg というファイルがあるとします。この URL に対し WebP が表示できるブラウザからアクセスがあった場合、 /cat.jpg.webp という URL に 302 リダイレクトをすることで WebP をダウンロードするという仕様としました。&lt;br /&gt;
+(その後この仕様が波紋を生むこととなりました…)&lt;/p&gt;
+
+&lt;h3 id="3-ショップオーナーさん向け機能追加"&gt;3. ショップオーナーさん向け機能追加&lt;/h3&gt;
+
+&lt;p&gt;上記メルカリさんの記事にもありますが、WebP に変換することで見づらくなってしまう特性の画像が存在します。&lt;br /&gt;
+そのような画像を多く使用するショップを運営されているオーナーさんにとってこの施策は売上減少といった不利益の要因となる可能性があります。&lt;br /&gt;
+WebPに変換されることにより自身のショップがどのような見た目になるのか、ショップオーナーさんに確認してもらうことにしました。&lt;br /&gt;
+どのような方針で確認してもらおうか悩んでいたところ、一緒に施策を担当していた &lt;a href="https://tech.pepabo.com/authors/windyakin/"&gt;windyakin&lt;/a&gt; さんが、特定の URL を踏むと切り替えボタンが出る実装を行い華麗に解決してくれました。&lt;br /&gt;
+&lt;img src="/blog/2024/03/27/webp-conversion-postmortem/webp-de-hyouzisuru.png" alt="WebPで表示するかどうかを切り替えるチェックボックス" /&gt;&lt;/p&gt;
+
+&lt;p&gt;この環境はリリース後多くのショップオーナーさんに利用していただき、結果として WebP への変換を希望しないオーナーさんに対して、画像を変換対象から除外するといった対応を実施することができました。&lt;/p&gt;
+
+&lt;h3 id="4-切り替え手段の検証"&gt;4. 切り替え手段の検証&lt;/h3&gt;
+
+&lt;p&gt;リリースする際に非常に重要なことは、切り戻しできるかどうかです。&lt;br /&gt;
+念入りに検証した結果、Accept ヘッダをキャッシュキーに設定する、設定から外すという操作でリリースと切り戻しを行うことができることがわかりました。&lt;/p&gt;
+
+&lt;p&gt;また、キャッシュが再作成されるタイミングでオリジンの負荷が高くなりすぎないように、 URL に含まれる数字部分の末尾を利用することで10回に分けてリリースすることにしました。&lt;/p&gt;
+
+&lt;p&gt;これで、あとはリリースするだけです。&lt;/p&gt;
+
+&lt;h2 id="切り替えてみると"&gt;切り替えてみると…&lt;/h2&gt;
+
+&lt;p&gt;いざリリースをしてみると、とある問題が発生しました。&lt;br /&gt;
+「ショップを訪れる一部のユーザーの環境で画像が表示されない」というものでした。&lt;br /&gt;
+ログを見ても5xxといった異常系のステータスは確認できません。どういうことだろう…と調査を行いました。&lt;/p&gt;
+
+&lt;h2 id="ブラウザキャッシュの問題だったと思う"&gt;ブラウザキャッシュの問題だった(と思う)&lt;/h2&gt;
+
+&lt;p&gt;調査を進めると、どうやらブラウザキャッシュの問題である可能性が浮上しました。&lt;br /&gt;
+カラーミーの画像配信環境では、ブラウザからアクセスがあった際にレスポンスヘッダとして max-age が乗った Cache-Control と Last-Modified を返却します。&lt;br /&gt;
+Last-Modified の値はユーザーがアップロードしたオリジナル画像を配信する S3 から返却されたものをそのまま利用しています。&lt;br /&gt;
+ブラウザは Cache-Control ヘッダの max-age が切れた際に、その Last-Modified の値を If-Modified-Since ヘッダとしてリクエストに乗せ CloudFront に送信します。&lt;br /&gt;
+そして、オリジンにリクエストを行いオリジンの内容に変化がなかった場合、オリジンはステータス304を返します。&lt;br /&gt;
+304を受け取った CloudFront は RefreshHit としてキャッシュの内容を再度返します。&lt;/p&gt;
+
+&lt;p&gt;さて、前述した通り、画像の拡張子を .webp に変更する方式でリリースを行っています。
+この一連のフローの中で、以下の事象が発生した可能性がありました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;WebPリリース前に /cat.jpg にアクセスしたことがあるユーザーが、max-age が過ぎたタイミングで Last-Modified ヘッダを送りリクエストを送る&lt;/li&gt;
+  &lt;li&gt;ユーザーは /cat.jpg.webp にリダイレクトする 302 を受け取る&lt;/li&gt;
+  &lt;li&gt;ブラウザは再度 /cat.jpg.webp に対し「If-Modified-Since ヘッダを付けて」リクエストを送信する&lt;/li&gt;
+  &lt;li&gt;オリジンは304を返し、その際に「CloudFront が304を返すこと」が稀にある状態となった。&lt;/li&gt;
+  &lt;li&gt;ブラウザに /cat.jpg.webp に関するキャッシュは存在しないため、画像が表示されない状態となった&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/27/webp-conversion-postmortem/before-webp.png" alt="WebPリリース前のリクエスト" /&gt;
+&lt;img src="/blog/2024/03/27/webp-conversion-postmortem/after-webp.png" alt="WebPリリース後のリクエスト" /&gt;&lt;/p&gt;
+
+&lt;p&gt;3, 4 について、本当にそんな挙動であるのか？という疑問がありますが、画像が表示されないユーザーがいることは事実です。&lt;br /&gt;
+非常に厄介なのが、箇条書きの3のように、/cat.jpg.webp で304を受け取る事自体は正常である点でした。ブラウザにキャッシュがあれば問題なくブラウザキャッシュの画像が表示されます。&lt;/p&gt;
+
+&lt;p&gt;結果、影響範囲が特定できない、再現しない、挙動もつかめないというデバッグが非常に難しい事象であることがわかりました。これはつらい…&lt;/p&gt;
+
+&lt;p&gt;影響範囲が特定できない以上、事象が起こっている状態を長引かせるにはいきません。切り戻しを決断しました。&lt;/p&gt;
+
+&lt;h2 id="どうやったか"&gt;どうやったか&lt;/h2&gt;
+
+&lt;p&gt;対応を考えました。しかし、シュッとできて検証が楽な方法が思いつきません。&lt;br /&gt;
+藁を掴む思いで、あれこれ相談していた &lt;a href="https://tech.pepabo.com/authors/kenchan/"&gt;kenchan&lt;/a&gt; に相談しました。kenchan も一緒にあれこれ考え、以下の方法ならできる! と方針が決まりました。&lt;br /&gt;
+それは、URL に拡張子を追加しリダイレクトすることをやめ、変換後の WebP 画像も /cat.jpg のURLで配信することです。&lt;br /&gt;
+&lt;img src="/blog/2024/03/27/webp-conversion-postmortem/without-redirect.png" alt="リダイレクトをしない構成" /&gt;
+実は URL と拡張子に関する規定は存在せず、Content-Type レスポンスヘッダのみで制御されます。そのため、cat.jpg で WebP を返すことはブラウザにとってなんの問題もありません。&lt;br /&gt;
+WebP リリース前にアクセスしたことのあるユーザーは引き続き jpg のブラウザキャッシュで画像が見え、それ以外のユーザーは WebP が正常に取得できます。&lt;br /&gt;
+この方式で無事リリースすることができました。&lt;/p&gt;
+
+&lt;h2 id="やってよかったこと"&gt;やってよかったこと&lt;/h2&gt;
+
+&lt;p&gt;長くなってしまいましたが、このリリースを通して、やっておいてよかったことをまとめます。&lt;/p&gt;
+
+&lt;h3 id="1-オーナーさんが変換後の画像を確認できる環境を用意したこと"&gt;1. オーナーさんが変換後の画像を確認できる環境を用意したこと&lt;/h3&gt;
+
+&lt;p&gt;検証により、画質に大きな変化は起こらないようにパラメータの調整しました。しかし、変化が起こるかどうかは画像により異なります。ショップオーナーさんにとって、リリースされるまでどう画像が変化するかわからないことは、不安に繋がります。&lt;br /&gt;
+ショップオーナーさんを不安にさせるだけでなく、「念の為、WebPに変換しないでもらいたい」と変換設定を外すことを望むオーナーさんが増えることが懸念されました。&lt;br /&gt;
+変換後の画像を確認できる環境を用意したことにより、オーナーさんが納得して変更を受け入れることができ、不必要なオプトアウトを回避することができました。&lt;/p&gt;
+
+&lt;h3 id="2-切り戻しの検証を入念に実施したこと"&gt;2. 切り戻しの検証を入念に実施したこと&lt;/h3&gt;
+
+&lt;p&gt;今回、CDN とブラウザキャッシュの仕様への理解が不十分であったことで不具合を生んでしまいました。&lt;br /&gt;
+しかし、最低限切り戻しをすることで影響を止められることをあらかじめ十分に確認していたため、リリース自体や切り戻し判断に対する安心感に繋がりました。&lt;br /&gt;
+今後自分が関わる全ての変更も、できる限り切り戻しができる仕様を探そうと思います。切り戻し最高！！！&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;今回、WebP 変換という施策を通じて、不思議なキャッシュの挙動とその対応について、また、ユーザーに対して直接影響を与える変更に対し、取ってよかったなあと思ったアプローチを紹介しました。&lt;br /&gt;
+キャッシュの挙動に関しては裏が取れていないため、この記事を見て「こういうことなんじゃない？」と思った方はぜひ教えてください…&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/27/custom-elements-with-state/"/>
+    <id>https://tech.pepabo.com/2024/03/27/custom-elements-with-state/</id>
+    <published>2024-03-26T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>gatchan</name>
+    </author>
+    <content type="html">&lt;p&gt;カラーミーショップでは、Vue.jsのSingle File Componentで構成されるUIライブラリを、&lt;a href="https://tech.pepabo.com/2022/10/31/colorme-vue3-migration/"&gt;一部のページでカスタム要素化して利用&lt;/a&gt;しています。
+本記事では、このようなカスタム要素に対して永続的な状態をどのように管理すればよいかを検討した事例をご紹介します。&lt;/p&gt;
+
+&lt;h2 id="保持した状態に基づきカスタム要素の挙動を変更したい"&gt;保持した状態に基づきカスタム要素の挙動を変更したい&lt;/h2&gt;
+
+&lt;p&gt;以下のような「閉じたらずっと隠したいキャンペーン要素」を開発したいとします。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/27/custom-elements-with-state/informative.png" alt="閉じるボタンとともに表示されるキャンペーン" /&gt;&lt;/p&gt;
+
+&lt;p&gt;このとき、「閉じた」という状態をどこかに記録する必要があります。状態をクライアント側でのみ利用する場合は、クライアント側のストレージ領域(LocalStorageやSessionStorage)を活用することが候補の一つに挙げられることがあります。&lt;/p&gt;
+
+&lt;p&gt;しかし、このコンポーネントが汎用的であると考えた場合、以下のように異なるユースケースごとに永続化に関する処理を変更したい場合がありそうです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;キャンペーンは常に表示しておく必要があるので閉じるボタンは表示しない(ストレージ領域は不要)&lt;/li&gt;
+  &lt;li&gt;閉じたときにサーバ側で何らかの状態遷移を伴うようにするためにサーバ側のストレージ領域を使いたい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;汎用的であるが故にユースケースにバリエーションがあるので、状態の管理はコンポーネントから分離できたほうが使い勝手がよさそうです。&lt;/p&gt;
+
+&lt;p&gt;また、LocalStorageを取り扱う場合には、例えば以下に示すような書き込みや削除に関する知識を集約すると見通しが良くなりそうです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;状態のライフサイクル(いつ書き込み、いつ削除するか。LocalStorageそのものには状態の寿命を管理する機構はない。)&lt;/li&gt;
+  &lt;li&gt;状態のスコープ(同一ブラウザからのアクセスにおいても、ログインユーザー毎に状態を分離したいなどのケースがある。)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上記に挙げたように、永続化状態の保存に関する知識をUIコンポーネントから分離することでUIコンポーネントの汎用性を担保しつつ、ストレージ領域の読み書きに関する知識を集約することで処理の見通しを良くする必要がありました。&lt;/p&gt;
+
+&lt;h2 id="v-modelのインタフェースを通じて状態を管理する"&gt;v-modelのインタフェースを通じて状態を管理する&lt;/h2&gt;
+
+&lt;p&gt;Vue.jsの&lt;a href="https://ja.vuejs.org/guide/components/v-model"&gt;v-model&lt;/a&gt;は、属性値(Props)に対応する更新イベントを発行(&lt;code&gt;update:modelValue&lt;/code&gt;のEmit)することで、状態の更新を要求できます。
+v-modelで状態をバインドしたときは、その状態は発行されたイベントのハンドリング処理によって変更されます。&lt;/p&gt;
+
+&lt;p&gt;また、 &lt;a href="https://ja.vuejs.org/guide/extras/web-components"&gt;&lt;code&gt;defineCustomElement()&lt;/code&gt;&lt;/a&gt; APIでカスタム要素化したコンポーネントは、VueコンポーネントでEmitしたイベントをカスタムイベントとしてカスタム要素の外側に発行します。&lt;/p&gt;
+
+&lt;p&gt;このインタフェースや仕組みを利用し、カスタム要素が発行するv-modelの値変更イベントを購読し、クライアント側のストレージ領域と同期する小さいアプリケーションを作りました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/27/custom-elements-with-state/diagram.png" alt="アプリケーションのイメージ" /&gt;&lt;/p&gt;
+
+&lt;p&gt;まずは、予め状態を管理したいコンポーネントの名称および、Propsとストレージの簡易なスキーマ(属性名、属性の型)を宣言します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight typescript"&gt;&lt;code&gt;&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;vueCustomElementRule&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="dl"&gt;"&lt;/span&gt;&lt;span class="s2"&gt;./store/VueCustomElementRule&lt;/span&gt;&lt;span class="dl"&gt;"&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ユーザーIDごとに状態を分割するためのキーを生成する&lt;/span&gt;
+&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;storageKeySuffix&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;`uid-&lt;/span&gt;&lt;span class="p"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;`&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 状態管理の必要なコンポーネントの宣言&lt;/span&gt;
+&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// (vueCustomElementRule() は `bindAll()` が必要なオブジェクトを生成する関数。実装は省略)&lt;/span&gt;
+  &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;colorme-campaign&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;vueCustomElementRule&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="na"&gt;closed&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;                       &lt;span class="c1"&gt;// closed Propsの状態を保存&lt;/span&gt;
+      &lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;boolean&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;              &lt;span class="c1"&gt;// closed PropsはBoolean型&lt;/span&gt;
+      &lt;span class="na"&gt;initialValue&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;           &lt;span class="c1"&gt;// 初期値(ストレージが空のとき)はfalse&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}),&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ページ内の状態管理の必要な要素を探してバインドする&lt;/span&gt;
+&lt;span class="nx"&gt;bindAll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;config&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;storageKeySuffix&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;以下のように、状態を管理したいカスタム要素に対して &lt;code&gt;data-key&lt;/code&gt; 属性を付与しておきます。
+ストレージのキーは &lt;code&gt;storageKeySuffix&lt;/code&gt; と &lt;code&gt;data-key&lt;/code&gt; 属性値によって決定されるので、ログインユーザー毎に状態を管理できます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;colorme-campaign&lt;/span&gt; &lt;span class="na"&gt;data-key=&lt;/span&gt;&lt;span class="s"&gt;"campaign-page"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;キャンペーン実施中!&lt;span class="nt"&gt;&amp;lt;/colorme-campaign&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;bindAll&lt;/code&gt; 関数が &lt;code&gt;data-key&lt;/code&gt; 属性を持つ上記のカスタム要素を見つけ出して、以下のようにカスタム要素のPropsとアプリケーションが管理する状態を同期します。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;クライアント側のストレージから値をリストアし、定義された状態の型と一致することをバリデーションした上でカスタム要素の属性値(=Vue Props)に反映&lt;/li&gt;
+  &lt;li&gt;ストレージにリストアすべき値が存在しなければ &lt;code&gt;initialValue&lt;/code&gt; を状態としてセットする&lt;/li&gt;
+  &lt;li&gt;カスタム要素のイベント &lt;code&gt;update:modelValue&lt;/code&gt; を購読し、イベントに含まれる更新値を自身の状態と同期するイベントハンドラを登録&lt;/li&gt;
+  &lt;li&gt;イベントハンドラで状態をストレージに書き込み、かつカスタム要素の属性値を更新&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;v-modelをインタフェースに状態を管理することの副次的な効果として、UIコンポーネントのインタフェース設計にv-modelが活用されることで、Vueコンポーネントにおける「ふつうの状態のやりとり」を自然と実現できるようになると考えています。&lt;/p&gt;
+
+&lt;h2 id="ストレージとvue-propsの不一致に気づけるようにする"&gt;ストレージとVue Propsの不一致に気づけるようにする&lt;/h2&gt;
+
+&lt;p&gt;Vueコンポーネントの改修によって、ストレージの状態とPropsの定義が不整合な状態になるリスクがあります。&lt;/p&gt;
+
+&lt;p&gt;開発したアプリケーションでは、VueのProps型とストレージのスキーマが一致することをチェックしています。先ほどのスキーマの宣言にその差分を加えます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight diff"&gt;&lt;code&gt;  import { vueCustomElementRule } from "./store/VueCustomElementRule"
+&lt;span class="gi"&gt;+ import type { ColormeCampaignProps } from "@colorme/components"
+&lt;/span&gt;  
+  const storageKeySuffix = `uid-${userId}`
+  const config = {
+&lt;span class="gd"&gt;-   'colorme-campaign': ({
+&lt;/span&gt;&lt;span class="gi"&gt;+   'colorme-campaign': vueCustomElementRule&amp;lt;ColormeCampaignProps&amp;gt;({
+&lt;/span&gt;      closed: {
+        type: 'boolean',
+        initialValue: false
+      }
+    }),
+  }
+  bindAll(config, storageKeySuffix)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;vueCustomElementRule&lt;/code&gt; では &lt;code&gt;attributeTypes&lt;/code&gt; に渡されるストレージのスキーマが &lt;code&gt;VuePropsToAttributeSchema&amp;lt;T&amp;gt;&lt;/code&gt; 型で制約されています。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight typescript"&gt;&lt;code&gt;&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchemaType&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;string&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;boolean&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;number&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;
+
+&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;VueProps&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="na"&gt;key&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kr"&gt;string&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="nx"&gt;ConvertSchemaToType&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;AttributeSchemaType&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;export&lt;/span&gt; &lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;vueCustomElementRule&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="nx"&gt;VueProps&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="nx"&gt;attributeTypes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;VuePropsToAttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="nx"&gt;Rule&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;({&lt;/span&gt;
+  &lt;span class="c1"&gt;// ... (Ruleに定義された bindAll() に必要な処理がここに入る) ...&lt;/span&gt;
+&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;VuePropsToAttributeSchema&amp;lt;T&amp;gt;&lt;/code&gt; は、 &lt;code&gt;T&lt;/code&gt; 型(Vue Propsの型)をストレージのスキーマ型に変換する型です。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight typescript"&gt;&lt;code&gt;&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;VuePropsToAttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="kr"&gt;keyof&lt;/span&gt; &lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+    &lt;span class="nx"&gt;Exclude&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="kc"&gt;undefined&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="kr"&gt;string&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;string&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;Exclude&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="kc"&gt;undefined&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="nx"&gt;boolean&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;boolean&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;Exclude&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="kc"&gt;undefined&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="kr"&gt;number&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;number&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nx"&gt;never&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchema&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchemaType&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;T&lt;/span&gt;
+  &lt;span class="na"&gt;initialValue&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;ConvertSchemaToType&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;ConvertSchemaToType&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="nx"&gt;AttributeSchemaType&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;string&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="kr"&gt;string&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;boolean&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nx"&gt;boolean&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nx"&gt;T&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="dl"&gt;'&lt;/span&gt;&lt;span class="s1"&gt;number&lt;/span&gt;&lt;span class="dl"&gt;'&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="kr"&gt;number&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="nx"&gt;never&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;状態のスキーマから決定される型と、Vue Propsの型が一致していることが引数の制約になっているので、もしどちらかが変更されればTypeErrorとなり、ビルド時に気付くことができます。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;v-modelのインタフェースに則り状態を管理する小さなアプリケーションを作成したことで、UIコンポーネントライブラリから状態を切り離すことができました。
+今後も可搬性の高いUIコンポーネントライブラリを目指すことで、結果としてカラーミーショップのユーザー体験をさらに向上できればと思っています。&lt;/p&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/27/glouc-logging-copy/"/>
+    <id>https://tech.pepabo.com/2024/03/27/glouc-logging-copy/</id>
+    <published>2024-03-26T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>pochy</name>
+    </author>
+    <content type="html">&lt;p&gt;こんにちは。技術部プラットフォームグループの染矢（&lt;a href="https://tech.pepabo.com/authors/pochy/"&gt;@kesompochy&lt;/a&gt;）です。最近は、&lt;a href="https://github.com/kesompochy/shu-chu-sen.js"&gt;自分のアイコンに集中線を入れる仕事&lt;/a&gt;をしています。&lt;/p&gt;
+
+&lt;p&gt;今回は、Google Cloudプロジェクトのログバケットに保存されたログエントリを、&lt;code&gt;gcloud&lt;/code&gt;コマンドによってCloud Storageのバケットに保存する方法を紹介します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#なぜ記事にするのか" id="markdown-toc-なぜ記事にするのか"&gt;なぜ記事にするのか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#この機能が解決する課題" id="markdown-toc-この機能が解決する課題"&gt;この機能が解決する課題&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#ログの保存要件を満たしたい" id="markdown-toc-ログの保存要件を満たしたい"&gt;ログの保存要件を満たしたい&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#実施記録" id="markdown-toc-実施記録"&gt;実施記録&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#コマンド履歴" id="markdown-toc-コマンド履歴"&gt;コマンド履歴&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#保存されるパス" id="markdown-toc-保存されるパス"&gt;保存されるパス&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#オペレーション実施中の挙動" id="markdown-toc-オペレーション実施中の挙動"&gt;オペレーション実施中の挙動&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわり" id="markdown-toc-おわり"&gt;おわり&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="なぜ記事にするのか"&gt;なぜ記事にするのか&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://cloud.google.com/logging/docs/routing/copy-logs"&gt;公式ドキュメント&lt;/a&gt;のリリースノートには、この機能は2024年2月13日にGA（一般提供）になった機能だと書かれています。この記事を書いているのが2024年3月なので、比較的新しい機能ですね。現代においてはまだ、新しい機能についてはAIに聞いても正確に答えてくれないので、人間による記事の需要があります。&lt;/p&gt;
+
+&lt;p&gt;やってみる中で、ドキュメントを読むだけではわからなかった点がいくつかありました。そのため、これからこの機能を使ってみようという方向けに、公式ドキュメント以外の補足情報として使っていただければと思いこの記事を執筆しています。&lt;/p&gt;
+
+&lt;p&gt;また、前提を理解してもらうために、この機能によって解決される課題も説明します。&lt;/p&gt;
+
+&lt;p&gt;この機能を使用してみた記録だけ読みたい方は&lt;a href="#実施記録"&gt;実施記録の項&lt;/a&gt;までジャンプしてください。&lt;/p&gt;
+
+&lt;h2 id="この機能が解決する課題"&gt;この機能が解決する課題&lt;/h2&gt;
+
+&lt;h3 id="ログの保存要件を満たしたい"&gt;ログの保存要件を満たしたい&lt;/h3&gt;
+
+&lt;p&gt;Webサービスにおいては、セキュリティ要件などによって、サービスへのアクセスログやデータベースへのクエリログを一定期間は保存しておくことがしばしば求められます。その要件を達成するためには、発生するログをどこかに保存しておく必要があります。AWSやGoogle Cloudなどのホスティングサービスを使う場合は、ログを同じサービス内のストレージに保存することが多いでしょう。&lt;/p&gt;
+
+&lt;h4 id="google-cloudのcloud-loggingによってログの集約と管理ができる"&gt;Google CloudのCloud Loggingによってログの集約と管理ができる&lt;/h4&gt;
+
+&lt;p&gt;Google CloudにはCloud Loggingというサービスがあります。Cloud Loggingを使うことによって、Google Cloudプロジェクト内のさまざまなリソースから発生するログを集約・管理・検索できます。&lt;/p&gt;
+
+&lt;p&gt;Cloud Loggingでは"ログバケット"にログデータが保存されます。ほとんどのログバケットは保持期間を変更できます。
+これによってログの保存要件を達成できるでしょう。しかし、頻繁にアクセスする必要がないのであれば、ログバケットの保持期間を延ばすのはtoo muchです。長期間保存しておくことが目的であれば、例えばGCS（Google Cloud Storage）の適切なクラスのバケットに保持しておく方がコストが低く済みます。
+また、ログの種類によって保持期間を変えたい場合もあるでしょう。その場合は、ログをフィルタリングして、長期保存が必要なログだけを別のバケットに移せると嬉しいです。&lt;/p&gt;
+
+&lt;p&gt;参考: https://cloud.google.com/logging/docs&lt;/p&gt;
+
+&lt;h4 id="log-routerによってログを転送できる"&gt;Log routerによってログを転送できる&lt;/h4&gt;
+
+&lt;p&gt;Google Cloudには、"Log router"という機能があります。
+Log routerでは&lt;code&gt;Sink&lt;/code&gt;という単位で、ログデータを特定の宛先に転送できます。例えばCloud Storage, BigQuery, またCloud Pub/Subなどに送信できます。転送するログデータのフィルタリングもできます。&lt;/p&gt;
+
+&lt;p&gt;参考: https://cloud.google.com/logging/docs/export/configure_export_v2&lt;/p&gt;
+
+&lt;h4 id="log-routerはsinkが作られてからのログしか送ることができない"&gt;Log routerはSinkが作られてからのログしか送ることができない&lt;/h4&gt;
+
+&lt;p&gt;Sinkによってログの転送設定が作られると、それ以降のログは設定に応じて転送されるようになります。しかし、それ以前のログは転送されません。
+つまり、ログバケットにすでに存在するログを、手軽にストレージバケットに保存する手段はありませんでした。&lt;/p&gt;
+
+&lt;p&gt;そこで、今回紹介する機能の登場によって、コマンドを実行するだけで過去のログをストレージバケットに保存できるようになりました。&lt;/p&gt;
+
+&lt;h2 id="実施記録"&gt;実施記録&lt;/h2&gt;
+
+&lt;h3 id="コマンド履歴"&gt;コマンド履歴&lt;/h3&gt;
+
+&lt;p&gt;最新の&lt;code&gt;gcloud&lt;/code&gt;コマンドがインストールされている状態とします。また、gcloudプロジェクトにアクセスするための適切な権限がある状態とします。&lt;/p&gt;
+
+&lt;p&gt;まず、現在、どのログバケットがプロジェクト内に存在するかを確認します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud logging buckets list &lt;span class="nt"&gt;--project&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;my-project
+LOCATION  BUCKET_ID  RETENTION_DAYS  CMEK  RESTRICTED_FIELDS  INDEX_CONFIGS  LIFECYCLE_STATE  LOCKED  CREATE_TIME  UPDATE_TIME
+global    _Default   30                                                      ACTIVE
+global    _Required  400                                                     ACTIVE           True
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;_Default&lt;/code&gt;バケットと&lt;code&gt;_Required&lt;/code&gt;バケットが存在します。今回は&lt;code&gt;_Default&lt;/code&gt;バケットを対象とします。&lt;/p&gt;
+
+&lt;p&gt;転送対象は、MySQLのgeneral logとします。次のクエリで転送対象のログをフィルタリングできることを、コンソールのLogs Explorer画面から確認できます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;resource.type="cloudsql_database"
+log_name="projects/my-project/logs/cloudsql.googleapis.com%2Fmysql-general.log"
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;次に、ログ保存用のバケット&lt;code&gt;log-archive-mysql-general-log&lt;/code&gt;が存在することを確認します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud storage buckets list &lt;span class="nt"&gt;--format&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"value(name)"&lt;/span&gt; &lt;span class="nt"&gt;--project&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;my-project
+...
+log-archive-mysql-general-log
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ドキュメントに倣ってコマンドを実行すると、実行結果が返ってきます。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud logging copy _Default storage.googleapis.com/log-archive-mysql-general-log &lt;span class="se"&gt;\&lt;/span&gt;
+  &lt;span class="nt"&gt;--location&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;global &lt;span class="nt"&gt;--log-filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'resource.type="cloudsql_database"
+logName: "projects/my-project/logs/cloudsql.googleapis.com%2Fmysql-general.log"'&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  &lt;span class="nt"&gt;--project&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;my-project
+metadata:
+  &lt;span class="s1"&gt;'@type'&lt;/span&gt;: type.googleapis.com/google.logging.v2.CopyLogEntriesMetadata
+  destination: storage.googleapis.com/log-archive-mysql-general-log
+  &lt;span class="nb"&gt;source&lt;/span&gt;: projects/my-projecet/locations/global/buckets/_Default
+  startTime: &lt;span class="s1"&gt;'2024-03-25T02:26:51.312953Z'&lt;/span&gt;
+  state: OPERATION_STATE_SCHEDULED
+  verb: copy
+name: projects/my-project/locations/global/operations/転送バッチIDの文字列
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;その流れでドキュメントに書かれているままに、実行されているオペレーションの一覧取得と詳細表示をしてみました。
+&lt;code&gt;list&lt;/code&gt;の場合は、&lt;code&gt;--location&lt;/code&gt;と&lt;code&gt;--operation-filter&lt;/code&gt;、&lt;code&gt;describe&lt;/code&gt;の場合は&lt;code&gt;--location&lt;/code&gt;が必須項目なようです。項目が不足していると&lt;code&gt;ERROR: (gcloud.logging.operations.describe) argument --location: Must be specified.&lt;/code&gt;のようにエラーが返ってきます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud logging operations list &lt;span class="nt"&gt;--location&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;global &lt;span class="nt"&gt;--operation-filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;request_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;CopyLogEntries &lt;span class="nt"&gt;--project&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;my-project
+&lt;span class="nt"&gt;---&lt;/span&gt;
+metadata:
+  &lt;span class="s1"&gt;'@type'&lt;/span&gt;: type.googleapis.com/google.logging.v2.CopyLogEntriesMetadata
+  destination: storage.googleapis.com/log-archive-mysql-general-log
+  progress: 1
+  &lt;span class="nb"&gt;source&lt;/span&gt;: projects/my-project/locations/global/buckets/_Default
+  startTime: &lt;span class="s1"&gt;'2024-03-25T02:26:51.312953Z'&lt;/span&gt;
+  state: OPERATION_STATE_RUNNING
+  verb: copy
+name: projects/my-project/locations/global/operations/転送バッチIDの文字列
+&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud logging operations describe 転送バッチIDの文字列 &lt;span class="nt"&gt;--location&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;global &lt;span class="nt"&gt;--project&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;my-project
+metadata:
+  &lt;span class="s1"&gt;'@type'&lt;/span&gt;: type.googleapis.com/google.logging.v2.CopyLogEntriesMetadata
+  destination: storage.googleapis.com/log-archive-mysql-general-log
+  progress: 1
+  &lt;span class="nb"&gt;source&lt;/span&gt;: projects/my-project/locations/global/buckets/_Default
+  startTime: &lt;span class="s1"&gt;'2024-03-25T02:26:51.312953Z'&lt;/span&gt;
+  state: OPERATION_STATE_RUNNING
+  verb: copy
+name: projects/my-project/locations/global/operations/転送バッチIDの文字列
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;30分くらい放置してから再度取得すると、&lt;code&gt;progress&lt;/code&gt;の値が増えていました。進んでそうですね。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;gcloud logging operations list &lt;span class="nt"&gt;--location&lt;/span&gt; global &lt;span class="nt"&gt;--operation-filter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;request_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;CopyLogEntries　--project&lt;span class="o"&gt;=&lt;/span&gt;my-project
+&lt;span class="nt"&gt;---&lt;/span&gt;
+metadata:
+  &lt;span class="s1"&gt;'@type'&lt;/span&gt;: type.googleapis.com/google.logging.v2.CopyLogEntriesMetadata
+  destination: storage.googleapis.com/log-archive-mysql-general-log
+  progress: 44
+  &lt;span class="nb"&gt;source&lt;/span&gt;: projects/my-project/locations/global/buckets/_Default
+  startTime: &lt;span class="s1"&gt;'2024-03-25T02:26:51.312953Z'&lt;/span&gt;
+  state: OPERATION_STATE_RUNNING
+  verb: copy
+name: projects/my-project/locations/global/operations/転送バッチIDの文字列
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;実行時間について、ドキュメントには次のように書かれていました。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;All copy operations take at least an hour to complete, no matter the amount of data that is being copied.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;約10分おきにオペレーションを取得して確認していたところ、実行してから約2.5時間後にオペレーションが完了していました。
+今回は30日分のログを保存しました。&lt;/p&gt;
+
+&lt;h3 id="保存されるパス"&gt;保存されるパス&lt;/h3&gt;
+
+&lt;p&gt;今回のオペレーションで保存したログは、&lt;code&gt;cloudsql.googleapis.com/mysql-general.log/YYYY/MM/DD/hogehoge.json&lt;/code&gt;のパスに保存されていました。
+これは、Log routerの機能で転送されるときと同じパスです。つまり、Log routerの設定で転送先に指定したバケットに、&lt;code&gt;gcloud logging copy&lt;/code&gt;コマンドによって過去のログを保存しても、２種類の保存方法間のパスに齟齬が生まれないということです。Log routerによる転送と&lt;code&gt;gloud logging copy&lt;/code&gt;コマンドによる保存でバケットを分ける必要がないので嬉しいですね。
+個人的にはこのことを事前に知っておきたかったためこの記事の執筆に至りました。&lt;/p&gt;
+
+&lt;h3 id="オペレーション実施中の挙動"&gt;オペレーション実施中の挙動&lt;/h3&gt;
+
+&lt;p&gt;オペレーションが&lt;code&gt;state: OPERATION_STATE_RUNNING&lt;/code&gt;の状態のときに、保存先に指定したバケットの様子を観察していると、過去の日付から順番にオブジェクトが作られていました。
+きっと、ログバケットにある最古のものから日付の古い順にコピー処理をしているのだろうと推測できます。&lt;/p&gt;
+
+&lt;h2 id="おわり"&gt;おわり&lt;/h2&gt;
+
+&lt;p&gt;以上、&lt;code&gt;gcloud logging copy&lt;/code&gt;で過去ログの手動転送をやってみた、でした。
+ここまで読んでくださったあなたにとって何かの参考になれば私はとてもハッピィです。&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>YAPC::Hiroshima 2024で登壇してきました</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/22/yapc-hiroshima/"/>
+    <id>https://tech.pepabo.com/2024/03/22/yapc-hiroshima/</id>
+    <published>2024-03-21T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>ぐらさん</name>
+    </author>
+    <content type="html">&lt;p&gt;こんにちは、技術部プラットフォームグループでSREをやっているgurasanです！今回は先月開催された&lt;a href="https://yapcjapan.org/2024hiroshima/"&gt;YAPC::Hiroshima 2024&lt;/a&gt;にペパボから2名が登壇しましたので、イベントレポートをお届けします！ちなみに連日広島名物を食べ歩いていました。どれもこれも美味しくて良い街でした。&lt;/p&gt;
+
+&lt;h2 id="登壇したセッションの感想"&gt;登壇したセッションの感想&lt;/h2&gt;
+
+&lt;h3 id="入門eol対応-sreが鉄板の流れ全部見せます編-by-gurasan"&gt;入門EOL対応 ~SREが鉄板の流れ全部見せます編~ by gurasan&lt;/h3&gt;
+
+&lt;iframe class="speakerdeck-iframe" frameborder="0" src="https://speakerdeck.com/player/e2763ce0aba7409eb6f1081e3fc9470d" title="入門EOL対応" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;昨年のYAPC::Kyoto 2023に続けてプロポーザルを採択していただき登壇させていただくことができました。今年はEOL対応というテーマで登壇しました。このテーマで登壇に至った経緯としてはこれまでEOL対応をテーマとした資料やスライドというのがなく「このノウハウをまとめると助かる人が多いのでは？」と思い取り上げてみました。懇親会でもポジティブな感想を多くいただけて大変嬉しく思っています。
+参加ブログも書いたので見ていただけたらと思います！&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://ryuichi1208.hateblo.jp/entry/2024/02/10/160704"&gt;YAPC::Hiroshima 2024に参加してきました&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id="awkでつくってわかるwebアプリケーション-by-やんまー"&gt;awkでつくってわかる、Webアプリケーション by やんまー&lt;/h3&gt;
+
+&lt;iframe class="speakerdeck-iframe" frameborder="0" src="https://speakerdeck.com/player/e5bc4d40d6764c02911a0a00442bd6ee" title="awkでつくってわかるWebアプリケーション / Web Application Implementation in awk" allowfullscreen="true" style="border: 0px; background: padding-box padding-box rgba(0, 0, 0, 0.1); margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" data-ratio="1.7777777777777777"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;この節は、EC事業部でWebアプリケーションエンジニアをしているyammerからお送りします。&lt;/p&gt;
+
+&lt;p&gt;awkというプログラミング言語が好きで、awkをつかって趣味でWebアプリケーションを開発してみたという発表をしました。少し変わったテーマではありましたが、興味を持って聞いていただいた方がいらっしゃったことに感謝します。&lt;/p&gt;
+
+&lt;p&gt;趣味的な内容ではありますが、一般的なWebアプリケーションの要素を再実装するという意味では 、実装をしたり読んだり紹介したりすることにも学びがあり、また現代のWeb開発のためのツールチェインやライブラリ等のエコシステムのありがたみを再認識できる機会でもあります。発表の中ではHTTPサーバをどのように実装するかに終始しており、実用的なWebアプリケーションの実装に必要なそのほかのトピックについては紹介できなかったので、またどこかでawkの話をしようとおもっているので、引き続きよろしくお願いします。&lt;/p&gt;
+
+&lt;h2 id="印象に残ったセッション"&gt;印象に残ったセッション&lt;/h2&gt;
+
+&lt;p&gt;YAPCのなかでは様々なセッションがありましたが、聞いていて印象に残ったセッションも多数ありました。その中でもひとつ、gurasanから紹介させていただきます。&lt;/p&gt;
+
+&lt;p&gt;こんぼいさんの&lt;a href="https://fortee.jp/yapc-hiroshima-2024/proposal/3a2b001c-83dd-48a9-a9c2-90c13d1185d0"&gt;非同期な開発体制を支えるドキュメント文化&lt;/a&gt;が一番印象に残りました。日本とUSの双方にメンバーがいるチームでの開発という特殊なケースで自分達に持ち帰れるものはあるかなと思っていたのですが、ドキュメントの型をちゃんと作って運用していくというのをやられていて大変学びが多いセッションでした。Project Proposalについては所属チームでも早速導入して運用してみていますが、ディスカッションが活発になってとても良いという感触です。長期で運用してみてどこかで登壇してお話しできればなと思います。&lt;/p&gt;
+
+&lt;h2 id="最後に"&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;来年は函館開催という噂が流れているようで開催が決定した際には是非とも参加したいと思います。運営の皆様、このような素敵なイベントを開いていただき本当にありがとうございました！&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>日頃の作業を自動化して得られたもの</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/19/merit-of-automation/"/>
+    <id>https://tech.pepabo.com/2024/03/19/merit-of-automation/</id>
+    <published>2024-03-18T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>nissyi</name>
+    </author>
+    <content type="html">&lt;p&gt;minne事業部の&lt;a href="https://twitter.com/yuta_onishi_97"&gt;nissyi&lt;/a&gt;です。私は最近、運用・開発業務の時間を確保するために、便利なツールを導入したり、ちょっとしたプログラムを書いて自動化したりしています。今回は、日頃の業務の自動化を進めたことで得られたものについて書きます。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#自動化を進めたことで得られたもの" id="markdown-toc-自動化を進めたことで得られたもの"&gt;自動化を進めたことで得られたもの&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#身近なところで自動化は可能" id="markdown-toc-身近なところで自動化は可能"&gt;身近なところで自動化は可能&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#自動化の損益分岐点" id="markdown-toc-自動化の損益分岐点"&gt;自動化の損益分岐点&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#メンテナンスと分かりやすさ" id="markdown-toc-メンテナンスと分かりやすさ"&gt;メンテナンスと分かりやすさ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#最後に" id="markdown-toc-最後に"&gt;最後に&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="自動化を進めたことで得られたもの"&gt;自動化を進めたことで得られたもの&lt;/h2&gt;
+
+&lt;p&gt;早速本題ですが、自動化に取り組むことで以下のようなメリットや学びを得ました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;時間を生み出し、他の仕事に取り組む時間を確保できる&lt;/li&gt;
+  &lt;li&gt;自動化の手段を知ることで、他の場面で応用できる&lt;/li&gt;
+  &lt;li&gt;作業に対して「これは自動化できないか？」と考えるようになる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;自動化を進めると、生み出した時間で新たな自動化に取り組めて、さらにそれで時間を生み出して…と複利のように効率化を進められます。&lt;/p&gt;
+
+&lt;h2 id="身近なところで自動化は可能"&gt;身近なところで自動化は可能&lt;/h2&gt;
+
+&lt;p&gt;エンジニアの業務における自動化といえば、CI/CDフローの構築やスクリプトによる環境構築の自動化などが例として思い浮かびます。これらは、本来なら人間が繰り返し作業していたものをコンピュータに任せることで、ミスや作業時間を削減できるといったメリットがあります。
+ですが、日々の業務では運用・開発以外の仕事もあります。それらについても自動化できるところはたくさんあります。例えば、以下のようなものです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Googleカレンダーに予定を登録しておき、予定を通知させる&lt;/li&gt;
+  &lt;li&gt;Slackのワークフローで、定例ミーティングのスレッドを定時に作るようにする&lt;/li&gt;
+  &lt;li&gt;Google Apps Script（以下、GAS）で、計算をさせたり定期的にプログラムを実行する&lt;/li&gt;
+  &lt;li&gt;Macに搭載されているAutomatorで画像を繰り返し変換させる&lt;/li&gt;
+  &lt;li&gt;Notionで毎日使う資料をテンプレート化し、定時に自動生成させる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;同じ作業を何回か繰り返したら、自動化のチャンスです。しかし、わずかな回数を繰り返すなら、人間が作業した方が早いかもしれません。そこで、1つ例を出して損益分岐点について考えてみます。&lt;/p&gt;
+
+&lt;h2 id="自動化の損益分岐点"&gt;自動化の損益分岐点&lt;/h2&gt;
+
+&lt;p&gt;1日に1分かかっている作業があるとします。その場合、1日単位でみるととても僅かな時間です。でも、365日同じことを繰り返していたら365分…つまり約6時間もその作業に使ってしまうことになります。&lt;/p&gt;
+
+&lt;p&gt;「他の業務で忙しいし、こんな僅かな時間の作業のために自動化なんて取り組めない」と思うかもしれません。そこで、自動化の損益分岐点について計算してみます。この1分の作業を自動化するために1時間の開発時間が必要だとすると、その投資を回収するために必要な日数は次のように計算できます。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;1時間（自動化の開発時間）= 60分 * 60秒 = 3600秒&lt;/li&gt;
+  &lt;li&gt;1分（1日に削減できる作業時間）= 60秒&lt;/li&gt;
+  &lt;li&gt;3600秒 / 60秒 = 60日&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;つまり、60日も経てば自動化にかけた時間は回収できます。&lt;/p&gt;
+
+&lt;p&gt;しかも、作業にかかっている時間はそれだけではありません。1分の作業に取り組むために、今まで取り組んでいたタスクを脳内から追い出して、作業を実施して、その後もとのタスクに戻るとしたら、スイッチングコストが発生します。作業単体でみると1分しかかかっていないのに、実際はもっと多くの時間が失われる可能性があります。&lt;/p&gt;
+
+&lt;p&gt;また、上記「&lt;a href="#%E5%BE%97%E3%82%89%E3%82%8C%E3%81%9F%E3%82%82%E3%81%AE"&gt;得られたもの&lt;/a&gt;」でも書きましたが、一度自動化を行うと、他の自動化したい場面にも応用がきく場合があります。それに、一度取り組んでコツがわかれば次は1時間もかけずに自動化できるかもしれません。そうなれば、もっとお得に感じられるかもしれませんね。&lt;/p&gt;
+
+&lt;h2 id="メンテナンスと分かりやすさ"&gt;メンテナンスと分かりやすさ&lt;/h2&gt;
+
+&lt;p&gt;自動化したはいいものの、その自動化をずっと使い続けるとは限りません。通知する内容や実行日時を変更したり、動かしているものを廃止したり…将来的なことを考えると、自分一人でメンテナンスし続けるのは大変です。そこで、自分以外の仲間にも使ってもらうような自動化なら、「メンテナンス時に必要な情報を通知に加えること」と「他の誰かと協力してメンテナンスする」ことをおすすめします。&lt;/p&gt;
+
+&lt;p&gt;実際の例として、Google Sheetsでコンテンツを管理して平日10時に&lt;a href="https://www.gmo.jp/brand/sv/"&gt;スピリットベンチャー宣言&lt;/a&gt;をランダムに通知するbotを紹介します。スピリットベンチャー宣言とは、GMOインターネットグループのパートナーが共有・徹底している社訓のようなものです。このbotは、スピリットベンチャー宣言がペパボのパートナーにより浸透することを目的として開発しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/19/merit-of-automation/sv_bot.png" alt="SVをランダムに通知するくん" /&gt;&lt;/p&gt;
+
+&lt;p&gt;このbotの通知では、「メンテナンス時に必要な情報を通知に加えること」を実践しています。まず、通知の冒頭に送信元であるGASへのリンクを加えています。これにより、ファイルを探す手間を省くことができます。また、コンテンツ管理に使用しているGoogle Sheetsへのリンクも含んでいます。そして、メンテナンスの依頼先としてSVメイツへ連絡をしてもらうように情報を加えています。（SVメイツとは、スピリットベンチャー宣言が社内により浸透することを目的として活動している有志たちのことです。）&lt;/p&gt;
+
+&lt;p&gt;「他の誰かと協力してメンテナンスする」ことについては、自分と同じSVメイツである&lt;a href="https://tech.pepabo.com/authors/%E3%81%BB%E3%82%8A%E3%82%86%E3%81%86/"&gt;SUZURIのエンジニアのほりゆう&lt;/a&gt;と取り組んでいます。こうすることで、属人化を防ぎ継続的なメンテナンスを可能にしています。&lt;/p&gt;
+
+&lt;h2 id="最後に"&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://pepabo.com/company/vision/#mission"&gt;人類のアウトプットを増やす&lt;/a&gt;ためには、人間は人間にしかできないことに集中し、コンピュータでもできることはどんどん任せて時間を作り出すことが大事です。また、日常の中に自動化の種はたくさん転がっています。これを読んだみなさんも、ぜひ自動化を進めていきましょう！&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>資産管理ツールSnipe-ITの基本的な機能</title>
+    <link rel="alternate" href="https://tech.pepabo.com/2024/03/06/snipeit-basic/"/>
+    <id>https://tech.pepabo.com/2024/03/06/snipeit-basic/</id>
+    <published>2024-03-05T15:00:00+00:00</published>
+    <updated>2024-03-28T06:38:23+00:00</updated>
+    <author>
+      <name>kawaD</name>
+    </author>
+    <content type="html">&lt;p&gt;この記事の担当 &lt;a href="https://twitter.com/kawaD189"&gt;@kawaD&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;こんにちは！技術部 Corporate Engineering Group(CEG)のkawaDです！CEGは、いわば情シス部門であり、仕事内容は多岐にわたります。その中の一つに、業務用PCの管理があります。&lt;/p&gt;
+
+&lt;p&gt;JamfやIntuneといったMDMは導入していますが、レンタル契約管理や入退者のPC管理についてはGoogleスプレッドシートを利用しています。このGoogleスプレッドシートでの管理に課題を感じていて、イケてる仕組みを目指してSnipe-ITを検証してみました。&lt;/p&gt;
+
+&lt;h2 id="snipe-itを使ってみた背景"&gt;Snipe-ITを使ってみた背景&lt;/h2&gt;
+
+&lt;p&gt;弊社では業務用PCを2年間の契約でレンタルし、毎月約30台の切替管理作業を行なっています。PC台帳は頻繁に更新され、ベンダーとの連携もあり、Googleスプレッドシートでの運用が難しくなりました。&lt;/p&gt;
+
+&lt;p&gt;具体的な課題&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;PC運用が複雑
+    &lt;ul&gt;
+      &lt;li&gt;パートナーが利用するPCはレンタルしていて発注や納品後の対応などで、PC台帳を頻繁に更新しています。また発注用、納品用などファイルが複数存在していて、抜け漏れや管理の仕組みが複雑になっていて、台帳が安定しない状態です。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;情報共有しずらい
+    &lt;ul&gt;
+      &lt;li&gt;Slackを介したパートナーへの情報収集や、ベンダーとの連携について手間がかかっていて、リアルタイムな情報共有が難しい状況にあります。現在はパートナーへの発送先住所を聞くのを都度手入力でメンションして聞いていてリアルタイムに共有できていないので、自動的にメンションするようなシステムを構築したくなりました。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上記の課題が解決するようなスムーズな資産管理の仕組みを目指し、Snipe-ITという資産管理ツールを検証しました。&lt;/p&gt;
+
+&lt;p&gt;Snipe-ITには資産管理台帳があり、APIでの外部連携やSlack Integrationもある様子だったので、実際に使ってみて、運用課題を解決しそうか検証しました。&lt;/p&gt;
+
+&lt;p&gt;検証結果としてはSnipe-ITを導入すればPC運用の複雑さが解消され、他の要望も部分的には満たしました。ただSnipe-ITの導入は行っていません。理由はこの検証結果をベースに、他の資産管理ツールと比較を行うという結論になったためです。&lt;/p&gt;
+
+&lt;p&gt;この記事では今回の検証から得た知識を共有し、Snipe-ITの基本的な機能を紹介したいと思います。使い始めやすくなるようなポイントを中心にご説明いたします。&lt;/p&gt;
+
+&lt;h2 id="snipe-itについて"&gt;Snipe-ITについて&lt;/h2&gt;
+
+&lt;p&gt;・&lt;a href="https://snipeitapp.com/"&gt;Snipe-IT公式サイト&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Snipe-ITは資産管理を得意とするクラウドベースのアプリケーションです。サーバー、PC、ライセンスなどの資産を効果的に管理することができます。&lt;/p&gt;
+
+&lt;p&gt;このアプリケーションはオープンソースソフトウェアとして提供されており、ユーザーは自分自身でアプリをホストできます。同時に、契約を結べばSaaSとしても利用可能です。&lt;/p&gt;
+
+&lt;h2 id="環境構築"&gt;環境構築&lt;/h2&gt;
+
+&lt;p&gt;環境構築には色々手段はありますが、Dockeイメージが用意されてるのでそれを使って、MacBook Pro M1でのローカル環境を作ってみます。&lt;/p&gt;
+
+&lt;p&gt;・&lt;a href="https://snipe-it.readme.io/docs/installation"&gt;公式ドキュメント：Installation&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;・&lt;a href="https://snipe-it.readme.io/docs/docker"&gt;公式ドキュメント：Docker&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;はじめに、Snipe-ITを動かすための設定ファイルを用意します。&lt;code&gt;env-file&lt;/code&gt;を作成して下記のように用意します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;# Mysql Parameters
+MYSQL_ROOT_PASSWORD=YOUR_SUPER_SECRET_PASSWORD
+MYSQL_DATABASE=snipeit
+MYSQL_USER=snipeit
+MYSQL_PASSWORD=YOUR_snipeit_USER_PASSWORD
+
+# Email Parameters
+# - the hostname/IP address of your mailserver
+MAIL_PORT_587_TCP_ADDR=smtp.example.com
+#the port for the mailserver (probably 587, could be another)
+MAIL_PORT_587_TCP_PORT=587
+# the default from address, and from name for emails
+MAIL_ENV_FROM_ADDR=youremail@example.com
+MAIL_ENV_FROM_NAME=Your Full Email Name
+# - pick 'tls' for SMTP-over-SSL, 'tcp' for unencrypted
+MAIL_ENV_ENCRYPTION=tcp
+# SMTP username and password
+MAIL_ENV_USERNAME=your_email_username
+MAIL_ENV_PASSWORD=your_email_password
+
+# Snipe-IT Settings
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=後ほど設定する
+APP_URL=http://127.0.0.1:YOUR_PORT_NUMBER
+APP_TIMEZONE=US/Pacific
+APP_LOCALE=en
+  
+# Docker-specific variables
+PHP_UPLOAD_LIMIT=100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;設定ファイルを適宜変更します。APP_KEYについては後ほど作成します。&lt;/p&gt;
+
+&lt;p&gt;Snipe-IT用のmysqlを立ち上げます。&lt;/p&gt;
+
+&lt;p&gt;MacBook Pro M1だと、platformを指定する必要がありましたので、&lt;code&gt;--platform linux/x86_64&lt;/code&gt;を付け足します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;docker run --platform linux/x86_64 --name snipe-mysql --env-file=env-file --mount source=snipesql-vol,target=/var/lib/mysql -d -P mysql:5.6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;次に、APP_KEYを生成するため、下記のようにsnipe-itコンテナを使いAPP_KEYを生成します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;docker run --rm snipe/snipe-it
+Please re-run this container with an environment variable $APP_KEY
+An example APP_KEY you could use is: 
+xxxx:xxxxAPP_KEYxxxxx（←APP_KEYが生成される）
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;生成したAPP＿KEYを&lt;code&gt;env-file&lt;/code&gt;に記載します。&lt;/p&gt;
+
+&lt;p&gt;記載後、下記を実行してSnipe-ITを立ち上げます。ポートはご自身で適宜設定してください。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;docker run -d -p YOUR_PORT_NUMBER:80 --name="snipeit" --link snipe-mysql:mysql --env-file=env-file --mount source=snipe-vol,dst=/var/lib/snipeit snipe/snipe-it
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;http://127.0.0.1:YOUR_PORT_NUMBER にアクセスすると下記のように初回の設定画面が表示されるので案内通り設定していけば完成です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/06/snipeit-basic/snipeit-start-top.png" alt="Snipe-IT立ち上げ後の初回設定画面" /&gt;&lt;/p&gt;
+
+&lt;h2 id="基本的な機能"&gt;基本的な機能&lt;/h2&gt;
+
+&lt;p&gt;以下はSnipe-ITの基本的な機能で、アプリケーションの仕組みを理解するのに役立ちます。&lt;/p&gt;
+
+&lt;h3 id="asset-tags"&gt;Asset Tags&lt;/h3&gt;
+
+&lt;p&gt;Asset Tagは資産データに対する識別子であり、資産データ登録時には必須項目となります。一度登録された後でも値を変更できますが、一意である必要があります。&lt;/p&gt;
+
+&lt;h3 id="asset-model"&gt;Asset Model&lt;/h3&gt;
+
+&lt;p&gt;Asset Modelは資産データ登録に必須項目で、その資産データがどんな種類なのかを指定する必要があります。Asset Modelは事前にSnipe-ITの設定から作成しておく必要があります。&lt;/p&gt;
+
+&lt;p&gt;Asset Modelを作成する際には、以下の2つの機能であるCategoryとCustom Fieldsを理解する必要があります。&lt;/p&gt;
+
+&lt;h4 id="category"&gt;Category&lt;/h4&gt;
+
+&lt;p&gt;Asset Modelを作成する際には、必ずCategoryを指定する必要があります。CategoryはAsset Model自体を種類ごとに整理するための機能です。&lt;/p&gt;
+
+&lt;p&gt;たとえば、PCというCategoryを作成し、その配下にWindowsやMacといったAsset Modelを設定します。&lt;/p&gt;
+
+&lt;p&gt;Snipe-ITの管理対象は、PCだけでなくサーバーやライセンスなど多岐にわたるため、これらをより詳細に種類分けすることができます。これにより、異なる種類の資産を効果的に管理できるのがSnipe-ITの特長です。&lt;/p&gt;
+
+&lt;h4 id="custom-fields"&gt;Custom Fields&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/06/snipeit-basic/snipeit-top.png" alt="Snipe-ITの資産管理画面" /&gt;&lt;/p&gt;
+
+&lt;p&gt;資産データは上記画像のように行列表示されます。資産登録時、Snipe-ITがデフォルトで用意されている項目もありますが、管理するために項目を増やしたい時があります。&lt;/p&gt;
+
+&lt;p&gt;そんな時のために、Snipe-ITにはデフォルトで提供されるカラム以外にも、ユーザーが独自のカラムを作成する機能があります。作成するにはAsset ModelにCustom Fieldsと Fieldsetsを設定する必要があります。&lt;/p&gt;
+
+&lt;p&gt;Custom Fieldsでは、新しいカラムの設定を行います。例えば、購入日というカラムを追加する場合、データ型は日付にする、資産登録時には必須にするなど、カラム自体の特性を設定します。&lt;/p&gt;
+
+&lt;p&gt;さらに、Fieldsetsというグルーピング機能を使用して、作成した各カラムをまとめます。たとえば、購入日、OS、サイズといったカラムを作成し、PC必須項目というFieldsetsでまとめます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/06/snipeit-basic/snipeit-fields.png" alt="Snipe-ITのカスタムフィールドとフィールドセットの設定画面" /&gt;&lt;/p&gt;
+
+&lt;p&gt;そして、Asset ModelにFieldsetsを紐づけます。資産登録時にAsset Modelを選択するとそのAsset Modelに紐づいたFieldsetsの項目が表示され登録できるようになります。例えばAsset ModelのWindowsにPC必須項目というFieldsetsを指定することで、資産データを登録する際にWindowsを選択すると、PC必須項目のグループが表示され、それぞれの情報を登録することができます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/06/snipeit-basic/snipeit-form.png" alt="Snipe-ITのデータ登録フォーム" /&gt;&lt;/p&gt;
+
+&lt;h3 id="checkincheckout"&gt;Checkin/Checkout&lt;/h3&gt;
+
+&lt;p&gt;この機能は所有者や使用者を指定するためのもので、資産の状態に基づいて割り当てを行います。退職や修理などの状況に応じて、資産の所有者や利用者を確定させます。&lt;/p&gt;
+
+&lt;h3 id="status-labels"&gt;Status Labels&lt;/h3&gt;
+
+&lt;p&gt;各データには資産の状態を示すためのラベルが必要です。基本的には以下の4つの項目を使用して各資産を管理します。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Undeployable：&lt;/strong&gt; 利用者を割り当てることができない状態を表します。例：返却済み・廃棄など&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Deployable：&lt;/strong&gt; 利用者を割り当てることができます。例：納品済みPCなど&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Pending：&lt;/strong&gt; 利用者を割り当てられませんが、最終的には割り当てられる予定のような状態です 。例：発注中や修理中など&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Archived：&lt;/strong&gt; 利用者を割り当てることができず、Archivedビューにのみ表示される状態です。例：返却済み・廃棄など&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;これら4つのステータス以外にも、必要に応じてカスタムステータスを作成することができます。ただし、新しいステータスを作成する場合、これら4つのステータスを親として子要素のように関連付ける必要があります。例えば、Pending-修理中、Pending-発注中などの形で登録します。&lt;/p&gt;
+
+&lt;p&gt;また、各ステータスごとに専用のビュー画面を設けることができます。これにより、異なるステータスごとにフィルタリングされた結果を見ることができます。また、修理中のようなカスタムしたステータスについても、それぞれ独立して表示を分けることが可能です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/03/06/snipeit-basic/snipeit-status.png" alt="Snipe-ITのステータスごとの画面切り替え" /&gt;&lt;/p&gt;
+
+&lt;h3 id="column-selection"&gt;Column Selection&lt;/h3&gt;
+
+&lt;p&gt;画面上に表示されるカラムの表示・非表示を設定できるのがColumn Selection機能です。Custom Fieldsで大量のカラムを作成すると、管理画面が複雑になることがあります。この機能を使用すると、必要な情報だけを表示し、不要な項目を非表示にして見やすさを向上させることができます。&lt;/p&gt;
+
+&lt;h3 id="api"&gt;API&lt;/h3&gt;
+
+&lt;p&gt;・&lt;a href="https://snipe-it.readme.io/reference/api-overview"&gt;公式ドキュメント：API Overview&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Snipe-ITにはAPIが用意されています。&lt;/p&gt;
+
+&lt;p&gt;APIを叩くには管理画面でアクセストークンを発行します。&lt;/p&gt;
+
+&lt;p&gt;アクセストークン発行は、ユーザーアイコンを選択するとプルダウンの中にManage API Keysがあり、そこから作成します。&lt;/p&gt;
+
+&lt;p&gt;作成したトークンをHeaderにつけてリクエストすればデータを取得できます。&lt;/p&gt;
+
+&lt;p&gt;例えば、下記のようなリクエストで資産データを取得することができます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;curl &lt;span class="nt"&gt;--request&lt;/span&gt; GET &lt;span class="se"&gt;\&lt;/span&gt;
+     &lt;span class="nt"&gt;--url&lt;/span&gt; &lt;span class="s1"&gt;'http://127.0.0.1:YOUR_PORT_NUMBER/api/v1/hardware?limit=2&amp;amp;offset=0&amp;amp;sort=created_at&amp;amp;order=desc'&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+     &lt;span class="nt"&gt;--header&lt;/span&gt; &lt;span class="s1"&gt;'Authorization: Bearer xxxx作ったTokenxxxx \
+     --header '&lt;/span&gt;accept: application/json&lt;span class="s1"&gt;'
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;GUIでも検索フォームはありますが、列を指定した検索ができませんが、APIを使えばカラムを指定して検索ができます。また、Custom Fieldsで作成したカラムについても指定することができます。&lt;/p&gt;
+
+&lt;p&gt;上記のように、APIを活用すれば細かい操作が可能になります。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;以上がSnipe-ITの基本的な機能でした。&lt;/p&gt;
+
+&lt;p&gt;Snipe-ITにはAPIやSlack Integrationなど、他にも様々な機能が存在しますが、これら基本的な機能を理解することで、より使いやすく、効果的に資産管理が行えるでしょう。&lt;/p&gt;
+
+</content>
+  </entry>
+</feed>

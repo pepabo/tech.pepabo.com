@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>RailsでAWS SDKを用いてファイルをS3へダイレクトアップロードする方法 - Pepabo Tech Portal</title>
+<meta content="6 畳 1K にセミダブルベッドと Yogibo、どうも todacchi です。
+
+最近の悩みはセラミックファンヒーターが電気代を Plus Ultra することです。
+
+先日、SUZURI のデジタルコンテンツ販売の事前登録機能の..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2022/12/12/direct-file-upload/scs.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+<meta content="RailsでAWS SDKを用いてファイルをS3へダイレクトアップロードする方法 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="6 畳 1K にセミダブルベッドと Yogibo、どうも todacchi です。
+
+最近の悩みはセラミックファンヒーターが電気代を Plus Ultra することです。
+
+先日、SUZURI のデジタルコンテンツ販売の事前登録機能の..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"RailsでAWS SDKを用いてファイルをS3へダイレクトアップロードする方法","author":{"@type":"Person","name":"todacchi"},"datePublished":"2022-12-11T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2022/12/12/direct-file-upload/scs.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-direct-file-upload">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/rails/" class="tag-default">rails</a>
+      <a href="/tags/フロントエンド/" class="tag-default">フロントエンド</a>
+  </div>
+  <time class="article__time" datetime="2022-12-12">
+    2022-12-12
+  </time>
+  <h1 class="article__title">
+    <a href="/2022/12/12/direct-file-upload/">RailsでAWS SDKを用いてファイルをS3へダイレクトアップロードする方法</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/rails/" class="tag-default">rails</a>
+      <a href="/tags/フロントエンド/" class="tag-default">フロントエンド</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2022/12/12/direct-file-upload/scs.png" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/12/12/direct-file-upload/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>6 畳 1K にセミダブルベッドと Yogibo、どうも todacchi です。</p>
+
+<p>最近の悩みはセラミックファンヒーターが電気代を Plus Ultra することです。</p>
+
+<p>先日、SUZURI のデジタルコンテンツ販売の事前登録機能の事前登録機能を無事にリリースしました。</p>
+
+<p>SUZURI のデジタルコンテンツ販売とは、簡単に言うとデジタルデータを SUZURI 上で販売・購入できる機能です。</p>
+
+<p>詳しくは <a href="https://suzuri.jp/lp/digitalproducts-entry">LP ページ</a>をご覧ください。</p>
+
+<p>基本的に実際に手を動かす開発は僕を含めたエンジニア 2 人とデザイナー 1 人で行っており、ウイルスチェック周りはサービス横断のプラットフォームグループ(PFG)に所属するエンジニアの 2 人に進めていただきました。</p>
+
+<p>設計や実装をしていく中でいろいろと知見もたまってきたので、今回はその中でもファイルアップロードについて説明しようと思います。</p>
+
+<!-- prettier-ignore -->
+<ol id="markdown-toc">
+  <li><a href="#この記事でわかること" id="markdown-toc-この記事でわかること">この記事でわかること</a></li>
+  <li><a href="#前提" id="markdown-toc-前提">前提</a></li>
+  <li><a href="#aws-sdk-を使ったコードをテストするために-minio-の導入" id="markdown-toc-aws-sdk-を使ったコードをテストするために-minio-の導入">AWS SDK を使ったコードをテストするために MinIO の導入</a>    <ol>
+      <li><a href="#開発環境に-minio-を導入する手順" id="markdown-toc-開発環境に-minio-を導入する手順">開発環境に MinIO を導入する手順</a></li>
+      <li><a href="#github-actions-環境に-minio-を導入" id="markdown-toc-github-actions-環境に-minio-を導入">GitHub Actions 環境に MinIO を導入</a></li>
+    </ol>
+  </li>
+  <li><a href="#ファイルのダイレクトアップロード" id="markdown-toc-ファイルのダイレクトアップロード">ファイルのダイレクトアップロード</a>    <ol>
+      <li><a href="#仕様-1ファイルをアップロードした後db-に対応するレコードを追加する手法" id="markdown-toc-仕様-1ファイルをアップロードした後db-に対応するレコードを追加する手法">仕様 1(ファイルをアップロードした後、DB に対応するレコードを追加する手法)</a></li>
+      <li><a href="#仕様-2db-に対応するレコードを追加した後ファイルをアップロードする手法" id="markdown-toc-仕様-2db-に対応するレコードを追加した後ファイルをアップロードする手法">仕様 2(DB に対応するレコードを追加した後、ファイルをアップロードする手法)</a></li>
+    </ol>
+  </li>
+  <li><a href="#アップロードできるファイル数ファイルサイズ制限" id="markdown-toc-アップロードできるファイル数ファイルサイズ制限">アップロードできるファイル数、ファイルサイズ制限</a></li>
+  <li><a href="#まとめ" id="markdown-toc-まとめ">まとめ</a></li>
+</ol>
+
+<h2 id="この記事でわかること">この記事でわかること</h2>
+
+<ul>
+  <li>ActiveStorage などを使用しない S3 へのダイレクトアップロード（ダイレクトアップロードすることで Rails サーバーをファイルが経由しないのでさまざまなメリットがあります）</li>
+  <li>MinIO を用いたテスト手法</li>
+  <li>アップロードしたファイルを kt-paperclip(paperclip の fork)で管理する方法（やらなくても良い）</li>
+</ul>
+
+<h2 id="前提">前提</h2>
+
+<p>SUZURI ではもともと、一部の画像の管理に paperclip を使用しており、現在ではメンテナンスが継続されている kt-paperclip を使用しています。</p>
+
+<p>ファイルアップロードを作るにあたり ActiveStorage への移行も検討しましたが、早くリリースしたいという要望もあり、現時点で移行する工数を取るべきでないと判断し AWS SDK を基本的に使いつつ、kt-paperclip と連携することもできる方針にしました（kt-paperclip の機能はファイルの削除などにしか使わない予定なので、最終的には使用しないかもしれません）。</p>
+
+<p>ファイルアップロード機能を作るにあたってパフォーマンスやセキュリティの観点から、S3 へダイレクトアップロードすることにしました。以下、細かい理由です。</p>
+
+<ul>
+  <li>アップロードできるファイルは拡張子や Content-Type などで制限しないとします。アップロードされるファイルはウイルスなどが含まれる可能性があるので、そういったファイルを個人情報のある Rails サーバーに一時的にも置くことはリスクがあります。</li>
+  <li>アップロードできるファイルサイズは 1GB 程度を想定していて、ファイルサイズが大きい場合に Rails サーバーのリソースを圧迫させたくありません。</li>
+  <li>SUZURI の Rails アプリは Heroku で動作しています。Rails サーバーを経由してしまうとアップロードに時間がかかったとき Heroku がタイムアウトしてアップロードに失敗してしまいます。</li>
+</ul>
+
+<p>テーブル設計としては 1 つの DigitalProduct テーブルは複数の DigitalProductContent を持っています。</p>
+
+<p>DigitalProductContent はアップロードされた販売用ファイル情報を保持するテーブルです（1 レコードにつき 1 ファイルに対応しています）。</p>
+
+<p><img src="/blog/2022/12/12/direct-file-upload/db.png" alt="テーブル設計図" /></p>
+
+<h2 id="aws-sdk-を使ったコードをテストするために-minio-の導入">AWS SDK を使ったコードをテストするために MinIO の導入</h2>
+
+<p>開発を始めた時点で AWS SDK を使用したコードをテストを書く仕組みがありませんでした。</p>
+
+<p>作ろうとしているのは販売用ファイルをアップロードして管理するという重要度の高い機能なので、コードの品質を担保するためにローカル環境と CI（継続的インテグレーション）環境に MinIO を導入してテストをかけるようにしました。</p>
+
+<p>導入によって、大きく生産性や安全性を高めることができたと思います。</p>
+
+<h3 id="開発環境に-minio-を導入する手順">開発環境に MinIO を導入する手順</h3>
+
+<p>MinIO は S3 互換で Docker image が配布されています。</p>
+
+<p>導入にあたり<a href="https://buildersbox.corp-sansan.com/entry/2020/04/13/110026">こちらの記事</a>を参考にさせていただきました。深く感謝します。</p>
+
+<p>以下のようにサービスコンテナを追加し、<code>docker-compose up</code> するだけでローカル環境では起動します。</p>
+
+<p>SUZURI では DB(データベース) や Redis はサービスコンテナで立ち上げ、Rails サーバーはコンテナで起動するかローカルで起動するか選択できるようになってます。</p>
+
+<p>追加したホスト名は S3_HOST という環境変数に入っている前提で説明していきます（Rails サーバーをローカルで動かしている時は S3_HOST は localhost であり、Rails サーバーから MinIO へアクセスする時は<code>http://localhost:9000</code>になります。Rails サーバーをコンテナで動かしている時は S3_HOST は s3 であり、Rails サーバーから MinIO へアクセスする時は<code>http://s3:9000</code>になります）。</p>
+
+<p>バケットの追加は AWS SDK を使ってもいいですし、9001 ポートにアクセスすると GUI が用意されてます。</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="c1"># docker-compose.yml</span>
+
+<span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2"</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="c1"># 省略</span>
+  <span class="na">s3</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">minio/minio:latest</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">9000:9000"</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">9001:9001"</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">s3:/data</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="s2">"</span><span class="s">server</span><span class="nv"> </span><span class="s">/data</span><span class="nv"> </span><span class="s">--console-address</span><span class="nv"> </span><span class="s">:9001"</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">MINIO_ROOT_USER</span><span class="pi">:</span> <span class="s">user</span>
+      <span class="na">MINIO_ROOT_PASSWORD</span><span class="pi">:</span> <span class="s">password</span>
+
+<span class="na">volumes</span><span class="pi">:</span>
+  <span class="c1"># 省略</span>
+  <span class="na">s3</span><span class="pi">:</span>
+</code></pre></div>
+<p>テスト実行前にテスト用のバケットを作ったり、バケット内のデータを削除したりできるようにします。</p>
+
+<p>今回は以下の様な helper を作りました。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># spec/support/s3_test_helper.rb</span>
+
+<span class="k">class</span> <span class="nc">S3TestHelper</span>
+  <span class="k">def</span> <span class="nf">resource</span>
+    <span class="vi">@resource</span> <span class="o">||=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+      <span class="ss">region: </span><span class="s2">"ap-northeast-1"</span><span class="p">,</span>
+      <span class="ss">access_key_id: </span><span class="s2">"user"</span><span class="p">,</span>
+      <span class="ss">secret_access_key: </span><span class="s2">"password"</span><span class="p">,</span>
+      <span class="ss">endpoint: </span><span class="s2">"http://</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">:9000"</span><span class="p">,</span>
+      <span class="ss">force_path_style: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">bucket_name</span>
+    <span class="s2">"dummy-bucket-</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">bucket</span>
+    <span class="vi">@bucket</span> <span class="o">||=</span> <span class="n">resource</span><span class="p">.</span><span class="nf">bucket</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create_bucket</span>
+    <span class="k">begin</span>
+      <span class="n">resource</span><span class="p">.</span><span class="nf">create_bucket</span><span class="p">(</span><span class="ss">acl: </span><span class="s1">'private'</span><span class="p">,</span> <span class="ss">bucket: </span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="k">rescue</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Errors</span><span class="o">::</span><span class="no">BucketAlreadyOwnedByYou</span>
+      <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">bucket_name</span><span class="si">}</span><span class="s2"> already exists."</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">clear_bucket!</span>
+    <span class="n">bucket</span><span class="p">.</span><span class="nf">clear!</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">object_exist?</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+    <span class="n">object</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">object</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+    <span class="n">object</span><span class="p">.</span><span class="nf">exists?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">s3_test_helper</span> <span class="o">=</span> <span class="no">S3TestHelper</span><span class="p">.</span><span class="nf">new</span>
+
+  <span class="n">s3_test_helper</span><span class="p">.</span><span class="nf">create_bucket</span>
+  <span class="n">s3_test_helper</span><span class="p">.</span><span class="nf">clear_bucket!</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>実際に S3 ファイルを操作する各テストの前に、<code>clear_bucket!</code>を使用してバケット内のファイルを消す運用にしています（Redis のキャッシュをクリアする<code>Rails.cache.clear</code>と同じように使えます）。</p>
+
+<p>仮想ホスト形式がうまく設定できなかったので、<code>force_path_style</code>を<code>true</code>にしてパス形式で使用しています。</p>
+
+<p>パス形式はドメインの後にスラッシュでバケット名を繋ぐ形、仮想ホスト形式はサブドメインにバケット名を置く形です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>http://s3-ap-northeast-1.amazonaws.com/&lt;bucket-name&gt; # パス形式
+http://&lt;bucket-name&gt;.s3-ap-northeast-1.amazonaws.com # 仮想ホスト形式
+</code></pre></div>
+<p><a href="https://aws.amazon.com/jp/blogs/news/amazon-s3-path-deprecation-plan-the-rest-of-the-story/">パス形式は 2020 年にサポート終了してますが、以前作られたバケットのサポートは続く様で機能自体も当分存続しそう</a>なので、テストとローカルで使用するだけなら問題ないと判断しました。</p>
+
+<p><code>RSpec.configure</code>のブロックはテスト実行時の最初に、バケットを作成する処理をしています。</p>
+
+<h3 id="github-actions-環境に-minio-を導入">GitHub Actions 環境に MinIO を導入</h3>
+
+<p>GitHub Actions(以下 Actions) を使った CI（継続的インテグレーション）への導入も、開発環境とほぼ同じようにできます。</p>
+
+<p>唯一の問題は MinIO の配布されてるイメージはサービスコンテナとして追加しただけでは起動しません。</p>
+
+<p>先述した docker-compose.yml の command のように起動コマンドを実行しなければならないのですが、Actions にはそれをできる機能がありません。</p>
+
+<p>そこで、イメージを追加するだけで起動する Dockerfile を作成し、その Dockerfile から作成した Docker Image を Actions で使用するようにします。</p>
+
+<p>これで Actions でもテストができるようになりました。</p>
+
+<div class="highlight"><pre class="highlight docker"><code><span class="c"># Dockerfile</span>
+
+<span class="k">FROM</span><span class="s"> minio/minio:latest</span>
+
+<span class="k">RUN </span>microdnf upgrade <span class="nt">-y</span> <span class="o">&amp;&amp;</span> microdnf clean all
+
+<span class="k">CMD</span><span class="s"> ["minio", "server", "/data"]</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight yaml"><code><span class="c1"># .github/workflows/ci.yml</span>
+
+<span class="c1"># 省略</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">rails_test</span><span class="pi">:</span>
+    <span class="c1"># 省略</span>
+    <span class="na">services</span><span class="pi">:</span>
+      <span class="c1"># 省略</span>
+      <span class="na">s3</span><span class="pi">:</span>
+        <span class="c1"># imageには上記のDockerfileから作ったimageを指定する</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">containers.git.pepabo.com/suzuri/images/minio:latest</span>
+        <span class="na">ports</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s2">"</span><span class="s">9000:9000"</span>
+        <span class="na">env</span><span class="pi">:</span>
+          <span class="na">MINIO_ROOT_USER</span><span class="pi">:</span> <span class="s">user</span>
+          <span class="na">MINIO_ROOT_PASSWORD</span><span class="pi">:</span> <span class="s">password</span>
+
+    <span class="na">container</span><span class="pi">:</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">S3_HOST</span><span class="pi">:</span> <span class="s">s3</span>
+        <span class="na">S3_CDN_HOST</span><span class="pi">:</span> <span class="s">s3</span>
+<span class="c1"># 省略</span>
+</code></pre></div>
+<h2 id="ファイルのダイレクトアップロード">ファイルのダイレクトアップロード</h2>
+
+<p>実は最初、ファイルアップロードは「ファイルをアップロードした後、DB に対応するレコードを追加する手法」で実装をしていました。</p>
+
+<p>しかし、途中でウイルススキャンした方がいいよねという話になり、スキャンとの相性を考慮し「DB に対応するレコードを追加した後、ファイルをアップロードする手法」に変更しました。</p>
+
+<p>どちらにするかはプロダクトの性質によると思うので両方解説をしていきます。</p>
+
+<h3 id="仕様-1ファイルをアップロードした後db-に対応するレコードを追加する手法">仕様 1(ファイルをアップロードした後、DB に対応するレコードを追加する手法)</h3>
+
+<p>こちらの手法のメリットは、アップロード未完了ファイル用のレコードが作られないことです。</p>
+
+<p>デメリットは object_key の変更が必要など処理が相対的に複雑になること。また、後述するウイルススキャンのように S3 ファイルの変更を察知して走る処理があると object_key が変更されるタイミングでも実行されるので、無駄な処理となってしまうことです。アップロードできるファイル数を制限しようと思った時などに、ファイルアップロードする段階でレコードが存在しないためロジックが複雑になる可能性もあります。</p>
+
+<p>全体の流れを示すシーケンス図です。</p>
+
+<p><img src="/blog/2022/12/12/direct-file-upload/direct-upload-sequence-diagram1.png" alt="ファイルダイレクトアップロードのシーケンス図" /></p>
+
+<p>最終的に使用することはありませんでしたが、この手法を実装する上で<a href="https://medium.com/committed-engineers/direct-file-upload-with-paperclip-and-s3-compatible-object-storage-fb4c409e996e">こちらの記事</a>が参考になりました。深く感謝します。</p>
+
+<h4 id="1-ファイルをアップロードするための-presigned_url-と-fields-を発行します">1. ファイルをアップロードするための presigned_url と fields を発行します。</h4>
+
+<p>presigned_url と fields を用いることで S3 に直接ファイルをアップロードすることができます。</p>
+
+<p><a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/PresignedPost.html">AWS SDK にある presigned_post メソッド</a>を使うことで発行できます。</p>
+
+<p>コードは以下のようになります。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="k">def</span> <span class="nf">resource</span>
+    <span class="vi">@resource</span> <span class="o">||=</span> <span class="no">Aws</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">Resource</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+      <span class="ss">region: </span><span class="no">ENV</span><span class="p">[</span><span class="s1">'AWS_REGION'</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'ap-northeast-1'</span><span class="p">,</span>
+      <span class="ss">access_key_id: </span><span class="no">ENV</span><span class="p">[</span><span class="s1">'AWS_ACCESS_KEY_ID'</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'user'</span><span class="p">,</span>
+      <span class="ss">secret_access_key: </span><span class="no">ENV</span><span class="p">[</span><span class="s1">'AWS_SECRET_ACCESS_KEY'</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'password'</span><span class="p">,</span>
+      <span class="ss">endpoint: </span><span class="no">ENV</span><span class="p">[</span><span class="s1">'AWS_ACCESS_KEY_ID'</span><span class="p">]</span> <span class="p">?</span> <span class="s2">"https://</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span> <span class="p">:</span> <span class="s2">"http://</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">:9000"</span><span class="p">,</span> <span class="c1"># AWS_ACCESS_KEY_IDがあるときはS3に繋ぐ</span>
+      <span class="ss">force_path_style: </span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span> <span class="o">||</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">test?</span><span class="p">,</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">bucket</span>
+    <span class="vi">@bucket</span> <span class="o">||=</span> <span class="n">resource</span><span class="p">.</span><span class="nf">bucket</span><span class="p">(</span>
+      <span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_BUCKET'</span><span class="p">]</span> <span class="o">||</span> <span class="s2">"dummy-bucket-</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1"># AWS SDKのpresigned_postと混同しないようにmy_presigned_postとしました</span>
+  <span class="k">def</span> <span class="nf">my_presigned_post</span><span class="p">(</span><span class="n">content_type</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">owner_id</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">presigned_post</span><span class="p">(</span>
+    <span class="ss">key: </span><span class="s2">"digital_product_contents/data/pre_saved/user-</span><span class="si">#{</span><span class="n">owner_id</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="no">SecureRandom</span><span class="p">.</span><span class="nf">uuid</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="ss">success_action_status: </span><span class="s1">'201'</span><span class="p">,</span>
+      <span class="ss">acl: </span><span class="s1">'private'</span><span class="p">,</span>
+      <span class="ss">content_type: </span><span class="n">content_type</span><span class="p">,</span>
+      <span class="ss">metadata: </span><span class="p">{</span>
+        <span class="s1">'original-filename'</span> <span class="o">=&gt;</span> <span class="n">file_name</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="p">{</span>
+      <span class="c1"># Railsをdocker上で動かしている場合、Railsからs3(minio)へアクセスする時のホスト名はs3になる</span>
+      <span class="c1"># しかし、フロントエンドからアクセスする時のホスト名はlocalhostを使わなければならない</span>
+      <span class="ss">url: </span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span> <span class="p">?</span> <span class="n">res</span><span class="p">.</span><span class="nf">url</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="s1">'http://s3'</span><span class="p">,</span> <span class="s1">'http://localhost'</span><span class="p">)</span> <span class="p">:</span> <span class="n">res</span><span class="p">.</span><span class="nf">url</span><span class="p">,</span>
+      <span class="ss">fields: </span><span class="n">res</span><span class="p">.</span><span class="nf">fields</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>ポイントは</p>
+
+<ul>
+  <li>レコードの一意な id がないので uuid を Object_key に含めています。これによって object_key が重複することは基本ありません。</li>
+  <li>presigned_url は S3(MinIO)の URL ですので、開発環境で Rails サーバーがコンテナで動いている時、Rails から MinIO にアクセスする時のホスト名は s3 になります。しかし、ブラウザからアクセスする時のホスト名は localhost なので置換しています。Rails サーバーがローカルで動いているのであれば置換は必要ないです。</li>
+  <li>ファイルアップロードに成功したら 201 を返すようにします。</li>
+  <li>object_key にファイル名を入れてますが、別に入れる必要はないです（むしろ入れない方がいいかも）。ただ、拡張子はあった方が便利なのでファイル名から拡張子だけ取り出すと良さそうです。</li>
+</ul>
+
+<p>あとはコントローラーなどで my_presigned_post で発行した presigned_url と fields をクライアントに返します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">digital_product_s3_client</span> <span class="o">=</span> <span class="no">DigitalProductS3Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">presigned_post</span> <span class="o">=</span> <span class="n">digital_product_s3_client</span><span class="p">.</span><span class="nf">my_presigned_post</span><span class="p">(</span><span class="n">content_type</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+
+<span class="c1"># 以下をクライアントに返す</span>
+<span class="p">{</span> <span class="ss">presigned_url: </span><span class="n">presigned_post</span><span class="p">[</span><span class="ss">:url</span><span class="p">],</span> <span class="ss">fields: </span><span class="n">presigned_post</span><span class="p">[</span><span class="ss">:fields</span><span class="p">]</span> <span class="p">}</span>
+</code></pre></div>
+<p>さて、せっかく MinIO を導入してるので RSpec で実際にテストしてみましょう。</p>
+
+<p>発行した presigned_url と fields を用いてファイルをアップロードする helper メソッドをテストに追加します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># spec/support/s3_test_helper.rb</span>
+
+<span class="k">class</span> <span class="nc">S3TestHelper</span>
+  <span class="c1"># 省略</span>
+  <span class="k">def</span> <span class="nf">post_file</span><span class="p">(</span><span class="n">image_file_name</span><span class="p">,</span> <span class="n">presignedUrl</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+    <span class="n">image_file</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">image_file_name</span><span class="p">)</span>
+
+    <span class="k">begin</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">fields</span>
+      <span class="n">data</span><span class="p">[</span><span class="s1">'file'</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_file</span>
+
+      <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">presignedUrl</span><span class="p">)</span>
+      <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">host</span><span class="p">,</span> <span class="n">uri</span><span class="p">.</span><span class="nf">port</span><span class="p">)</span>
+
+      <span class="n">req</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">request_uri</span><span class="p">)</span>
+      <span class="n">req</span><span class="p">.</span><span class="nf">set_form</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">"multipart/form-data"</span><span class="p">)</span>
+
+      <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="p">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+    <span class="k">ensure</span>
+      <span class="n">image_file</span><span class="p">.</span><span class="nf">close</span>
+      <span class="n">response</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>このメソッドを使って、一例として以下の様なテストが書けます。</p>
+
+<p>fields の内部をチェックしてますが、ここまでやる必要は特にないと思います。
+テストが書けることが嬉しくて書いちゃいました。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+
+<span class="n">describe</span> <span class="no">DigitalProductS3Client</span> <span class="k">do</span>
+  <span class="n">let!</span><span class="p">(</span><span class="ss">:digital_product_s3_client</span><span class="p">)</span> <span class="p">{</span> <span class="no">DigitalProductS3Client</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
+
+  <span class="n">let</span><span class="p">(</span><span class="ss">:s3_test_helper</span><span class="p">)</span> <span class="p">{</span> <span class="no">S3TestHelper</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
+  <span class="n">let!</span><span class="p">(</span><span class="ss">:clear_bucket</span><span class="p">)</span> <span class="p">{</span> <span class="n">s3_test_helper</span><span class="p">.</span><span class="nf">clear_bucket!</span> <span class="p">}</span>
+
+  <span class="n">describe</span> <span class="s1">'#presigned_post'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">let!</span><span class="p">(</span><span class="ss">:presigned_post</span><span class="p">)</span> <span class="k">do</span>
+      <span class="n">digital_product_s3_client</span><span class="p">.</span><span class="nf">my_presigned_post</span><span class="p">(</span><span class="s1">'image/jpeg'</span><span class="p">,</span> <span class="s1">'sample.jpg'</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">let!</span><span class="p">(</span><span class="ss">:url</span><span class="p">)</span> <span class="p">{</span> <span class="n">presigned_post</span><span class="p">[</span><span class="ss">:url</span><span class="p">]</span> <span class="p">}</span>
+    <span class="n">let!</span><span class="p">(</span><span class="ss">:fields</span><span class="p">)</span> <span class="p">{</span> <span class="n">presigned_post</span><span class="p">[</span><span class="ss">:fields</span><span class="p">]</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="s1">'presigned_urlとがfieldsが返る'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">url</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_truthy</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">match</span><span class="p">(</span><span class="sr">/digital_product_contents\/data\/pre_saved\/user-[0-9]*\/[0-9a-z-]*\/sample\.jpg/</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'success_action_status'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'201'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'acl'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'private'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'Content-Type'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'image/jpeg'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'x-amz-meta-original-filename'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'sample.jpg'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'policy'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">be_truthy</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'x-amz-credential'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">be_truthy</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'x-amz-algorithm'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'AWS4-HMAC-SHA256'</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'x-amz-date'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">be_truthy</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'x-amz-signature'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">be_truthy</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s1">'presigned_urlとfieldsを使ってs3にファイルがアップロードでき、201が返る'</span> <span class="k">do</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">s3_test_helper</span><span class="p">.</span><span class="nf">post_file</span><span class="p">(</span><span class="s1">'spec/fixtures/sample.jpg'</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+
+      <span class="n">expect</span><span class="p">(</span>
+        <span class="n">s3_test_helper</span><span class="p">.</span><span class="nf">object_exist?</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="s1">'key'</span><span class="p">])</span>
+      <span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">code</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s1">'201'</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h4 id="2-ファイルを-direct-アップロードする">2. ファイルを Direct アップロードする</h4>
+
+<p>JS でサーバサイドから presignedUrl と fields を受け取った後、fields から formData を作ってそれを body に入れて送るだけです。</p>
+
+<p>これで S3 にファイルがアップロードされます。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">id=</span><span class="s">"file-selector"</span> <span class="nt">/&gt;</span>
+</code></pre></div>
+<div class="highlight"><pre class="highlight javascript"><code><span class="c1">// サーバサイドからpresignedUrlとfieldsを受け取ってるものとします</span>
+<span class="kd">const</span> <span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span>
+  <span class="dl">'</span><span class="s1">file-selector</span><span class="dl">'</span>
+<span class="p">)</span> <span class="k">as</span> <span class="nx">HTMLInputElement</span>
+<span class="kd">const</span> <span class="nx">file</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">files</span><span class="p">?.[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="kd">const</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">()</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">const</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">fields</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">fields</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span>
+<span class="p">}</span>
+<span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="dl">'</span><span class="s1">file</span><span class="dl">'</span><span class="p">,</span> <span class="nx">file</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">axios</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span>
+  <span class="nx">presignedUrl</span><span class="p">,</span>
+  <span class="nx">formData</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">201</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 成功した時の処理</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="34-ファイル情報を-db-に追加してアップロードしたファイルの-object_key-を変更します">3~4. ファイル情報を DB に追加して、アップロードしたファイルの object_key を変更します</h4>
+
+<p>以下の様なメソッドを作って S3 からファイルの情報を取得します。</p>
+
+<p>その情報をもとに DigitalProductContent レコードを追加しましょう。</p>
+
+<p>クライアントからファイルサイズなどを受け取ると、改竄されている可能性があるので S3 から直接取得しています。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="c1"># 省略</span>
+
+  <span class="k">def</span> <span class="nf">object_headers</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+    <span class="n">object</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">object</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+
+    <span class="p">{</span>
+      <span class="ss">content_length: </span><span class="n">object</span><span class="p">.</span><span class="nf">content_length</span><span class="p">,</span>
+      <span class="ss">content_type: </span><span class="n">object</span><span class="p">.</span><span class="nf">content_type</span><span class="p">,</span>
+      <span class="ss">file_name: </span><span class="n">object</span><span class="p">.</span><span class="nf">metadata</span><span class="p">[</span><span class="s1">'original-filename'</span><span class="p">],</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>レコードを追加した時点で一意な id が手に入るので S3 にあるファイルの object_key を変更します。</p>
+
+<p>object_key を変更するメソッドは AWS SDK にないので別ファイルとしてコピーした後に、コピー元を削除します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="c1"># 省略</span>
+
+  <span class="k">def</span> <span class="nf">copy_object</span><span class="p">(</span><span class="n">from_key</span><span class="p">,</span> <span class="n">to_key</span><span class="p">)</span>
+    <span class="n">from_object</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">object</span><span class="p">(</span><span class="n">from_key</span><span class="p">)</span>
+    <span class="n">from_object</span><span class="p">.</span><span class="nf">copy_to</span><span class="p">(</span><span class="ss">bucket: </span><span class="n">bucket</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">key: </span><span class="n">to_key</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">delete_object</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+    <span class="n">bucket</span><span class="p">.</span><span class="nf">object</span><span class="p">(</span><span class="n">object_key</span><span class="p">).</span><span class="nf">delete</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h4 id="56-アップロードされたファイルが-kt-paperclip-から認識できるようにします">5~6. アップロードされたファイルが kt-paperclip から認識できるようにします</h4>
+
+<p>やらなくてもいいです。</p>
+
+<p>今回は DigitalProductContent クラスに<code>has_attached_file :data</code>としています。
+そこに設定を追記します。</p>
+
+<p>これは yml にまとめている前提で書いていますが、Model に直接書く場合は修正してください。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code>    <span class="ss">:storage</span><span class="p">:</span> <span class="ss">:s3</span>
+    <span class="ss">:url</span><span class="p">:</span> <span class="s1">':s3_alias_url'</span>
+    <span class="ss">:s3_credentials</span><span class="p">:</span>
+      <span class="o">&lt;&lt;</span><span class="p">:</span> <span class="o">*</span><span class="n">s3_credentials</span>
+    <span class="ss">:path</span><span class="p">:</span> <span class="s1">':class/:attachment/saved/user-:user_id/:id:dotextension'</span>
+    <span class="ss">:s3_protocol</span><span class="p">:</span> <span class="o">&lt;</span><span class="sx">%= (Rails.env.development? || Rails.env.test?) ? "http" : 'https' %&gt;
+    :s3_host_alias: &lt;%=</span> <span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span> <span class="o">||</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">test?</span><span class="p">)</span> <span class="p">?</span> <span class="s2">"</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_CDN_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">:9000/dummy-bucket-</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="s2">"</span> <span class="p">:</span> <span class="s2">"</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_CDN_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span> <span class="o">%&gt;</span>
+    <span class="ss">:s3_region</span><span class="p">:</span> <span class="o">&lt;</span><span class="sx">%= ENV['AWS_REGION'] || 'ap-northeast-1' %&gt;
+    :s3_options:
+      :endpoint: &lt;%=</span> <span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span> <span class="o">||</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">test?</span><span class="p">)</span> <span class="p">?</span> <span class="s2">"http://</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">:9000"</span> <span class="p">:</span> <span class="s2">"https://</span><span class="si">#{</span><span class="no">ENV</span><span class="p">[</span><span class="s1">'S3_HOST'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span> <span class="o">%&gt;</span>
+      <span class="ss">:force_path_style</span><span class="p">:</span> <span class="o">&lt;</span><span class="sx">%= Rails.env.development? || Rails.env.test? %&gt;
+    :s3_permissions: :private
+</span></code></pre></div>
+<p>path に<code>user_id</code>カラムの値を使ってますね。</p>
+
+<p>kt-paperclip がデフォルトで対応してないカラムなので、<code>config/initializers/paperclip.rb</code>に設定を追記します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># config/initializers/paperclip.rb</span>
+
+<span class="no">Paperclip</span><span class="p">.</span><span class="nf">interpolates</span> <span class="ss">:user_id</span> <span class="k">do</span> <span class="o">|</span><span class="n">attachment</span><span class="p">,</span> <span class="n">style</span><span class="o">|</span>
+  <span class="n">attachment</span><span class="p">.</span><span class="nf">instance</span><span class="p">.</span><span class="nf">user_id</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>これで kt-paperclip の機能を使ってファイルの削除などができるようになります。</p>
+
+<h4 id="補足">補足</h4>
+
+<p>レコードと紐づかなかった S3 のファイルは AWS SDK を使って Worker などで削除しましょう。
+object_key が<code>digital_product_contents/data/pre_saved/**/*</code>のファイルで一定時間より前にアップロードされたファイルを削除すればいいはずです。</p>
+
+<h3 id="仕様-2db-に対応するレコードを追加した後ファイルをアップロードする手法">仕様 2(DB に対応するレコードを追加した後、ファイルをアップロードする手法)</h3>
+
+<p>ウイルススキャンをアップロードの実装を進めながら検討し始めたのですが、先ほど説明したアップロードの仕様 1 ではウイルススキャンと相性が良くないことに気づきました。</p>
+
+<p>ウイルススキャンについては詳細を省きますが、S3 でファイルの create 系の動作されたことをフックにして、自動でウイルススキャンが始まるという理解をしていただければ OK です。</p>
+
+<p>object_key を変更する仕様の場合、アップロード時と object_key の変更時に 2 回スキャンされてしまうので、アップロードの仕様を変更することにしました（ウイルススキャンの方で回避策はあるかもしれないという話でしたが、全体のフローがややこしくなりそうと思ったので変更することにしました）。</p>
+
+<p>DB にレコードを追加した後でファイルを S3 にアップロードするようにします。</p>
+
+<p>こちらの手法のメリットは、アップロード前にレコードが作られているので、1 日にアップロードできる合計ファイル数の制限などを行おうとしたときに保存されてるレコードの情報を使用できること。また、object_key の変更が必要ないことです。全体のコードも仕様 1 と比較して簡潔に実装できます。</p>
+
+<p>デメリットは アップロード未完了ファイルのレコードが追加されることですが、困ることは特にないと思います。アップロードが完了しているかをレコードをみたときに判定できるようにしたいので、アップロード完了後に data_file_size と data_updated_at に値を入れます。</p>
+
+<p>全体の流れを示すシーケンス図です。</p>
+
+<p><img src="/blog/2022/12/12/direct-file-upload/direct-upload-sequence-diagram2.png" alt="ファイルダイレクトアップロードのシーケンス図" /></p>
+
+<h4 id="1ファイルをアップロードするための-presigned_url-と-fields-を発行します">1.　ファイルをアップロードするための presigned_url と fields を発行します。</h4>
+
+<p>ファイルのダイレクトアップロードの仕様 1 と同じように presigned_url と fields を発行していきます。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="c1"># 省略</span>
+
+  <span class="c1"># AWS SDKのpresigned_postと混同しないようにmy_presigned_postとしました</span>
+  <span class="k">def</span> <span class="nf">my_presigned_post</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">presigned_post</span><span class="p">(</span>
+      <span class="ss">key: </span><span class="n">key</span><span class="p">,</span>
+      <span class="ss">success_action_status: </span><span class="s1">'201'</span><span class="p">,</span>
+      <span class="ss">acl: </span><span class="s1">'private'</span><span class="p">,</span>
+      <span class="ss">content_type: </span><span class="n">content_type</span><span class="p">,</span>
+      <span class="ss">metadata: </span><span class="p">{</span>
+        <span class="s1">'original-filename'</span> <span class="o">=&gt;</span> <span class="n">file_name</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="p">{</span>
+      <span class="c1"># Railsをdocker上で動かしている場合、Railsからs3(minio)へアクセスする時のホスト名はs3になる</span>
+      <span class="c1"># しかし、フロントエンドからアクセスする時のホスト名はlocalhostを使わなければならない</span>
+      <span class="ss">url: </span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="p">.</span><span class="nf">development?</span> <span class="p">?</span> <span class="n">res</span><span class="p">.</span><span class="nf">url</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="s1">'http://s3'</span><span class="p">,</span> <span class="s1">'http://localhost'</span><span class="p">)</span> <span class="p">:</span> <span class="n">res</span><span class="p">.</span><span class="nf">url</span><span class="p">,</span>
+      <span class="ss">fields: </span><span class="n">res</span><span class="p">.</span><span class="nf">fields</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>変更点としては key を直接指定するようにしました。</p>
+
+<p>コントローラーなどでレコードを追加したり、my_presigned_post を用いて presigned_url と fields を発行してクライアントに返します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">digital_product_content</span> <span class="o">=</span> <span class="no">DigitalProductContent</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+  <span class="ss">user_id: </span><span class="n">current_user</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+  <span class="ss">data_file_name: </span><span class="n">file_name</span><span class="p">,</span>
+  <span class="ss">data_content_type: </span><span class="n">content_type</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">digital_product_s3_client</span> <span class="o">=</span> <span class="no">DigitalProductS3Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">presigned_post</span> <span class="o">=</span> <span class="n">digital_product_s3_client</span><span class="p">.</span><span class="nf">my_presigned_post</span><span class="p">(</span>
+  <span class="n">digital_product_content</span><span class="p">.</span><span class="nf">data_object_key</span><span class="p">,</span>
+  <span class="n">digital_product_content</span><span class="p">.</span><span class="nf">data_content_type</span><span class="p">,</span>
+  <span class="n">digital_product_content</span><span class="p">.</span><span class="nf">data_file_name</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 以下をクライアントに返す</span>
+<span class="p">{</span>
+  <span class="ss">digital_product_content_id: </span><span class="n">digital_product_content</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+  <span class="ss">presigned_url: </span><span class="n">presigned_post</span><span class="p">[</span><span class="ss">:url</span><span class="p">],</span>
+  <span class="ss">fields: </span><span class="n">presigned_post</span><span class="p">[</span><span class="ss">:fields</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>指定する object_key はレコードの id を含めて重複しないようにします。</p>
+
+<p>また、拡張子をつけるようにしています。下記の実装だと拡張子のないファイルやドットから始まるファイルは例外にしています。必要に応じて変更してください。</p>
+
+<p><code>user_id</code>はあってもなくてもいいです。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductContent</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="k">class</span> <span class="nc">EmptyDataError</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
+  <span class="k">class</span> <span class="nc">DotExtensionError</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
+
+  <span class="c1"># 省略</span>
+
+  <span class="k">def</span> <span class="nf">data_object_key</span>
+    <span class="k">if</span> <span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="p">.</span><span class="nf">present?</span> <span class="o">&amp;&amp;</span> <span class="nb">self</span><span class="p">.</span><span class="nf">data_file_name</span><span class="p">.</span><span class="nf">present?</span>
+      <span class="n">object_key</span> <span class="o">=</span> <span class="s2">"digital_product_contents/data/user-</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">user_id</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="si">}#{</span><span class="n">dot_extension</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">else</span>
+      <span class="k">raise</span> <span class="no">EmptyDataError</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">dot_extension</span>
+    <span class="n">extname</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="nf">data_file_name</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="no">DotExtensionError</span> <span class="k">if</span> <span class="n">extname</span> <span class="o">==</span> <span class="s1">'.'</span> <span class="o">||</span> <span class="n">extname</span> <span class="o">==</span> <span class="s1">''</span>
+    <span class="n">extname</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>kt-paperclip と連携する場合は設定を修正しておきましょう。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code>    <span class="ss">:path</span><span class="p">:</span> <span class="s1">':class/:attachment/user-:user_id/:id:dotextension'</span>
+</code></pre></div>
+<h4 id="2-ファイルを-direct-アップロードする-1">2. ファイルを Direct アップロードする</h4>
+
+<p>ファイルのダイレクトアップロードの仕様 1 と同じです。</p>
+
+<p>js 側で presigned_url と fields を用いてファイルのアップロードを行います。</p>
+
+<h4 id="3-ファイルサイズを-s3-から取得してレコードを更新する">3. ファイルサイズを S3 から取得してレコードを更新する</h4>
+
+<p>object_key からファイルサイズなどを取得するメソッドを DigitalProductS3Client に追加しておきましょう。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="c1"># 省略</span>
+
+  <span class="k">def</span> <span class="nf">object_headers</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+    <span class="n">object</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">object</span><span class="p">(</span><span class="n">object_key</span><span class="p">)</span>
+
+    <span class="p">{</span>
+      <span class="ss">content_length: </span><span class="n">object</span><span class="p">.</span><span class="nf">content_length</span><span class="p">,</span>
+      <span class="ss">content_type: </span><span class="n">object</span><span class="p">.</span><span class="nf">content_type</span><span class="p">,</span>
+      <span class="ss">file_name: </span><span class="n">object</span><span class="p">.</span><span class="nf">metadata</span><span class="p">[</span><span class="s1">'original-filename'</span><span class="p">],</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>コントローラーなどでレコードを更新します。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">digital_product_content</span> <span class="o">=</span> <span class="no">DigitalProductContent</span>
+  <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="n">context</span><span class="p">[</span><span class="ss">:current_user</span><span class="p">].</span><span class="nf">id</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">digital_product_content_id</span><span class="p">)</span>
+
+<span class="n">digital_product_s3_client</span> <span class="o">=</span> <span class="no">DigitalProductS3Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">object_headers</span> <span class="o">=</span>
+  <span class="n">digital_product_s3_client</span><span class="p">.</span><span class="nf">object_headers</span><span class="p">(</span><span class="n">digital_product_content</span><span class="p">.</span><span class="nf">data_object_key</span><span class="p">)</span>
+
+<span class="n">digital_product_content</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span>
+  <span class="ss">data_file_size: </span><span class="n">object_headers</span><span class="p">[</span><span class="ss">:content_length</span><span class="p">],</span>
+  <span class="ss">data_updated_at: </span><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">now</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>これで完了です。</p>
+
+<h4 id="補足-1">補足</h4>
+
+<p>アップロード完了後に別リクエストでファイルサイズを取得しているのは処理がシンプルになること、正確なファイルサイズを取得できること、同時に S3 にアップロード完了していることをレコードに保存できること（今回は data_file_size もしくは data_updated_at が埋まっていたら S3 にファイルがあるとしています）が理由です。</p>
+
+<p>presigned_url を発行する段階でサイズ制限をつければ、その時点で data_file_size カラムを埋めることも可能です。</p>
+
+<p>また、この仕様 2 ではアップロードされなかったファイル情報を保持したカラムが存在するので Worker などで定期的に削除しておきましょう。</p>
+
+<h2 id="アップロードできるファイル数ファイルサイズ制限">アップロードできるファイル数、ファイルサイズ制限</h2>
+
+<p>アップロードできるそれぞれのファイルサイズに制限をつけたいことがあります。</p>
+
+<p>制限しなくても post リクエストの仕様上の制限で無限に大きなサイズのファイルをアップロードされることはないのですが、S3 の容量節約やセキュリティ対策としてつけておく方が良さそうです。</p>
+
+<p>その場合は<code>presigned_post</code>メソッドの<code>content_length_range</code>でバイトサイズを指定することで設定できます。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductS3Client</span>
+  <span class="k">def</span> <span class="nf">my_presigned_post</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">content_length_range</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="nf">presigned_post</span><span class="p">(</span>
+      <span class="ss">key: </span><span class="n">key</span><span class="p">,</span>
+      <span class="ss">success_action_status: </span><span class="s1">'201'</span><span class="p">,</span>
+      <span class="ss">content_length_range: </span><span class="mi">0</span><span class="o">..</span><span class="mi">1</span><span class="p">.</span><span class="nf">gigabyte</span><span class="p">,</span>
+      <span class="ss">acl: </span><span class="s1">'private'</span><span class="p">,</span>
+      <span class="ss">content_type: </span><span class="n">content_type</span><span class="p">,</span>
+      <span class="ss">metadata: </span><span class="p">{</span>
+        <span class="s1">'original-filename'</span> <span class="o">=&gt;</span> <span class="n">file_name</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p>また、現状だといくつでもファイルをアップロードできてしまいます。</p>
+
+<p>その対策として、1 日にアップロードできるファイル数を制限すると良さそうです。</p>
+
+<p>例えば<code>ファイルのダイレクトアップロードの仕様 2(DB に対応するレコードを追加した後、ファイルをアップロードする手法)</code>では、以下の様なコードで 1 日にアップロードされたファイル数を取得できます（厳密にはアップロード未完了でもカウントされますが問題はないでしょう）。</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">DigitalProductContent</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">count_in_today</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="no">DigitalProductContent</span>
+      <span class="p">.</span><span class="nf">where</span><span class="p">(</span>
+        <span class="ss">user_id: </span><span class="n">user_id</span><span class="p">,</span>
+        <span class="ss">created_at: </span><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">all_day</span>
+      <span class="p">)</span>
+      <span class="p">.</span><span class="nf">count</span>
+  <span class="k">end</span>
+</code></pre></div>
+<p>1 日のアップロードできるファイルサイズも制限したい場合は、<code>presigned_url</code>発行前にクライアントからファイルサイズを受け取り、それを<code>content_length_range</code>に使い、<code>data_file_size</code>に保存すると良さそうです。</p>
+
+<p>こうすることでファイルアップロード前にファイルサイズを該当レコードに保存しておけます。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>個人的には<code>ファイルのダイレクトアップロードの仕様 2(DB に対応するレコードを追加した後、ファイルをアップロードする手法)</code>の方がメリットが大きかったと感じています。</p>
+
+<p>SUZURI のデジコンのウイルススキャンのように S3 にファイルがアップロードされたことを条件に処理が走る場合は、処理が複数回実行されないのでコストを抑えられます。</p>
+
+<p>コード量はファイルのダイレクトアップロードの仕様 1 より少なく、全体的にわかりやすいコードになったという印象です。</p>
+
+<p>デメリットとしては繰り返しになりますが、S3 にファイルの存在しないレコードが存在するので常にそれを除外して使わないといけないことですね。</p>
+
+<p>この記事が参考になれば幸いです。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2022/12/12/direct-file-upload/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/d46e7e2e8febce4a0d38153e7363b7cb?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/todacchi/">todacchi</a>
+          </p>
+          <p class="article__author-description">
+            suzuriエンジニア。趣味はCGプログラミング。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://github.com/yosipy" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

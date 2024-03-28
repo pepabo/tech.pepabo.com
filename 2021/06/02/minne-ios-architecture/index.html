@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>SwiftUI時代におけるminneのリアクティブアーキテクチャ - Pepabo Tech Portal</title>
+<meta content="山奥の砦（八王子市）からminneのiOSチームでアーキテクチャや開発環境を色々と見ているjoshです。SwiftUIとCombineが発表されたWWDC 2019から、SwiftUIとUIKitの混在状態を前提としたminneアプリ..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2021/06/02/minne-ios-architecture/layers.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@yhkaplan" name="twitter:creator" />
+<meta content="SwiftUI時代におけるminneのリアクティブアーキテクチャ - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="山奥の砦（八王子市）からminneのiOSチームでアーキテクチャや開発環境を色々と見ているjoshです。SwiftUIとCombineが発表されたWWDC 2019から、SwiftUIとUIKitの混在状態を前提としたminneアプリ..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"SwiftUI時代におけるminneのリアクティブアーキテクチャ","author":{"@type":"Person","name":"josh"},"datePublished":"2021-06-01T15:00:00+00:00","image":"https://tech.pepabo.com/blog/2021/06/02/minne-ios-architecture/layers.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-minne-ios-architecture">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/swiftui/" class="tag-default">SwiftUI</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+      <a href="/tags/mvvm/" class="tag-default">mvvm</a>
+      <a href="/tags/architecture/" class="tag-default">architecture</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+  </div>
+  <time class="article__time" datetime="2021-06-02">
+    2021-06-02
+  </time>
+  <h1 class="article__title">
+    <a href="/2021/06/02/minne-ios-architecture/">SwiftUI時代におけるminneのリアクティブアーキテクチャ</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/swiftui/" class="tag-default">SwiftUI</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+      <a href="/tags/mvvm/" class="tag-default">mvvm</a>
+      <a href="/tags/architecture/" class="tag-default">architecture</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2021/06/02/minne-ios-architecture/layers.png" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2021/06/02/minne-ios-architecture/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>山奥の砦（八王子市）からminneのiOSチームでアーキテクチャや開発環境を色々と見ているjoshです。SwiftUIとCombineが発表されたWWDC 2019から、SwiftUIとUIKitの混在状態を前提としたminneアプリに最適なアーキテクチャについて検討・議論した結果、最近色々と決まったので、紹介したいと思います。</p>
+
+<p>まず、アーキテクチャ決めの目的ですが、テストしやすい形で迷わずに開発でき、機能開発を効率よくしつつ、今後の保守や変更も楽に行い、生産性と品質を上げることです。minneは特徴として、ネットワーク通信の多いアプリで、Universal Linksやプッシュ通知など、数多くの起動経路を持っています。また、minneマーケットプレイスの作品をさまざまな購入方法で提供しているので、開発をする中で特にその周りで不具合が出ないように日々開発しています。作家、購入者・ゲストごとたくさんの機能を提供しているため、140個以上の画面があり、平均に比べて、大きめな中規模アプリかなと思います。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>背景として、minne iOSの開発は2013年に本格的に始まり、100% Objective-CでエンティティとViewControllerとたまにManagerと呼ばれるクラスでコードを書き、典型的なFat View Controllerアーキテクチャになっていました。機能が増え、様々な課題が出てきたので、2017年くらいからアーキテクチャについて議論し、Model View Presenter（MVP）を採用することになりました。画面遷移やモデル層のアーキテクチャについて、特に決まったことはありませんでした。</p>
+
+<p>2019年にSwiftUIとCombineが発表され、また、<a href="https://tech.pepabo.com/2020/01/27/swifty/">minneが90%以上Swift製</a>になりました。SwiftUIでは、明示的に画面更新ができず、また、Combineの依存によりリアクティブなアプローチが求められ、MVPのままだと、SwiftUIへ移行しにくいのではないかという疑問がありました。そのため、違うGUIアーキテクチャを検討し、MVVMにするとチームで決めました。</p>
+
+<p>ただ、残っている課題として画面遷移や画面間のデータ共有方法の決まったパターンがなく、モデル層があやふやだったので、minneに合う設計について引き続き調査し議論しました。VIPER、Clean Architecture、Flux、<a href="https://github.com/pointfreeco/swift-composable-architecture">The Composable Architecture (TCA)</a>など、モデル層がよりはっきりと決まったアーキテクチャを参考にし、プロトタイプアプリで実験しました。</p>
+
+<p>また、MVVMをやめてTCAにするということも一応検討し、実際プロダクション機能で試しましたが、以下の理由で、TCAの採用を最近見送りました。</p>
+
+<ul>
+  <li>プッシュ通知などの起動経路が非常に多いので、ビュー階層を一新しない限り、AppState, AppAction, AppEnvironmentがそれぞれ膨大になってしまう</li>
+  <li>フレームワークを使うことになるので、わりとTCAの実装の細部まで知る必要があり、テストやビューコード、ビジネスロジックがかなり外部ライブラリに依存してしまう</li>
+  <li>一気にTCAに乗り換えることができず、MVP/MVVM/TCA混在の期間が長そうで、脳内のスイッチングコストが高いと予想される</li>
+  <li>Store/Reducer/Environmentの細かい実装で画面間のデータ共有方法は思ったより考えることがある</li>
+</ul>
+
+<p>最終的に、画面間のデータ共有を目的としたRepository層を定義し、GUI設計を引き続きMVVMで実装するように決めました。Repository層とは、複数画面で使われるロジックを集約し、データベース、ネットワーク、UserDefaults、KeychainのデータをIn-Memoryで保持します。詳細は後述します。</p>
+
+<h2 id="全体像">全体像</h2>
+
+<p>まず層ごとに説明します。</p>
+
+<h3 id="レイヤー図">レイヤー図</h3>
+
+<p><img src="/blog/2021/06/02/minne-ios-architecture/layers.png" alt="アーキテクチャ図のレイヤー" /></p>
+
+<h3 id="依存フロー図">依存フロー図</h3>
+
+<p><img src="/blog/2021/06/02/minne-ios-architecture/dependencies.png" alt="依存フロー" /></p>
+
+<h3 id="view-layer">View Layer</h3>
+
+<p>UIViewController、UIView、UITableViewCell、UICollectionViewCell、SwiftUI.Viewなど、UIKitまたはSwiftUIの型を扱う最上位レイヤーです。画面遷移の実装やUIKit Delegate + DataSource準拠をここでします。UIKitとSwiftUIを唯一扱えるレイヤーで、基本、スナップショットの統合テストのみで品質担保を行います。ViewController/ScreenViewとCell &amp; Subview間のデータ共有は基本コールバックまたはBindingで行います。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">SwiftUI</span>
+<span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="kd">struct</span> <span class="kt">ProductListView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+  <span class="kd">enum</span> <span class="kt">TransitionItem</span> <span class="p">{</span> <span class="k">case</span> <span class="nf">productDetail</span><span class="p">(</span><span class="nv">product</span><span class="p">:</span> <span class="kt">Product</span><span class="p">,</span> <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepository</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="kd">@ObservedObject</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">viewModel</span><span class="p">:</span> <span class="kt">ProductListViewModel</span>
+  <span class="c1">// 画面遷移は外側のUIHostingControllerで行うので、pushの処理をConstructor Injectionで提供する</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">pushAction</span><span class="p">:</span> <span class="p">(</span><span class="kt">UIViewController</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+
+  <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">viewModel</span><span class="p">:</span> <span class="kt">ProductListViewModel</span> <span class="o">=</span> <span class="kt">ProductListViewModel</span><span class="p">,</span>
+    <span class="nv">pushAction</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">UIViewController</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">viewModel</span> <span class="o">=</span> <span class="n">viewModel</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">pushAction</span> <span class="o">=</span> <span class="n">pushAction</span>
+  <span class="p">}</span>
+
+  <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kt">CustomList</span><span class="p">(</span><span class="n">viewModel</span><span class="o">.</span><span class="n">products</span><span class="p">)</span> <span class="p">{</span> <span class="n">product</span> <span class="k">in</span>
+      <span class="kt">ProductRow</span><span class="p">(</span><span class="nv">product</span><span class="p">:</span> <span class="n">product</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="o">.</span><span class="nf">onAppear</span><span class="p">(</span><span class="nv">perform</span><span class="p">:</span> <span class="n">viewModel</span><span class="o">.</span><span class="n">onAppear</span><span class="p">)</span>
+    <span class="o">.</span><span class="nf">onReceive</span><span class="p">(</span><span class="n">viewModel</span><span class="o">.</span><span class="err">$</span><span class="n">transitionItem</span><span class="p">,</span> <span class="nv">perform</span><span class="p">:</span> <span class="n">transition</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">private</span> <span class="kd">func</span> <span class="nf">transition</span><span class="p">(</span><span class="n">to</span> <span class="nv">transitionItem</span><span class="p">:</span> <span class="kt">TransitionItem</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">transitionItem</span> <span class="o">=</span> <span class="n">transitionItem</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+    <span class="k">switch</span> <span class="n">transitionItem</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="kd">let</span> <span class="o">.</span><span class="nf">productDetail</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">repository</span><span class="p">):</span>
+      <span class="k">let</span> <span class="nv">productDetail</span> <span class="o">=</span> <span class="kt">ProductDetailViewController</span><span class="p">(</span><span class="nv">product</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span> <span class="nv">repository</span><span class="p">:</span> <span class="n">repository</span><span class="p">)</span>
+      <span class="nf">pushAction</span><span class="p">(</span><span class="n">vc</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="view-specific-model-layer">View-Specific Model Layer</h3>
+
+<p>ViewModelで構成されており、1画面に対して1モデルです。CombineとFoundationを扱い、UIKitとSwiftUIを扱いません。View Layerへのアウトプットは、オブサーバー同期（Combine Publisher）でデータ更新を行い、インプットは単純なメソッド呼び出しです。ViewModelはMVVMの仕様どおり、直接ビューを操作しません。</p>
+
+<h4 id="viewmodel">ViewModel</h4>
+
+<p>UIKitでは、プロトコルで抽象化したパターンを使っており、双方向バインディングを行わない方針です。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Combine</span>
+
+<span class="kd">protocol</span> <span class="kt">ProductViewModelInputs</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">hogeButtonDidTap</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">protocol</span> <span class="kt">ProductListViewModelOutputs</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">shouldDismissKeyboard</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+  <span class="k">var</span> <span class="nv">hogeButtonIsEnabled</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+  <span class="k">var</span> <span class="nv">transitionItem</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">ProductListViewController</span><span class="o">.</span><span class="kt">TransitionItem</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">protocol</span> <span class="kt">ProductListViewModelType</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">inputs</span><span class="p">:</span> <span class="kt">ProductListViewModelInputs</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+  <span class="k">var</span> <span class="nv">outputs</span><span class="p">:</span> <span class="kt">ProductListViewModelOutputs</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">ProductListViewModel</span><span class="p">:</span> <span class="kt">ProductListViewModelType</span> <span class="p">{</span>
+  <span class="kd">typealias</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">HasErrorHandler</span>
+  <span class="kd">typealias</span> <span class="kt">TransitionItem</span> <span class="o">=</span> <span class="kt">ProductListViewController</span><span class="o">.</span><span class="kt">TransitionItem</span>
+
+  <span class="c1">// MARK: - ProductListViewModelType</span>
+  <span class="k">var</span> <span class="nv">inputs</span><span class="p">:</span> <span class="kt">ProductListViewModelInputs</span> <span class="p">{</span> <span class="k">self</span> <span class="p">}</span>
+  <span class="k">var</span> <span class="nv">outputs</span><span class="p">:</span> <span class="kt">ProductListViewModelOutputs</span> <span class="p">{</span> <span class="k">self</span> <span class="p">}</span>
+
+  <span class="c1">// 常に状態を持たない、イベント系のデータなので、PassthroughSubjectを使う</span>
+  <span class="c1">// Equatable準拠なので、Voidではなく、Boolを使う</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">_shouldDismissKeyboard</span> <span class="o">=</span> <span class="kt">PassthroughSubject</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">()</span>
+  <span class="c1">// 常に、enable状態が存在するので、`@Published`または`CurrentValueSubject`を使う</span>
+  <span class="c1">// @Publishedのほうが若干記述量少ないので、便利</span>
+  <span class="kd">@Published</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">_hogeButtonIsEnabled</span> <span class="o">=</span> <span class="kc">false</span>
+  <span class="kd">@Published</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">_transitionItem</span><span class="p">:</span> <span class="kt">TransitionItem</span><span class="p">?</span>
+
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span>
+  <span class="kd">private</span> <span class="k">var</span> <span class="nv">cancellables</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">AnyCancellable</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">AppDependency</span><span class="p">(),</span>
+    <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductListRepositoryProtocol</span> <span class="o">=</span> <span class="kt">ProductListRepository</span><span class="p">()</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">dependency</span> <span class="o">=</span> <span class="n">dependency</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="n">repository</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">// MARK: - ProductListViewModelOutputs</span>
+<span class="kd">extension</span> <span class="kt">ProductListViewModel</span><span class="p">:</span> <span class="kt">ProductListViewModelOutputs</span> <span class="p">{</span>
+
+  <span class="k">var</span> <span class="nv">shouldDismissKeyboard</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="n">_shouldDismissKeyboard</span><span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span> <span class="p">}</span>
+
+  <span class="k">var</span> <span class="nv">hogeButtonIsEnabled</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Bool</span><span class="p">,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="err">$</span><span class="n">_hogeButtonIsEnabled</span><span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span> <span class="p">}</span>
+
+  <span class="k">var</span> <span class="nv">transitionItem</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">TransitionItem</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="err">$</span><span class="n">_transitionItem</span><span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span> <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">// MARK: - ProductListViewModelInputs</span>
+<span class="kd">extension</span> <span class="kt">ProductListViewModel</span><span class="p">:</span> <span class="kt">ProductListViewModelInputs</span> <span class="p">{</span>
+
+  <span class="kd">func</span> <span class="nf">hogeButtonDidTap</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nf">makeNetworkRequest</span><span class="p">()</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">// MARK: - Private</span>
+<span class="kd">private</span> <span class="kd">extension</span> <span class="kt">ProductListViewModel</span> <span class="p">{</span>
+
+  <span class="kd">func</span> <span class="nf">makeNetworkRequest</span><span class="p">()</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+<p>SwiftUIでは、ObservableObjectが<code>Protocol with Associated Type</code> (PAT)なので、ViewModelをプロトコルで抽象化できず、そのまま具体的な型として使っています。また、SwiftUIの仕組み上、Bindingなどの双方向バインディングが基本になっているので、UIKitと違い、やむを得ず双方向になる場合があります。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">ProductListViewModel</span><span class="p">:</span> <span class="kt">ObservableObject</span> <span class="p">{</span>
+  <span class="kd">typealias</span> <span class="kt">TransitionItem</span> <span class="o">=</span> <span class="kt">ProductListView</span><span class="o">.</span><span class="kt">TransitionItem</span>
+  <span class="kd">typealias</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">HasLogger</span> <span class="o">&amp;</span> <span class="kt">HasErrorHandler</span>
+
+  <span class="c1">// MARK: - Outputs</span>
+  <span class="kd">@Published</span> <span class="k">var</span> <span class="nv">isLoading</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">// @Bindingとして扱うために`private(set)`にできない</span>
+  <span class="kd">@Published</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">products</span><span class="p">:</span> <span class="p">[</span><span class="kt">Product</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="kd">@Published</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">transitionItem</span><span class="p">:</span> <span class="kt">TransitionItem</span><span class="p">?</span>
+
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span>
+  <span class="kd">private</span> <span class="k">var</span> <span class="nv">cancellables</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">AnyCancellable</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span> <span class="o">=</span> <span class="kt">ProductRepository</span><span class="p">(),</span>
+    <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">AppDependency</span><span class="p">()</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="n">repository</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">dependency</span> <span class="o">=</span> <span class="n">dependency</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// MARK: - Inputs</span>
+<span class="kd">extension</span> <span class="kt">ProductListViewModel</span> <span class="p">{</span>
+
+  <span class="kd">func</span> <span class="nf">onAppear</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">dependency</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="nv">tag</span><span class="p">:</span> <span class="o">.</span><span class="nf">screen</span><span class="p">(</span><span class="o">.</span><span class="n">productList</span><span class="p">))</span>
+    <span class="nf">downloadProduct</span><span class="p">()</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">didTapProduct</span><span class="p">(</span><span class="n">_</span> <span class="nv">product</span><span class="p">:</span> <span class="kt">Product</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">transitionItem</span> <span class="o">=</span> <span class="o">.</span><span class="nf">productDetail</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">didShowProduct</span><span class="p">(</span><span class="n">at</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="n">repository</span><span class="o">.</span><span class="nf">shouldPreDownload</span><span class="p">(</span><span class="nv">displayedCount</span><span class="p">:</span> <span class="n">index</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+    <span class="nf">downloadNextProductItems</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// MARK: - Private</span>
+<span class="kd">private</span> <span class="kd">extension</span> <span class="kt">ProductListViewModel</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">downloadNextInfoItems</span><span class="p">()</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="repository-layer">Repository Layer</h3>
+
+<p>複数のViewModelで使われるロジックを持ち、ビュー間の状態共有もしやすくします。ネットワーク層・データベース層・UserDefaultsなどの処理のビジネスロジックを持ち、データのキャッシュとして機能することもあります。</p>
+
+<p><a href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-design#the-repository-pattern">.NET Microservices: Architecture for Containerized .NET Applications</a>や<a href="https://martinfowler.com/books/eaa.html">Patterns of Enterprise Application Architecture</a>で定義されているように、Repositoryは、データソースにアクセスするためのロジックを抽象し、エンティティの集合体を保持して、取得クエリーの処理をしやすくします。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Combine</span>
+
+<span class="kd">protocol</span> <span class="kt">ProductRepositoryProtocol</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">fetchNewestProducts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Product</span><span class="p">,</span> <span class="kt">RepositoryError</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">ProductRepository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span> <span class="p">{</span>
+  <span class="c1">// テストしやすいように、UserDefaultsやデータベースなどを直接保持しない</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">userDefaultsProvider</span><span class="p">:</span> <span class="kt">UserDefaultsProviderProtocol</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">db</span><span class="p">:</span> <span class="kt">ProductDatabaseProtocol</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">requester</span><span class="p">:</span> <span class="kt">ProductRequesterProtocol</span>
+
+  <span class="nf">init</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+
+  <span class="c1">/// 最新の作品を取得し、dbにキャッシュする</span>
+  <span class="kd">func</span> <span class="nf">fetchNewestProducts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">Product</span><span class="p">,</span> <span class="kt">RepositoryError</span><span class="o">&gt;</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="entity">Entity</h3>
+
+<p>一種類のcompound typeでビジネスエンティティを意味します。値型の構造体または列挙型で定義します。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Product</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+  <span class="k">let</span> <span class="nv">cost</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="network-layer">Network Layer</h3>
+
+<h4 id="apiclientgraphqlclient">APIClient/GraphQLClient</h4>
+
+<p>RESTまたはGraphQLのネットワークオペレーションを行うクラスです。</p>
+
+<h4 id="endpointoperation">Endpoint/Operation</h4>
+
+<p>APIEndpointなどのEndpoint/Operationプロトコルに準拠する構造体です。1つのRESTエンドポイントまたはGraphQL Operation (Query/Mutationなど)を表します。</p>
+
+<h4 id="requester">Requester</h4>
+
+<p>APIリクエストのみを行うもので、APIClientの呼び出しを抽象化することで、Repository層をテストしやすくします。状態は持ちません。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Combine</span>
+
+<span class="kd">protocol</span> <span class="kt">ProductRequesterProtocol</span> <span class="p">{</span>
+  <span class="kd">func</span> <span class="nf">getProduct</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">GETProductEndpoint</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">ProductRequester</span><span class="p">:</span> <span class="kt">ProductRequesterProtocol</span> <span class="p">{</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">apiClient</span><span class="p">:</span> <span class="kt">APIClientProtocol</span>
+  <span class="nf">init</span><span class="p">(</span><span class="nv">apiClient</span><span class="p">:</span> <span class="kt">APIClientProcotol</span> <span class="o">=</span> <span class="kt">APIClient</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">apiClient</span> <span class="o">=</span> <span class="n">apiClient</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">getProduct</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">GETProductEndpoint</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">GETProductEndpoint</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="n">id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">apiClient</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="nv">endpoint</span><span class="p">:</span> <span class="n">endpoint</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="utility-layer">Utility Layer</h3>
+
+<p>View Specificではない、基本的に状態を持たない便利ユーティリティのレイヤーです。</p>
+
+<h4 id="adaptor">Adaptor</h4>
+
+<p>一方で定められたインターフェースに対してもう一方を満たすようにするものです。具体的にはライブラリの処理に対して下記を行います。</p>
+
+<ol>
+  <li>Wrap
+    <ul>
+      <li>アプリのコードをSwiftの標準ライブラリとFoundation以外のライブラリ使用から守るため</li>
+      <li>例えば、PassKitのコードをラップして、minneのあちこちでインポートする必要をなくす</li>
+    </ul>
+  </li>
+  <li>変換
+    <ul>
+      <li>ViewModelかどこで、通常のコードで使いやすく、間違いにくくするために、より一般的なインターフェイスにするため</li>
+      <li>例えば、C言語の使いにくい型をSwiftの型に変換する</li>
+    </ul>
+  </li>
+  <li>共通化する
+    <ul>
+      <li>特定のオブジェクトを作らなかったら、同じ処理を何回も書かないといけない処理</li>
+      <li>例えば、UIApplicationShortcutItemの初期化処理は一箇所で共通化しないと、初期化コードがあちこちに散らばる</li>
+    </ul>
+  </li>
+</ol>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">WebKit</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">WKNavigationDelegateAdaptor</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">WKNavigationDelegate</span> <span class="p">{</span>
+  <span class="kd">typealias</span> <span class="kt">DecidePolicyFor</span> <span class="o">=</span> <span class="p">((</span><span class="kt">URL</span><span class="p">,</span> <span class="kt">WKNavigationAction</span><span class="p">,</span> <span class="p">(</span><span class="kt">WKNavigationActionPolicy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">decidePolicyFor</span><span class="p">:</span> <span class="kt">DecidePolicyFor</span>
+
+  <span class="kd">typealias</span> <span class="kt">DidFail</span> <span class="o">=</span> <span class="p">((</span><span class="kt">URL</span><span class="p">,</span> <span class="kt">WKNavigation</span><span class="p">,</span> <span class="kt">Error</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">didFail</span><span class="p">:</span> <span class="kt">DidFail</span>
+
+  <span class="kd">typealias</span> <span class="kt">DidFailProvisionalNavigation</span> <span class="o">=</span> <span class="p">((</span><span class="kt">URL</span><span class="p">,</span> <span class="kt">WKNavigation</span><span class="p">,</span> <span class="kt">Error</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
+  <span class="kd">private</span> <span class="k">let</span> <span class="nv">didFailProvisionalNavigation</span><span class="p">:</span> <span class="kt">DidFailProvisionalNavigation</span>
+
+  <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">decidePolicyFor</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">DecidePolicyFor</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">decisionHandler</span> <span class="k">in</span> <span class="nf">decisionHandler</span><span class="p">(</span><span class="o">.</span><span class="n">allow</span><span class="p">)</span> <span class="p">},</span>
+    <span class="nv">didFail</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">DidFail</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span> <span class="p">},</span>
+    <span class="nv">didFailProvisionalNavigation</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt">DidFailProvisionalNavigation</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="k">in</span> <span class="p">}</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">decidePolicyFor</span> <span class="o">=</span> <span class="n">decidePolicyFor</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">didFail</span> <span class="o">=</span> <span class="n">didFail</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">didFailProvisionalNavigation</span> <span class="o">=</span> <span class="n">didFailProvisionalNavigation</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">webView</span><span class="p">(</span><span class="n">_</span> <span class="nv">webView</span><span class="p">:</span> <span class="kt">WKWebView</span><span class="p">,</span> <span class="n">decidePolicyFor</span> <span class="nv">navigationAction</span><span class="p">:</span> <span class="kt">WKNavigationAction</span><span class="p">,</span> <span class="nv">decisionHandler</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">WKNavigationActionPolicy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="n">url</span> <span class="p">{</span>
+      <span class="nf">decidePolicyFor</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">navigationAction</span><span class="p">,</span> <span class="n">decisionHandler</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nf">assertionFailure</span><span class="p">(</span><span class="s">"urlがない"</span><span class="p">)</span>
+      <span class="nf">decisionHandler</span><span class="p">(</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">webView</span><span class="p">(</span><span class="n">_</span> <span class="nv">webView</span><span class="p">:</span> <span class="kt">WKWebView</span><span class="p">,</span> <span class="n">didFail</span> <span class="nv">navigation</span><span class="p">:</span> <span class="kt">WKNavigation</span><span class="o">!</span><span class="p">,</span> <span class="n">withError</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="n">url</span> <span class="p">{</span>
+      <span class="nf">didFail</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nf">assertionFailure</span><span class="p">(</span><span class="s">"urlがない"</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kd">func</span> <span class="nf">webView</span><span class="p">(</span><span class="n">_</span> <span class="nv">webView</span><span class="p">:</span> <span class="kt">WKWebView</span><span class="p">,</span> <span class="n">didFailProvisionalNavigation</span> <span class="nv">navigation</span><span class="p">:</span> <span class="kt">WKNavigation</span><span class="p">,</span> <span class="n">withError</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="n">url</span> <span class="p">{</span>
+      <span class="nf">didFailProvisionalNavigation</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nf">assertionFailure</span><span class="p">(</span><span class="s">"urlがない"</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="依存性の注入di">依存性の注入（DI）</h2>
+
+<p>DIコンテナやDIライブラリを使用せず、constructor injectionを活用しています。Swiftの一般的なconstructor injectionでは、デフォルト値を渡し、テスト時にモックに差し替えます。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">private</span> <span class="k">let</span> <span class="nv">hoge</span><span class="p">:</span> <span class="kt">HogeProtocol</span>
+
+<span class="nf">init</span><span class="p">(</span><span class="nv">hoge</span><span class="p">:</span> <span class="kt">HogeProtocol</span> <span class="o">=</span> <span class="kt">Hoge</span><span class="p">())</span> <span class="p">{</span>
+  <span class="k">self</span><span class="o">.</span><span class="n">hoge</span> <span class="o">=</span> <span class="n">hoge</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>ただ、頻繁に利用する依存性については、 <a href="http://merowing.info/2017/04/using-protocol-compositon-for-dependency-injection/">Sourceryの元開発者が提唱する</a>Protocol Compositionを活用した、constructor injectionのパターンを使います。これにより、記述量を減らし、リファクタリング時の変更箇所を減らしています。 <code>P1 &amp; P2</code> というふうに、 Protocol Compositionで、利用側に見える依存性を減らしています。目安として、20個の画面以上で使われる依存性をAppDependencyに追加するようにしています。</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="c1">// 利用側</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">ViewModel</span> <span class="p">{</span>
+  <span class="kd">typealias</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">HasLogger</span> <span class="o">&amp;</span> <span class="kt">HasAppUser</span>
+
+  <span class="k">let</span> <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span>
+  <span class="k">let</span> <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span>
+
+  <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">repository</span><span class="p">:</span> <span class="kt">ProductRepositoryProtocol</span> <span class="o">=</span> <span class="kt">ProductRepository</span><span class="p">(),</span> <span class="c1">// ここだけで使うので、従来どおりのでconstructor injection</span>
+    <span class="nv">dependency</span><span class="p">:</span> <span class="kt">Dependency</span> <span class="o">=</span> <span class="kt">AppDependency</span><span class="p">()</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="n">repository</span>
+    <span class="k">self</span><span class="o">.</span><span class="n">dependency</span> <span class="o">=</span> <span class="n">dependency</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 定義</span>
+
+<span class="kd">protocol</span> <span class="kt">HasLogger</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">logger</span><span class="p">:</span> <span class="kt">LoggerProtocol</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">protocol</span> <span class="kt">HasAppUser</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">appUser</span><span class="p">:</span> <span class="kt">AppUserProtocol</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">struct</span> <span class="kt">AppDependency</span><span class="p">:</span> <span class="kt">HasLogger</span><span class="p">,</span> <span class="kt">HasAppUser</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="nv">logger</span><span class="p">:</span> <span class="kt">LoggerProtocol</span>
+  <span class="k">let</span> <span class="nv">appUser</span><span class="p">:</span> <span class="kt">AppUserProtocol</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="残りの課題">残りの課題</h2>
+
+<p>残りの課題は主に以下のとおりです。</p>
+
+<ol>
+  <li>
+    <p>SwiftUIのViewModelをプロトコルで抽象化できないので、スナップショットテストなどのビューテストがしにくいです。ViewをViewModelTypeというジェネリックを持たせる方法はありますが、画面のビューをすべてジェネリックにすると、扱いにくくなり、バイナリーサイズなどで問題が出てくる可能性が高まるので、一旦プロトコルで抽象化しない方針です。根本的には、SwiftUI自体のテストしにくさの問題だと考えているので、今後のSwiftUIバージョンに期待しています。とりあえず、スナップショットテストでは、プレビューデータを含んだRepositoryをViewModelに渡すようにしています。この辺りは、TCAが非常に優れており、状態をViewStoreに注入できるので、TCAがこの点において勝ります。</p>
+  </li>
+  <li>
+    <p>ViewModelとRepositoryで、処理をどれに置くかが決まっていない場合があります。これはあえて今定義せず、一年以上試行錯誤してから、決めが必要ならチームで決めようと思っています。今のところ、まだ困っているという実感はありません。</p>
+  </li>
+  <li>
+    <p>とても薄く、ほぼいらないRepositoryまで定義する必要があります。アーキテクチャが煩雑であればあるほど、ボイラープレートが増えるのは避けられないと考えています。しばらく使ってみて、まだ課題に感じたら、RequesterをViewModelで直接持っても良いようにするか、簡易なRepositoryをコード生成できるようにしようと思っています。とりあえず、多少ボイラープレートが増えたとしても、Repositoryの定義を義務化することで、考えることを減らし、Repository層の定着を図れます。</p>
+  </li>
+</ol>
+
+<h2 id="標準化方法">標準化方法</h2>
+
+<p>アーキテクチャはチームで議論し詳細を決めるだけでは浸透しません。</p>
+
+<p>なぜなら、アーキテクチャ実装の再現性が高くなく、参考にできる情報を探したり、既に決まったことについてチームメンバーにいちいち聞く必要が出てくると、アーキテクチャの浸透が難しくなり、ばらつきが増えて、コードレビューのやりとりが多くなり、せっかく生産性向上を見通したのに、本末転倒な結果になりうるからです。</p>
+
+<p>そのような悲しい結果を避けたく、詳細なドキュメントを用意しました。ドキュメントの中で図面、決めた背景、責務、全体の構成、細かい実装例などを載せています。さらに、より細かい実装例が見たいときがあるので、特に参考になりそうなソースファイルへのリンクを盛り込んでいます。</p>
+
+<p>ドキュメントのほか、<a href="https://github.com/yhkaplan/scaffold">Scaffold</a>テンプレートを作成し、簡単にコピー・ペーストできるように、テンプレートから生成するためのコマンドをドキュメントに記載しました。ViewModelやテストなどのテンプレートを用意することによって、実装時間をさらに短縮し、慣れていなくても基本のパターンに沿って簡単に実装できるようになっています。</p>
+
+<p>アーキテクチャをチームで議論する中で、アーキテクチャパターンの認識の違いや知識のばらつきがないように、毎週の社内アーキテクチャ勉強会を開催しました。そこでTCAのREADMEやソースコード、そして様々なアーキテクチャのOSSアプリのソースコードをみんなで読んで、データフローについて話し合いました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>もうすぐ<a href="https://developer.apple.com/wwdc21/">2021年のWWDC</a>が始まるので、SwiftUIがよりテストしやすくなる発表の有無が特に気になり、わくわくしていますが、大きな変化がない限り、minne iOSは当分MVVM + Repositoryのアーキテクチャで開発し、スムーズに機能開発と保守できると考えています。そうでなければ、調査と議論を続けます。</p>
+
+<p>とりあえず、何よりアーキテクチャが決まって、明文化されているのが一番で、これが落ち着いたので、長年の登りを終え、山頂に着いた気分です。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2021/06/02/minne-ios-architecture/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/9f33218af7ae5c04e102fcc3076f2f5c?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/josh/">josh</a>
+          </p>
+          <p class="article__author-description">
+            ゴマ色の柴犬を飼ってる
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/yhkaplan" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/yhkaplan" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

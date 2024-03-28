@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装 - Pepabo Tech Portal</title>
+<meta content="セキュリティ対策室の伊藤洋也 @hiboma です。
+
+業務中に、Haconiwa コンテナ で動くとある node プロセスが general protection fault ( 一般保護違反! ) を起こしてdmesg にログを..." property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@hiboma" name="twitter:creator" />
+      <meta content="@udzura" name="twitter:creator" />
+<meta content="ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="セキュリティ対策室の伊藤洋也 @hiboma です。
+
+業務中に、Haconiwa コンテナ で動くとある node プロセスが general protection fault ( 一般保護違反! ) を起こしてdmesg にログを..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-695965fb.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装","author":{"@type":"Person","name":"伊藤洋也"},"datePublished":"2020-06-10T15:00:00+00:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2024/03/27/webp-conversion-postmortem/">                  <div class="_body">
+                    <div class="_title">
+                      画像配信を WebP にした際にやったことと困ったこと
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/custom-elements-with-state/">                  <div class="_body">
+                    <div class="_title">
+                      Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/27/glouc-logging-copy/">                  <div class="_body">
+                    <div class="_title">
+                      Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+                    </div>
+                    <div class="_description">
+                      2024-03-27
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/22/yapc-hiroshima/">                  <div class="_body">
+                    <div class="_title">
+                      YAPC::Hiroshima 2024で登壇してきました
+                    </div>
+                    <div class="_description">
+                      2024-03-22
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/19/merit-of-automation/">                  <div class="_body">
+                    <div class="_title">
+                      日頃の作業を自動化して得られたもの
+                    </div>
+                    <div class="_description">
+                      2024-03-19
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/06/snipeit-basic/">                  <div class="_body">
+                    <div class="_title">
+                      資産管理ツールSnipe-ITの基本的な機能
+                    </div>
+                    <div class="_description">
+                      2024-03-06
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/">                  <div class="_body">
+                    <div class="_title">
+                      Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+                    </div>
+                    <div class="_description">
+                      2024-03-01
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-troubule-shooting-node-abort">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/トラブルシューティング/" class="tag-default">トラブルシューティング</a>
+  </div>
+  <time class="article__time" datetime="2020-06-11">
+    2020-06-11
+  </time>
+  <h1 class="article__title">
+    <a href="/2020/06/11/troubule-shooting-node-abort/">ペパボ トラブルシュート伝 - node プロセスの general protection fault を追う - abort(3) の意外な実装</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/トラブルシューティング/" class="tag-default">トラブルシューティング</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/06/11/troubule-shooting-node-abort/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>セキュリティ対策室の伊藤洋也 <a href="https://twitter.com/hiboma">@hiboma</a> です。</p>
+
+<p>業務中に、<a href="https://github.com/haconiwa/haconiwa">Haconiwa コンテナ</a> で動くとある node プロセスが <strong><em>general protection fault</em></strong> ( <strong><em>一般保護違反!</em></strong> ) を起こしてdmesg にログを残す現象を調べ、問題解決にあたっていました。その際の痕跡をまとめなおして記したエントリになります。</p>
+
+<h2 id="エントリの概要">エントリの概要</h2>
+
+<p>本エントリでは、以下のような内容を扱います。</p>
+
+<ul>
+  <li>Haconiwa コンテナの node プロセスが general protection fault を起こしている</li>
+  <li>ライブラリ関数 abort(3) の概要</li>
+  <li>abort(3) がプロセスを停止する方法の検証</li>
+  <li>node プロセスが abort(3) を呼び出すケース</li>
+  <li>glibc x86系の abort(3) 実装が HLT 命令を呼び出し、general protection fault を起こすこと</li>
+  <li>node.js の node::ResetStdio() の概要</li>
+  <li>コンテナの PID 1 のプロセスで abort(3) を呼び出すと  general protection fault を起こす</li>
+</ul>
+
+<h2 id="読者に届けたいもの">読者に届けたいもの</h2>
+
+<p>Linux 低レイヤーでのトラブルシューティングのプロセスを公開し、社内外に知見を共有する目的で書き記しています。</p>
+
+<ul>
+  <li>業務中に遭遇したリアルな問題をもとにトラブルシューティングの事例紹介</li>
+  <li>ログ、ソース、ドキュメントを突き合わせながら、事象の裏付けをとり問題を明らかにしていくアプローチの紹介</li>
+  <li>glibc, Linux Kernel, x86, gdb, strace … 等々を得意とする人たちへの「おやつ」提供</li>
+</ul>
+
+<p>.. をお届け出来ればと思います。</p>
+
+<h2 id="node-が-abort3-で-general-protection-fault-を起こしたログ">node が abort(3) で general protection fault を起こしたログ</h2>
+
+<p>さて、今回 私が追いかけた プロセス は、 dmesg に  <strong>general protection fault = 一般保護例外</strong>  のログを出していました。</p>
+
+<h3 id="dmesg">dmesg</h3>
+
+<p>実際に業務中に採取した dmesg です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>May 22 19:04:47 *** kernel: [4586113.110719] traps: node[14610] general protection fault ip:7f0291cb7196 sp:7fff48570020 error:0 in libc-2.23.so[7f0291c80000+1c0000]
+May 22 19:04:47 *** kernel: [4586113.110730] potentially unexpected fatal signal 11.
+May 22 19:04:47 *** kernel: [4586113.110733] CPU: 4 PID: 14610 Comm: node Kdump: loaded Not tainted 5.3.9-050309-generic #201911061337
+May 22 19:04:47 *** kernel: [4586113.110734] Hardware name: ****, BIOS ****
+May 22 19:04:47 *** kernel: [4586113.110738] RIP: 0033:0x7f0291cb7196
+May 22 19:04:47 *** kernel: [4586113.110741] Code: 05 0f 85 e6 fd ff ff bf 06 00 00 00 c7 05 7e ea 38 00 06 00 00 00 e8 69 e2 ff ff 8b 05 73 ea 38 00 83 f8 06 0f 85 cc fd ff ff &lt;f4&gt; bf 7f 00 00 00 c7 05 5a ea 38 00 08 00 00 00 e8 65 55 09 00 0f
+May 22 19:04:47 *** kernel: [4586113.110742] RSP: 002b:00007fff48570020 EFLAGS: 00010246
+May 22 19:04:47 *** kernel: [4586113.110745] RAX: 0000000000000006 RBX: 0000000001c12a10 RCX: ffffffffffffff00
+May 22 19:04:47 *** kernel: [4586113.110746] RDX: 00007f0292f21740 RSI: 00007f0292046770 RDI: 00007f0292045540
+May 22 19:04:47 *** kernel: [4586113.110747] RBP: 00007fff48570150 R08: 00007f0292046770 R09: 00007f0292f21740
+May 22 19:04:47 *** kernel: [4586113.110748] R10: 0000000000000006 R11: 0000000000000000 R12: 84bda12f684bda13
+May 22 19:04:47 *** kernel: [4586113.110749] R13: 0000000000000001 R14: 0000000000008000 R15: 0000000000000000
+May 22 19:04:47 *** kernel: [4586113.110750] FS:  00007f0292f21740 GS:  0000000000000000
+</code></pre></div>
+<p>💡 ホスト名やハードウェアを特定できる部分にマスクを入れています</p>
+
+<p><code>general protection fault</code> を起こして <code>signal 11</code> = <strong>SIGSEGV</strong> を受けて停止しています。</p>
+
+<p>ログを残したプロセスは <code>node</code> (npm) です。プロセスは、コンテナ環境、正確に言えば <a href="https://github.com/haconiwa/haconiwa">Haconiwa</a> を利用した環境で動いていました。調べていくうちに、node (npm) プロセス停止時に上記の dmesg を出して異常停止し、数十分毎に再現する周期性を持つ特徴を発見します。</p>
+
+<p>さて、このようなログを手掛かりにどうやって調べていきましょうか?</p>
+
+<h2 id="gdb-で調査する">gdb で調査する</h2>
+
+<p>各種の制約で、コンテナの設定や環境に手を加えるのが難しく、プロセス停止時のコアを採取できなかったため、まずは稼働しているプロセスに gdb でアタッチして糸口を探りました。</p>
+
+<p>gdb でプロセスにアタッチし RIP を disassemble します。すると、abort(3) の呼び出しであることが分かりました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) disas 0x7ffff6d82196
+Dump of assembler code for function abort: 👈
+   0x00007ffff6d81ec0 &lt;+0&gt;:	int3   
+   0x00007ffff6d81ec1 &lt;+1&gt;:	sub    $0x128,%esp
+   0x00007ffff6d81ec7 &lt;+7&gt;:	mov    %fs:0x10,%rdx
+   0x00007ffff6d81ed0 &lt;+16&gt;:	cmp    0x38ed21(%rip),%rdx        # 0x7ffff7110bf8
+   0x00007ffff6d81ed7 &lt;+23&gt;:	je     0x7ffff6d81f1f &lt;abort+95&gt;
+   0x00007ffff6d81ed9 &lt;+25&gt;:	mov    $0x1,%esi
+   0x00007ffff6d81ede &lt;+30&gt;:	xor    %eax,%eax
+
+... 略
+
+   0x00007ffff6d8216d &lt;+685&gt;:	jne    0x7ffff6d81f59 &lt;abort+153&gt;
+   0x00007ffff6d82173 &lt;+691&gt;:	mov    $0x6,%edi
+   0x00007ffff6d82178 &lt;+696&gt;:	movl   $0x6,0x38ea7e(%rip)        # 0x7ffff7110c00
+   0x00007ffff6d82182 &lt;+706&gt;:	callq  0x7ffff6d803f0 &lt;raise&gt;
+   0x00007ffff6d82187 &lt;+711&gt;:	mov    0x38ea73(%rip),%eax        # 0x7ffff7110c00
+   0x00007ffff6d8218d &lt;+717&gt;:	cmp    $0x6,%eax
+   0x00007ffff6d82190 &lt;+720&gt;:	jne    0x7ffff6d81f62 &lt;abort+162&gt;
+   0x00007ffff6d82196 &lt;+726&gt;:	hlt   🔥
+   0x00007ffff6d82197 &lt;+727&gt;:	mov    $0x7f,%edi
+   0x00007ffff6d8219c &lt;+732&gt;:	movl   $0x8,0x38ea5a(%rip)        # 0x7ffff7110c00
+   0x00007ffff6d821a6 &lt;+742&gt;:	callq  0x7ffff6e17710 &lt;_exit&gt;
+
+</code></pre></div>
+<p>💡 <code>sysctl kernel.randomize_va_space =0</code> で ALSR  = address space layout randomization を無効にしてから再現を確認し調査をしました。これによって RIP がランダム化されないので gdb で追いかけるのが容易になります。</p>
+
+<p>🔥　が general protection fault を起こした RIP のディスアセンブル箇所です。 <strong><em>abort(3) の中に HLT 命令が ?</em></strong> なんなのだこれは?</p>
+
+<h2 id="man-で--abort3-を調べる">man で  abort(3) を調べる</h2>
+
+<p>HLT 命令が気になるところですが、いったん脇において、初心にかえって abort(3) がどういうライブラリ関数なのかを確かめ直しました。</p>
+
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/abort.3.html">abort(3) の man</a> を読むと以下の通りの説明が付いています。</p>
+
+<blockquote>
+  <p>abort() 関数は、まず SIGABRT の禁止 (block) を解除してから、 (raise(3) が呼び出されたかのように) 呼び出し元のプロセスに SIGABRT シグナルを上げる。その結果、 SIGABRT シグナルが捕捉 (caught) されて対応するシグナルハンドラーが 返って来ない場合以外は、プログラムの異常終了が起こる (longjmp(3) 参照)。
+abort() 関数によってプロセスの終了が引き起こされたときには、 すべての開いているストリームは閉じられフラッシュされる。</p>
+
+  <p>SIGABRT シグナルが無視、または返って来るシグナルハンドラーで 捕捉されるようになっている場合であっても、 abort() 関数はそのプロセスを終了する。 SIGABRT シグナルに対する処理方法をデフォルトに戻してから、再度 SIGABRT シグナルを上げることで、このような動作になる。</p>
+</blockquote>
+
+<p>💡linuxjm.osdn.jp の翻訳は http://man7.org/linux/man-pages/man3/abort.3.html と同等の翻訳になっていたので、日本の読者向けに翻訳を引用しています。</p>
+
+<p>HLT 命令に関する記述は特にないですね 🤔</p>
+
+<h2 id="abort3-の検証">abort(3) の検証</h2>
+
+<p>小さなコードを書いて abort(3) の検証を行いました。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>abort(3) を呼び出して、プロセスは停止する! Aborted !</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code> $ ./a.out
+Aborted (core dumped)
+</code></pre></div>
+<p>さて、Linux では</p>
+
+<ul>
+  <li><code>sysctl kernel.print-fatal-signals=1</code></li>
+  <li><code>sysctl debug.exception-trace=1</code></li>
+</ul>
+
+<p>を設定すると dmesg に プロセスが異常停止した際の詳細を出すことができます (例: SIGSEGV, SIGABRT 等を受けて停止するケース) 。以下のログは、検証時に取った dmesg です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[19406.703560] potentially unexpected fatal signal 6.
+[19406.703562] CPU: 0 PID: 13773 Comm: a.out Tainted: G         C OE    4.15.0-20-generic #21-Ubuntu
+[19406.703563] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[19406.703565] RIP: 0033:0x7f9807e9ae97
+[19406.703566] RSP: 002b:00007fffb287e5f0 EFLAGS: 00000246 ORIG_RAX: 000000000000000e
+[19406.703567] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f9807e9ae97
+## [19406.703568] RDX: 0000000000000000 RSI: 00007fffb287e5f0 RDI: 0000000000000002
+[19406.703568] RBP: 00007fffb287e840 R08: 0000000000000000 R09: 00007fffb287e5f0
+[19406.703569] R10: 0000000000000008 R11: 0000000000000246 R12: 0000558697fd8540
+[19406.703569] R13: 00007fffb287e920 R14: 0000000000000000 R15: 0000000000000000
+[19406.703570] FS:  00007f98084694c0(0000) GS:ffff9e653fc00000(0000) knlGS:0000000000000000
+[19406.703571] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[19406.703572] CR2: 00007f9807e9f430 CR3: 0000000073cea002 CR4: 00000000000606f0
+</code></pre></div>
+<p><code>potentially unexpected fatal signal 6</code> 、つまり、シグナル番号 6 で停止した旨が書き出されています。 番号 6 は <strong>SIGABRT</strong> です。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-R</span> SIGABRT /usr/include/asm-generic/signal.h 
+<span class="c">#define SIGABRT		 6</span>
+</code></pre></div>
+<p>うーん、冒頭にみたログとは違い <strong>general protection fault</strong> と <strong>SIGSEGV</strong> では無いですね 🤔</p>
+
+<h3 id="strace-でトレースする">strace でトレースする</h3>
+
+<p>abort(3) を起こす際に strace をとってみます。</p>
+
+<p><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man2/tkill.2.html">tgkill(2)</a> で SIGABRT を自スレッド ( ここではプロセスと同等 ) に送っているのが観察できます。</p>
+
+<div class="highlight"><pre class="highlight diff"><code><span class="p">vagrant@ubuntu1810:~$ strace -e tgkill ./a.out 
+tgkill(13809, 13809, SIGABRT)           = 0
+</span><span class="gd">--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=13809, si_uid=1000} ---
+</span><span class="gi">+++ killed by SIGABRT (core dumped) +++
+</span><span class="p">Aborted (core dumped)
+</span></code></pre></div>
+<p>ここまでは abort(3) の <strong>「表の顔」</strong> とでも言うべき挙動です。次に <strong>「裏の顔」</strong> をみていきましょう</p>
+
+<h2 id="abort3-の-glibc-実装を追う">abort(3) の glibc 実装を追う</h2>
+
+<p>abort の話に戻ります。HLT 命令の呼び出しが気になるので、glibc がどのように abort(3) を実装しているか、ソースを追いかけました。glibc-2.27 のソースを掲載します。</p>
+
+<h4 id="stdlibabortc">stdlib/abort.c</h4>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cm">/* Cause an abnormal program termination with core-dump.  */</span>
+<span class="kt">void</span>
+<span class="nf">abort</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">sigaction</span> <span class="n">act</span><span class="p">;</span>
+  <span class="n">sigset_t</span> <span class="n">sigs</span><span class="p">;</span>
+
+  <span class="cm">/* First acquire the lock.  */</span>
+  <span class="n">__libc_lock_lock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+
+  <span class="cm">/* Now it's for sure we are alone.  But recursive calls are possible.  */</span>
+
+  <span class="cm">/* Unblock SIGABRT.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">__sigemptyset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">sigs</span><span class="p">);</span>
+      <span class="n">__sigaddset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">sigs</span><span class="p">,</span> <span class="n">SIGABRT</span><span class="p">);</span>
+      <span class="n">__sigprocmask</span> <span class="p">(</span><span class="n">SIG_UNBLOCK</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sigs</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Send signal which possibly calls a user handler.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="cm">/* This stage is special: we must allow repeated calls of
+	 `abort' when a user defined handler for SIGABRT is installed.
+	 This is risky since the `raise' implementation might also
+	 fail but I don't see another possibility.  */</span>
+      <span class="kt">int</span> <span class="n">save_stage</span> <span class="o">=</span> <span class="n">stage</span><span class="p">;</span>
+
+      <span class="n">stage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">__libc_lock_unlock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+
+      <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span> <span class="err">🔥</span>
+
+      <span class="n">__libc_lock_lock_recursive</span> <span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+      <span class="n">stage</span> <span class="o">=</span> <span class="n">save_stage</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* There was a handler installed.  Now remove it.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">memset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">act</span><span class="p">,</span> <span class="sc">'\0'</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sigaction</span><span class="p">));</span>
+      <span class="n">act</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">SIG_DFL</span><span class="p">;</span>
+      <span class="n">__sigfillset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">act</span><span class="p">.</span><span class="n">sa_mask</span><span class="p">);</span>
+      <span class="n">act</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">__sigaction</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">act</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Try again.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span> <span class="err">🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* Now try to abort using the system specific command.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">🔥🔥🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* If we can't signal ourselves and the abort instruction failed, exit.  */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="err">👈</span>
+    <span class="p">{</span>
+      <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+      <span class="n">_exit</span> <span class="p">(</span><span class="mi">127</span><span class="p">);</span><span class="err">　🔥</span>
+    <span class="p">}</span>
+
+  <span class="cm">/* If even this fails try to use the provided instruction to crash
+     or otherwise make sure we never return.  */</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="cm">/* Try for ever and ever.  */</span>
+    <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">🔥</span>
+<span class="p">}</span>
+<span class="n">libc_hidden_def</span> <span class="p">(</span><span class="n">abort</span><span class="p">)</span>
+</code></pre></div>
+<p>🔥でアノテートしたコードは、プロセスの停止を試みている部分です。</p>
+
+<p>なるほど、abort は <strong>ステージ</strong> を分け、それぞれでプロセスを停止する術を変える実装になってますね !!!</p>
+
+<h3 id="abort-のステージ">abort のステージ</h3>
+
+<ol>
+  <li>raise(SIGABRT) での停止を試みる</li>
+  <li><strong>ABORT_INSTRUCTION</strong> での停止を試みる</li>
+  <li>_exit(127) での停止を試みる</li>
+  <li>無限ループして <strong>ABORT_INSTRUCTION</strong> で停止を試みる</li>
+</ol>
+
+<p><strong>「 abort(3) がどうやって general protection fault を起こしたのか？」</strong> という疑問に対して <strong>ABORT_INSTRUCTION</strong> が答えのキーとなります。実は、x86 アーキテクチャで ABORT_INSTRUCTION は HLT 命令を実行するマクロになっています。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cm">/* An instruction which should crash any program is `hlt'.  */</span>
+<span class="cp">#define ABORT_INSTRUCTION asm ("hlt")
+</span></code></pre></div>
+<p>コメント文が興味深いですね。</p>
+
+<p>次は HLT 命令について調べていきました。(どんどん脇道に逸れている気がしますが、トラブルシューティングでは、問題に回帰するポイントを見失ってはいけませんね )</p>
+
+<h2 id="hlt-命令とは何か">HLT 命令とは何か?</h2>
+
+<p>『IA-32インテル® アーキテクチ-ャ・ソフトウェア・デベロッパーズ・マニュアル 中巻A:命令セット・リファレンスA-M』を参照しました。</p>
+
+<blockquote>
+  <p>命令の実行を停止し、プロセッサを HALT 状態にする。イネーブルにされている割り 込み(NMI および SMI を含む)、デバッグ例外、BINIT# 信号、INIT# 信号、RESET# 信 号によって実行が再開される。</p>
+
+  <p>HLT 命令の後で割り込み(NMI を含む)を使用して実 行を再開する場合、セーブされている命令ポインタ(CS:EIP)は HLT 命令の次の命令 を指している。</p>
+
+  <p>ハイパー・スレッディング・テクノロジに対応した IA-32 プロセッサ上で HLT 命令を 実行した場合は、HLT 命令を実行した論理プロセッサだけが HALT 状態になる。物理 プロセッサ内のそれ以外の論理プロセッサは、HLT 命令を実行することで個別に HALT 状態にされない限り、アクティブのままになる。</p>
+
+  <p>引用:『IA-32インテル® アーキテクチャ・ソフトウェア・デベロッパーズ・マニュアル 中巻A:命令セット・リファレンスA-M』 3-360</p>
+</blockquote>
+
+<p>さらに特権レベルについての説明が続きます。</p>
+
+<blockquote>
+  <p>HLT 命令は特権命令である。プロセッサが保護モードまたは仮想 8086 モードで動作し ている場合は、HLT 命令を実行するには、プログラムまたはプロシージャの特権レベ ルが 0 でなければならない。</p>
+</blockquote>
+
+<p>HLT 命令は 特権レベル (Ring) 0 で実行可能な特権命令である。ここが大事です。</p>
+
+<h2 id="ユーザ空間での-hlt-命令呼び出し---general-protection-fault-">ユーザ空間での HLT 命令呼び出し -&gt; general protection fault 🔥</h2>
+
+<p>「特権レベル」について確認しましょう。</p>
+
+<blockquote>
+  <p>プロセッサは特権レベルを使用して、低い特権レベルで動 作しているプログラムまたはタスクが高い特権レベルのセグメントにアクセスしな いようにする。プロセッサは、特権レベル違反を検出すると、一般保護例外(#GP) を生成する。</p>
+
+  <p>引用:『IA-32インテル® アーキテクチャ・ソフトウェア・デベロッパーズ・マニュアル 下巻:システム・プログラミング・ガイド』4.5. 特権レベル</p>
+</blockquote>
+
+<p>では、上記に倣って Linux での挙動を整頓してみます。</p>
+
+<ul>
+  <li>Linux x86 系で ユーザ空間 ( = Ring 3 ) で動作するプロセスが、 HLT 命令 ( Ring 0 の特権レベルが必要 ) を呼び出す</li>
+  <li>CPU が 特権レベル違反を検知して general protection fault を起こす</li>
+  <li>fault を カーネルがハンドリングし、該当のプロセスに SIGSEGV を飛ばして停止を試みる</li>
+</ul>
+
+<p>ということになりそうです。Linux カーネルのソースも合わせて確かめます。</p>
+
+<h2 id="general-proection-fault-から-linux-kernel-へ">general proection fault から Linux Kernel へ</h2>
+
+<p>CPU が起こす general protection fault を、Linxu カーネルは <strong>do_general_protection ()</strong> でハンドリングします。 do_general_protection () は、IDT = Interrupt Descriptor Table で登録された割り込みハンドラです。( このへんの説明は割愛します。OS の実装を取り扱ったドキュメント、技術書、サイトを参考にしてください )</p>
+
+<h4 id="do_general_protection-in-archx86kerneltrapsc">do_general_protection() in arch/x86/kernel/traps.c</h4>
+
+<ul>
+  <li>👈 dmesg のログを出力するコード</li>
+  <li>🔥 SIGSEGV を送りつけるコード</li>
+</ul>
+
+<p>となっています。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="n">dotraplinkage</span> <span class="kt">void</span>
+<span class="nf">do_general_protection</span><span class="p">(</span><span class="k">struct</span> <span class="n">pt_regs</span> <span class="o">*</span><span class="n">regs</span><span class="p">,</span> <span class="kt">long</span> <span class="n">error_code</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">tsk</span><span class="p">;</span>
+
+	<span class="n">RCU_LOCKDEP_WARN</span><span class="p">(</span><span class="o">!</span><span class="n">rcu_is_watching</span><span class="p">(),</span> <span class="s">"entry code didn't wake RCU"</span><span class="p">);</span>
+	<span class="n">cond_local_irq_enable</span><span class="p">(</span><span class="n">regs</span><span class="p">);</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">static_cpu_has</span><span class="p">(</span><span class="n">X86_FEATURE_UMIP</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">user_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">fixup_umip_exception</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span>
+			<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">v8086_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span> <span class="p">{</span>
+		<span class="n">local_irq_enable</span><span class="p">();</span>
+		<span class="n">handle_vm86_fault</span><span class="p">((</span><span class="k">struct</span> <span class="n">kernel_vm86_regs</span> <span class="o">*</span><span class="p">)</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">tsk</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">user_mode</span><span class="p">(</span><span class="n">regs</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">fixup_exception</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span> <span class="n">X86_TRAP_GP</span><span class="p">))</span>
+			<span class="k">return</span><span class="p">;</span>
+
+		<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span><span class="p">;</span>
+		<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">trap_nr</span> <span class="o">=</span> <span class="n">X86_TRAP_GP</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">notify_die</span><span class="p">(</span><span class="n">DIE_GPF</span><span class="p">,</span> <span class="s">"general protection fault"</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span>
+			       <span class="n">X86_TRAP_GP</span><span class="p">,</span> <span class="n">SIGSEGV</span><span class="p">)</span> <span class="o">!=</span> <span class="n">NOTIFY_STOP</span><span class="p">)</span>
+			<span class="n">die</span><span class="p">(</span><span class="s">"general protection fault"</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">error_code</span> <span class="o">=</span> <span class="n">error_code</span><span class="p">;</span>
+	<span class="n">tsk</span><span class="o">-&gt;</span><span class="kr">thread</span><span class="p">.</span><span class="n">trap_nr</span> <span class="o">=</span> <span class="n">X86_TRAP_GP</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">show_unhandled_signals</span> <span class="o">&amp;&amp;</span> <span class="n">unhandled_signal</span><span class="p">(</span><span class="n">tsk</span><span class="p">,</span> <span class="n">SIGSEGV</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+			<span class="n">printk_ratelimit</span><span class="p">())</span> <span class="p">{</span>
+		<span class="n">pr_info</span><span class="p">(</span><span class="s">"%s[%d] general protection ip:%lx sp:%lx error:%lx"</span><span class="p">,</span> <span class="err">👈</span>
+			<span class="n">tsk</span><span class="o">-&gt;</span><span class="n">comm</span><span class="p">,</span> <span class="n">task_pid_nr</span><span class="p">(</span><span class="n">tsk</span><span class="p">),</span> <span class="p">,</span> <span class="err">👈</span>
+			<span class="n">regs</span><span class="o">-&gt;</span><span class="n">ip</span><span class="p">,</span> <span class="n">regs</span><span class="o">-&gt;</span><span class="n">sp</span><span class="p">,</span> <span class="n">error_code</span><span class="p">);</span> <span class="p">,</span> <span class="err">👈</span>
+		<span class="n">print_vma_addr</span><span class="p">(</span><span class="n">KERN_CONT</span> <span class="s">" in "</span><span class="p">,</span> <span class="n">regs</span><span class="o">-&gt;</span><span class="n">ip</span><span class="p">);</span> <span class="p">,</span> <span class="err">👈</span>
+		<span class="n">pr_cont</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="n">force_sig_info</span><span class="p">(</span><span class="n">SIGSEGV</span><span class="p">,</span> <span class="n">SEND_SIG_PRIV</span><span class="p">,</span> <span class="n">tsk</span><span class="p">);</span> <span class="err">🔥</span>
+<span class="p">}</span>
+<span class="n">NOKPROBE_SYMBOL</span><span class="p">(</span><span class="n">do_general_protection</span><span class="p">);</span>
+</code></pre></div>
+<p>ここまで来たので一応、確認をとっておくと、IDT = Interrupt Descriptor Table は以下のようなソースになっています。</p>
+
+<h4 id="archx86entryentry_64s">/arch/x86/entry/entry_64.S</h4>
+
+<div class="highlight"><pre class="highlight plaintext"><code>idtentry general_protection	do_general_protection	has_error_code=1
+idtentry page_fault		do_page_fault		has_error_code=1
+</code></pre></div>
+<h2 id="abort3-が-hlt-命令を呼び出す訳--強制停止-の手段">abort(3) が HLT 命令を呼び出す訳 —&gt; 「強制」停止 の手段</h2>
+
+<p>長くなってきました。一旦、ここまで調べ上げたことをまとめてみましょう</p>
+
+<p>abort(3) は、SIGABRT シグナルや _exit(2) システムコール以外にも、 x86 アーキテクチャでは HLT 命令を用いて特権レベル違反を起こし、カーネルから強制停止する術を利用してプロセスを強制停止する術としているのだと解釈できます。</p>
+
+<p>シグナルでも、システムコールでも停止できないプロセスに対して CPU の例外機構を持ちいて強制停止を試みるのは、ブレーキやエンジンの制御が壊れた車を壁にぶつけるなり海に飛び込むなりして無理やり停止を試みるアクション映画のような比喩を想起させます 🔥🚗</p>
+
+<h2 id="なぜ-node-プロセスが-abort3-を呼び出すか">なぜ node プロセスが abort(3) を呼び出すか?</h2>
+
+<p><strong>「 abort(3) がなぜ general protection fault を起こすのか？」</strong> を追いかけてきました。 <strong>「 なぜ node プロセスが abort(3) を呼び出すか」</strong> がトラブルの根本であり、重要です。</p>
+
+<p>業務上のコンテナの仕様も絡んでおり、公開できる範囲で一般化して記述します。</p>
+
+<p>ざっくり書きだすと</p>
+
+<ul>
+  <li>node プロセスは、シグナルを受けて停止する際に stdio, stdout, stderr の TTY 設定を元に戻す</li>
+  <li>node::ResetStdio() 実装されている</li>
+  <li>node::ResetStdio() で stdio, stdout, stderr に対して fstat(2) をとる</li>
+  <li>この fstat(2) がエラーを返すと、node はアサーション失敗とみなして node::Abort() を呼び出し、さらに libc の abort(3) を呼び出す</li>
+</ul>
+
+<p>という node 側の実装に対して、該当のコンテナは</p>
+
+<ul>
+  <li>コンテナで動いていた node プロセスは、 stdout, stderr に <strong>NFS</strong> のファイルデスクリプタが関連づいていた</li>
+  <li>node プロセス停止のタイミングで、それらの NFS のファイルが NFS サーバ側で前もって削除されてしまっており fstat(2) が ESTALE を返す状況を招いていた</li>
+  <li><a href="http://tss.iki.fi/nfs-coding-howto.html#estale">NFS サーバ側でファイルが削除されると ESTALE を返すのは NFSv3 の挙動に依る</a>*</li>
+  <li>NFS のファイルが削除されるのは、該当のサービスでの仕様/挙動であり、意図せず問題を招いてしまっていた。</li>
+</ul>
+
+<p>というところを調べ上げました。まさか NFS が絡んでくるとは …</p>
+
+<h4 id="調査時の-gdb-strace">調査時の gdb, strace</h4>
+
+<p>node::ResetStdio() を含むバックトレースは以下のようなものになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) bt
+#0  0x00007ffff6d82196 in abort () from target:/lib/x86_64-linux-gnu/libc.so.6
+#1  0x0000000000a295f1 in node::Abort() ()
+#2  0x0000000000a2965e in node::Assert(node::AssertionInfo const&amp;) ()
+#3  0x00000000009f5e60 in node::ResetStdio() ()
+#4  0x00000000009f5f8c in node::TrapWebAssemblyOrContinue(int, siginfo_t*, void*) ()
+#5  &lt;signal handler called&gt;
+#6  0x00007ffff6d82196 in abort () from target:/lib/x86_64-linux-gnu/libc.so.6
+#7  0x0000000000a295f1 in node::Abort() ()
+#8  0x0000000000a2965e in node::Assert(node::AssertionInfo const&amp;) ()
+#9  0x00000000009f5e60 in node::ResetStdio() ()
+#10 0x00007ffff6d84ff8 in ?? () from target:/lib/x86_64-linux-gnu/libc.so.6
+#11 0x00007ffff6d85045 in exit () from target:/lib/x86_64-linux-gnu/libc.so.6
+#12 0x0000000000998567 in node::DefaultProcessExitHandler(node::Environment*, int) ()
+#13 0x00000000009cff43 in node::Environment::Exit(int) ()
+#14 0x0000000000c0278b in v8::internal::MaybeHandle&lt;v8::internal::Object&gt; v8::internal::(anonymous namespace)::HandleApiCallHelper&lt;false&gt;(v8::internal::Isolate*, v8::internal::Handle&lt;v8::internal::HeapObject&gt;, v8::internal::Handle&lt;v8::internal)
+#15 0x0000000000c03d36 in v8::internal::Builtin_Impl_HandleApiCall(v8::internal::BuiltinArguments, v8::internal::Isolate*) ()
+#16 0x0000000000c043b6 in v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) ()
+#17 0x00000000013a5b79 in Builtins_CEntry_Return1_DontSaveFPRegs_ArgvOnStack_BuiltinExit ()
+#18 0x000000000133e658 in Builtins_InterpreterEntryTrampoline ()
+#19 0x00000d97868c0471 in ?? ()
+#20 0x00001e96809c2fa9 in ?? ()
+#21 0x0000000600000000 in ?? ()
+#22 0x00000d97868c0541 in ?? ()
+#23 0xffffff8c00000000 in ?? ()
+#24 0x00002346432c09f1 in ?? ()
+#25 0x00000d97868c0471 in ?? ()
+</code></pre></div>
+<p>また、以下は node::ResetStdio() が fstat(2) でエラーを返し、Assertion に失敗する際の strace です。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[pid 21923] 22:24:15 +++ exited with 0 +++
+[pid 21875] 22:24:15 &lt;... futex resumed&gt; ) = 0 &lt;0.000599&gt;
+[pid 21875] 22:24:15 munmap(0x7ffff654a000, 8392704) = 0 &lt;0.000039&gt;
+[pid 21875] 22:24:15 epoll_ctl(3&lt;anon_inode:[eventpoll]&gt;, EPOLL_CTL_ADD, 6&lt;pipe:[1059990718]&gt;, {EPOLLIN, {u32=6, u64=6}}) = 0 &lt;0.000023&gt;
+[pid 21875] 22:24:15 epoll_ctl(3&lt;anon_inode:[eventpoll]&gt;, EPOLL_CTL_ADD, 8&lt;anon_inode:[eventfd]&gt;, {EPOLLIN, {u32=8, u64=8}}) = 0 &lt;0.000018&gt;
+[pid 21875] 22:24:15 epoll_wait(3&lt;anon_inode:[eventpoll]&gt;, [], 1024, 0) = 0 &lt;0.000020&gt;
+[pid 21875] 22:24:15 close(6&lt;pipe:[1059990718]&gt;) = 0 &lt;0.000026&gt;
+[pid 21875] 22:24:15 close(7&lt;pipe:[1059990718]&gt;) = 0 &lt;0.000026&gt;
+[pid 21875] 22:24:15 close(8&lt;anon_inode:[eventfd]&gt;) = 0 &lt;0.000023&gt;
+[pid 21875] 22:24:15 close(3&lt;anon_inode:[eventpoll]&gt;) = 0 &lt;0.000022&gt;
+[pid 21875] 22:24:15 fstat(0&lt;/dev/null&gt;, {st_mode=S_IFCHR|0666, st_rdev=makedev(1, 3), ...}) = 0 &lt;0.000014&gt;
+[pid 21875] 22:24:15 fcntl(0&lt;/dev/null&gt;, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) &lt;0.000013&gt;
+🔥 [pid 21875] 22:24:15 fstat(1&lt;/var/log/container/***/.out&gt;, 0x7fffffffdd70) = -1 ESTALE (Stale file handle) &lt;0.000028&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "npm[1]: ../src/node.cc:657:void node::ResetStdio(): Assertion `((*__errno_location ())) == (9)' failed.\n", 104) = -1 ESTALE (Stale file handle) &lt;0.000014&gt;
+[pid 21875] 22:24:15 futex(0x7ffff7113110, FUTEX_WAKE_PRIVATE, 2147483647) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 futex(0x7ffff7547680, FUTEX_WAKE_PRIVATE, 2147483647) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 1: 0xa295e0 node::Abort() [npm]\n", 33) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 2: 0xa2965e  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 3: 0x9f5e60 node::ResetStdio() [npm]\n", 38) = -1 ESTALE (Stale file handle) &lt;0.000021&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 4: 0x7ffff6d84ff8  [/lib/x86_64-linux-gnu/libc.so.6]\n", 54) = -1 ESTALE (Stale file handle) &lt;0.000014&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 5: 0x7ffff6d85045  [/lib/x86_64-linux-gnu/libc.so.6]\n", 54) = -1 ESTALE (Stale file handle) &lt;0.000023&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 6: 0x998567  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000013&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 7: 0x9cff43 node::Environment::Exit(int) [npm]\n", 48) = -1 ESTALE (Stale file handle) &lt;0.000022&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 8: 0xc0278b  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000038&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, " 9: 0xc03d36  [npm]\n", 20) = -1 ESTALE (Stale file handle) &lt;0.000016&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "10: 0xc043b6 v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) [npm]\n", 100) = -1 ESTALE (Stale file handle) &lt;0.000017&gt;
+[pid 21875] 22:24:15 write(2&lt;/var/log/container/***/hogehoge.log&gt;, "11: 0x13a5b79  [npm]\n", 21) = -1 ESTALE (Stale file handle) &lt;0.000016&gt;
+[pid 21875] 22:24:15 rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0 &lt;0.000013&gt;
+[pid 21875] 22:24:15 tgkill(1, 1, SIGABRT) = 0 &lt;0.000025&gt;
+[pid 21875] 22:24:15 --- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=1, si_uid=1000} ---
+
+💡一部 パス名を改変、マスクをかけています
+</code></pre></div>
+<p>fstat(2) が ESTALE を返していますね</p>
+
+<blockquote>
+  <p>[pid 21875] 22:24:15 fstat(1&lt;/var/log/container/***/.out&gt;, 0x7fffffffdd70) = -1 ESTALE</p>
+</blockquote>
+
+<h4 id="メモ">メモ</h4>
+
+<p>node::ResetStdio() に関係する実装は下記のソースになります。</p>
+
+<p><a href="https://github.com/nodejs/node/blob/0e5b975873e88d9276dd8f1e1d94b8f66e741155/src/node.cc#L690:embed:cite">GitHub node.js リポジトリへのリンク</a></p>
+
+<p>node の実装を追う調査をヘルプしてくれた id:mrtc0 に感謝しています。</p>
+
+<h2 id="調査の終了サービス担当者へのフィードバック">調査の終了/サービス担当者へのフィードバック</h2>
+
+<p>さて、ここまで調べ上げたことを担当のサービスの技術者、ならびにコンテナを実装した技術者 ( @udzura ) にフィードバックを返しました。</p>
+
+<p>そして、よくよく話を伺ってみると、実は <strong><em>サービスの監視のために定期的に稼働していたコンテナ</em></strong> であり、dmesg のログを出している以外は 特に問題になっていなかったというオチが付きました ( ͡° ͜ʖ ͡°)</p>
+
+<h2 id="補足的な内容">補足的な内容</h2>
+
+<p>ここまでの流れで拾いきれなかったトピックについても付記しておきます。</p>
+
+<h2 id="補足1-haconiwa-での問題-他のコンテナランタイムではどうか">補足(1) Haconiwa での問題? 他のコンテナランタイムではどうか?</h2>
+
+<p>この項だけ作者の @udzura より補足します。</p>
+
+<p>まず、Haconiwaを利用して立ち上げたコンテナ内部の PID = 1 のプロセスは、執筆時現在のバージョンでは以下のような処理の流れでコンテナの fd = 0, 1, 2 をセットします。</p>
+
+<ol>
+  <li><code>fork(2)</code> する</li>
+  <li><code>haconiwa.out</code> 、 <code>haconiwa.err</code> などログファイルを <code>O_APPEND|O_WRONLY</code> で開く</li>
+  <li><code>dup2(2)</code> で fd = 1, 2 の示すファイルをそれらのファイルにする（0は <code>/dev/null</code> ）</li>
+  <li>ほかに存在するfdについては <code>O_CLOEXEC</code> を付与する</li>
+  <li>コンテナのプログラムに <code>execve(2)</code> する</li>
+</ol>
+
+<p>一方で、例えば <a href="https://github.com/opencontainers/runc">runc</a> のような別のコンテナランタイム実装は、コンテナの PID = 1 が直接ファイルをつかむようなことはせず、親プロセスである <code>container-shim</code> などに繋がるpipeを開いた状態でexecveしています。pipeを挟むことで、少なくともfdへのアクセスでESTALEを返すことは回避できるでしょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>## 3113 はhttpdコンテナのホストで見たルートPIDです:
+$ sudo ls -l /proc/3113/fd
+total 0
+lrwx------ 1 root root 64 Jun  8 14:30 0 -&gt; /dev/null
+l-wx------ 1 root root 64 Jun  8 14:30 1 -&gt; pipe:[26286]
+l-wx------ 1 root root 64 Jun  8 14:30 2 -&gt; pipe:[26287]
+lrwx------ 1 root root 64 Jun  8 14:30 3 -&gt; socket:[28179]
+lr-x------ 1 root root 64 Jun  8 14:30 4 -&gt; pipe:[28195]
+l-wx------ 1 root root 64 Jun  8 14:30 5 -&gt; pipe:[28195]
+l-wx------ 1 root root 64 Jun  8 14:30 6 -&gt; pipe:[26286]
+</code></pre></div>
+<p>Haconiwa側でも、直接コンテナの PID = 1 がファイルをつかむ実装を回避する方向で開発を進めています。</p>
+
+<h2 id="補足2-vagrant-で追試">補足(2) Vagrant で追試</h2>
+
+<p>本エントリを書き出している間、 @udzura とディスカッションをして 改めて問題の再現をとり挙動を調べ直しました</p>
+
+<h3 id="明らかになっていなかったこと">明らかになっていなかったこと</h3>
+
+<p>node プロセスは、node::Abort() -&gt; abort(3) を呼び出すと raise (SIGABRT) で停止しそうなものですが、なぜか ABORT_INSTRUCTION  = HLT 命令の呼び出しに至り、停止しています。この挙動が明らかにできていませんでした。</p>
+
+<h3 id="vagrant-での再現1">Vagrant での再現(1)</h3>
+
+<p>Vagrant を用いて Ubuntu 18.04 の NFS サーバの VM と NFS クライアントの VM を作り、 NFSv3 で構成することで問題を再現することができました。</p>
+
+<h4 id="vagrantfile">Vagrantfile</h4>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Vagrant</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="s2">"2"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">define</span> <span class="s1">'client'</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span>      <span class="o">=</span> <span class="s1">'bento/ubuntu-18.04'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">hostname</span> <span class="o">=</span> <span class="s1">'client000'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="n">ip</span><span class="ss">:"192.168.100.100"</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="o">&lt;&lt;-</span><span class="no">SHELL</span><span class="sh">
+apt install -y nfs-common
+mkdir -p /mnt/nfs
+# mount 192.168.100.200:/var/nfs/exports /mnt/nfs
+</span><span class="no">SHELL</span>
+  <span class="k">end</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">define</span> <span class="s1">'server'</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span>      <span class="o">=</span> <span class="s1">'bento/ubuntu-18.04'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">hostname</span> <span class="o">=</span> <span class="s1">'server000'</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="n">ip</span><span class="ss">:"192.168.100.200"</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="o">&lt;&lt;-</span><span class="no">SHELL</span><span class="sh">
+apt install -y nfs-kernel-server
+mkdir -p /var/nfs/exports
+chown nobody.nogroup /var/nfs/exports
+echo '/var/nfs/exports 192.168.100.0/24(rw,sync,fsid=0,crossmnt,no_subtree_check,insecure,all_squash)' &gt; /etc/exports
+exportfs -ra
+</span><span class="no">SHELL</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h4 id="再現の手順">再現の手順</h4>
+
+<h5 id="1-nfs-クライアントでの手順">1. NFS クライアントでの手順</h5>
+
+<p>node のコードは以下のような内容です。sleep するだけのコードを用意します。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">sleep</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">sleep</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">sleep</span><span class="p">.</span><span class="nx">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</code></pre></div>
+<p>次に、node の stdout に NFSv3 のファイルをリダイレクトして起動するスクリプトを用意します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/bash</span>
+
+<span class="nb">exec </span>1&gt; /mnt/nfs/stdout.txt
+<span class="nb">exec </span>node main.js
+</code></pre></div>
+<p>unshare コマンドを使って node プロセスを起動し PID = 1 で起動します。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>unshare <span class="nt">-fp</span> <span class="nt">--mount-proc</span> ./launch-node.sh 
+</code></pre></div>
+<h5 id="2-nfs-サーバ-での手順">2. NFS サーバ での手順</h5>
+
+<p>NFS クライアント側の node 起動と同時に、NFS サーバ側で ファイルを削除します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>sudo rm -rfv /var/nfs/exports/*.txt
+</code></pre></div>
+<h5 id="3-nfs-クライアント-での手順">3. NFS クライアント での手順</h5>
+
+<p>node プロセスが sleep から起床し、プロセスが停止する過程で general protection fault を起こします。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>vagrant@client000:~$ sudo unshare -fp --mount-proc ./launch-node.sh 
+node[1]: ../src/node.cc:599:void node::ResetStdio(): Assertion `((*__errno_location ())) == (9)' failed.
+ 1: 0xa07f90 node::Abort() [node]
+ 2: 0xa0800e  [node]
+ 3: 0x9d4b9c node::ResetStdio() [node]
+ 4: 0xa4b3ce node::NodeMainInstance::Run() [node]
+ 5: 0x9d9228 node::Start(int, char**) [node]
+ 6: 0x7f3a912bbb97 __libc_start_main [/lib/x86_64-linux-gnu/libc.so.6]
+ 7: 0x977335  [node]
+Segmentation fault
+</code></pre></div>
+<p>dmesg は下記の通りです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[ 9705.959202] traps: node[7479] general protection ip:7f3a912da8f0 sp:7ffc7674b740 error:0 in libc-2.27.so[7f3a9129a000+1e7000]
+[ 9705.959210] potentially unexpected fatal signal 11.
+[ 9705.959212] CPU: 0 PID: 7479 Comm: node Tainted: G           OE    4.15.0-29-generic #31-Ubuntu
+[ 9705.959213] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[ 9705.959216] RIP: 0033:0x7f3a912da8f0
+[ 9705.959216] RSP: 002b:00007ffc7674b740 EFLAGS: 00010246
+[ 9705.959218] RAX: 0000000000000004 RBX: 0000000001e12cd0 RCX: 0000000000000000
+[ 9705.959219] RDX: 0000000000000000 RSI: 00007ffc7674b620 RDI: 0000000000000002
+[ 9705.959220] RBP: 00007ffc7674b870 R08: 0000000000000000 R09: 00007ffc7674b620
+[ 9705.959220] R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000001
+[ 9705.959221] R13: 0000000002c8dd58 R14: 84bda12f684bda13 R15: 0000000002c8dd18
+[ 9705.959222] FS:  00007f3a92605780(0000) GS:ffff8f1f7fc00000(0000) knlGS:0000000000000000
+[ 9705.959223] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 9705.959224] CR2: 000000000286496c CR3: 0000000038a60005 CR4: 00000000000606f0
+</code></pre></div>
+<h4 id="node-プロセスが-pid--1-">node プロセスが PID = 1 !</h4>
+
+<p>引き続き、再現をとりながら社内の Slack #kernel チャンネルでディスカッションを続けていたところ、以下の資料に辿り着きました。</p>
+
+<ul>
+  <li><a href="Docker%20で%20node.js%20を動かすときは%20PID%201%20にしてはいけない%20-%20ngzmのブログ">Docker で node.js を動かすときは PID 1 にしてはいけない - ngzmのブログ</a></li>
+  <li><a href="https://speakerdeck.com/superbrothers/pid1-ha-kanerukara-te-bie-xi-isareterututeben-dang-desuka">PID1 は、カーネルから 特別扱いされてるって本当ですか？ -  Kazuki Suda / Docker Meetup Tokyo #6</a></li>
+</ul>
+
+<p>これを読み、namespace を切って PID 1 で動かした場合に、abort(3) の general protection fault を招く挙動になるのでは? と閃きました</p>
+
+<p>abort(3) の実装は、SIGABRT のシグナルハンドラをクリアしてから自プロセスに kill(2) + SIGABRT を飛ばして停止を試みます。namespace 内の PID 1 のプロセスとして動いている場合は SIGABRT が無視されることになり、ABORT_INSTRUCTION  = HLT 命令で停止を試みるステージに達すると考えられます。</p>
+
+<h4 id="vagrant-での再現2">Vagrant での再現(2)</h4>
+
+<p>node プロセスと NFS を切りはなして、ただ単に abort するだけのコードを用意して再現を試みます。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>これを <code>sudo -f unshare -fp --mount-proc ./abort</code> で unshare して pid = 1 として実行すると再現がとれます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Jun  9 14:17:34 client000 kernel: [17269.995167] traps: a.out[7613] general protection ip:7f6bfe6ac8f0 sp:7ffcffdd5430 error:0 in libc-2.27.so[7f6bfe66c000+1e7000]
+Jun  9 14:17:34 client000 kernel: [17269.995173] potentially unexpected fatal signal 11.
+Jun  9 14:17:34 client000 kernel: [17269.995175] CPU: 0 PID: 7613 Comm: a.out Tainted: G           OE    4.15.0-29-generic #31-Ubuntu
+Jun  9 14:17:34 client000 kernel: [17269.995175] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+Jun  9 14:17:34 client000 kernel: [17269.995178] RIP: 0033:0x7f6bfe6ac8f0
+Jun  9 14:17:34 client000 kernel: [17269.995178] RSP: 002b:00007ffcffdd5430 EFLAGS: 00010246
+Jun  9 14:17:34 client000 kernel: [17269.995179] RAX: 0000000000000004 RBX: 0000000000000000 RCX: 0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995180] RDX: 0000000000000000 RSI: 00007ffcffdd5310 RDI: 0000000000000002
+Jun  9 14:17:34 client000 kernel: [17269.995181] RBP: 00007ffcffdd5560 R08: 0000000000000000 R09: 00007ffcffdd5310
+Jun  9 14:17:34 client000 kernel: [17269.995181] R10: 0000000000000008 R11: 0000000000000246 R12: 000055c5be03e540
+Jun  9 14:17:34 client000 kernel: [17269.995182] R13: 00007ffcffdd5640 R14: 0000000000000000 R15: 0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995183] FS:  00007f6bfec7b4c0(0000) GS:ffff8f1f7fc00000(0000) knlGS:0000000000000000
+Jun  9 14:17:34 client000 kernel: [17269.995184] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Jun  9 14:17:34 client000 kernel: [17269.995184] CR2: 000055691ff61180 CR3: 000000003b37e006 CR4: 00000000000606f0
+</code></pre></div>
+<p>今回追いかけてきた abort(3) が general protection fault を起こす最小の再現 です。</p>
+
+<p>コアを採取して gdb でソースを確かめます。107行目は ABORT_INSTRUCTION の呼び出しで、確かに合っていそうです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(gdb) bt
+#0  __GI_abort () at abort.c:107
+#1  0x00005581f8728653 in main ()
+</code></pre></div>
+<div class="highlight"><pre class="highlight c"><code> <span class="mi">96</span>   <span class="cm">/* Try again.  */</span>
+ <span class="mi">97</span>   <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+ <span class="mi">98</span>     <span class="p">{</span>
+ <span class="mi">99</span>       <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+<span class="mi">100</span>       <span class="n">raise</span> <span class="p">(</span><span class="n">SIGABRT</span><span class="p">);</span>
+<span class="mi">101</span>     <span class="p">}</span>
+<span class="mi">102</span>   
+<span class="mi">103</span>   <span class="cm">/* Now try to abort using the system specific command.  */</span>
+<span class="mi">104</span>   <span class="k">if</span> <span class="p">(</span><span class="n">stage</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+<span class="mi">105</span>     <span class="p">{</span> 
+<span class="mi">106</span>       <span class="o">++</span><span class="n">stage</span><span class="p">;</span>
+<span class="mi">107</span>       <span class="n">ABORT_INSTRUCTION</span><span class="p">;</span> <span class="err">👈</span>
+<span class="mi">108</span>     <span class="p">}</span>
+<span class="mi">109</span> 
+</code></pre></div>
+<p>( unshare で起動したバイナリのシンボルを gdb で解決できないのはなぜだろうな ?  … )</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>node プロセスが起こした general protection fault を端緒に、abort(3) の実装からカーネル、CPU、コンテナまで潜り込み、トラブルを追いかけた事例を紹介しました。node , NFSv3, コンテナ (pid namespace), abort(3) の実装と、いろいろな要素が合体したキメラのような問題でした。</p>
+
+<p>本エントリのようなトラブルシューティングでは、各種ツールを組み合わせてプロセスの挙動を探り、エビデンスとなるログやトレースをとり、ソースやドキュメントを読み、再現をとり、挙動の裏付けをとり、という地道な作業の積み重ねで問題を打開します。すんなりと問題に至れたようですが、泥くさい手作業での調査や検証でもかなりの時間を費やしています。</p>
+
+<p>本エントリを読んだ方に「こんなツールあるんだ」「こういう挙動は知らなかった」「もっといい方法あるよ」「ここ、もっと調べて欲しい」 と何かしらの感想を喚起できればと思います。</p>
+
+<h2 id="謝辞">謝辞</h2>
+
+<p>本エントリの pull request レビューで、不明瞭だった点にツッコミをいれて最後の詰めを促してくれてた @udzura さんに感謝します。</p>
+
+<h2 id="リンクリファレンス">リンク・リファレンス</h2>
+
+<ul>
+  <li><a href="https://github.com/haconiwa/haconiwa">haconiwa/haconiwa</a></li>
+  <li><a href="https://linuxjm.osdn.jp/html/LDP_man-pages/man3/abort.3.html">linuxjm.osdn.jp abort(3)</a></li>
+  <li><a href="https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf:image=https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf">IA-32 インテル® アーキテクチャ ソフトウェア・デベロッパーズ・ マニュアル 中巻 A: 命令セット・リファレンス A-M</a></li>
+  <li><a href="https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol3_i.pdf:image=https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol3_i.pdf">IA-32 インテル® アーキテクチャ ソフトウェア・デベロッパーズ・ マニュアル 下巻: システム・プログラミング・ガイド</a></li>
+  <li><a href="https://github.com/nodejs/node/blob/0e5b975873e88d9276dd8f1e1d94b8f66e741155/src/node.cc#L690:embed:cite">node.js - node::ResetStdio()</a></li>
+  <li><a href="https://github.com/haconiwa/haconiwa/blob/1fc4aa2a8e8e3f1c5ce0ab7a42dd9fb652eaa490/mrblib/haconiwa/runner.rb#L669-L677">Haconiwaでのコンテナのfd開き直しの実装箇所</a></li>
+  <li><a href="https://kazuhira-r.hatenablog.com/entry/2018/10/06/004855">Ubuntu Linux 18.04 LTSで、NFSの設定を行う - kazuhira-r.hatenablog.com</a></li>
+  <li><a href="https://ngzm.hateblo.jp/entry/2017/08/22/185224">Docker で node.js を動かすときは PID 1 にしてはいけない - ngzmのブログ</a></li>
+  <li><a href="https://speakerdeck.com/superbrothers/pid1-ha-kanerukara-te-bie-xi-isareterututeben-dang-desuka">PID1 は、カーネルから 特別扱いされてるって本当ですか？ -  Kazuki Suda / Docker Meetup Tokyo #6</a></li>
+  <li><a href="http://tss.iki.fi/nfs-coding-howto.html#estale">NFS Coding HOWTO - Timo Sirainen</a></li>
+</ul>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/features/graduate/?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="https://recruit.pepabo.com/images/shared/banner_feature_graduate.png?20221117" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2020/06/11/troubule-shooting-node-abort/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+    <li class="social-buttons__item">
+      <a data-pocket-label="pocket" data-pocket-count="horizontal" class="pocket-btn" data-lang="en"></a>
+      <script>
+        !function (d, i) {
+          if (!d.getElementById(i)) {
+            var j = d.createElement("script");
+            j.id = i;
+            j.src = "https://widgets.getpocket.com/v1/j/btn.js?v=1";
+            var w = d.getElementById(i);
+            d.body.appendChild(j);
+          }
+        }(document, "pocket-btn-js");
+      </script>
+    </li>
+  </ul>
+</div>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/6c6b60f0440e030040a9141cab781ed0?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E4%BC%8A%E8%97%A4%E6%B4%8B%E4%B9%9F/">伊藤洋也</a>
+          </p>
+          <p class="article__author-description">
+            低レイヤでのトラブルシューティングが得意です
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/hiboma" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://www.facebook.com/hiboma" class="article__author-link article__author-link--facebook" target="_blank">              <i class="fa fa-facebook fa-fw"></i>
+</a><a href="https://github.com/hiboma" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/2cf373725ded741824c50fd571eda6e1?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/udzura/">udzura</a>
+          </p>
+          <p class="article__author-description">
+            Rubyとシステムプログラミングが好きです
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/udzura" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://www.facebook.com/uchio.kondo" class="article__author-link article__author-link--facebook" target="_blank">              <i class="fa fa-facebook fa-fw"></i>
+</a><a href="https://github.com/udzura" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/webp-conversion-postmortem/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              画像配信を WebP にした際にやったことと困ったこと
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/custom-elements-with-state/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Vue.jsで作ったCustomElementの永続的な状態を包括的に管理する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/27/glouc-logging-copy/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-27
+            </span>
+            <span class="sidebar__list-title">
+              Google Cloudのログバケットにある過去のログをCloud Storageバケットに保存する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/22/yapc-hiroshima/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-22
+            </span>
+            <span class="sidebar__list-title">
+              YAPC::Hiroshima 2024で登壇してきました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/19/merit-of-automation/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-19
+            </span>
+            <span class="sidebar__list-title">
+              日頃の作業を自動化して得られたもの
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/06/snipeit-basic/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-06
+            </span>
+            <span class="sidebar__list-title">
+              資産管理ツールSnipe-ITの基本的な機能
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2024/03/01/findy-incident-management-lunch-lt/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2024-03-01
+            </span>
+            <span class="sidebar__list-title">
+              Findy 主催 インシデントマネジメント 事態収拾のための取り組みに迫る Lunch LT に登壇しました
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (81)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (70)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (45)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (36)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (33)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (21)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/ruby/" class="sidebar__tags-link">ruby (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (13)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/セキュリティ/" class="sidebar__tags-link">セキュリティ (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/lolipop/" class="sidebar__tags-link">lolipop (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/go/" class="sidebar__tags-link">go (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/リモートワーク/" class="sidebar__tags-link">リモートワーク (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/tdd/" class="sidebar__tags-link">TDD (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/heteml/" class="sidebar__tags-link">heteml (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/php/" class="sidebar__tags-link">php (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+    <p class="credit__rights">
+      © 2015 - 2024 <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a> All Rights Reserved.
+    </p>
+  </div>
+</footer>
+
+
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>
