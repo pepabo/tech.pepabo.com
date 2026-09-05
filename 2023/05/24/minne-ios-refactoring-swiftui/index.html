@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>minne iOS内のUIKit+MVC構成画面をSwiftUI+MVVM構成へのリプレイスした時の振り返り - Pepabo Tech Portal</title>
+<meta content="はじめまして、minne事業部 プロダクト開発チームでiOSエンジニアをしているふみーと申します。
+
+ご縁がありまして、2023年1月よりジョインして、早いもので4ヶ月が経とうとしています。
+
+オンボーディング期間を経てチームへ合流し..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2023/05/24/minne-ios-refactoring-swiftui/eye_catch.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@fumiyasac" name="twitter:creator" />
+<meta content="minne iOS内のUIKit+MVC構成画面をSwiftUI+MVVM構成へのリプレイスした時の振り返り - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="はじめまして、minne事業部 プロダクト開発チームでiOSエンジニアをしているふみーと申します。
+
+ご縁がありまして、2023年1月よりジョインして、早いもので4ヶ月が経とうとしています。
+
+オンボーディング期間を経てチームへ合流し..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"minne iOS内のUIKit+MVC構成画面をSwiftUI+MVVM構成へのリプレイスした時の振り返り","author":{"@type":"Person","name":"fumy"},"datePublished":"2023-05-24T00:00:00+09:00","image":"https://tech.pepabo.com/blog/2023/05/24/minne-ios-refactoring-swiftui/eye_catch.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-minne-ios-refactoring-swiftui">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/swiftui/" class="tag-default">SwiftUI</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+      <a href="/tags/engineering/" class="tag-default">engineering</a>
+  </div>
+  <time class="article__time" datetime="2023-05-24">
+    2023-05-24
+  </time>
+  <h1 class="article__title">
+    <a href="/2023/05/24/minne-ios-refactoring-swiftui/">minne iOS内のUIKit+MVC構成画面をSwiftUI+MVVM構成へのリプレイスした時の振り返り</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/ios/" class="tag-default">iOS</a>
+      <a href="/tags/swiftui/" class="tag-default">SwiftUI</a>
+      <a href="/tags/mobile/" class="tag-default">mobile</a>
+      <a href="/tags/minne/" class="tag-default">minne</a>
+      <a href="/tags/engineering/" class="tag-default">engineering</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/eye_catch.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/05/24/minne-ios-refactoring-swiftui/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>はじめまして、minne事業部 プロダクト開発チームでiOSエンジニアをしている<a href="https://github.com/fumiyasac">ふみー</a>と申します。</p>
+
+<p>ご縁がありまして、2023年1月よりジョインして、早いもので4ヶ月が経とうとしています。</p>
+
+<p>オンボーディング期間を経てチームへ合流してから、既存画面をSwiftUIへ置き換える対応から始まり、時にはiOSエンジニア同士でペアでコードレビューをしたり、所属チームだけではなく他チームのエンジニアメンバーとも連携したりしながら、充実した日々を過ごすことができています。</p>
+
+<p>今回はその中で、私が初回で担当しました <strong>既存画面をSwiftUIへ置き換える対応</strong> を実施した際のポイントとその際に工夫をした点について、ご紹介ができればと思います。</p>
+
+<h2 id="現在の体験をなるべく変えずに移行する準備">現在の体験をなるべく変えずに移行する準備</h2>
+
+<p>今回対応をするのは、minneの作家さんが<strong>●●円以上であれば作品の送料を無料にするための設定を実施するため</strong>の画面になります。実際の画面を確認してみましょう。</p>
+
+<p><img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/replace_sinario.png" alt="元々はUIKitをベースに作成されていた画面" /></p>
+
+<p>おっ、結構シンプルな画面と機能ですね…。</p>
+
+<p>これは実はすぐに終わってしまうのでは？とその時は感じていました。</p>
+
+<p>アーキテクチャに関する基本骨格につきましては、過去に紹介されていた<a href="https://tech.pepabo.com/2021/06/02/minne-ios-architecture/">minneのアーキテクチャに関する記事</a>等でも紹介されていたり、社内ドキュメントも豊富に用意されていた事もあったので、意外といけるだろうなと思っていたんですが、意外とそうでもない点がありました。</p>
+
+<h2 id="注意深く調べていくと出くわす仕様の落とし穴">注意深く調べていくと出くわす仕様の落とし穴</h2>
+
+<p>実際にBeta版として配信されているiOSアプリで改めて仕様を確認をしてみると、これは意外にも落とし穴になりそうだと感じる部分がありました。という訳で、改めて画面全体での仕様をきちんと整理してみるとこの様になりました。</p>
+
+<p><strong>【細かな仕様（画面での振る舞い）を言語化したものはこちら💁‍♂️】</strong></p>
+
+<p>① 送料無料設定画面を表示した際の <strong>既に送料無料金額を設定しているか？</strong> を元にした画面状態を切り替わりは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がない:
+  - 画面下部に「登録するボタン」が非活性状態で表示されている。
+  - 金額入力エリアが空の状態である。
+(2) 送料無料金額設定がある:
+  - 画面下部に「解除するボタン」・「保存するボタン」が活性状態で表示されている。
+  - 金額入力エリアに既に設定されている送料無料金額が反映されている。
+</code></pre></div>
+<p>② テキスト入力エリアで金額を入力した場合の振る舞いは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がない:
+  - 1文字以上の金額入力が発生した場合に「登録するボタン」が活性状態に変更される。
+  - 金額入力を空に変更した場合に「登録するボタン」が非活性状態に変更される。
+(2) 送料無料金額設定がある:
+  - 1文字以上の金額入力が発生した場合に「保存するボタン」が活性状態に変更される。
+  - 金額入力を空に変更した場合に「保存するボタン」が非活性状態に変更される。
+</code></pre></div>
+<p>③ 金額を入力した後に、新規追加・更新処理を実施した際の画面の振る舞いは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がない（新規追加）:
+  - 新規登録処理が成功した場合は、成功した旨のToast表示がされた後に、画面下部に「解除するボタン」・「保存するボタン」が活性状態で表示されている形に切り替わる。
+  - 新規登録処理が失敗した場合は、エラーが発生旨のToast表示がされる。
+(2) 送料無料金額設定がある（更新）:
+  - 更新処理が成功した場合は、成功した旨のToast表示がされた後に、画面下部に「解除するボタン」・「保存するボタン」が活性状態で表示されている。
+  - 更新処理が失敗した場合は、エラーが発生旨のToast表示がされる。
+</code></pre></div>
+<p>④ すでに送料無料金額設定がある状態から、解除処理を実施した際の画面の振る舞いは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がある場合のみ:
+  - 解除処理が成功した場合は、成功した旨のToast表示がされた後に、画面下部に「登録するボタン」が非活性状態で表示されている。
+  - 解除処理が失敗した場合は、エラーが発生旨のToast表示がされる。
+</code></pre></div>
+<p>⑤ <strong>現在登録されている送料無料設定と入力した送料が異なる状態</strong> で、設定画面に戻ろうとした場合の振る舞いは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がない:
+  - 全ての商品が送料無料になる旨のアラートが表示される。
+    - 「キャンセル」を選択時は、ダイアログを消すだけ。
+    - 「破棄する」を選択時は、ダイアログを消した後に、入力値を保存せずに設定画面へ戻る。
+(2) 送料無料金額設定がある:
+  - 「キャンセル」を選択時は、ダイアログを消すだけ。
+    - 「破棄する」を選択時は、ダイアログを消した後に、入力値を保存せずに設定画面へ戻る。
+</code></pre></div>
+<p>⑥ <strong>0を入力した状態</strong> で、新規追加・更新処理を実施した際の画面の振る舞いは下記の通りになります。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>(1) 送料無料金額設定がない:
+  - 全ての商品が送料無料になる旨のアラートが表示される。
+    - 「キャンセル」を選択時は、ダイアログを消すだけ。
+    - 「保存する」を選択時は、ダイアログを消した後に新規追加処理を実施する。
+(2) 送料無料金額設定がある:
+  - 「キャンセル」を選択時は、ダイアログを消すだけ。
+    - 「保存する」を選択時は、ダイアログを消した後に更新処理を実施する。
+</code></pre></div>
+<p>⑦ <strong>ネットワークエラー等、NotFound以外のエラーが発生した</strong> 場合は、エラーを示すToast表示後に前の画面へ戻ります。</p>
+
+<p><strong>【現状の仕様を整理する作業から立てた方針と気付き】</strong></p>
+
+<p>あれ、これは画面以上に機能が意外と複雑なのでは…ということが再確認できました。（ええ、完全に油断してしまいました。）</p>
+
+<p>今回の改修対応におけるゴールは、元々はUIKit + MVCで作成された画面をなるべく体験を変えない様にSwiftUI + MVVM構成へ変更された状態となっていることなので、仕様の落とし穴といえる部分には注意を払いながら実装を進めていく必要があると思います。というわけで一網打尽と行きたい気持ちを抑えつつも、下記の様なStepを踏んで改修をする方針を取りました。</p>
+
+<p>※ minneは今年で11周年を迎えた歴史あるアプリでもあるので、諸般の事情により対応が後手に回り既存のUIKit + MVCのままとなってしまった画面も存在しています。とはいえ、今後のiOSアプリにおけるアーキテクチャや実装に関する方針があるので、その点は個人的にも心強さを感じております。</p>
+
+<h2 id="step1-画面要素をswiftui化">Step1. 画面要素をSwiftUI化</h2>
+
+<p>まずは、既存のUIをStoryboard &amp; UIViewControllerで作られている画面をSwiftUIへ置き換える場合を考えてみます。今回の改修方針のサマリーをまとめると下記の様になります。</p>
+
+<p><img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/convert_swiftui.png" alt="元々はUIKit（UITableViewController）をベースに作成されていた画面" /></p>
+
+<p>既存画面のデザインとできるだけ同じ状態をSwiftUIで再現をしてみた際に感じた点としては、慣れるまでは少し時間はかかりましたが、（画面遷移やバージョンに依る差異等といった課題はありますが）慣れてくるとパズルを解く様な感覚で作ることができた様に思います。</p>
+
+<h2 id="step2-mvc実装箇所をmvvm実装へ置き換え">Step2. MVC実装箇所をMVVM実装へ置き換え</h2>
+
+<p>次に元々ViewController内に記載されていたAPI通信処理に関するロジックへ置き換える場合を考えてみます。minne iOSではCombine Frameworkを利用したMVVMアーキテクチャを採用しています。改修方針のサマリーをまとめると下記の様になります。</p>
+
+<p><img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/convert_domain_logic.png" alt="元々の実装をMVVMの形にするための前準備" /></p>
+
+<p>この方針を踏まえて、以前はクロージャーでViewControllerへ直接記載していた処理を<code>Requester</code>クラスと<code>Repository</code>クラスへという形で下記の様に分離することができました。</p>
+
+<p><strong>【Requester処理】</strong></p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FreeShippingSettingRequesterProtocol</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">getFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">GETFreeShippingSettingEndpoint</span><span class="o">.</span><span class="kt">Success</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">postFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">putFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">deleteFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">DELETEFreeShippingSettingEndpoint</span><span class="o">.</span><span class="kt">Success</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">FreeShippingSettingRequester</span><span class="p">:</span> <span class="kt">FreeShippingSettingRequesterProtocol</span> <span class="p">{</span>
+
+    <span class="c1">// MARK: - Property</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">apiClient</span><span class="p">:</span> <span class="kt">APIClientProtocol</span>
+
+    <span class="c1">// MARK: - Initializer</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">apiClient</span><span class="p">:</span> <span class="kt">APIClientProtocol</span> <span class="o">=</span> <span class="kt">APIClient</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">apiClient</span> <span class="o">=</span> <span class="n">apiClient</span>
+    <span class="p">}</span>
+
+    <span class="c1">// MARK: - Function</span>
+
+    <span class="kd">func</span> <span class="nf">getFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">GETFreeShippingSettingEndpoint</span><span class="o">.</span><span class="kt">Success</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">GETFreeShippingSettingEndpoint</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">apiClient</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="nv">endpoint</span><span class="p">:</span> <span class="n">endpoint</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">mapError</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+                <span class="kt">NetworkError</span><span class="p">((</span><span class="n">error</span> <span class="k">as?</span> <span class="kt">APIError</span><span class="p">)</span> <span class="p">??</span> <span class="o">.</span><span class="n">unknown</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">postFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">POSTFreeShippingSettingEndpoint</span><span class="p">(</span><span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="n">freeShippingSetting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">apiClient</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="nv">endpoint</span><span class="p">:</span> <span class="n">endpoint</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">NetworkError</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">putFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">PUTFreeShippingSettingEndpoint</span><span class="p">(</span><span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="n">freeShippingSetting</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">apiClient</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="nv">endpoint</span><span class="p">:</span> <span class="n">endpoint</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">NetworkError</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">deleteFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">NetworkPublisher</span><span class="o">&lt;</span><span class="kt">DELETEFreeShippingSettingEndpoint</span><span class="o">.</span><span class="kt">Success</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">DELETEFreeShippingSettingEndpoint</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">apiClient</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="nv">endpoint</span><span class="p">:</span> <span class="n">endpoint</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">NetworkError</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>【Repository処理】</strong></p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">FreeShippingSettingRepositoryProtocol</span><span class="p">:</span> <span class="kt">AutoMockable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span>
+    <span class="kd">func</span> <span class="nf">deleteFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">getFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">registerFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+    <span class="kd">func</span> <span class="nf">updateFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span>
+<span class="p">}</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="kt">FreeShippingSettingRepository</span><span class="p">:</span> <span class="kt">FreeShippingSettingRepositoryProtocol</span> <span class="p">{</span>
+
+    <span class="c1">// MARK: - Property</span>
+
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">requester</span><span class="p">:</span> <span class="kt">FreeShippingSettingRequesterProtocol</span>
+
+    <span class="c1">// MEMO: Repository内部の処理において中継地点となる変数</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">_freeShippingSetting</span> <span class="o">=</span> <span class="kt">CurrentValueSubject</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+
+    <span class="c1">// MEMO: CurrentValueSubject&lt;FreeShippingSetting?, Never&gt; 👉 AnyPublisher&lt;FreeShippingSetting?, Never&gt;へ変換</span>
+    <span class="c1">// ※ 値変化に対応したView状態更新処理をするために利用する部分</span>
+    <span class="k">var</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="n">_freeShippingSetting</span><span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1">// MARK: - Initializer</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">requester</span><span class="p">:</span> <span class="kt">FreeShippingSettingRequesterProtocol</span> <span class="o">=</span> <span class="kt">FreeShippingSettingRequester</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">requester</span> <span class="o">=</span> <span class="n">requester</span>
+    <span class="p">}</span>
+
+    <span class="c1">// MARK: - Function</span>
+
+    <span class="kd">func</span> <span class="nf">deleteFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="n">requester</span><span class="o">.</span><span class="nf">deleteFreeShippingSetting</span><span class="p">()</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">RepositoryError</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1">// MEMO: NotFoundの時は「設定されていない」、0の時は「すべての作品が送料無料」としてViewModel側で扱う</span>
+    <span class="c1">// freeShippingSetting: AnyPublisher&lt;FreeShippingSetting?, Never&gt;をViewModel内の処理で利用する形にする</span>
+    <span class="kd">func</span> <span class="nf">getFreeShippingSetting</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="n">requester</span><span class="o">.</span><span class="nf">getFreeShippingSetting</span><span class="p">()</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">RepositoryError</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">handleEvents</span><span class="p">(</span><span class="nv">receiveOutput</span><span class="p">:</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="n">freeShippingSetting</span> <span class="k">in</span>
+                <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="n">_freeShippingSetting</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="n">freeShippingSetting</span><span class="p">)</span>
+            <span class="p">})</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">registerFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="n">requester</span><span class="o">.</span><span class="nf">postFreeShippingSetting</span><span class="p">(</span><span class="n">freeShippingSetting</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">RepositoryError</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">updateFreeShippingSetting</span><span class="p">(</span><span class="n">_</span> <span class="nv">freeShippingSetting</span><span class="p">:</span> <span class="kt">FreeShippingSetting</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">RepositoryPublisher</span><span class="o">&lt;</span><span class="kt">Void</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="n">requester</span><span class="o">.</span><span class="nf">putFreeShippingSetting</span><span class="p">(</span><span class="n">freeShippingSetting</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">mapError</span><span class="p">(</span><span class="kt">RepositoryError</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>今回は幸いにもシンプルな追加・更新・削除機能のみで構成だったことや、元々RxSwift / RxJavaを利用した開発経験が多かった事もあり、この部分はすんなりと行けた様に思います。</p>
+
+<h2 id="step3-swiftui化した画面要素とviewmodelを結合する">Step3. SwiftUI化した画面要素とViewModelを結合する</h2>
+
+<p>ここまで来ればいよいよ大詰め、画面要素と画面の振る舞いを含めたViewModelクラスを結合していくことになります。SwiftUI化した画面では、配置しているView要素と <code>@Published</code> で定義した値または、これを利用した <code>Computed Property</code> を双方向バインディングをする方針を取っています。なるべくはSwiftUI製の画面に寄せていく基本方針としていますが、画面によってはUIKit製の画面の方が実装によってはその強みを活かせる場合もあるので、既存機能改修・新規追加等が必要になったタイミングで改修方針を決めながら進めていく様にしています。</p>
+
+<p><img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/implement_viewmodel.png" alt="画面要素とロジックを組み合わせていく際のポイント" /></p>
+
+<p>今回は画面要素自体もSwiftUIのお陰もあり、画面に必要な要素も少なくかつシンプルに済ませる事ができました。とはいえ、既存仕様を踏襲した際に <strong>「入力欄に0を入力した場合」</strong> ＆ <strong>「入力値変更を反映せずに前の画面へ戻る場合」</strong> には、ユーザーへの注意を促すダイアログを表示する必要があったので、この様に条件次第でViewModel処理内に分岐が必要となる場合がありました。</p>
+
+<p>基本的には、REST API or GraphQLを利用した機能が中心となるものの、この処理が実行された際にView側はどの状態にあって欲しいかという観点を常に持ち続ける事が、当たり前ではあれども大切だと改めて痛感した次第です。</p>
+
+<h2 id="step4-この機会にviewmodel側のunittestを整備">Step4. この機会にViewModel側のUnitTestを整備</h2>
+
+<p>ようやく無事に、既存画面処理をSwiftUI+MVVM化する事ができました。画面要素自体はシンプルな形で済んだものの、<strong>注意深く調べていくと出くわす仕様の落とし穴</strong> は気になるものです。</p>
+
+<p>そして、自分への自戒を込めてUnitTestをしっかりと書こうと思いました。基本的にはCombineをベースとした処理となっているため、ViewModel側のUnitTestにおいては <a href="https://github.com/groue/CombineExpectations">CombineExpectations</a> を利用することで、<code>@Published</code> で定義した変数における値変化を監視可能な形としている点が特徴的な点だと感じました。(今回紹介したもの以外では <a href="https://github.com/pointfreeco/combine-schedulers">combine-schedulers</a> 等も今後は候補かもしれません。）　</p>
+
+<p><img src="/blog/2023/05/24/minne-ios-refactoring-swiftui/implement_unittest.png" alt="テストコードで確認したいこと" /></p>
+
+<p>例えば、送料無料金額が未設定の状態からユーザーが金額を入力し、その後に追加ボタン押下することで、サーバー側で保持する値 ＆ ViewModel内部に保持する、現在金額の値が反映されるテストコードは下記の様にできます。変更後の値を見るというよりも、前後の変化を見るという感じのイメージを持って頂くと理解がしやすいと思います。）</p>
+
+<div class="highlight"><pre class="highlight swift"><code><span class="c1">// 👉 CombineExpectationsで提供されているRecorderの雛形</span>
+<span class="k">var</span> <span class="nv">currentFreeShippingSettingRecorder</span><span class="p">:</span> <span class="kt">Recorder</span><span class="o">&lt;</span><span class="kt">FreeShippingSetting</span><span class="p">?,</span> <span class="kt">Never</span><span class="o">&gt;!</span>
+
+<span class="c1">// （補足）こちらは実際のテストケースの抜粋になります。</span>
+<span class="c1">// ※ beforeEachで対象の値を記録対象に設定する / afterEachでnilに戻す</span>
+<span class="c1">// 「変数:sut」は、UnitTest対象であるFreeShippingSettingViewModelクラスへMockを適用したもの</span>
+
+<span class="nf">describe</span><span class="p">(</span><span class="s">"add or edit inputFreeShippingSettingAmount value"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">newFreeShippingSetting</span> <span class="o">=</span> <span class="kt">FreeShippingSetting</span><span class="p">(</span><span class="nv">amount</span><span class="p">:</span> <span class="mi">8_000</span><span class="p">)</span>
+    <span class="n">beforeEach</span> <span class="p">{</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">sut</span><span class="o">.</span><span class="nf">addOrEditButtonDidTap</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nf">context</span><span class="p">(</span><span class="s">"add inputFreeShippingSettingAmount value success"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">beforeEach</span> <span class="p">{</span>
+            <span class="c1">// MEMO: 本番のAPI処理結果を想定したMockを適用する</span>
+            <span class="n">repository</span><span class="o">.</span><span class="n">getFreeShippingSettingReturnValue</span> <span class="o">=</span> <span class="n">getFreeShippingSetting</span><span class="o">.</span><span class="n">notFound</span>
+            <span class="n">repository</span><span class="o">.</span><span class="n">registerFreeShippingSettingReturnValue</span> <span class="o">=</span> <span class="n">requestFreeShippingSetting</span><span class="o">.</span><span class="n">success</span>
+
+            <span class="c1">// MEMO: 画面ロジックや画面表示のハンドリングに関連する @Published における変化監視対象とする</span>
+            <span class="n">currentFreeShippingSettingRecorder</span> <span class="o">=</span> <span class="n">sut</span><span class="o">.</span><span class="err">$</span><span class="n">currentFreeShippingSetting</span><span class="o">.</span><span class="nf">record</span><span class="p">()</span>
+
+            <span class="c1">// MEMO: 画面表示後にTextFieldへ8000を入力した際と同様の状態を再現する</span>
+            <span class="n">sut</span><span class="o">.</span><span class="nf">onFirstAppear</span><span class="p">()</span>
+            <span class="n">sut</span><span class="o">.</span><span class="n">inputFreeShippingSettingAmount</span> <span class="o">=</span> <span class="s">"8000"</span>
+        <span class="p">}</span>
+        <span class="n">afterEach</span> <span class="p">{</span>
+            <span class="n">currentFreeShippingSettingRecorder</span> <span class="o">=</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+        <span class="nf">it</span><span class="p">(</span><span class="s">"update currentFreeShippingSetting"</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nf">subject</span><span class="p">()</span>
+
+            <span class="c1">// 意図した処理が実施されている事を確認できればOK👍</span>
+            <span class="k">let</span> <span class="nv">currentFreeShippingSettingRecorderResult</span> <span class="o">=</span> <span class="k">try</span> <span class="k">self</span><span class="o">.</span><span class="nf">wait</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">currentFreeShippingSettingRecorder</span><span class="o">.</span><span class="n">availableElements</span><span class="p">)</span>
+            <span class="nf">expect</span><span class="p">(</span><span class="n">currentFreeShippingSettingRecorderResult</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="kc">nil</span><span class="p">,</span> <span class="n">newFreeShippingSetting</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>紹介した事例は実際のUnitTest内のほんの一部となりますが、取りうる画面の状態が多岐かつ複雑になるものや、複数のAPIエンドポイントを利用する必要がある画面もあるので、私自身もこの点は積極的に追加する勢いで取り組んで行きたい次第です。</p>
+
+<h2 id="その他ではどんな事をしているかを少しご紹介">その他ではどんな事をしているかを少しご紹介</h2>
+
+<p>今回紹介したものは、既存機能リファクタリングにおける一例ですが、minneではモバイルアプリも今後とも購入者様・作家様が今よりも更に利用しやすいアプリにするために今後も新機能開発や改善対応に取り組んでいく次第です。</p>
+
+<p>こちらは最近私が合間を見つけて取り組んでいる事になりますが、<strong>API開発側とモバイルアプリ開発側との連携をより上手に取るために何かできることはないか？</strong>という観点での取り組みを模索しています。</p>
+
+<p><strong>【一環として現在取り組んでいること例】</strong></p>
+
+<ul>
+  <li>以前にサーバー側の実装担当者から頂いた事項の中で、この部分は今後もハマる可能性がありそうな箇所をドキュメント化しておく</li>
+  <li>自分自身でもサーバー側の処理を把握しておきたいので、可能な限りRails側のコードリーディングを試してみる</li>
+</ul>
+
+<h2 id="現在感じている事とこれからについて">現在感じている事とこれからについて</h2>
+
+<p>まだまだ社歴は浅いですが、本当にメンバーの挑戦や取り組みを前向きに応援する雰囲気を強く感じる場面は多く、GMOペパボが掲げている「<a href="https://tech.pepabo.com/2015/11/17/pepabo-tech-blog-has-started/">いるだけで成長できる環境</a>」の風を感じています。業務内外を問わずに実施している技術的な研鑽や勉強会・カンファレンスへの登壇や参加等にも前向きな姿勢を持っているエンジニアの方々が多くいらっしゃる印象が入社前からもありましたが、この度改めてその真っ只中に身を置いてみると、平素のSlackチャンネル内での会話内や、<a href="https://tech.pepabo.com/2023/02/14/pepabo-tech-friday-2023-02/">Pepabo Tech Friday(PTF)</a>の技術共有やLT会といった社内エンジニアイベント内においても、多彩な知見や技術トピックが展開されているので、とても刺激を頂けている実感を改めて肌で感じる事ができています。</p>
+
+<p>また、オンボーディング期間中にも積極的な皆様の技術的なサポートや様々な交流機会があったために、スムーズがキャッチアップができましたので、今後の業務においても今度は自分が少しでも何かお役に立つ事ができればという気持ちと初心を忘れずに取り組んでいきたいと感じている次第です。</p>
+
+<p>現在はiOSアプリ開発をメインとしていますが、1つの技術に特化してきた訳ではなく、過去にはPHPやRailsの開発経験やAndroidアプリ開発経験も多少はありましたので、今後はiOSアプリ開発を軸の中心に置きつつも、関連が深い領域についても少しずつ前向きに実践できればと思います。</p>
+
+<p>とはいえ…モバイルアプリ側もやりたい事や取り組みたい課題は沢山あるものの、まだまだ人手が足りない現実もあります。ですので「この記事を読んで面白かったです」・「興味があります」・「挑戦してみたいです！」という方がいらっしゃいましたら、是非とも採用情報からご応募頂けますと幸いです。そしてカジュアル面談等も受け付けておりますので、お待ちしております！</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/graduate?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="/images/banner_feature_graduate.png" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2023/05/24/minne-ios-refactoring-swiftui/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+        
+    <section class="related-articles">
+      <h3 class="related-articles__title">関連記事</h3>
+      <div class="related-articles__list">
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/09/02/minne-ai-native-org-2026/images/eyecatch.png" alt="AI前提のプロダクト開発組織を目指して、minneの2026年の現在地" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-09-02
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/09/02/minne-ai-native-org-2026/" class="related-articles__title-link">AI前提のプロダクト開発組織を目指して、minneの2026年の現在地</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/minne/" class="related-articles__tag-link">minne</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/05/01/minne-order-by-limit-pitfall/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/05/01/minne-order-by-limit-pitfall/ogimage.png" alt="ORDER BY id DESC が招くインデックス誤選択 — 直近のレコードを N 件取り出すクエリを実測 約 658 倍に高速化" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-05-01
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/05/01/minne-order-by-limit-pitfall/" class="related-articles__title-link">ORDER BY id DESC が招くインデックス誤選択 — 直近のレコードを N 件取り出すクエリを実測 約 658 倍に高速化</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/minne/" class="related-articles__tag-link">minne</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/10/minne-mission-reward-architecture/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/04/10/minne-mission-reward-architecture/images/eyecatch.png" alt="minneリワードを支えるマルチクラウドアーキテクチャ" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-10
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/10/minne-mission-reward-architecture/" class="related-articles__title-link">minneリワードを支えるマルチクラウドアーキテクチャ</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/minne/" class="related-articles__tag-link">minne</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/03/04/claude-code-tech-talk/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/03/04/claude-code-tech-talk/eye-catch.jpg" alt="Claude Code実践テックトーク：asken × GMOペパボ × Omiai 3社合同LTイベントを開催しました" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-03-04
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/03/04/claude-code-tech-talk/" class="related-articles__title-link">Claude Code実践テックトーク：asken × GMOペパボ × Omiai 3社合同LTイベントを開催しました</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/minne/" class="related-articles__tag-link">minne</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+      </div>
+    </section>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/f1748dda86b7d72afd0b42d7a2c1644b?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/fumy/">fumy</a>
+          </p>
+          <p class="article__author-description">
+            minneのiOSアプリエンジニアです。不定期ですがiOS/AndroidアプリのUI実装関連の執筆や登壇もしています。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/fumiyasac" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/fumiyasac" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-02
+            </span>
+            <span class="sidebar__list-title">
+              AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              igaigaさんによるDBモデリングワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/focus-cost-schema/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/minorun-rag-agent-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-28
+            </span>
+            <span class="sidebar__list-title">
+              AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/20/tdd-workshop-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-20
+            </span>
+            <span class="sidebar__list-title">
+              t_wadaさんによる2026年度版TDDワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/12/tech-survey-2026-first-half/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-12
+            </span>
+            <span class="sidebar__list-title">
+              GMOペパボの開発体験や技術スタック 2026上期
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (93)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (82)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (58)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (47)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (44)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (40)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ai/" class="sidebar__tags-link">AI (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (26)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (24)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (23)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (20)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/go/" class="sidebar__tags-link">Go (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/tdd/" class="sidebar__tags-link">tdd (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/aws/" class="sidebar__tags-link">aws (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/dbt/" class="sidebar__tags-link">dbt (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/vibe-coding/" class="sidebar__tags-link">Vibe Coding (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ロリポップ-for-gamers/" class="sidebar__tags-link">ロリポップ! for Gamers (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/alive-project/" class="sidebar__tags-link">Alive Project (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ec/" class="sidebar__tags-link">EC (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/キャリア/" class="sidebar__tags-link">キャリア (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/architecture/" class="sidebar__tags-link">architecture (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/nuxt/" class="sidebar__tags-link">Nuxt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/github/" class="sidebar__tags-link">github (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/unleash/" class="sidebar__tags-link">Unleash (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/swift/" class="sidebar__tags-link">Swift (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/sql/" class="sidebar__tags-link">SQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ユニットテスト/" class="sidebar__tags-link">ユニットテスト (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/バージョンアップ/" class="sidebar__tags-link">バージョンアップ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/競技プログラミング/" class="sidebar__tags-link">競技プログラミング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/業務効率化/" class="sidebar__tags-link">業務効率化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/kotlin/" class="sidebar__tags-link">Kotlin (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/コミュニティ/" class="sidebar__tags-link">コミュニティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/カンファレンス/" class="sidebar__tags-link">カンファレンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/kaigi-on-rails/" class="sidebar__tags-link">Kaigi on Rails (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/colorme/" class="sidebar__tags-link">colorme (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/wordpress/" class="sidebar__tags-link">wordpress (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/claude-code/" class="sidebar__tags-link">claude code (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/space/" class="sidebar__tags-link">space (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/gemini/" class="sidebar__tags-link">Gemini (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mysql/" class="sidebar__tags-link">MySQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/事業開発部/" class="sidebar__tags-link">事業開発部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/パフォーマンスチューニング/" class="sidebar__tags-link">パフォーマンスチューニング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/アーキテクチャ/" class="sidebar__tags-link">アーキテクチャ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/next-js/" class="sidebar__tags-link">Next.js (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/flaky-test/" class="sidebar__tags-link">flaky test (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ci/" class="sidebar__tags-link">ci (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/cloud-workflows/" class="sidebar__tags-link">Cloud Workflows (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/llm/" class="sidebar__tags-link">LLM (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/アクセシビリティ/" class="sidebar__tags-link">アクセシビリティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

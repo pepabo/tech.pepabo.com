@@ -1,0 +1,2511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pepabo Tech Portal</title>
+    <link>https://tech.pepabo.com/</link>
+    <description>GMOペパボのエンジニア・デザイナーによる技術情報のポータルサイト</description>
+    <atom:link href="https://tech.pepabo.com/feed.rss" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 02 Sep 2026 00:00:00 +0900</pubDate>
+    <item>
+      <title>AI前提のプロダクト開発組織を目指して、minneの2026年の現在地</title>
+      <link>https://tech.pepabo.com/2026/09/02/minne-ai-native-org-2026/</link>
+      <guid>https://tech.pepabo.com/2026/09/02/minne-ai-native-org-2026/</guid>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;こんにちは。SUZURI・minne事業部 minneグループにてエンジニアリングリードをしている&lt;a href="https://tech.pepabo.com/authors/kazu/"&gt;kazu&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;minneでAI前提のプロダクト開発組織づくりを進めています。これまでは個別の仕組みについて書いてきました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://zenn.dev/pepabo/articles/ai-pr-review-bottleneck"&gt;PRのレビューが追いつかない！もう人間がボトルネックなので、気合いではなく仕組みで少しずつなんとかしていく&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://zenn.dev/pepabo/articles/dd88b3698b8a84"&gt;Claude Code Actionで複数リポジトリを横断して情報を参照し調査・実装を進めてもらおう&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;整備してきたのは次の2つです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PRサイズラベルの自動付与・AIレビューによるApprove・条件付きauto mergeの3段構えを入れたこと&lt;/li&gt;
+  &lt;li&gt;Claude Code Actionがリポジトリを横断してソースコード・issue・PRを参照できるようにしたこと&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;前者は人のレビューが追いつかなくなったためです。エンジニアはエージェントを並列に動かし、CSやディレクターもClaude Code Action経由でPRを出すようになりました。後者はminneのコードがRails・Next.js・iOS・Androidに分かれており、片側だけでは調査を完結できないためです。&lt;/p&gt;
+
+&lt;p&gt;これらの仕組みを整備したうえで、組織とプロセスの側がどう変わってきたかを短くまとめます。2026年9月時点の現在地です。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#はじめに" id="markdown-toc-はじめに"&gt;はじめに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#ai自律マージ率" id="markdown-toc-ai自律マージ率"&gt;AI自律マージ率&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#webとモバイルで越境する" id="markdown-toc-webとモバイルで越境する"&gt;Webとモバイルで越境する&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#モバイルのリリースを2週間に1回から1週間に1回へ" id="markdown-toc-モバイルのリリースを2週間に1回から1週間に1回へ"&gt;モバイルのリリースを2週間に1回から1週間に1回へ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#自動マージのバックテスト" id="markdown-toc-自動マージのバックテスト"&gt;自動マージのバックテスト&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="ai自律マージ率"&gt;AI自律マージ率&lt;/h2&gt;
+
+&lt;p&gt;詳細は前回の記事に書きました。AIのレビューでリスクを評価し、ユーザー影響が小さいものはAIエージェントが自律的にマージできるよう進めています。その仕組みが「PRサイズラベルの自動付与 → AIレビュー＆Approve → 条件付きauto merge」の3段構えです。&lt;/p&gt;
+
+&lt;p&gt;人間の手を介さずAIのApproveからマージまで完了したPRの割合は、直近30日で次のとおりです。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;プラットフォーム&lt;/th&gt;
+      &lt;th&gt;AI自律マージ率&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Android&lt;/td&gt;
+      &lt;td&gt;94%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;iOS&lt;/td&gt;
+      &lt;td&gt;65%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;サーバーサイド&lt;/td&gt;
+      &lt;td&gt;74%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;全体&lt;/td&gt;
+      &lt;td&gt;83%&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;分母は、その期間にマージされたPRの全件です。auto mergeの対象条件を満たしたPRだけに絞ってはいないので、そもそも自動マージの対象外だったPRも含んだ数字になります。&lt;/p&gt;
+
+&lt;h2 id="webとモバイルで越境する"&gt;Webとモバイルで越境する&lt;/h2&gt;
+
+&lt;p&gt;いまのチームはWebエンジニア2人、モバイルエンジニア5人です。&lt;/p&gt;
+
+&lt;p&gt;以前は「WebはRails、モバイルはiOS/Android」という職能の分かれ方でした。いまは設計をWebエンジニアとモバイルエンジニアで一緒に行い、そこで決まったサーバーサイド（Rails / GraphQL）の実装はモバイルエンジニアが進めています。最近は、モバイルエンジニアが作ったサーバーサイドの設計を最終的にWebエンジニアがレビューする形になってきています。&lt;/p&gt;
+
+&lt;p&gt;AIが既存コードの規約に沿った実装をかなり担えるようになった結果、「そのフレームワークを書いた経験があるか」が越境の障壁になりにくくなりました。&lt;/p&gt;
+
+&lt;p&gt;丸投げを避けるために気をつけているのは次の3点です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;テーブル設計・APIの切り方・データ移行のような後戻りコストの高い意思決定は、Web側と一緒に決めてから実装に入る&lt;/li&gt;
+  &lt;li&gt;レビューは越境先の人が見る&lt;/li&gt;
+  &lt;li&gt;判断基準を&lt;code&gt;CLAUDE.md&lt;/code&gt;や&lt;code&gt;.claude/skills/&lt;/code&gt;に文章として置く。人とエージェントの双方に同じものが効く&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="モバイルのリリースを2週間に1回から1週間に1回へ"&gt;モバイルのリリースを2週間に1回から1週間に1回へ&lt;/h2&gt;
+
+&lt;p&gt;PRのスループットが上がっても、ユーザーに届くのが2週間後ならリードタイムは縮まりません。そこでモバイルのリリースサイクルを週1回に変えました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1リリースに載る変更が減るので、問題が起きたときの切り分けが速い&lt;/li&gt;
+  &lt;li&gt;「次のリリースに間に合わせないと2週間後になる」という駆け込みマージの圧力がなくなる&lt;/li&gt;
+  &lt;li&gt;頻度を上げるにはリリース作業の省力化が前提になるので、その整備を進める強制力にもなる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一方で、リリースのたびに必要な検証作業の頻度も倍になりました。週1サイクルのうちリリースと検証に日数を取られるので、実装に充てられるのは実質2日ほどです。それでも、AI前提の開発によって、かつての1週間1スプリントで出せていたアウトプットと同程度かそれ以上をデリバリーできています。&lt;/p&gt;
+
+&lt;p&gt;とはいえ検証の負荷は確実に増えているので、モバイルの検証作業をどこまで自動化できるかが今後の課題です。&lt;/p&gt;
+
+&lt;h2 id="自動マージのバックテスト"&gt;自動マージのバックテスト&lt;/h2&gt;
+
+&lt;p&gt;AIがApproveしてauto mergeする以上、その判定が妥当だったかを後から説明できる必要があります。内部統制の観点でも、サイズ判定の根拠がPRに残っているか、導入時点からの期間を抜けなくカバーできているか、サンプリングでなく全件を対象にできているかが論点になりました。&lt;/p&gt;
+
+&lt;p&gt;そこで月次のモニタリングとは別に、サイズ判定の妥当性を後から再検証するバックテストを整備しました。手順は次の4ステップです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;対象期間中にbot名義でマージされたPRを全件リスト化する（人が対象を選ばない）&lt;/li&gt;
+  &lt;li&gt;全件に対して機械で一次スクリーニングし、疑うべきものにフラグを立てる
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code&gt;DIFF_OUTLIER&lt;/code&gt;：付与されたサイズラベルに対して差分行数が外れ値&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;REVERT_CANDIDATE&lt;/code&gt;：revertや打ち消しに見える変更&lt;/li&gt;
+      &lt;li&gt;&lt;code&gt;NO_RATIONALE_COMMENT&lt;/code&gt;：判定根拠のコメントがPRに残っていない&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;フラグの立ったPRだけを、人がサイズ定義と目視で照合する&lt;/li&gt;
+  &lt;li&gt;照合結果をissueにコメントで記録する。全件のチェックリストもissueに残し、全件から候補に絞った経路を辿れるようにしておく&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;設計上のポイントは2つあります。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;行数で判定はしないが、行数は検知に使う。&lt;/strong&gt; サイズラベルは差分行数ではなく影響範囲で決めています（1行の決済ロジック変更はXSではない）。一方で「XSなのに600行消えている」という乖離は見直す価値のあるサインです。判定に使っていない指標を検知に使うことで、AIの判定を同じ物差しで確かめる構造を避けられます。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;人が目視する量をゼロにはせず、絞る。&lt;/strong&gt; 全件を人が見る運用は続きませんし、検証まで自動化すると同じ仕組みを同じ仕組みで確かめることになります。全件は機械が見て、怪しいものだけ人が見る二段構えにしています。&lt;/p&gt;
+
+&lt;p&gt;このバックテストは、サーバーサイドとモバイルのそれぞれで月1回の頻度で定期的に実施しています。（この仕組みを推進してくれているのは &lt;a href="https://tech.pepabo.com/authors/tossy/"&gt;tossy&lt;/a&gt; で、詳細は近日テックブログに書いてくれると思います）&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;この半年で変えたのは次の3点でした。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実装言語の壁が下がったので、職能を越境して設計と実装を進められるようにした&lt;/li&gt;
+  &lt;li&gt;作る速度が上がったぶん、届ける速度（リリース間隔）も上げた&lt;/li&gt;
+  &lt;li&gt;自動でマージするなら、後から妥当性を検証できる形をセットで用意した&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ツールの使い方よりも、チームの分け方・リリースの刻み方・自動化した判断をどう検証し続けるかといったプロセス側の設計のほうが効いている、というのが現時点の実感です。まだ途中なので、越境の範囲も自動マージの対象サイズも広げていきます。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>igaigaさんによるDBモデリングワークショップを開催しました</title>
+      <link>https://tech.pepabo.com/2026/09/01/igaiga-db-modeling-2026/</link>
+      <guid>https://tech.pepabo.com/2026/09/01/igaiga-db-modeling-2026/</guid>
+      <pubDate>Tue, 01 Sep 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;2026年度に新卒エンジニアとして入社した、たてけんです。&lt;/p&gt;
+
+&lt;p&gt;ペパボの開発では日々の業務でデータベースに触れる機会が多くあります。その土台となるDBモデリングを学ぶため、2026年度の新卒エンジニア研修では、igaigaさんをお招きし、特別講義を開催しました。&lt;/p&gt;
+
+&lt;p&gt;当日は、DBモデリングの講義と、図書館の蔵書貸出管理を題材にした演習、そして「AI時代の（設計に関する）成長戦略」の講義という構成でした。この記事では、参加した新卒エンジニアそれぞれの視点から、当日の学びをお届けします。&lt;/p&gt;
+
+&lt;p&gt;igaigaさんによる過去のワークショップの様子は、『&lt;a href="https://tech.pepabo.com/2021/09/22/igaiga-workshop/"&gt;DBモデリングとRSpecのワークショップを行いました&lt;/a&gt;』をあわせてご覧ください。&lt;/p&gt;
+
+&lt;!-- TODO: 公開後、新卒エンジニア研修全体の記事へのリンクを追加 --&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#はじめに" id="markdown-toc-はじめに"&gt;はじめに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#講師紹介igaiga五十嵐邦明さん" id="markdown-toc-講師紹介igaiga五十嵐邦明さん"&gt;講師紹介：igaiga（五十嵐邦明）さん&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#なぜigaigaさんをお招きしたのか" id="markdown-toc-なぜigaigaさんをお招きしたのか"&gt;なぜigaigaさんをお招きしたのか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#講義dbモデリング" id="markdown-toc-講義dbモデリング"&gt;講義：DBモデリング&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#誰が何をから名詞を洗い出す" id="markdown-toc-誰が何をから名詞を洗い出す"&gt;「誰が・何を」から名詞を洗い出す&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#演習図書館の蔵書貸出管理を設計する" id="markdown-toc-演習図書館の蔵書貸出管理を設計する"&gt;演習：図書館の蔵書貸出管理を設計する&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#モデリングで一番悩んだ点" id="markdown-toc-モデリングで一番悩んだ点"&gt;モデリングで一番悩んだ点&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#みんなの発表を聞いて感じたこと" id="markdown-toc-みんなの発表を聞いて感じたこと"&gt;みんなの発表を聞いて感じたこと&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#講義ai時代の設計に関する成長戦略" id="markdown-toc-講義ai時代の設計に関する成長戦略"&gt;講義：AI時代の（設計に関する）成長戦略&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#遭遇率が上がる成長チャンス" id="markdown-toc-遭遇率が上がる成長チャンス"&gt;「遭遇率が上がる」＝成長チャンス&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#aiが出した設計を評価する側へ" id="markdown-toc-aiが出した設計を評価する側へ"&gt;AIが出した設計を「評価する」側へ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#みんなの感想" id="markdown-toc-みんなの感想"&gt;みんなの感想&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#keith" id="markdown-toc-keith"&gt;keith&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#kimata" id="markdown-toc-kimata"&gt;kimata&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#kei" id="markdown-toc-kei"&gt;kei&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#maru" id="markdown-toc-maru"&gt;maru&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#のーら" id="markdown-toc-のーら"&gt;のーら&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ゆっきー" id="markdown-toc-ゆっきー"&gt;ゆっきー&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#しん" id="markdown-toc-しん"&gt;しん&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="講師紹介igaiga五十嵐邦明さん"&gt;講師紹介：igaiga（五十嵐邦明）さん&lt;/h2&gt;
+
+&lt;p&gt;講師を務めてくださった&lt;a href="https://x.com/igaiga555"&gt;igaiga（五十嵐邦明）さん&lt;/a&gt;は、Ruby・Railsを専門とするエンジニアです。&lt;a href="https://gihyo.jp/book/2020/978-4-297-11462-6"&gt;『パーフェクトRails』&lt;/a&gt;&lt;a href="https://railstutorial.jp/textbook"&gt;『Railsの教科書』&lt;/a&gt;&lt;a href="https://zenn.dev/igaiga/books/rails-practice-note"&gt;『Railsの練習帳』&lt;/a&gt;など、多くのエンジニアが学びの入り口にしてきた著書を執筆されています。今回の講義や演習も、igaigaさんが公開されている&lt;a href="https://zenn.dev/igaiga/books/rails-practice-note/viewer/rails_db_modeling_workshop"&gt;『Railsの練習帳』のDBモデリング基礎講座&lt;/a&gt;をもとに進めていただきました。加えて、「AI時代の（設計に関する）成長戦略」と題した講義もしていただきました。&lt;/p&gt;
+
+&lt;h2 id="なぜigaigaさんをお招きしたのか"&gt;なぜigaigaさんをお招きしたのか&lt;/h2&gt;
+
+&lt;p&gt;新卒エンジニア研修を担当した、はるおつです。&lt;/p&gt;
+
+&lt;p&gt;ペパボの新卒エンジニア研修では、ここ数年igaigaさんにDBモデリングの特別講義をお願いしています。
+実際に動き、見た目がそれらしいものをすぐに作るということは、AIエージェントの台頭によってますます容易になっています。一方で数年先を見通したDBモデリングについては、今はまだ人間がAIと並走して適切に判断する力を求められている領域だと感じています。&lt;/p&gt;
+
+&lt;p&gt;Railsチュートリアルを終えたばかりの新卒エンジニアには、現実のユースケースからテーブルを洗い出す進め方を学ぶことが、配属後の設計の土台になると考えました。そこで&lt;a href="https://zenn.dev/igaiga/books/rails-practice-note"&gt;『Railsの練習帳』&lt;/a&gt;をもとにした、講義と演習の両方をお願いしました。&lt;/p&gt;
+
+&lt;p&gt;AIを使いながらDBモデリングをおこなう時に、「使うだけ」にとどまらない人材となるために、以下3点を習得・体得することを目標としました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;説明責任を持てる力: AIが出力したコードやスキーマを受け入れるだけでなく、自ら理解・評価・説明できる状態になること。&lt;/li&gt;
+  &lt;li&gt;AIに代替されない判断力: データベース設計の基本的な考え方・モデリング手法を習得し、AIの出力に対して適切にレビュー・判断できること。&lt;/li&gt;
+  &lt;li&gt;長期的視点を持った設計思想の養成: 10年・100年先を見通した持続可能な設計ができる判断力を育てること。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="講義dbモデリング"&gt;講義：DBモデリング&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボ16th新卒エンジニアのmaruと申します。7月からEC事業部へ配属され、カラーミーショップ byGMOペパボの開発に携わっています。まずは当日最初のプログラム、igaigaさんによるDBモデリング講義を紹介します。&lt;/p&gt;
+
+&lt;h3 id="誰が何をから名詞を洗い出す"&gt;「誰が・何を」から名詞を洗い出す&lt;/h3&gt;
+
+&lt;p&gt;講義で印象的だったのは&lt;strong&gt;「モデリングとは、現実世界をコンピュータの世界で扱えるようにするための設計」&lt;/strong&gt;という言葉です。いきなりカラム名や型を考えるのではなく、扱いたい現実から「誰が・何を」という名詞を洗い出してテーブルの候補にし、テーブル同士の関連を結んでER図にしていく。この進め方を知ってから演習に臨めたのは大きかったです。講義の終わりには検索インデックスの仕組みについての質問が飛ぶなど、質疑も盛り上がりました。&lt;/p&gt;
+
+&lt;p&gt;講義中はSlackのスレッドでも実況や質問が飛び交っていました。当日の熱量が伝わる様子を少しだけご紹介します。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/09/01/igaiga-db-modeling-2026/images/slack-thread-2.png" alt="Slackスレッドの様子1" /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/09/01/igaiga-db-modeling-2026/images/slack-thread-1.png" alt="Slackスレッドの様子2" /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;当日のSlackスレッドの様子&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;講義で学んだ「誰が・何を」でテーブル名を出していく進め方は、そのままコードの可読性の話でもあります。後半の「AI時代の成長戦略」の講義では、良い名前や規約は人間の認知負荷を下げるという話がありました。それを聞いて「AIがコードを読む時代でも、この規約はAIへ同じように効くのだろうか」と、AI時代の設計について考えるきっかけになりました。&lt;/p&gt;
+
+&lt;h2 id="演習図書館の蔵書貸出管理を設計する"&gt;演習：図書館の蔵書貸出管理を設計する&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボ16th新卒エンジニアのkimataです。ここでは当日の演習、図書館の蔵書貸出管理のDBモデリングを紹介します。&lt;/p&gt;
+
+&lt;p&gt;演習では、図書館の蔵書貸出管理システムを題材に、講義で学んだ進め方を使って各自でテーブル構成を考え、ER図を作成しました。最後に全員で発表し合い、igaigaさんからコメントをいただきました。&lt;/p&gt;
+
+&lt;p&gt;実際にモデリングした図の例として、kimataとkeiのER図を並べてみます（上: kimata、下: kei）。同じ課題でも、人によって設計が分かれているのがわかります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/09/01/igaiga-db-modeling-2026/images/kimata-er.png" alt="kimataのER図" /&gt;
+&lt;img src="/blog/2026/09/01/igaiga-db-modeling-2026/images/kei-er.png" alt="keiのER図" /&gt;&lt;/p&gt;
+
+&lt;h3 id="モデリングで一番悩んだ点"&gt;モデリングで一番悩んだ点&lt;/h3&gt;
+
+&lt;p&gt;一番悩んだのは「本」の扱いです。図書館には同じ本が何冊も置いてあります。たとえば「坊っちゃん」という作品は1つですが、棚にある「坊っちゃん」は3冊あるかもしれません。この「作品としての本」と「棚にある1冊1冊」を同じテーブルで扱うと、どの1冊を貸し出したのかを記録できません。そこでAIと相談しながら、作品（books）と1冊ごとの実物（book_copies）にテーブルを分けました。実際、貸出（loans）は1冊ごとの実物を、予約（reservations）は作品を参照する形になり、「借りるのは1冊、予約するのは作品」という現実の動きをそのまま表せました。&lt;/p&gt;
+
+&lt;p&gt;book_copies というテーブル名は AI の提案をそのまま受け入れて決定しました。命名としては通じるものだと思いますが、あとで自分のER図を見返したとき、copy という語に「蔵書の1冊」というより「複製」のような違和感が残りました。1点・1冊を表現できる item を使った book_items の方が自分はしっくりきます。AIの力を借りると設計のたたき台を素早く作れる一方、最終的に判断するのは自分です。そのため、テーブル名ひとつのような細部にも「なぜこうしたのか」を自分の言葉で説明できるように心がけたいです。&lt;/p&gt;
+
+&lt;h3 id="みんなの発表を聞いて感じたこと"&gt;みんなの発表を聞いて感じたこと&lt;/h3&gt;
+
+&lt;p&gt;発表では、みんな AI の力を借りて設計したこともあって、似たテーブル名や ER 図の多さが印象に残っています。そのなかで同期のしんの設計だけ大きく違いました。append-only（イベントソーシング）と呼ばれる考え方で、貸出の状態を更新するのではなく、貸出や返却をイベントとして追記していきます。自分は知らない設計手法でした。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/09/01/igaiga-db-modeling-2026/images/shin-er.png" alt="しんが作成したappend-only設計のER図" /&gt;
+こうした手法を身につけていれば、AIの提案をそのまま受け入れる前にほかのやり方と比べて検討できたはずです。AI時代においても、設計手法も含めて技術を学んでいくことの大切さを実感しました。&lt;/p&gt;
+
+&lt;h2 id="講義ai時代の設計に関する成長戦略"&gt;講義：AI時代の（設計に関する）成長戦略&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボ16th新卒エンジニアのkeithと申します。普段の開発ではAIにコードを書いてもらう場面が多く、「このままで技術力が身につくのだろうか」と漠然とした不安を持っていたので、この講義はまさに自分ごとでした。&lt;/p&gt;
+
+&lt;h3 id="遭遇率が上がる成長チャンス"&gt;「遭遇率が上がる」＝成長チャンス&lt;/h3&gt;
+
+&lt;p&gt;igaigaさんに「AI時代の（設計に関する）成長戦略」についてお話しいただきました。AIが元気よくコードを書いてくれる時代になり、人間がコードを書きながら学ぶ時間は減っていく。一見ネガティブな話に思えますが、igaigaさんの見方は前向きでした。AIによってコードベースの成長・老化のスピードが上がった結果、設計上の欠陥や過去の設計と現状のミスマッチが早く顕在化し、自分がプロジェクトを離れる前に設計上の問題と出会える確率はむしろ上がっている。「RPGで言えば敵との遭遇率が上がって経験値を得やすくなっている」という例えが印象的で、&lt;strong&gt;「設計上の問題に早く多く出会える＝成長チャンス」&lt;/strong&gt;という視点は自分にとってとても新鮮でした。&lt;/p&gt;
+
+&lt;h3 id="aiが出した設計を評価する側へ"&gt;AIが出した設計を「評価する」側へ&lt;/h3&gt;
+
+&lt;p&gt;また、これからの私たちに求められるのは&lt;strong&gt;「AIが出した設計を理解して評価すること」&lt;/strong&gt;だというお話も心に残りました。まずはAIのおかげでたくさん見られるようになった設計事例（＝Pull Request）を読み込み、疑問に思ったことを設計した人やAIに聞いてみるところから、設計の「経験値」を積んでいきたいです。&lt;/p&gt;
+
+&lt;h2 id="みんなの感想"&gt;みんなの感想&lt;/h2&gt;
+
+&lt;p&gt;講義・演習を受けた新卒エンジニアそれぞれの感想を紹介します。&lt;/p&gt;
+
+&lt;h3 id="keith"&gt;keith&lt;/h3&gt;
+
+&lt;p&gt;DBモデリング研修の講義を通じて、DB構築に関する多くの知識を学びました。さらに実践課題として、図書館を題材にテーブル設計とER図の作成に取り組みました。主キーの選び方やテーブル間のリレーションなどを自分の頭で考えることで、DBへの理解と印象が一層深まりました。&lt;/p&gt;
+
+&lt;h3 id="kimata"&gt;kimata&lt;/h3&gt;
+
+&lt;p&gt;AI時代だからこそ設計上の問題に早く多く出会えることが成長のチャンスになるという視点が新鮮でした。実際に図書館システムを題材にDBモデリングを行った際も、自分で試行錯誤しながらテーブル構成を考えることの大切さを実感しました。今後もこうした実践を積み重ねて、設計の判断力を磨いていきたいと思います。&lt;/p&gt;
+
+&lt;h3 id="kei"&gt;kei&lt;/h3&gt;
+
+&lt;p&gt;モデル設計の際に「誰が、何を」を考えてテーブル名を出すとか、テーブル同士の関連を入れるなど、具体的なノウハウを知れたことが学びの1つです。印象的なのは、良い設計ができているとはチーム全員が大体同じような設計に合意できている状態だという言葉です。常に最良の設計はないので、現在のコードの状態、チームの状態などの文脈も設計時に考慮しないといけないなと考えました。&lt;/p&gt;
+
+&lt;h3 id="maru"&gt;maru&lt;/h3&gt;
+
+&lt;p&gt;図書館システムの課題では、「作品の情報」と「物理的な1冊」をテーブルとして分けるかどうかなど、正解が1つじゃない判断を自分の頭で試行錯誤しました。設計の判断は自分で手を動かさないと身につかないなと感じました。命名と可読性のお話を聞きながら「人間の認知負荷を下げる規約は、AIが読むときにも効くのだろうか」と考えていて、AI時代の設計を考えるきっかけになりました。&lt;/p&gt;
+
+&lt;h3 id="のーら"&gt;のーら&lt;/h3&gt;
+
+&lt;p&gt;「モデリングとは現実世界をコンピュータの世界で扱えるようにするための設計」であるという言葉が印象的でした。テーブル設計と言われるとつい、すぐにカラム名や型などの細部を考えてしまっていたのですが、大前提として「現実の何をコンピュータで扱いたいのか」を捉える必要があることを知りました。実際、蔵書貸出管理のDBモデリング演習では、「本」という現実の存在を作品（種類）としての本と物理的な1冊に分ける発想が必要でした。ここで、現実の解像度を上げてDBモデリングをすることの重要さを体験しました。&lt;/p&gt;
+
+&lt;p&gt;なかなか思うようにできなくて、igaigaさんに「普段どういう順番で考えていますか？」と質問してみました。すると、UIの画面遷移や物理的なものの移動、そこから発生する情報の動きなど、色々な視点から考えることがあると教えていただきました。&lt;/p&gt;
+
+&lt;p&gt;AIが何でもやってくれる今だからこそ、やり方を考える機会は非常に重要であり、貴重であるとも思います。この講義で学んだことは今後に活かしていきます！igaigaさん、ありがとうございました！&lt;/p&gt;
+
+&lt;h3 id="ゆっきー"&gt;ゆっきー&lt;/h3&gt;
+
+&lt;p&gt;自分は大学図書館を題材にDBモデリングを考えました。みんなの感想にもあったように、「本」という1つの言葉でも、作品としての本と図書館に所蔵されている物理的な1冊を分けて考える必要がありました。現実世界をどう切り取るかが設計の難しさだと感じました。特にレビューが現実世界に即した（加味した）レビューになる必要があるため、AIでの自動化もなかなか難しいなと思いました。&lt;/p&gt;
+
+&lt;h3 id="しん"&gt;しん&lt;/h3&gt;
+
+&lt;p&gt;演習では個性を出したくて、やったことのないappend-only（イベントソーシング）設計に挑戦しました。実は昔、意味も分からずカラムへJSONを突っ込んでいたことがあって、講義後にigaigaさんへ正規化と非正規化のトレードオフを質問しました。自分の雑な設計に「検索しないデータならJSONもあり、ちゃんと機能化する時は設計し直す」という条件付きの名前をつけてもらえたことが、いちばんの収穫でした。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;今回の研修では、DBモデリングの講義と演習、そして「AI時代の成長戦略」の講義を通して、正解が1つではない問いに手を動かしながら向き合いました。その中で実感したのは、AIが出してくれた設計をそのまま受け入れるのではなく、自分で理解して、なぜその形にしたのかを説明できることの大切さです。演習で全員の発表を聞き、同じ課題でも設計が分かれるのを見たからこそ、「自分はこう考えたから、こうした」と言えることが設計の第一歩なのだと感じました。&lt;/p&gt;
+
+&lt;p&gt;ここでの学びは、配属後の業務にも早速活きています。テーブルを設計する場面で、いきなりカラムや型を考えるのではなく、「誰が・何を」から名詞を洗い出し、現実の何を扱いたいのかを先に固めてから手を動かせるようになりました。AIが設計案を出してくれる時代だからこそ、&lt;strong&gt;それを評価するための軸を自分の中に持てた&lt;/strong&gt;ことが、何よりの収穫だったと感じています。&lt;/p&gt;
+
+&lt;p&gt;最後になりますが、講義と演習を通してたくさんの学びをくださったigaigaさんに、心より感謝申し上げます。ありがとうございました！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する</title>
+      <link>https://tech.pepabo.com/2026/09/01/focus-cost-schema/</link>
+      <guid>https://tech.pepabo.com/2026/09/01/focus-cost-schema/</guid>
+      <pubDate>Tue, 01 Sep 2026 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;技術部データ基盤チームの&lt;a href="https://x.com/hirokazaitsu"&gt;@zaimy&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;ペパボでは、クラウドや物理サーバーなど複数のプラットフォームにまたがるコストを社内ダッシュボードで可視化しています。このダッシュボードに供給するコストデータを、FinOps Foundation&lt;sup id="fnref:finops"&gt;&lt;a href="#fn:finops" class="footnote" rel="footnote" role="doc-noteref"&gt;1&lt;/a&gt;&lt;/sup&gt;が策定する共通仕様FOCUSに沿って正規化する層をdbtで構築しました。その結果、ダッシュボード側のSQLは約10分の1（数百行から数十行）に縮小し、新しいコストソースの追加が容易な定型作業になりました。&lt;/p&gt;
+
+&lt;p&gt;FOCUSを実際のデータ基盤に適用した事例はまだ少ないようです。この記事では、コスト可視化をFinOpsの共通スキーマで統一したいデータエンジニアやSREの方に向けて、正規化層の設計判断と、共通スキーマに揃えたことで何が容易になったかを紹介します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#ペパボのコスト可視化基盤" id="markdown-toc-ペパボのコスト可視化基盤"&gt;ペパボのコスト可視化基盤&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#課題はソースごとにバラバラなコストデータ" id="markdown-toc-課題はソースごとにバラバラなコストデータ"&gt;課題はソースごとにバラバラなコストデータ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#focusとは" id="markdown-toc-focusとは"&gt;FOCUSとは&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#focusコスト層の設計" id="markdown-toc-focusコスト層の設計"&gt;FOCUSコスト層の設計&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#課金期間はソースのnativeな粒度のまま持つ" id="markdown-toc-課金期間はソースのnativeな粒度のまま持つ"&gt;課金期間はソースのnativeな粒度のまま持つ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#native通貨を保持し換算列を併設する" id="markdown-toc-native通貨を保持し換算列を併設する"&gt;native通貨を保持し、換算列を併設する&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#組織固有の軸もx_拡張カラムに乗せる" id="markdown-toc-組織固有の軸もx_拡張カラムに乗せる"&gt;組織固有の軸もx_拡張カラムに乗せる&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#データマートも請求の最小粒度を保持する" id="markdown-toc-データマートも請求の最小粒度を保持する"&gt;データマートも請求の最小粒度を保持する&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#新しいコストの追加が定型作業になった" id="markdown-toc-新しいコストの追加が定型作業になった"&gt;新しいコストの追加が定型作業になった&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#クラウド以外のコストも同じ受け皿に乗る" id="markdown-toc-クラウド以外のコストも同じ受け皿に乗る"&gt;クラウド以外のコストも同じ受け皿に乗る&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#共通スキーマの上に機能が積み上がる" id="markdown-toc-共通スキーマの上に機能が積み上がる"&gt;共通スキーマの上に機能が積み上がる&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#得られたものと工夫のまとめ" id="markdown-toc-得られたものと工夫のまとめ"&gt;得られたものと工夫のまとめ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="ペパボのコスト可視化基盤"&gt;ペパボのコスト可視化基盤&lt;/h2&gt;
+
+&lt;p&gt;前提として、ペパボのコスト可視化の構成を簡単に紹介します。社内データ基盤「Bigfoot」に各プラットフォームのコストデータを収集し、dbtで変換してBigQueryのテーブルとして提供しています。可視化はCloud Run上のStreamlitで運用している社内ダッシュボード基盤が担っています。コスト用のダッシュボード（「Bigfootを使ったbillingの可視化」ということで社内では「Billingfoot」と呼んでいます）が、BigQueryのコストテーブルを参照する構成です。&lt;/p&gt;
+
+&lt;p&gt;コストの発生源は従来8種類ありました。Google CloudやAWSなどのパブリッククラウド、社内で構築したプライベートクラウド、データセンターの物理サーバー、種々のSaaSやIaaSです。これらをひとつのダッシュボードで横断的に見ていました。&lt;/p&gt;
+
+&lt;h2 id="課題はソースごとにバラバラなコストデータ"&gt;課題はソースごとにバラバラなコストデータ&lt;/h2&gt;
+
+&lt;p&gt;問題は、これらのコストデータが「各ソースのAPIから取得した形のまま」BigQueryに置かれていたことです。命名や構造はソースごとに独自でした。たとえばコスト額のカラム名だけを見ても、&lt;code&gt;cost&lt;/code&gt;/&lt;code&gt;cost_usd&lt;/code&gt;/&lt;code&gt;total_usd&lt;/code&gt;/&lt;code&gt;billed_cost&lt;/code&gt;とバラバラです。期間の持ち方も日次明細から月次請求、請求サイクル単位まで様々で、通貨はUSD建てとJPY建てが混在しています。&lt;/p&gt;
+
+&lt;p&gt;この状態でダッシュボードに8ソースを並べるため、ダッシュボード側のSQLがすべての差異を吸収していました。ソースごとにCTEを作ってカラム名を読み替え、月次請求は日次に按分し、USDは為替テーブルでJPYに換算して、最後にUNIONするという構造です。当初は2ソース程度だったため、ダッシュボードのSQLが直接参照する構成で作られていました。その後ソースが増え、このSQLは8ソース時点で数百行に達していました。ソースを1つ追加するたびにCTEが1つ増える構造なので、構造を変えない限りこの行数は今後も増え続けるしかありません。今後全社のコスト管理を進めていく上で、Billingfootが参照するコストの発生源は増える一方ですから、放置すればSQLは数千行に向かっていくことになります。&lt;/p&gt;
+
+&lt;p&gt;さらに、コストの分類軸（どの事業部のコストか）はダッシュボード側のYAMLファイルが請求アカウント名の文字列から引き当てており、データ変換のロジックがdbtとダッシュボードの2箇所に分裂していました。&lt;/p&gt;
+
+&lt;p&gt;この構造の実務上の問題は、新しいコストソースを1つ追加するたびに、変換ロジックを作る必要があることです。カラムの読み替え、期間の按分、通貨の換算、事業部の引き当てをソースごとに一から設計し直す必要があり、追加のコストが下がりません。また、変換ロジックはダッシュボードのSQLに埋まっているため、dbtのlineageやテストの対象外でした。&lt;/p&gt;
+
+&lt;h2 id="focusとは"&gt;FOCUSとは&lt;/h2&gt;
+
+&lt;p&gt;そこで採用したのが&lt;strong&gt;FOCUS&lt;/strong&gt;（FinOps Open Cost and Usage Specification）です。FOCUSは、FinOps Foundationが策定しているクラウド請求データの共通仕様です&lt;sup id="fnref:focus"&gt;&lt;a href="#fn:focus" class="footnote" rel="footnote" role="doc-noteref"&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;クラウドベンダーの請求データは、ベンダーごとにスキーマが異なります。FOCUSは、これを横断して扱うための共通カラムを定義しています。たとえば次のようなカラムがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;BilledCost&lt;/strong&gt;：請求書に載る金額&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;EffectiveCost&lt;/strong&gt;：割引やクレジットを反映した実効コスト&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ChargePeriodStart / ChargePeriodEnd&lt;/strong&gt;：その課金が対応する期間&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ServiceCategory&lt;/strong&gt;：ComputeやStorageといったベンダー横断のサービス分類&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;BillingAccountId / BillingAccountName&lt;/strong&gt;：請求アカウント&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;主要クラウドベンダー自身もFOCUS形式での請求データエクスポートを提供し始めており、マルチクラウドのコスト管理では共通語彙としての地位を固めつつあります。&lt;/p&gt;
+
+&lt;p&gt;私たちにとってFOCUSが魅力的だったのは、カラム定義そのものよりも「クラウドコストというドメインの語彙が仕様として整理されている」ことでした。請求額と実効コストの区別、請求期間と課金期間の区別、ベンダー横断のサービス分類など、コストデータを正規化するときに自分たちで決めなければならない論点に、参照できる基準が用意されています。仕様がカバーしていないデータであっても「FOCUSで言うとどうなるか」という指針を持って、自分たちでマッピングを判断できます。&lt;/p&gt;
+
+&lt;h2 id="focusコスト層の設計"&gt;FOCUSコスト層の設計&lt;/h2&gt;
+
+&lt;p&gt;各ソースのコストデータをFOCUSの共通カラムへ正規化する層をdbtに作り、ダッシュボードはその最終出力だけを参照する構成にしました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;source（各コストソースのrawテーブル）
+      ↓
+stg / int（ソースごとにFOCUS共通列へ正規化。全モデルが同一の列セットを出力）
+      ↓
+int_focus_costs（全ソースをUNIONし、サービス分類・事業部・換算列を付与）
+      ↓
+mart_focus_costs（ダッシュボードが参照する唯一のマート）
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ポイントは、ソースごとの正規化モデルが「同一の列セットを出力する」という規約です。UNIONする側のモデルは各ソースのモデルを列挙して機械的にUNIONするだけで、ソース固有の事情を一切知りません。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="n"&gt;focus_cost_source_models&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="k"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;"billing__stg_google_cloud_costs"&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="k"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;"billing__int_aws_focus_costs"&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="c1"&gt;-- （中略）&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;WITH&lt;/span&gt; &lt;span class="n"&gt;costs&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;relation&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;focus_cost_source_models&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;SELECT&lt;/span&gt;
+            &lt;span class="n"&gt;provider_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;service_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;billing_account_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;billing_currency&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;billed_cost&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;effective_cost&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;charge_period_start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;charge_period_end&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="c1"&gt;-- （中略）&lt;/span&gt;
+        &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;relation&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;if&lt;/span&gt; &lt;span class="k"&gt;not&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;last&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="k"&gt;UNION&lt;/span&gt; &lt;span class="k"&gt;ALL&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endif&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endfor&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;カラム名はdbtの慣習に合わせてsnake_caseとし、FOCUS公式のカラム名（&lt;code&gt;BilledCost&lt;/code&gt;など）はカラムのdescriptionに併記しています。&lt;/p&gt;
+
+&lt;p&gt;設計では判断に迷う点がいくつかありました。FOCUSを適用してみたからこそ言えることだと思うので、順に紹介します。&lt;/p&gt;
+
+&lt;h3 id="課金期間はソースのnativeな粒度のまま持つ"&gt;課金期間はソースのnativeな粒度のまま持つ&lt;/h3&gt;
+
+&lt;p&gt;当初は、月次請求のソース（SaaSや物理サーバーなど）をFOCUS層で日次に按分し、全ソースを日次に揃えることを考えていました。ダッシュボードは日次でコストを表示するためです。&lt;/p&gt;
+
+&lt;p&gt;しかし、日次表示はあくまでダッシュボードの表示都合であって、コストデータ自体の性質ではありません。FOCUSのChargePeriodも「その課金が実際に対応する期間」を表す仕様なので、月次請求を日次に割った時点で仕様から離れてしまいます。月あたり約30倍に行数が膨らみ、&lt;code&gt;billed_cost&lt;/code&gt;が日次の端数になって請求書と突き合わせられなくなるという実務上の扱いづらさもあります。&lt;/p&gt;
+
+&lt;p&gt;そこでFOCUS層は「日次明細のソースは日次、月次請求のソースは月次」というnativeな粒度をそのまま保持し、日次への按分は表示側の責務としました。按分といっても、&lt;code&gt;charge_period_start&lt;/code&gt;と&lt;code&gt;charge_period_end&lt;/code&gt;が期間を表しているので、表示側のSQLは期間の日数で割って日付を展開するだけです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;
+    &lt;span class="n"&gt;expanded_date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="k"&gt;SUM&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;billed_cost&lt;/span&gt;
+        &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;DATE_DIFF&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;charge_period_end&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;charge_period_start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;DAY&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;daily_cost&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="k"&gt;FROM&lt;/span&gt;
+    &lt;span class="n"&gt;billing&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mart_focus_costs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="k"&gt;UNNEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GENERATE_DATE_ARRAY&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;charge_period_start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;DATE_SUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;charge_period_end&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;INTERVAL&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;DAY&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;expanded_date&lt;/span&gt;
+&lt;span class="k"&gt;GROUP&lt;/span&gt; &lt;span class="k"&gt;BY&lt;/span&gt; &lt;span class="n"&gt;expanded_date&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;かつてはこの按分ロジックがソースごとに8通り存在していました。期間の持ち方をFOCUSに揃えた結果、1つに共通化できました。&lt;/p&gt;
+
+&lt;h3 id="native通貨を保持し換算列を併設する"&gt;native通貨を保持し、換算列を併設する&lt;/h3&gt;
+
+&lt;p&gt;USD建てのソースをJPYに換算して1つの通貨に統一してしまうと、為替レートの変動とコスト実体の増減が区別できなくなります。円安でJPY額が膨らんだのか、利用が増えたのかを切り分けたい場面は、コストの振り返りで頻繁にあります。&lt;/p&gt;
+
+&lt;p&gt;そこで&lt;code&gt;billed_cost&lt;/code&gt;/&lt;code&gt;effective_cost&lt;/code&gt;は換算前のnative通貨のまま持ち、&lt;code&gt;billing_currency&lt;/code&gt;で通貨を示すことにしました。その上で、JPYとUSDそれぞれへ正規化した換算列を併設しています。これはFOCUSの流儀にも沿っています。FOCUSは仕様外のカスタムカラムを&lt;code&gt;x_&lt;/code&gt;プレフィックスで持つことを認めているためです。換算列は&lt;code&gt;x_billed_cost_jpy&lt;/code&gt;/&lt;code&gt;x_billed_cost_usd&lt;/code&gt;のような拡張カラムとして定義しています。&lt;/p&gt;
+
+&lt;h3 id="組織固有の軸もx_拡張カラムに乗せる"&gt;組織固有の軸もx_拡張カラムに乗せる&lt;/h3&gt;
+
+&lt;p&gt;コストを事業部別に見るための軸はFOCUSの仕様にはありません。これも&lt;code&gt;x_department&lt;/code&gt;という拡張カラムとしてFOCUS層で付与することにし、請求アカウントから事業部を引き当てるマッピングをdbtのseedに移しました。ダッシュボード側のYAMLで行っていた処理がdbtのlineageに乗り、コスト分類のロジックが1箇所に集約されました。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ServiceCategory&lt;/code&gt;も同様にseedで管理しています。各ソースのサービス分類（AWSのserviceCode、Google Cloudのservice.descriptionなど）からFOCUS標準の分類への対応表を、単一のseedとして持ちます。これで、クラウドと物理サーバーをComputeという同じカテゴリで横並びに比較できます。&lt;/p&gt;
+
+&lt;h3 id="データマートも請求の最小粒度を保持する"&gt;データマートも請求の最小粒度を保持する&lt;/h3&gt;
+
+&lt;p&gt;FOCUS層の最終マートは、ダッシュボードの表示単位に集計せず、各ソースが持つ最も細かい粒度（&lt;code&gt;resource_id&lt;/code&gt;/&lt;code&gt;sku_id&lt;/code&gt;/&lt;code&gt;charge_description&lt;/code&gt;込み）で保持しています。集計はいつでもできますが、逆は戻せないためです。ダッシュボードで異常なコスト増を見つけたとき、どのリソースのどのSKUが増えたのかまで同じマートで掘れる状態を保っています。&lt;/p&gt;
+
+&lt;h2 id="新しいコストの追加が定型作業になった"&gt;新しいコストの追加が定型作業になった&lt;/h2&gt;
+
+&lt;p&gt;FOCUS層を構築してダッシュボードを切り替えた結果、冒頭に書いたとおりダッシュボード側のSQLは数百行から数十行になり、通貨換算テーブルの参照と事業部マッピングのYAMLも撤去できました。行数の削減以上に大きいのは、この数十行はコストのソースがいくつ増えても変わらないという点です。ソースの差異はFOCUS層が吸収するので、表示側のSQLはマートを期間で絞って按分するだけの形のまま変わりません。&lt;/p&gt;
+
+&lt;p&gt;新しいコストソースを追加する際の作業は「FOCUSへの変換モデルを1つ書いてUNIONのリストに足す」という定型の内容になりました。たとえば新しいSaaSのコストを取り込むモデルは、実質これだけです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;
+    &lt;span class="nv"&gt;"SaaS Name"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;provider_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nv"&gt;"SaaS Name"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;service_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;note&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;charge_description&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nv"&gt;"JPY"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;billing_currency&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="k"&gt;CAST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;amount_jpy&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;FLOAT64&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;billed_cost&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="k"&gt;CAST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;amount_jpy&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;FLOAT64&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;effective_cost&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;charge_month&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;charge_period_start&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;DATE_ADD&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;charge_month&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;INTERVAL&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;MONTH&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;charge_period_end&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;CONCAT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;"saasname-"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;monthly_costs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;department&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;billing_account_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c1"&gt;-- 取れないカラムはNULLで埋める&lt;/span&gt;
+    &lt;span class="k"&gt;CAST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;resource_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="k"&gt;CAST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;NULL&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;sku_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="n"&gt;monthly_costs&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;期間按分、通貨換算、事業部の引き当てはいずれもFOCUS層の共通処理が引き受けるので、ソース側のモデルはカラムの対応だけを書けば済みます。実際、このパターンに沿って、さらに8つのソースからのコストデータが次々と追加されているところです。&lt;/p&gt;
+
+&lt;h3 id="クラウド以外のコストも同じ受け皿に乗る"&gt;クラウド以外のコストも同じ受け皿に乗る&lt;/h3&gt;
+
+&lt;p&gt;FOCUSはクラウド請求データの共通仕様ですが、BillingfootではAPIから直接請求データを得られないコストや、クラウド以外のコストも適用範囲に含めています。&lt;/p&gt;
+
+&lt;p&gt;たとえば、APIでは請求額を取得できないSaaSのコストは、経理システムの会計データから月次の実額をdbt seedに投入する方式で取り込んでいます。また、物理サーバーのコストや決済代行の手数料のようなクラウド以外のコストも、同じFOCUSのカラムに対応づけるだけでBillingfootで扱うコストデータとして合流できます。仕様が想定する対象から外れていても「請求額はどれか。課金期間はどこからどこまでか。請求アカウントに相当する単位は何か」というFOCUSの問いに答えれば受け皿に乗せられます。&lt;/p&gt;
+
+&lt;h3 id="共通スキーマの上に機能が積み上がる"&gt;共通スキーマの上に機能が積み上がる&lt;/h3&gt;
+
+&lt;p&gt;軸が統一されたことで、マートの上に機能を追加することが容易になりました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;サービス分類のseedにAIコスト判定のフラグを1列足すだけで、全ソース横断の「AI関連コスト」の推移がダッシュボードで見られるようになった&lt;/li&gt;
+  &lt;li&gt;予算データをFOCUSと同じ軸（事業部、プロバイダー）でseedに持つことで、予算と実績の突き合わせがFOCUS層の延長で成立する&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="得られたものと工夫のまとめ"&gt;得られたものと工夫のまとめ&lt;/h2&gt;
+
+&lt;p&gt;この取り組みで得られたものを整理します。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ダッシュボード側のSQLが数百行から数十行になり、ソースが増えてもSQLは一定のままになった。変換ロジックがdbtのlineage・テストの対象に乗った&lt;/li&gt;
+  &lt;li&gt;新しいコストソースの追加が、FOCUSへの変換モデル1つを書く定型作業になった&lt;/li&gt;
+  &lt;li&gt;通貨・期間・分類の扱いがソース横断で一貫し、為替と実コストの切り分けやカテゴリ横断の比較ができるようになった&lt;/li&gt;
+  &lt;li&gt;AIコスト集計や予算対比のような横断機能を、共通スキーマの上に小さな差分で追加できるようになった&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;工夫として挙げたいのは、FOCUSに追従する範囲の線引きです。課金期間や通貨は仕様に忠実にnativeを保持し、日次按分やJPY換算のような表示都合・組織都合は&lt;code&gt;x_&lt;/code&gt;拡張カラムと表示側の責務に逃がしました。仕様に完全準拠したエクスポートを作ることが目的ではありません。共通語彙として活用できる部分をFOCUSから採用し、組織固有の要件は仕様が用意している拡張の作法か表示側の責務に振り分ける、という距離感が運用しやすいと感じています。&lt;/p&gt;
+
+&lt;p&gt;また、この規模の変更を短期間で進められたのは、dbtでデータ変換してStreamlitで表示するという基盤が既にあったからです。FOCUS層の追加は「dbtのモデルとして正規化層を足し、参照先を切り替える」という、基盤の通常の開発サイクルに乗る作業でした。コスト可視化を専用のツールで作り込むのではなく、社内データ基盤の一部として開発・運用してきたことが、共通スキーマへの移行を容易にしてくれたと思います。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;複数のプラットフォームにまたがるコストデータを、FOCUS共通スキーマを活用し、dbtで正規化して統一しました。バラバラのスキーマを都度読み替えるコストが消え、新しいコストの取り込みと横断機能の追加が定型化されました。コスト可視化のスキーマ設計に悩んでいる方、複数クラウドのコストを横断して扱いたい方の参考になれば幸いです。&lt;/p&gt;
+
+&lt;div class="footnotes" role="doc-endnotes"&gt;
+  &lt;ol&gt;
+    &lt;li id="fn:finops"&gt;
+      &lt;p&gt;&lt;a href="https://www.finops.org/"&gt;https://www.finops.org/&lt;/a&gt; &lt;a href="#fnref:finops" class="reversefootnote" role="doc-backlink"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id="fn:focus"&gt;
+      &lt;p&gt;&lt;a href="https://focus.finops.org/"&gt;https://focus.finops.org/&lt;/a&gt; で仕様が公開されています。 &lt;a href="#fnref:focus" class="reversefootnote" role="doc-backlink"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    <item>
+      <title>みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました</title>
+      <link>https://tech.pepabo.com/2026/09/01/minorun-rag-agent-2026/</link>
+      <guid>https://tech.pepabo.com/2026/09/01/minorun-rag-agent-2026/</guid>
+      <pubDate>Tue, 01 Sep 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;2026年度に新卒エンジニアとして入社した、たてけんです。&lt;/p&gt;
+
+&lt;p&gt;ペパボの開発ではAIエージェントを日々の業務に取り入れることが当たり前になりつつあります。2026年度の新卒エンジニア研修では、&lt;a href="https://x.com/minorun365"&gt;みのるんさん&lt;/a&gt;をお招きし、特別講義とハンズオンを開催しました。&lt;/p&gt;
+
+&lt;p&gt;当日は、生成AIの全体像をつかむ講義「AI最前線！AWSでLLMアプリ構築入門」と、Amazon Bedrock 上で RAG と AIエージェントを実際に組み立てるハンズオンという構成でした。この記事では、参加した新卒エンジニアそれぞれの視点から、当日の学びをお届けします。&lt;/p&gt;
+
+&lt;!-- TODO: 公開後、新卒エンジニア研修全体の記事へのリンクを追加 --&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#はじめに" id="markdown-toc-はじめに"&gt;はじめに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#講師紹介みのるん御田稔さん" id="markdown-toc-講師紹介みのるん御田稔さん"&gt;講師紹介：みのるん（御田稔）さん&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#なぜみのるんさんをお招きしたのか" id="markdown-toc-なぜみのるんさんをお招きしたのか"&gt;なぜみのるんさんをお招きしたのか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#講義ai最前線awsでllmアプリ構築入門" id="markdown-toc-講義ai最前線awsでllmアプリ構築入門"&gt;講義：AI最前線！AWSでLLMアプリ構築入門&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#aiエージェントの作り方が変わった" id="markdown-toc-aiエージェントの作り方が変わった"&gt;AIエージェントの「作り方」が変わった&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#ハンズオンragaiエージェントを実際に組んだ" id="markdown-toc-ハンズオンragaiエージェントを実際に組んだ"&gt;ハンズオン：RAG＆AIエージェントを実際に組んだ&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#まずはragを作ってみる" id="markdown-toc-まずはragを作ってみる"&gt;まずはRAGを作ってみる&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#aiエージェントを組み触って学ぶ" id="markdown-toc-aiエージェントを組み触って学ぶ"&gt;AIエージェントを組み、触って学ぶ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#みんなの感想" id="markdown-toc-みんなの感想"&gt;みんなの感想&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#keith" id="markdown-toc-keith"&gt;keith&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#kimata" id="markdown-toc-kimata"&gt;kimata&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#しん" id="markdown-toc-しん"&gt;しん&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#maru" id="markdown-toc-maru"&gt;maru&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#のーら" id="markdown-toc-のーら"&gt;のーら&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ゆっきー" id="markdown-toc-ゆっきー"&gt;ゆっきー&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#たてけん" id="markdown-toc-たてけん"&gt;たてけん&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="講師紹介みのるん御田稔さん"&gt;講師紹介：みのるん（御田稔）さん&lt;/h2&gt;
+
+&lt;p&gt;講師を務めてくださった&lt;a href="https://x.com/minorun365"&gt;みのるん（御田稔）さん&lt;/a&gt;は、KDDIアジャイル開発センター株式会社のテックエバンジェリストです。日本人初のAWS AI Hero・AWS Samurai に選出され、&lt;a href="https://www.sbcr.jp/product/4815626440/"&gt;『Amazon Bedrock 生成AIアプリ開発入門』&lt;/a&gt;&lt;a href="https://www.shuwasystem.co.jp/book/9784798075730.html"&gt;『やさしいMCP入門』&lt;/a&gt;などの著書でも知られています。AWSと生成AIの最前線を走る方に直接教えていただける、貴重な機会となりました。&lt;/p&gt;
+
+&lt;h2 id="なぜみのるんさんをお招きしたのか"&gt;なぜみのるんさんをお招きしたのか&lt;/h2&gt;
+
+&lt;p&gt;新卒エンジニア研修を担当した、はるおつです。
+講義当日までの研修でRuby on Rails、データモデリング、インフラと仮想化、CI/CD、運用監視までの研修は終えていました。つまり、受講者はコードを書いて動かすためのスキルセットの基本は備わっている状態でした（研修の詳細は&lt;a href="https://tech.pepabo.com/2026/08/05/training-2026"&gt;新卒エンジニア研修2026&lt;/a&gt;の記事をご覧ください）。&lt;/p&gt;
+
+&lt;p&gt;社内では、「Claude Codeに住む」を掲げて、普段の業務をClaude Code経由で行うという取り組みがあります。それほど、AIが前提になって仕事をしている人が多く、「AIを使う」ということは十分にできていると言えます。
+一方で、RAGが何をしていて、AIエージェントがツールをどう選ぶのかは、使うだけでは見えにくいポイントです。それを自社のサービスに載せるとき何が要るのかも同様です。
+そこで、AIが動く環境の作り方と、アプリケーションへの載せ方をインフラから自分の手で一通りやることで、研修の目的を達成できると考えました。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;AIが動く環境をどう作り&lt;/li&gt;
+  &lt;li&gt;どのようにアプリケーションに組み込むかという視点を持ち&lt;/li&gt;
+  &lt;li&gt;自らAIを活用したプロダクト開発へ踏み出せるようになる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="講義ai最前線awsでllmアプリ構築入門"&gt;講義：AI最前線！AWSでLLMアプリ構築入門&lt;/h2&gt;
+
+&lt;p&gt;ロリポップのAIサイトエージェントを開発している、しんです。普段は生成AIを使う側というより、作る側にいます。もともと大学で言語教育の研究をしていて、気づいたらAIを作る仕事に流れ着きました。&lt;/p&gt;
+
+&lt;p&gt;講義名は「AI最前線！AWSでLLMアプリ構築入門」です。入門と銘打ってはいるものの、生成AIとは何かという足場固めから始まりました。そこからLLM・マルチモーダル・Amazon Bedrock・RAG・AIエージェント、MCPやA2Aなどの規格、Strands AgentsやAgentCoreまで一気に駆け抜ける2時間弱でした。正直、前半だけでお腹いっぱいになりかけました。&lt;/p&gt;
+
+&lt;h3 id="aiエージェントの作り方が変わった"&gt;AIエージェントの「作り方」が変わった&lt;/h3&gt;
+
+&lt;p&gt;一番刺さったのは、&lt;strong&gt;AIエージェントの作り方が変わった&lt;/strong&gt;、という話です。みのるんさんいわく、昔はワークフローをグラフ構造で組んで、順番にステップを定義しないといけなかった。それが今では、モデルとツールだけ指定して“あとよろしく”と丸投げすれば、いい感じに動くくらいLLMが賢くなったとのことでした。
+これが私には他人事ではありませんでした。
+以前はLangGraphを使って、ノードとエッジで処理の流れを図のように描き、一つひとつ自分で定義していました。最近はMastraにツールを渡すだけで、同じようなエージェントが動いてしまいます。
+書くコードと考えることが桁違いに減っていて、この開発体験の落差を、講義でズバッと言葉にされた感覚でした。
+楽になったのは間違いない。ただ、&lt;strong&gt;“あとよろしく”で動くほど、中で何が起きているのかを自分が説明できなくなる怖さ&lt;/strong&gt;もあって、そこはまだ飲み込めていません。&lt;/p&gt;
+
+&lt;p&gt;みのるんさんが「昨日の大きなリリースで、今日の講義の準備がぜんぶ覆っちゃうくらいで。こんなのAIの領域だけですよ、だから楽しい」と笑っていたのが忘れられません。作る側にいると、この速さは楽しさと同じ分だけしんどさでもあります。“あとよろしく”の便利さと、説明できなくなる怖さを、業務のコードでどう飼いならすか。答えはまだ出ていないので、来週から自分のAIエージェントで試してみようと思います。&lt;/p&gt;
+
+&lt;h2 id="ハンズオンragaiエージェントを実際に組んだ"&gt;ハンズオン：RAG＆AIエージェントを実際に組んだ&lt;/h2&gt;
+
+&lt;p&gt;こんにちは、ゆっきーです。普段はロリポップのAIエージェントクラウドの開発に携わっています。AIが好きで、サブスク代は家賃だと思っています。&lt;/p&gt;
+
+&lt;h3 id="まずはragを作ってみる"&gt;まずはRAGを作ってみる&lt;/h3&gt;
+
+&lt;p&gt;ハンズオンは、資料の手順に沿ってAmazon Bedrock上でRAGとAIエージェントを、みのるんさんの丁寧な説明のもと、実際に手を動かして構築していく内容でした。まずはBedrockのナレッジベース機能を使ったRAG構築から。S3にドキュメントをアップロードして、コンソールをポチポチ数クリックするだけで、もう質問応答ができる状態になっていることに驚きました。画像の中にしかいないアボカドのマスコットを、アップロードした資料からRAGがちゃんと言い当てたときは、会場がわきました。&lt;/p&gt;
+
+&lt;h3 id="aiエージェントを組み触って学ぶ"&gt;AIエージェントを組み、触って学ぶ&lt;/h3&gt;
+
+&lt;p&gt;続いてAIエージェントの構築です。&lt;a href="https://strandsagents.com/"&gt;Strands Agents&lt;/a&gt;というフレームワークを使うと、&lt;strong&gt;たった3行のコードでAIエージェントが動き出す&lt;/strong&gt;手軽さにまず驚かされました。ブラウザ操作ツールを持たせたAIエージェントに、自分の本名について尋ねてみました。まったく有名ではない私のことも、AIエージェント自身が粘り強くページを操作しながら断片的な情報をつなぎ合わせて回答を出してきたのには驚きました。&lt;/p&gt;
+
+&lt;figure&gt;
+
+  &lt;p&gt;&lt;img src="/blog/2026/09/01/minorun-rag-agent-2026/images/agentcore-playground.png" alt="AgentCoreのプレイグラウンドでAIエージェントと会話している様子" /&gt;&lt;/p&gt;
+
+  &lt;figcaption&gt;ハンズオンで作ったAIエージェントをAgentCoreのプレイグラウンドで動かしている様子。チャットで質問するとWeb検索などのツールを使って回答してくれます。右側の設定パネルからモデルの切り替えやシステムプロンプトの変更もできます。&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;p&gt;自動化が好きな自分にとって一番刺さったのは、ツールと大まかな指示を渡すだけで、あとは自分で考えて手段を選びながらゴールにたどり着くハーネスを、自分で簡単に定義できる点でした。私は普段6〜20個のAIエージェント（セッション）を協調させたりしているのですが、このような仕組みも簡単に作れそうで、もっと早く知りたかったと思いました。クラウドサービスはよくお金周りのコワイ話を聞くので、最低限しか触ったことがありませんでした。しかし、&lt;strong&gt;「変にいじってもお金が溶けるような機能はないから触りまくれ」&lt;/strong&gt;というみのるんさんの言葉のもとで手を動かすうちに、触れば触るほど意識が変わりつつあることを実感しました。&lt;/p&gt;
+
+&lt;p&gt;普段の新卒研修は基本的に自分たちで調べながら進める形式が多かったので、用意された手順に沿って手を動かせるハンズオン形式は新鮮で、率直にとても楽しかったです。AWSとAIエージェントの最前線を走るみのるんさんに直接教えていただけたのは光栄でしたし、来年以降の新卒のみなさんにもぜひこの体験をしてほしいと思っています。まずは自分の業務の自動化に、今回学んだAIエージェントの考え方を取り入れていきたいです。&lt;/p&gt;
+
+&lt;h2 id="みんなの感想"&gt;みんなの感想&lt;/h2&gt;
+
+&lt;p&gt;講義・ハンズオンを受けた新卒エンジニアそれぞれの感想を紹介します。&lt;/p&gt;
+
+&lt;h3 id="keith"&gt;keith&lt;/h3&gt;
+
+&lt;p&gt;研修の講義を通じて、AIエージェントの仕組みや実装フレームワークについて多くの知識を学びました。また、実践としてAmazon Bedrock上でAIエージェントを自ら構築し、AWS上でのデプロイの手軽さを実感しました。学びの多い研修だったので、今後の業務でもぜひ活用していきたいです。&lt;/p&gt;
+
+&lt;h3 id="kimata"&gt;kimata&lt;/h3&gt;
+
+&lt;p&gt;RAGやAIエージェント、MCPといった概念が身近な例えを使って説明されていて、生成AIの仕組みを体系的に理解する良い機会になりました。特に、AWSのサービスを使えばRAGを簡単に構築できることを、実際に手を動かして体験できました。今後はこの経験を活かして、自分のプロジェクトにも生成AI活用を広げていきたいと思います。&lt;/p&gt;
+
+&lt;h3 id="しん"&gt;しん&lt;/h3&gt;
+
+&lt;p&gt;業務でAIエージェントを開発するので、終始「作る側」の目線で聞いていました。画像の中にしかいないアボカドのマスコットをRAGが言い当てたとき。そしてWeb検索で取れなかった勉強会情報を、ブラウザツール付きのAIエージェントが粘り強くconnpassを操作して取ってきたとき。どちらも会場のどよめきより先に声が出たと自負しています。「変にいじってもお金が溶けるような機能はないから触りまくれ」とのことだったので、遠慮なく触りまくることにします。&lt;/p&gt;
+
+&lt;h3 id="maru"&gt;maru&lt;/h3&gt;
+
+&lt;p&gt;講義でRAG・AIエージェント・MCPを体系的に学び、演習ではBedrock上で実際にAIエージェントを構築しました。AWSのコンソールから簡単にRAGに必要な環境が構築できて驚きました。AI関連のリソースは変化が激しいので、TerraformなどでのIaC化の対応が大変そうだなと思いました。AWSはあまり経験が無いので、今後の業務で機会があれば今回の経験を活かしていきたいです。&lt;/p&gt;
+
+&lt;h3 id="のーら"&gt;のーら&lt;/h3&gt;
+
+&lt;p&gt;私は入社以前、AIに関するツールはChatGPTとGeminiくらいしか使ったことがなく、AIエージェントの知識も全くと言って良いほどありませんでした。2026年のペパボの新卒研修は、AIエージェントを使うことを大前提としたもので、私にとっては非常にハードなものだったのです。&lt;/p&gt;
+
+&lt;p&gt;新卒研修の一環として参加したみのるんさんの講義は、「そもそも生成AIとは？」から始まるとても丁寧なものでした。MCPやマルチAIエージェントシステムなどのAIエージェントに関する知識を、基礎から改めて学びました。それまで同期や先輩の真似をしたり、自分なりに工夫をしてなんとなく使っていたAIエージェントの解像度がとても高まりました。同時にAIエージェント開発用のSDKがあることを知ったり、AIアプリ開発入門ハンズオンを通じて、AIエージェントを使うだけでなく、作ることへの興味も強くなりました。実際、この研修の後、自分のコンテキストに合わせたツールを持ったAIエージェントを作りたいと思い、開発を始めました。&lt;/p&gt;
+
+&lt;p&gt;業務でもAIエージェントを作る機会があると思うので、使うだけから作る側に周ることができたのはとても良い経験でした。みのるんさん、ありがとうございました！&lt;/p&gt;
+
+&lt;h3 id="ゆっきー"&gt;ゆっきー&lt;/h3&gt;
+
+&lt;p&gt;簡単にAIエージェントを作れると知れて良かったです。自分でも活用していこうと思います。普段の研修は基本的に自分たちで調べて進めるアクティブなものが多かったので、ハンズオン研修は楽しかったです。来年以降の方へもぜひハンズオン形式で続けてほしいと思いました。AWS/AIエージェントの先駆者とお会いできて本当に光栄でした。ありがとうございました。&lt;/p&gt;
+
+&lt;h3 id="たてけん"&gt;たてけん&lt;/h3&gt;
+
+&lt;p&gt;正直なところ、RAGやAIエージェントを「難しそうな最先端技術」として一歩引いて眺めていました。それが、ハンズオンでS3に資料を置いて数クリックしただけで質問応答が動き出したとき、「これなら自分でも組める」と一気に距離が縮まりました。とくにStrands Agentsで数行書くだけでAIエージェントが動いたのは衝撃で、これまで完成品としてしか見ていなかったものの中身が、急に手触りのあるものに変わった感覚でした。ムームードメインの業務でも、まずは自分の作業の自動化あたりから今回学んだ考え方を試してみたいです。みのるんさん、ありがとうございました！&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;AIを「使う」ことには慣れていても、「作る」側に回った経験のあるメンバーは多くありませんでした。今回の講義とハンズオンでRAGやAIエージェントを実際に作ってみたことで、アプリケーションにおける役割や組み込み方まで意識できるようになりました。実際に研修のあと、学んだ考え方を自分の業務や開発に取り入れ始めたメンバーもいます。&lt;/p&gt;
+
+&lt;p&gt;最後になりますが、最前線でお忙しいなか、講義とハンズオンの講師を引き受けてくださったみのるんさんに、心より感謝申し上げます。ありがとうございました！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発</title>
+      <link>https://tech.pepabo.com/2026/08/28/llm-as-a-judge-quality-score/</link>
+      <guid>https://tech.pepabo.com/2026/08/28/llm-as-a-judge-quality-score/</guid>
+      <pubDate>Fri, 28 Aug 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;こんにちは。ロリポップ・ムームードメイン事業部でエンジニアリングリードをしています &lt;a href="https://x.com/kinosuke01"&gt;kinosuke01&lt;/a&gt; といいます。&lt;/p&gt;
+
+&lt;p&gt;ここ数年で、AIでWebサイトを生成するケースが増えてきたと思います。ただ、その品質を評価するのは難しく、「なにかイマイチ」という感想は出てくるものの、具体的な改善点までは言葉にしづらいのではないでしょうか。&lt;/p&gt;
+
+&lt;p&gt;この記事では、&lt;a href="https://lolipop.jp/ai/homepage/"&gt;「ロリポップ！AIホームページ」&lt;/a&gt;（旧「ロリポップ！AIサイトエージェント」）というサービスで、AIが生成したWebサイトの品質をどう評価し、開発サイクルにどう組み込んだかを紹介します。&lt;/p&gt;
+
+&lt;p&gt;関連して、2026年9月5日開催の &lt;a href="https://product-engineering.jp/2026/"&gt;Product Engineering Conference 2026&lt;/a&gt; で &lt;a href="https://fortee.jp/pdeconf-2026/proposal/c3851a11-b22a-458d-b647-f4c5ecf818fe"&gt;「作り直せるコードは迅速に、作り直せないDBは慎重に」&lt;/a&gt; というセッションに登壇します。判断の不可逆性を基準に「やり直せる領域はAIを活用して走りながら考え、やり直しの効かない領域は慎重に設計する」という使い分けを話します。本記事で扱うのは、その「走りながら考える」側にあたる取り組みの1つです。&lt;/p&gt;
+
+&lt;h2 id="前提ロリポップaiホームページについて"&gt;前提：「ロリポップ！AIホームページ」について&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://lolipop.jp/ai/homepage/"&gt;「ロリポップ！AIホームページ」&lt;/a&gt;は、AIがWebサイトを制作するサービスです。「カフェのサイトを作りたい」「フリーランスのポートフォリオが欲しい」といった指示から、ページ構成・デザインテーマ・コンテンツまでを一括で生成します。サイト制作フローを「ヒアリング → 構成設計 → デザイン選定 → コンテンツ生成」のステップに分解し、決定論的ワークフローで中核処理を組んでいます。AIの役割は「サイトを表す構造データ（JSON）を生成する」ことに限定し、描画はアプリケーションが担います。コードに関する知識がない層のユーザーを対象としているため、ユーザーがコードを修正する必要が生じないよう、AIにHTMLやCSSを直接書かせる設計は採用していません。&lt;/p&gt;
+
+&lt;p&gt;技術スタックはNext.js、BullMQ（非同期ジョブキュー）、MySQL、生成モデルにはGoogle Cloud上のGeminiを使用しています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/28/llm-as-a-judge-quality-score/img01.png" alt="「AIと話すだけで、サイトが完成。」という見出しのもと、左側に生成されたサイトの例が4つ並び、右側にSTEP 1「AIの質問に答えるだけ」、STEP 2「サイト完成」、STEP 3「そのまま公開」という3ステップの利用の流れが説明されている" /&gt;&lt;/p&gt;
+
+&lt;h2 id="背景課題"&gt;背景・課題&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://lolipop.jp/ai/homepage/"&gt;「ロリポップ！AIホームページ」&lt;/a&gt;には、チャットボットやRAGとは異なる難しさがありました。チャットボットであれば回答の正誤で品質を判定できますが、Webサイトのデザインや構成に唯一の正解はありません。&lt;/p&gt;
+
+&lt;p&gt;「余白が広い」「コピーが硬い」といったフィードバックは、ありがたいことにたくさん集まります。ただ、それが好みの話なのか、守るべき基準からの逸脱なのかを切り分けることは困難です。また、改修したとしても「良くなった気がする」で止まってしまい、是非を評価する手段がない状況でした。これでは開発サイクルを回せません。&lt;/p&gt;
+
+&lt;p&gt;そこで、Webサイトの品質を定量的に評価する指標が必要となりました。&lt;/p&gt;
+
+&lt;h2 id="解決策の検討品質を定量化する3つの候補"&gt;解決策の検討：品質を定量化する3つの候補&lt;/h2&gt;
+
+&lt;p&gt;品質を定量化する方法として、3つの候補を検討しました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;方法&lt;/th&gt;
+      &lt;th&gt;メリット&lt;/th&gt;
+      &lt;th&gt;デメリット&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;A/Bテスト + ユーザー行動指標&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;実ユーザーの反応が分かる&lt;/td&gt;
+      &lt;td&gt;フィードバックループが遅い。サンプルが溜まるまで数週間かかる&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;人手によるチェックリスト採点&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;ドメイン知識を直接反映できる&lt;/td&gt;
+      &lt;td&gt;スケールしない。デザイナーの工数がボトルネックになる&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;ルーブリック × LLM-as-a-Judge&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;自動化できる。人手採点と同じ尺度で比較可能&lt;/td&gt;
+      &lt;td&gt;LLMの採点精度に依存する。キャリブレーション（較正）が必要&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;3つの中で、フィードバックループを速く回せるのは、ルーブリック × LLM-as-a-Judgeでした。ルーブリックは、評価の観点ごとに「どの状態なら何点か」を段階で定めた採点基準表です。LLM-as-a-Judgeは、人が評価する代わりに、生成物の良し悪しをLLMに判定させる手法を指します。&lt;/p&gt;
+
+&lt;p&gt;A/Bテストは数週間単位の待ちが発生し、人手採点はプロンプトを直すたびにデザイナーの工数を確保する必要があります。LLM-as-a-Judgeには採点精度のリスクがありますが、自動で回せること、そして人手採点と同じ尺度を使えるため後からキャリブレーションで精度を上げていける点が強みです。「&lt;strong&gt;品質基準を人が定義し、採点をLLMに任せる。精度のリスクはキャリブレーションで段階的に潰す&lt;/strong&gt;」。この方針で進めることにしました。&lt;/p&gt;
+
+&lt;p&gt;では、この方針の具体的な実装方法について、順に見ていきます。&lt;/p&gt;
+
+&lt;h2 id="完成品スコア出来上がったサイトをキャプチャ1枚で採点する"&gt;完成品スコア：出来上がったサイトをキャプチャ1枚で採点する&lt;/h2&gt;
+
+&lt;p&gt;最初に作ったのは、&lt;strong&gt;出来上がったサイトそのものの品質を測る評価指標&lt;/strong&gt;です。以降これを「完成品スコア」と呼びます。&lt;/p&gt;
+
+&lt;h3 id="デザイナーの暗黙知をルーブリックに落とす"&gt;デザイナーの暗黙知をルーブリックに落とす&lt;/h3&gt;
+
+&lt;p&gt;採点するには、元になる品質基準が要ります。ただ、それは文書としては存在していませんでした。そこで当社のデザイナーに、レビューのときに何を見て良し悪しを決めているのかを、&lt;strong&gt;他人が同じように再現できる形まで言語化していただきました&lt;/strong&gt;。こうしてできたのが、4カテゴリ・約170項目の品質基準です。構造は「カテゴリ &amp;gt; サブセクション &amp;gt; 項目」の3階層で、カテゴリごとに評価の切り口としてサブセクションが並び、その下に具体的なチェック項目がぶら下がります。&lt;/p&gt;
+
+&lt;p&gt;以下は品質基準を抜粋したものになります。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight markdown"&gt;&lt;code&gt;&lt;span class="gu"&gt;## 1. 構成・情報設計&lt;/span&gt;
+&lt;span class="gt"&gt;&amp;gt; 何を載せるか、どの順番か、どれだけの密度で見せるか。サイトの骨格。&lt;/span&gt;
+
+&lt;span class="gu"&gt;### 1-5. 認知負荷のコントロール&lt;/span&gt;
+&lt;span class="gu"&gt;#### 情報密度&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] 1つのセクション（一目で見える範囲）のテキストが多すぎないか（目安120文字以内）
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] 1つのカード・ブロック内の要素が5つ以下に収まっているか（多すぎると処理しきれない）
+&lt;span class="gu"&gt;#### 視線の緩急&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] 密度の高いセクションの後に、余白の広いセクションがあるか（滞留→加速のリズム）
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] テキスト中心のセクションと画像中心のセクションが交互に配置され、単調になっていないか
+
+&lt;span class="gu"&gt;## 3. 言葉・コピー&lt;/span&gt;
+&lt;span class="gt"&gt;&amp;gt; 何と言うか、どんなトーンで伝えるか。デザインが「見た目」なら、コピーは「声」。&lt;/span&gt;
+
+&lt;span class="gu"&gt;### 3-2. トーン・声の一貫性&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] 敬体（です・ます）と常体（だ・である）が混在していないか
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] ターゲット層の言葉で書かれているか（専門用語が多すぎないか、逆にカジュアルすぎないか）
+
+&lt;span class="gu"&gt;### 3-4. マイクロコピー&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] ボタンラベルが動詞で始まっているか（「送信する」「始める」「確認する」）
+&lt;span class="p"&gt;-&lt;/span&gt; [ ] リンクテキストがリンク先の内容を予測できる言葉か（「こちら」「詳細」は避ける）
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;次に決めたのは、何を見て採点するかです。運用の容易性とスコアリングの妥当性のバランスを取り、&lt;strong&gt;入力はトップページのフルページキャプチャ1枚だけ&lt;/strong&gt;としました。入力の種類を増やせば採点は精密になりますが、そのぶん1回あたりの準備が重くなります。ここは「キャプチャさえあれば誰でも・自動で回せる」ことを優先しました。妥当性の面でも、トップページはサイトの全体感が現れる場所なので、1枚でも評価対象として成立すると判断しています。&lt;/p&gt;
+
+&lt;p style="text-align: center"&gt;&lt;img src="/blog/2026/08/28/llm-as-a-judge-quality-score/img02.png" alt="整体院とカフェのトップページのフルページキャプチャを縮小して横に並べたもの" /&gt;
+&lt;cite&gt;このようなトップページのフルキャプチャを与えて評価する&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;この入力に合わせて、約170項目から「キャプチャ1枚だけで判定できる項目」に絞り込みました。以下のような項目は除外しています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;意図が前提になる項目（ゴール・ペルソナ・感情）&lt;/li&gt;
+  &lt;li&gt;操作が必要な項目（ホバー・クリック・アニメーション）&lt;/li&gt;
+  &lt;li&gt;複数ページの比較が必要な項目&lt;/li&gt;
+  &lt;li&gt;ページ外の要素（OGP・ファビコン）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;絞り込みの結果、4カテゴリ・23サブセクションが残りました。これをルーブリックとして整理しています。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;カテゴリ&lt;/th&gt;
+      &lt;th&gt;重み&lt;/th&gt;
+      &lt;th&gt;評価の観点（例）&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;構成・情報設計&lt;/td&gt;
+      &lt;td&gt;35%&lt;/td&gt;
+      &lt;td&gt;コンテンツの過不足、セクション順序、認知負荷、導線&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;見た目&lt;/td&gt;
+      &lt;td&gt;35%&lt;/td&gt;
+      &lt;td&gt;文字のディテール、配色、余白、ヒーロー、統一感&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;言葉・コピー&lt;/td&gt;
+      &lt;td&gt;20%&lt;/td&gt;
+      &lt;td&gt;コピーの説得力、トーン一貫性、読みやすさ&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;体験・操作感&lt;/td&gt;
+      &lt;td&gt;10%&lt;/td&gt;
+      &lt;td&gt;スクロール体験のリズム、着地点&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;以降、カテゴリ名は「構成」「見た目」「コピー」「体験」と略記します。&lt;/p&gt;
+
+&lt;p&gt;各サブセクションは0〜3の4段階で採点し、画像から判定できない場合は null とします。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;3: 観点をほぼ完全に満たす（明確な問題なし）&lt;/li&gt;
+  &lt;li&gt;2: おおむね満たすが軽微な問題が一部ある&lt;/li&gt;
+  &lt;li&gt;1: 満たせていない点が目立つ&lt;/li&gt;
+  &lt;li&gt;0: ほとんど満たせていない、または致命的な問題がある&lt;/li&gt;
+  &lt;li&gt;null: 画像から判定不能（集計時に除外）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="加重スコアリングで偏りを防ぐ"&gt;加重スコアリングで偏りを防ぐ&lt;/h3&gt;
+
+&lt;p&gt;単純にチェック項目の合計点を使うと、項目数の多い「見た目」カテゴリが全体の約71%を占めてしまう状況でした。そこで2段階の正規化を行いました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;サブセクション内で達成率を正規化（0〜1）&lt;/li&gt;
+  &lt;li&gt;カテゴリ重みで加重平均（構成35 / 見た目35 / コピー20 / 体験10）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;実装はシンプルで、以下のような関数になります。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight typescript"&gt;&lt;code&gt;&lt;span class="c1"&gt;// 最終配点%（= カテゴリ重み × サブ重み比）。合計100。&lt;/span&gt;
+&lt;span class="c1"&gt;// 番号の飛び（s1_1 など）は、キャプチャ1枚では判定できないため絞り込みで除外した項目。&lt;/span&gt;
+&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;WEIGHTS&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;Record&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kr"&gt;string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kr"&gt;number&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="na"&gt;s1_2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;8.08&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s1_3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.38&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s1_4&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;8.08&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s1_5&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.38&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s1_6&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.38&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s1_7&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.69&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="na"&gt;s2_2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_4&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_5&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_6&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.67&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_7&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.67&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="na"&gt;s2_8&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_9&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.67&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.67&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_12&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s2_13&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="na"&gt;s3_1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;7.50&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s3_2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s3_3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;s3_4&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.50&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="na"&gt;s4_1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;10.00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="nx"&gt;Scores&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Record&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kr"&gt;string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;score&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kr"&gt;number&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="kc"&gt;undefined&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;totalScore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;scores&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;Scores&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="kr"&gt;number&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nx"&gt;num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;wsum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;k&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="nb"&gt;Object&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;entries&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;WEIGHTS&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;scores&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]?.&lt;/span&gt;&lt;span class="nx"&gt;score&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;s&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="nx"&gt;s&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="kc"&gt;undefined&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;   &lt;span class="c1"&gt;// 判定不能は除外&lt;/span&gt;
+    &lt;span class="nx"&gt;num&lt;/span&gt;  &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;s&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;   &lt;span class="c1"&gt;// 0〜3 を 0〜1 に正規化して加重&lt;/span&gt;
+    &lt;span class="nx"&gt;wsum&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;// 除外があっても満点100換算になるよう再正規化&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;wsum&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;Math&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;round&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nx"&gt;num&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nx"&gt;wsum&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;判定不能（null）のサブセクションを除外し、残りの項目だけで満点100換算になるよう再正規化します。同じ項目集合どうしであれば、キャプチャから判断できない項目があっても公平に比較できます。&lt;/p&gt;
+
+&lt;h3 id="llm-as-a-judgeの設計"&gt;LLM-as-a-Judgeの設計&lt;/h3&gt;
+
+&lt;p&gt;ルーブリックが整ったので、次はこれをLLMに渡して自動採点させる仕組みを作ります。採点にもGeminiを使い、キャプチャとルーブリックを渡して、各サブセクションの0〜3スコアと根拠をJSONで出力させます。&lt;/p&gt;
+
+&lt;p&gt;なお、&lt;strong&gt;総合スコアの計算はLLMに任せていません&lt;/strong&gt;。モデルには各サブセクションの素点（0〜3）だけを出させ、総合スコアは先述の &lt;code&gt;totalScore&lt;/code&gt; 関数でコードが算出します。この分離により、再現性が確保でき、重みの調整もモデルの再評価なしで可能となります。&lt;/p&gt;
+
+&lt;p&gt;出力フォーマットは以下のとおりです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nl"&gt;"scores"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nl"&gt;"s1_2"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nl"&gt;"score"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;"reason"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"..."&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;"evidence"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"..."&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="nl"&gt;"s1_3"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nl"&gt;"score"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;"reason"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"..."&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;"evidence"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;"..."&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="nl"&gt;"top_improvements"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="s2"&gt;"グローバルナビゲーションを追加する"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="s2"&gt;"フッターに運営者情報と連絡先を配置する"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+    &lt;/span&gt;&lt;span class="s2"&gt;"ボタン文言を動詞始まりに書き換える"&lt;/span&gt;&lt;span class="w"&gt;
+  &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;top_improvements&lt;/code&gt; には、スコアの低い項目から順に改善提案を3件出させています。&lt;/p&gt;
+
+&lt;h3 id="ベースライン計測目指す地点と現在地を並べる"&gt;ベースライン計測：目指す地点と現在地を並べる&lt;/h3&gt;
+
+&lt;p&gt;できあがったルーブリックで、性格の異なる3種類のサイトを採点してみました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;対象&lt;/th&gt;
+      &lt;th&gt;完成品スコア&lt;/th&gt;
+      &lt;th&gt;位置づけ&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;「ロリポップ！AIホームページ」のエディタでデザイナーが制作したサイト&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;91.6&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;本サービスで表現できる上限&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ベンチマークとしたサイト&lt;/td&gt;
+      &lt;td&gt;80.7&lt;/td&gt;
+      &lt;td&gt;まず超えたい目標ライン&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;「ロリポップ！AIホームページ」でAIが生成したサイト&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;48.3&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;いまユーザーが目にしているもの&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;最初に確かめたかったのは、この採点が信用できるかどうかです。出てきた点数の並びは、チームメンバーが普段それぞれのサイトに対して抱いている感覚とおおむね一致していました。厳密な検証ではありませんが、少なくとも大きくは外していないはずです。この手応えがあってはじめて、スコアを判断の材料として使えます。&lt;/p&gt;
+
+&lt;p&gt;そのうえで3つを並べると、目指す地点と現在地の距離がそのまま見えます。AI自動生成サイトだけが突出して低くなっています。サブセクション別に見ると、「ナビゲーションの欠落（s1_6: 0点）」「ヘッダー・フッターの不備（s2_8: 0点）」「マイクロコピーの抽象性（s3_4: 1点）」など、弱点が特定できました。&lt;/p&gt;
+
+&lt;p&gt;「なにかイマイチ」が「ナビゲーションが0点で、重み5.38%を占めている」に変わることで、改善の優先度がチーム内で一致するようになりました。&lt;/p&gt;
+
+&lt;p&gt;なお、ここまでの採点手順をClaude Codeのスキルとして切り出そうと試みましたが、うまくいきませんでした。Claudeモデルは画像の入力サイズに上限があり（&lt;a href="https://platform.claude.com/docs/en/build-with-claude/vision"&gt;参考&lt;/a&gt;）、フルページキャプチャのような縦長画像では文字までは読み切れず、体感とかけ離れたスコアが出てしまったためです。&lt;/p&gt;
+
+&lt;h2 id="工程スコア途中成果物のjsonを抜粋した観点だけで採点する"&gt;工程スコア：途中成果物のJSONを、抜粋した観点だけで採点する&lt;/h2&gt;
+
+&lt;h3 id="完成品スコアは改修ループには重すぎる"&gt;完成品スコアは、改修ループには重すぎる&lt;/h3&gt;
+
+&lt;p&gt;現在地は分かりました。しかしこの評価指標だけで開発を回すのは困難です。&lt;/p&gt;
+
+&lt;p&gt;完成品スコアを1回出すには、&lt;strong&gt;サイトを生成 → 実際に描画 → フルページキャプチャを撮る → マルチモーダルモデルに投げる&lt;/strong&gt;という手順を踏みます。プロンプトを1行直すたびにこれをやるのは現実的といえません。また、採点にもモデル呼び出しのコストがかかるので、気軽に連打できるものでもありません。&lt;/p&gt;
+
+&lt;p&gt;一方、実際に直したいのは「サイト全体」ではなく、ワークフローの&lt;strong&gt;特定のステップ&lt;/strong&gt;です。たとえばコンテンツの文言がイマイチなら、手を入れたいのは冒頭で挙げたフローのうち「コンテンツ生成」のプロンプトであって、構成設計やデザイン選定ではありません。&lt;/p&gt;
+
+&lt;p&gt;そこで、&lt;strong&gt;評価する対象を工程単位まで小さくした評価指標&lt;/strong&gt;を別に用意しました。以降これを「工程スコア」と呼びます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;ヒアリング
+  │
+構成設計       ──▶ JSON       ──▶ 工程スコア
+  │
+デザイン選定   ──▶ JSON       ──▶ 工程スコア
+  │
+コンテンツ生成 ──▶ JSON       ──▶ 工程スコア
+  │
+描画
+  │
+完成したサイト ──▶ キャプチャ ──▶ 完成品スコア
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id="テキストだけで判定できる7項目に絞る"&gt;テキストだけで判定できる7項目に絞る&lt;/h3&gt;
+
+&lt;p&gt;「コンテンツ生成」ステップを担っているのは、各セクションの中身を並列で作る &lt;code&gt;SectionValueParallelGenerator&lt;/code&gt; というクラスです。ここが出力するのは &lt;strong&gt;コンテンツとprops（テキスト＋構造）のJSON&lt;/strong&gt; で、配色・余白・タイポグラフィ・画像といった視覚要素はテーマやテンプレート側の責務です。つまり、このステップの出力だけでは視覚要素を採点できません。&lt;/p&gt;
+
+&lt;p&gt;そこで完成品スコアの23サブセクションから、&lt;strong&gt;テキストだけで判定できる7項目を抜き出しました&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;code&lt;/th&gt;
+      &lt;th&gt;サブセクション&lt;/th&gt;
+      &lt;th&gt;重み&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_2&lt;/td&gt;
+      &lt;td&gt;業種×目的のコンテンツ過不足&lt;/td&gt;
+      &lt;td&gt;8.08&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_4&lt;/td&gt;
+      &lt;td&gt;コンテンツの順序（心理変容）&lt;/td&gt;
+      &lt;td&gt;8.08&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_5&lt;/td&gt;
+      &lt;td&gt;認知負荷（テキスト量・要素数）&lt;/td&gt;
+      &lt;td&gt;5.38&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_1&lt;/td&gt;
+      &lt;td&gt;コピーの説得力&lt;/td&gt;
+      &lt;td&gt;7.5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_2&lt;/td&gt;
+      &lt;td&gt;トーン・声の一貫性&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_3&lt;/td&gt;
+      &lt;td&gt;読みやすさ・テキストの質&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_4&lt;/td&gt;
+      &lt;td&gt;マイクロコピー（ボタン/リンク文言）&lt;/td&gt;
+      &lt;td&gt;2.5&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;これを既存の integration test に追加しました。&lt;strong&gt;生成 → JSONをテキスト整形 → Judge で0〜3採点 → &lt;code&gt;totalScore()&lt;/code&gt; で集計&lt;/strong&gt;という流れで、1コマンドで回ります。キャプチャは撮りません。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="c"&gt;# Judge の評価スイートだけを実行する&lt;/span&gt;
+docker compose &lt;span class="nb"&gt;exec&lt;/span&gt; &lt;span class="nt"&gt;-e&lt;/span&gt; &lt;span class="nv"&gt;RUN_TEST_AI_JUDGE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1 app bash &lt;span class="nt"&gt;-c&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  &lt;span class="s2"&gt;"cd path/to/core &amp;amp;&amp;amp; npx vitest --run --silent=false &lt;/span&gt;&lt;span class="se"&gt;\&lt;/span&gt;&lt;span class="s2"&gt;
+   path/to/section-value-parallel-generator.integration.test.ts"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;なお、&lt;strong&gt;このテストはCIには載せていません&lt;/strong&gt;。Judge のモデル呼び出しコストが毎回かかるので、環境変数 &lt;code&gt;RUN_TEST_AI_JUDGE&lt;/code&gt; でガードして手で叩く運用です。CIで自動的に守ることより、&lt;strong&gt;直したその場で1コマンド叩ける手軽さ&lt;/strong&gt;を取りました。&lt;/p&gt;
+
+&lt;h2 id="工程スコアで評価駆動開発を回す"&gt;工程スコアで評価駆動開発を回す&lt;/h2&gt;
+
+&lt;p&gt;工程スコアが手軽に出せるようになったので、これを軸に改修を回します。&lt;/p&gt;
+
+&lt;h3 id="評価駆動開発のループ"&gt;評価駆動開発のループ&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;ベースライン計測&lt;/strong&gt;: 現在の生成プロンプトで生成し、サブセクション別にスコアを実測する&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;弱点の特定&lt;/strong&gt;: スコアの低いサブセクションと、その重みから改善インパクトを見積もる&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;プロンプト改修&lt;/strong&gt;: 弱点に対応する品質原則を生成プロンプトに追加する&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;再計測&lt;/strong&gt;: 同じ基準で再評価し、改善・劣化を確認する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id="実例-コンテンツ品質原則の追加"&gt;実例: コンテンツ品質原則の追加&lt;/h3&gt;
+
+&lt;p&gt;ベースライン計測で特に弱かったのが「トーンの一貫性（s3_2）」と「コピーの説得力（s3_1）」でした。敬体と常体が混在したり、「こちらをクリック」のような空虚なマイクロコピーが頻出していました。&lt;/p&gt;
+
+&lt;p&gt;セクションごとのプロンプトを組み立てている関数（&lt;code&gt;buildSectionPrompt&lt;/code&gt;）に、「コンテンツ品質の原則」ブロックを追加しました。Judge のルーブリック文言をそのまま転記するのではなく、普遍的なコピーライティング原則として記述しています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;トーンの統一（敬体基調、常体混在の回避）&lt;/li&gt;
+  &lt;li&gt;固有名詞の表記統一&lt;/li&gt;
+  &lt;li&gt;ベネフィット訴求のコピー、空虚な常套句の回避&lt;/li&gt;
+  &lt;li&gt;簡潔さと低い認知負荷（一文60字/1ブロック120字目安）&lt;/li&gt;
+  &lt;li&gt;ボタンラベルは動詞始まりで具体的に（「こちら」回避）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="計測結果"&gt;計測結果&lt;/h3&gt;
+
+&lt;p&gt;改修後、同じ基準で再計測した結果です（各n=3）。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;サブセクション&lt;/th&gt;
+      &lt;th&gt;重み&lt;/th&gt;
+      &lt;th&gt;Before平均&lt;/th&gt;
+      &lt;th&gt;After平均&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_2 過不足&lt;/td&gt;
+      &lt;td&gt;8.08&lt;/td&gt;
+      &lt;td&gt;1.33&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_4 順序/重複&lt;/td&gt;
+      &lt;td&gt;8.08&lt;/td&gt;
+      &lt;td&gt;1.67&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;2.0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s1_5 認知負荷&lt;/td&gt;
+      &lt;td&gt;5.38&lt;/td&gt;
+      &lt;td&gt;3.0&lt;/td&gt;
+      &lt;td&gt;2.67&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_1 説得力&lt;/td&gt;
+      &lt;td&gt;7.5&lt;/td&gt;
+      &lt;td&gt;2.67&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_2 トーン一貫性&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+      &lt;td&gt;2.33&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_3 読みやすさ&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+      &lt;td&gt;1.33&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;s3_4 マイクロコピー&lt;/td&gt;
+      &lt;td&gt;2.5&lt;/td&gt;
+      &lt;td&gt;2.67&lt;/td&gt;
+      &lt;td&gt;1.67&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;工程スコア total は、before が &lt;code&gt;76.5 / 83 / 46&lt;/code&gt;（平均68.5）、after が &lt;code&gt;68.5 / 61.7 / 75&lt;/code&gt;（平均68.4）となりました。&lt;strong&gt;平均はほぼ横ばい&lt;/strong&gt;です。&lt;/p&gt;
+
+&lt;p&gt;思っていたより平均は動きませんでした。ただし&lt;strong&gt;最低値は46 → 61.7に上がっています&lt;/strong&gt;。Beforeで発生していた「トーン崩壊で大きく点を落とすラン」が解消されたことで、下振れがなくなりました。&lt;/p&gt;
+
+&lt;p&gt;なお、このループを含むいくつかの改善をした結果、完成品スコアのほうも48.3から52.1まで上がりました。&lt;/p&gt;
+
+&lt;h2 id="モデル変更時のスコアゲーティング"&gt;モデル変更時のスコアゲーティング&lt;/h2&gt;
+
+&lt;p&gt;LLMベースのサービスでは、モデルのアップデートや切り替えが頻繁に発生します。「ロリポップ！AIホームページ」では、Gemini 2.5 Flash の廃止を見据えて、Gemini 3.1 Flash-Lite への移行を実施しています。&lt;/p&gt;
+
+&lt;p&gt;モデルの移行に伴い「品質は維持されているか？」を確認する必要があります。ここで、作成済みの2つの評価指標を活用しました。&lt;/p&gt;
+
+&lt;p&gt;同一の題材（美容室のサイト）を本番と同じ経路で新旧それぞれのモデルに生成させ、&lt;strong&gt;工程スコアと完成品スコアの両方&lt;/strong&gt;で比較しました。旧モデル側の数値も、この比較のために取り直したものです（前節の計測とは別データです）。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;評価指標&lt;/th&gt;
+      &lt;th&gt;Gemini 2.5 Flash&lt;/th&gt;
+      &lt;th&gt;Gemini 3.1 Flash-Lite&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;工程スコア（テキスト7項目）&lt;/td&gt;
+      &lt;td&gt;68.4&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;77.5&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;完成品スコア（キャプチャ23項目）&lt;/td&gt;
+      &lt;td&gt;52.1&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;62.3&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;どちらのスコアも旧モデルを下回っていないことを確認して、マージしました。開発中に積み上げた評価基準が、そのまま移行判定のゲートになりました。&lt;/p&gt;
+
+&lt;h2 id="あらためて現在地を確認する"&gt;あらためて現在地を確認する&lt;/h2&gt;
+
+&lt;p&gt;完成品スコアの最初のベースラインは48.3でした。そこから &lt;strong&gt;48.3 → 62.3&lt;/strong&gt; まで来たことになります。&lt;/p&gt;
+
+&lt;p&gt;しかし、まず超えたいベンチマークが80.7、その先にデザイナー制作の91.6があります。62.3は &lt;strong&gt;最初のラインにも届いていません&lt;/strong&gt;。ヘッダー・フッターの欠落（s2_8: 0点）や業種に合わない画像素材（s2_10: 0点）といった、プロンプト調整だけでは解決できない課題が残されています。&lt;/p&gt;
+
+&lt;h2 id="今後の課題"&gt;今後の課題&lt;/h2&gt;
+
+&lt;p&gt;品質を数値で測れるようになったことで、次に何をすべきかも具体的に言えるようになりました。残っているのは大きく3つです。&lt;/p&gt;
+
+&lt;h3 id="1-スコアを上げるそして上げる作業自体を自動化する"&gt;1. スコアを上げる、そして上げる作業自体を自動化する&lt;/h3&gt;
+
+&lt;p&gt;まずはこれです。48.3 → 62.3 は前進ですが、目標にはまったく届いていません。当面は評価駆動開発のループ（計測 → 弱点の特定 → プロンプト改修 → 再計測）を回し続けることになります。低スコアの項目から、ワークフローのどこが欠けているのかを自動でマッピングできる仕組みも欲しいところです。&lt;/p&gt;
+
+&lt;p&gt;その先に見据えているのは、このループから人間を外すことです。生成 → 採点 → 弱点の特定 → 改修までを自動で回し、人の関与なしにスコアが上がっていく状態を理想としています。採点を自動化できた以上、残りのステップも機械に寄せていけるはずです。&lt;/p&gt;
+
+&lt;h3 id="2-採点の妥当性を確かめる"&gt;2. 採点の妥当性を確かめる&lt;/h3&gt;
+
+&lt;p&gt;デザイナーの暗黙知をルーブリックに落とし込みましたが、それが本当に落とし切れているかは、まだ検証できていません。ベースライン計測でメンバーの感覚と大きくは食い違わなかった、という程度の確認にとどまっています。&lt;/p&gt;
+
+&lt;p&gt;必要なのは人手採点とのキャリブレーションです。同じサイトを人とLLMの両方で採点し、どの項目でどれだけズレるかを測ります。カテゴリ重み（構成35 / 見た目35 / コピー20 / 体験10）の配分が妥当かどうかも、ここではじめて検証できます。&lt;/p&gt;
+
+&lt;h3 id="3-ばらつきを統計的に扱う"&gt;3. ばらつきを統計的に扱う&lt;/h3&gt;
+
+&lt;p&gt;スコアは、同じ条件で計測してもばらつきます（工程スコアのBefore 3回で total 46〜83 の幅が出ました）。この幅には、生成のばらつきと採点のばらつきの両方が含まれます。いまは複数回生成して平均と最低値を見ていますが、&lt;strong&gt;観測された差がばらつきの範囲内なのかどうかを、統計的に判定できてはいません&lt;/strong&gt;。平均が68.5から68.4に動いたとき、「横ばい」と呼んでよいのかどうか、実のところ根拠を持っていないということです。&lt;/p&gt;
+
+&lt;p&gt;同じ生成物を繰り返し採点して採点側のばらつきだけを切り出す、試行回数を増やす、ばらつきの幅そのものを指標として持つ、といったあたりから手を付けていきます。「改善した」と言い切るためには、まずばらつきを見切る必要があります。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;デザインのように正解のないものでも、基準を言語化すれば、数字として扱いはじめることはできます。その数字がどこまで実感と合っているかは、これから確かめていく段階です。それでも、「なにかイマイチ」を「どこが何点足りないのか」として話せるようになったことで、議論と改善の土台ができました。ここから先は、精度を上げながら数字を伸ばしていきたいと考えています。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>t_wadaさんによる2026年度版TDDワークショップを開催しました</title>
+      <link>https://tech.pepabo.com/2026/08/20/tdd-workshop-2026/</link>
+      <guid>https://tech.pepabo.com/2026/08/20/tdd-workshop-2026/</guid>
+      <pubDate>Thu, 20 Aug 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;2026年度に新卒エンジニアとして入社しました、のーらです。&lt;/p&gt;
+
+&lt;p&gt;ペパボでは、昨年に引き続き今年も日本の Test-Driven Development（TDD）の第一人者である &lt;a href="https://x.com/t_wada"&gt;t_wada&lt;/a&gt; さんをお招きして、TDD ワークショップを開催しました。今年の講義タイトルは「&lt;strong&gt;AI 時代の TDD&lt;/strong&gt;」。午前は AI 時代における TDD についての講義、午後は”AI 禁止”のペアプログラミングで TDD を体験する二部構成で、午後のワークショップには10名が参加しました。&lt;/p&gt;
+
+&lt;p&gt;研修後、参加者それぞれに感想を書いてもらいました。この記事では、その感想から浮かび上がった3つのテーマに沿って、当日の学びをお届けします。&lt;/p&gt;
+
+&lt;p&gt;ペパボの TDD ワークショップは2021年から毎年開催しています。昨年の様子は『&lt;a href="https://tech.pepabo.com/2025/07/03/tdd-workshop-2025/"&gt;t_wada さんによる2025年度版 TDD ワークショップを開催しました&lt;/a&gt;』を、これまでの記事は &lt;a href="https://tech.pepabo.com/tags/tdd/"&gt;TDD タグの一覧&lt;/a&gt;からご覧いただけます。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#はじめに" id="markdown-toc-はじめに"&gt;はじめに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#研修概要" id="markdown-toc-研修概要"&gt;研修概要&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#ai-との開発スタイル" id="markdown-toc-ai-との開発スタイル"&gt;AI との開発スタイル&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#認知負債" id="markdown-toc-認知負債"&gt;認知負債&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#レビューの役割の引っ越し" id="markdown-toc-レビューの役割の引っ越し"&gt;レビューの役割の引っ越し&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#思考は外注できるが理解は外注できない" id="markdown-toc-思考は外注できるが理解は外注できない"&gt;「思考は外注できるが、理解は外注できない」&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#認知負債cognitive-debtとは" id="markdown-toc-認知負債cognitive-debtとは"&gt;認知負債（Cognitive Debt）とは&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ai-活用が進むなかで感じていたモヤモヤ" id="markdown-toc-ai-活用が進むなかで感じていたモヤモヤ"&gt;AI 活用が進むなかで感じていたモヤモヤ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#なぜ今-tdd-なのかという問いへのヒント" id="markdown-toc-なぜ今-tdd-なのかという問いへのヒント"&gt;「なぜ今 TDD なのか」という問いへのヒント&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#ai-禁止のペアプロ-tdd" id="markdown-toc-ai-禁止のペアプロ-tdd"&gt;AI 禁止のペアプロ TDD&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#なぜ-ai-を禁止したのか" id="markdown-toc-なぜ-ai-を禁止したのか"&gt;なぜ AI を禁止したのか&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#オーガニックコーディング" id="markdown-toc-オーガニックコーディング"&gt;オーガニックコーディング&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#手を動かして見えてきたこと" id="markdown-toc-手を動かして見えてきたこと"&gt;手を動かして見えてきたこと&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ai-禁止は本質ではない" id="markdown-toc-ai-禁止は本質ではない"&gt;AI 禁止は本質ではない&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#コードレビューの役割の引っ越し" id="markdown-toc-コードレビューの役割の引っ越し"&gt;「コードレビューの役割の引っ越し」&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#研修担当者よりなぜ2026年に-tdd-研修を行うのか" id="markdown-toc-研修担当者よりなぜ2026年に-tdd-研修を行うのか"&gt;研修担当者より　なぜ2026年に TDD 研修を行うのか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#みんなの感想" id="markdown-toc-みんなの感想"&gt;みんなの感想&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#keith" id="markdown-toc-keith"&gt;Keith&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#kimata" id="markdown-toc-kimata"&gt;kimata&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#tateken" id="markdown-toc-tateken"&gt;tateken&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#kei" id="markdown-toc-kei"&gt;kei&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#shin" id="markdown-toc-shin"&gt;Shin&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#maru" id="markdown-toc-maru"&gt;maru&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#のーら" id="markdown-toc-のーら"&gt;のーら&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#satton" id="markdown-toc-satton"&gt;satton&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#yukyan" id="markdown-toc-yukyan"&gt;yukyan&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#どすこい" id="markdown-toc-どすこい"&gt;どすこい&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="研修概要"&gt;研修概要&lt;/h2&gt;
+
+&lt;p&gt;当日は午前に講義、午後にワークショップの二部構成でした。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;午前：講義「AI 時代の TDD」＋ 質疑応答&lt;/li&gt;
+  &lt;li&gt;午後：ペアプログラミング形式による TDD 実装課題（&lt;strong&gt;AI ツールの使用は禁止！&lt;/strong&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;事前準備や TDD の基本的な流れは昨年と同様なので、詳しくは&lt;a href="https://tech.pepabo.com/2025/07/03/tdd-workshop-2025/"&gt;昨年の記事&lt;/a&gt;をご覧ください。ここでは、講義の要点を3つ紹介します。&lt;/p&gt;
+
+&lt;h3 id="ai-との開発スタイル"&gt;AI との開発スタイル&lt;/h3&gt;
+
+&lt;p&gt;AI との向き合い方の整理です。対話しながら一緒に開発するやり方（伴走）は、コントロールしやすい一方で人力なのでスケールしません。自走する AI に任せて並列開発するやり方（委託）は、圧倒的に速くスケールする一方で、人間によるコントロールや状況把握が難しくなります。&lt;/p&gt;
+
+&lt;h3 id="認知負債"&gt;認知負債&lt;/h3&gt;
+
+&lt;p&gt;AI によるコード生成のスピードに人間の理解が追いつかず、その理解の遅れが積み上がっていくことです。動くコードは手元にどんどん増えるのに、それを説明できる人がいない。この「見えない負債」が、講義全体を貫く問題意識でした（詳しくは次の章で！）。&lt;/p&gt;
+
+&lt;h3 id="レビューの役割の引っ越し"&gt;レビューの役割の引っ越し&lt;/h3&gt;
+
+&lt;p&gt;AI に委託すると、人間のレビューがボトルネックになります。講義では、これまでレビューが一手に担っていた役割を、複数の仕組みに分散させるという考え方が示されました。その引っ越し先の一つが、TDD で作る「第一級の成果物としてのテストスイート」です（詳しくは5章で！）。&lt;/p&gt;
+
+&lt;p&gt;これらを念頭に、ここからは参加者の視点で当日を振り返っていきます。&lt;/p&gt;
+
+&lt;h2 id="思考は外注できるが理解は外注できない"&gt;「思考は外注できるが、理解は外注できない」&lt;/h2&gt;
+
+&lt;p&gt;SUZURI・minne 事業部、iOS エンジニアの satton です。minne の iOS アプリを開発しています！&lt;/p&gt;
+
+&lt;p&gt;午前の講義の中で一番刺さったのが、Andrej Karpathy が引用して広まった、kache（@yacineMTB）さんの「思考は外注できるが、理解は外注できない」という言葉でした。&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet"&gt;&lt;a href="https://twitter.com/yacineMTB/status/2018886083120153046"&gt;&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+
+&lt;p&gt;この章では、その言葉の背景にある「認知負債」という考え方と、AI を使う受講生としての実感を通して、講義で示された問題意識を紹介します。&lt;/p&gt;
+
+&lt;h3 id="認知負債cognitive-debtとは"&gt;認知負債（Cognitive Debt）とは&lt;/h3&gt;
+
+&lt;p&gt;認知負債とは、AI によるコード生成のスピードに人間の理解が追いつかず、動いているコードの裏で「書いた本人が中身を分かっていない」状態が積み上がっていくことです。技術的負債はコードを読めば見えるものですが、認知負債は見えません。Ward の Debt Metaphor（＝人間のドメイン理解が先行し、コードがそれに追いつかない状態を”借金”にたとえた、本来の技術的負債の考え方）が「人間の理解が先行し、コードがついてこない」状態を指していたのに対して、認知負債はその逆で、「AI のコード生成が先行し、人間の理解がついてこない」状態を指しています。&lt;/p&gt;
+
+&lt;h3 id="ai-活用が進むなかで感じていたモヤモヤ"&gt;AI 活用が進むなかで感じていたモヤモヤ&lt;/h3&gt;
+
+&lt;p&gt;正直に言うと、私はもうほとんど自分でコードを書いていません。開発は基本 Claude Code 一本で、いまは対話するだけでなく、Agent に一部を任せて実装を進める場面も増えてきました。AI 活用を始めた1年ほど前は、レビューで「セルフレビューが甘い」「なぜこの実装なのか説明できていない」と指摘されたことも何度かあります。動くコードは出せても、自分の中で腹落ちしないまま PR を出してしまっていた、というのが正直なところです。いまは AI レビューを挟むなど、使い方も少しずつアップデートできているのですが、「動いているコードの中身を、自分自身がどこまで理解できているか」というモヤモヤは、形を変えて残り続けています。自分がレビューで指摘されていたのは、まさにこの認知負債がたまっている状態だったのかもしれません。&lt;/p&gt;
+
+&lt;h3 id="なぜ今-tdd-なのかという問いへのヒント"&gt;「なぜ今 TDD なのか」という問いへのヒント&lt;/h3&gt;
+
+&lt;p&gt;設計を考えるのも、最終的にレビューして判断するのも、いまはまだ人間の担う部分が大きいと感じます。この見えない負債と向き合う仕組みを持っておかないと、いずれ困るなと、講義を聞きながら思っていました。「AI がここまで書いてくれる時代に、なぜ今 TDD を学ぶのか」。事前課題のころからずっと引っかかっていた問いに、この日ひとつヒントが見えた気がしました。TDD は、コードの安全性を担保するいくつかの仕組みのうちのひとつで、Red → Green → Refactor のサイクルは、「理解を先に置く」ための意識づけそのものなのかなと思いました。同じ講義を受けた Keith さんや kimata さんからも、この「理解を守る手段」としての TDD を「テストは動く仕様書」と表現する感想が上がっていましたが、まさにその通りだと感じます。AI に実装を丸投げして理解を置き去りにするのではなく、まず人間がテストで仕様を厳密に定義する。それこそが今、私たちが TDD を学ぶ意味なのかもしれません。&lt;/p&gt;
+
+&lt;p&gt;一方で、まだ完全にスッキリしたわけではありません。私自身、普段の iOS 開発では実装のあとにテストを書くことが多く、UI の挙動をテストコードでどこまで見るべきなのか、正直まだ自分の中で答えが出ていません。AI 前提の開発で、このサイクルをどこまで律儀に回すのが良いのか、ここは現場で答えを探していく宿題として持ち帰りたいと思います。&lt;/p&gt;
+
+&lt;h2 id="ai-禁止のペアプロ-tdd"&gt;AI 禁止のペアプロ TDD&lt;/h2&gt;
+
+&lt;p&gt;2026年度に新卒エンジニアとして入社しました、kei です。&lt;/p&gt;
+
+&lt;p&gt;午後は、午前とは打って変わって「AI 禁止」のペアプログラミングで TDD を体験しました。お題は「整数の閉区間を表すクラスを作る」。二人一組で、コードを書くドライバーと、指示や提案を出すナビゲーターに分かれ、交代しながら Red → Green → Refactor を回します。今回は Ruby と RSpec を使いました。&lt;/p&gt;
+
+&lt;h3 id="なぜ-ai-を禁止したのか"&gt;なぜ AI を禁止したのか&lt;/h3&gt;
+
+&lt;p&gt;（3章で触れた）認知負債のちょうど裏返しです。自分の頭だけで考え、自分の手で書く。ランチで t_wada さんが言っていた「AI 時代の研修、人を集めるなら、人が集まらないとできないことに時間を使いたい」という言葉が、この時間の意味をよく表していました。AI なら数十秒で終わる課題をあえて人間の手に取り戻し、手を動かしながら TDD への理解を深める時間でした。&lt;/p&gt;
+
+&lt;h3 id="オーガニックコーディング"&gt;オーガニックコーディング&lt;/h3&gt;
+
+&lt;p&gt;研修では久しぶりのオーガニックコーディング（AI に頼らず自分の手で書くこと）だと皆で言っていました笑。私は最初「整数の閉区間なんて簡単すぎでは？」と思っていましたが、手を動かすと議論が次々に生まれます。&lt;/p&gt;
+
+&lt;p&gt;たとえばクラス名を最初 &lt;code&gt;IntClosedRange&lt;/code&gt; にしていましたが、「型で守れない Ruby にこの名前は合わなくない？」という話になり、&lt;code&gt;ClosedRange&lt;/code&gt; に落ち着きました。「別の閉区間を完全に含むか」の判定も、演算子オーバーライドを使えば集合の大小として &lt;code&gt;&amp;gt;=&lt;/code&gt; で書けるのでは、と思いついて実装しました。こうした設計の相談をその場で交わすのが、思いのほか楽しかったです。テストが通った瞬間の嬉しさも、手を動かしていたからこそでした。&lt;/p&gt;
+
+&lt;p&gt;ついでに印象的だったのは Ruby と RSpec の相性の良さです。テストがまるで自然言語のように読めて、テストは仕様書という言葉がぴったりはまりました。&lt;/p&gt;
+
+&lt;h3 id="手を動かして見えてきたこと"&gt;手を動かして見えてきたこと&lt;/h3&gt;
+
+&lt;p&gt;気づいたことは、仕様を明示することの大切さです。私たちのお題では、下端点と上端点が同じ区間（&lt;code&gt;[5,5]&lt;/code&gt;）は作れるはずでした。でもテストで示さないと、後から見た人には「仕様なのか、たまたま弾いていないバグなのか」が分かりません。議論している途中で時間切れでしたが、t_wada さんの「テストは、後から見た人がクラスの振る舞いを分かるように書くべき」という言葉が印象に残りました。&lt;code&gt;&amp;gt;=&lt;/code&gt; の包含判定も、境界のテストを固めてはじめて仕様になります。&lt;/p&gt;
+
+&lt;p&gt;そして書きながら腑に落ちたのは、テストを書くことと仕様を書くことはほぼ同じ営みだ、ということです。先にテストを書くというより、自然言語で語られる振る舞いをコードに翻訳したものがテストなのだ、という順番のほうがしっくりきます。&lt;/p&gt;
+
+&lt;h3 id="ai-禁止は本質ではない"&gt;AI 禁止は本質ではない&lt;/h3&gt;
+
+&lt;p&gt;行き着いたのは、「AI 禁止そのものは本質ではなかった」ということです。人間は自分が理解しているものしか出力できません。でも AI は、理解していないものまで出力できてしまう。だからこそ理解と出力を同期させながら進めることが大切で、手を動かしたり話し合いながらのコーディングはその同期に役立ちます。すべてを理解する必要はなく、何を理解すべきかを取捨選択できて、AI への依存度を調整できることが重要なのだと思いました。&lt;/p&gt;
+
+&lt;p&gt;AI 禁止は、その感覚を体で覚えるための仕掛けだったのだと思います。&lt;/p&gt;
+
+&lt;h2 id="コードレビューの役割の引っ越し"&gt;「コードレビューの役割の引っ越し」&lt;/h2&gt;
+
+&lt;p&gt;2026年度に新卒エンジニアとして入社しました、kimata です。&lt;/p&gt;
+
+&lt;p&gt;これまで、コードの品質チェックは人間のレビューで行われてきました。しかし、AI によってレビューの負担が大きく変わってきています。AI は人が読むよりずっと速く大量のコードを生成しますが、それを読んで理解し、承認する人間の速度は変わりません。実際に自分がレビューをする側になってみると、AI が生成した大量のコードを読んで承認する作業は、ここ最近負担が大きくなっています。レビューだけで品質を保証するのは難しくなってきていると実感していました。&lt;/p&gt;
+
+&lt;p&gt;講義ではこのような問題に対して、レビューが担ってきた役割を別の仕組みに分けて持たせるという考え方を学びました。具体的には次の5つです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上流での仕様レビュー&lt;/li&gt;
+  &lt;li&gt;仕様を表すテストスイート&lt;/li&gt;
+  &lt;li&gt;型システムや制約によるガードレール&lt;/li&gt;
+  &lt;li&gt;ビジネスへの影響度に応じたリスクマッピング&lt;/li&gt;
+  &lt;li&gt;ペアプロ・モブプロによる理解の共有&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;この5つのうち、今回の講義では、実際に手を動かして TDD を体験しました。Red→Green→Refactor のサイクルを回してみると、先に書いたテストがそのまま仕様を表す成果物になることが分かりました。また、TDD は小さなサイクルで進めるので、一度に読みきれない量のコードが生成されることも防げると学びました。&lt;/p&gt;
+
+&lt;p&gt;今後は、まずテストを AI と一緒に書いて、その内容を自分が理解して仕様として確定させる、次にそのテストを通す実装を AI に任せる、最後にテストが通ったことを確認して次の小さなタスクに進む、というサイクルを回していきたいです。このサイクルなら、自分が理解しているテストが仕様を保証してくれるので、生成されたコードを隅々まで読まなくてもよくなり、レビューの負担を減らせると考えています。&lt;/p&gt;
+
+&lt;h2 id="研修担当者よりなぜ2026年に-tdd-研修を行うのか"&gt;研修担当者より　なぜ2026年に TDD 研修を行うのか&lt;/h2&gt;
+
+&lt;p&gt;EC 事業部事業開発チームエンジニアのどすこいと yukyan です。普段は短期間で顧客に価値を提供するプロジェクトで開発しています。僕たちは、今年度の新卒研修を企画する立場として本ワークショップ実施の提案をしました。同時に、ワークショップ参加者として自らも参加させていただくことになりました。&lt;/p&gt;
+
+&lt;p&gt;GMO ペパボでは、毎年 t_wada さんに TDD 研修を行なっていただいており、今年もご依頼をさせていただくことにしました。ペパボでは毎年研修担当が変わるため、慣習的に同じ研修を続けているわけではなく、その都度研修内容の検討が行われます。例えば、去年は「Vibe Coding 研修」を行い、今年は「設計研修」「SRE 研修」が新たに組まれました。TDD 研修も例外ではなく、今年の目的を整理した上であらためて検討しました。その上で、やはり t_wada さんに TDD 研修を行なっていただくべきだと考え、今年もお呼びしたという背景があります。&lt;/p&gt;
+
+&lt;p&gt;前提として、今年の研修では、2026年の AI 動向を踏まえ次のような目的で研修企画を進めていました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;自分が何を知らないかを知り、自律的に学び続けられる状態になる&lt;/li&gt;
+  &lt;li&gt;配属後すぐに事業インパクトを出せる助走をつける&lt;/li&gt;
+  &lt;li&gt;AI を前提とした技術選定・判断・実装ができ、顧客体験まで考えられるようになる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;今年は複数の研修を用意しており、それぞれがこれらの目的の一部を担います。TDD 研修は、このうち特に1つ目と3つ目に寄与すると考えています。&lt;/p&gt;
+
+&lt;p&gt;t_wada さんの TDD 研修は、TDD を厳密に実施する体験をするだけではありません。その時々の時流を踏まえて、いまどんな状況でどんな問題が生まれているのか、そしてその中で TDD はどのような立ち位置にあるのかを学ぶことができます。昨今では、直近の AI エージェントの台頭による開発現場の変化についての考え方を学べます。午前の部の講義による理論と、午後の部の AI を使わないワークショップによる具体的な実践、その両面から体験できます。&lt;/p&gt;
+
+&lt;p&gt;一昨年や去年と比較して、さらに多くのことが AI エージェントによって可能になりました。そんな昨今における「AI 時代のソフトウェアエンジニア開発」についての考え方や技術の学び方、開発の進め方についてのヒントに気づけるように講義をお願いしました。これにより、3つ目の目的を達成できると考えました。&lt;/p&gt;
+
+&lt;p&gt;また、改めて考察すると、目的のうちの1つ目にも寄与すると考えています。t_wada さんは TDD を「不確実性にまみれたソフトウェア開発に少しずつ確実性を持たせていく、一種の陣取り合戦」にたとえ、テストを書いてコードを通すことで「よくわからない領域」を少しずつ切り崩し、「分かった領域」を広げていく感覚だと語っています（&lt;a href="https://levtech.jp/media/article/interview/detail_480/"&gt;レバテック LAB のインタビュー&lt;/a&gt;より）。いま自分が何をわかっていて何をわかっていないのかを明らかにしながら進めるこの営みは、自律的に学び続けるための方法の一つになります。&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet"&gt;&lt;a href="https://twitter.com/t_wada/status/1929908440819786110"&gt;&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+
+&lt;p&gt;毎年ゼロベースで検討して、それでもお願いしたくなる、そういった研修だと感じています。&lt;/p&gt;
+
+&lt;p&gt;そんな t_wada さんの AI DevEx2026 の資料も公開されたのでここでも共有しておきます！&lt;/p&gt;
+
+&lt;script async="" class="speakerdeck-embed" data-id="b2cececb035540539b1d53f36b6417df" data-ratio="1.7794486215538847" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;
+
+&lt;p&gt;改めまして、t_wada さん、今年もありがとうございました！&lt;/p&gt;
+
+&lt;h2 id="みんなの感想"&gt;みんなの感想&lt;/h2&gt;
+
+&lt;h3 id="keith"&gt;Keith&lt;/h3&gt;
+
+&lt;p&gt;研修の講義を通じて、AI 時代における TDD の重要性を学びました。AI がコードを生成する時代だからこそ、テストで仕様を明確に示すことが人間の重要な役割だと感じました。また、あえて AI を使わずに RSpec で TDD を一通り実践したことで、Red・Green・Refactor のサイクルを体感でき、TDD への印象が一層深まりました。&lt;/p&gt;
+
+&lt;h3 id="kimata"&gt;kimata&lt;/h3&gt;
+
+&lt;p&gt;研修の講義を通じて、AI が生成したコードの検証を人間のレビューだけに頼るのではなく、複数の仕組みに責任を分散させるという考え方を学びました。TDD はその分散先の一つであり、テストという形でレビューの役割の一部を肩代わりできると知り、とても納得できました。また、午後のハンズオンでは、AI を使わずに TDD の Red・Green・Refactor のサイクルを一通り体験する演習を行いました。テストは通すことだけを目的にせず、後から読む人が仕様を読み取れる「動く仕様書」になるように書き、コードとあわせて整えていくことの大切さと難しさを実感しました。&lt;/p&gt;
+
+&lt;h3 id="tateken"&gt;tateken&lt;/h3&gt;
+
+&lt;p&gt;今回は AI 時代における TDD 開発の重要性について学びました。AI が大量にコードを実装するからこそ、テストを用いることで品質を保証する重要性を学びました。普段はあまりテストなど書かず、実装することがほとんどだったので、AI に TDD を意識させて行きたいと思いました。また、Rspec を AI を使わずに書いたことは新鮮で、実際のサイクルをきちんと理解することができました！&lt;/p&gt;
+
+&lt;h3 id="kei"&gt;kei&lt;/h3&gt;
+
+&lt;p&gt;講義を受ける前までは恥ずかしながら「テストを先に書く」だけが TDD の本質だと思っていました。常に進捗を確認可能にするために、問題を細かく刻んで一歩ずつ理解しながら進むための考え方でもあるというのは新しい視点でした。AI とコーディングをする際にも TDD が役に立つことを知れたのは収穫です。AI が大量のコードをアウトプットできる時代に、理解を追いつかせるために何が必要なのかを少し見出せた気がします。&lt;/p&gt;
+
+&lt;h3 id="shin"&gt;Shin&lt;/h3&gt;
+
+&lt;p&gt;普段 Claude Code と Codex に課金しまくっている身なので、「FOMO は行動嗜癖（依存症）の入り口」のくだりで少し胃が痛かったです。一番覚えているのは「ハルシネーションは腐敗と発酵の関係」という喩えと、午後のオーガニックコーディングでテストが通った瞬間が思ったより嬉しかったこと。配属先では AI の自律マージ率を上げることを目標としているので、「コードレビューの役割の引っ越し」の話は他人事ではなく、正直まだ自分の中で答えが出ていません。&lt;/p&gt;
+
+&lt;h3 id="maru"&gt;maru&lt;/h3&gt;
+
+&lt;p&gt;講演で一番刺さったのは「思考は外注できるが、理解は外注できない」という言葉でした。AI がコードを書く速度に人間の理解が追いつかなくなる「認知負債」は、技術的負債と違って見えづらい、という指摘に、普段 AI エージェントを使い倒している身として強い危機感を覚えました。午後は、AI を使わず RSpec で Red・Green・Refactor を回しました。テストを先に書くと「何を作るか」の理解が先に固まる感覚があり、仕様書になるテストコードを書く良さについて、実感できました。&lt;/p&gt;
+
+&lt;h3 id="のーら"&gt;のーら&lt;/h3&gt;
+
+&lt;p&gt;私は普段、AI に翻弄されています。特にこの講義以前は、Claude Code に任せれば実装はぐんぐん進むけれど、自分の理解が追いつかず、「便利だけど、これでいいのかな…？」という状態でした。&lt;/p&gt;
+
+&lt;p&gt;講義では「AI と伴走」「AI に委託」という使い分けの整理があり、少し視野が開けたと同時に、「どこまでを人間がやるか」という観点を持つことが大切なのだと思いました。午後のペアプロ TDD では、AI 禁止のルールのもと、「Red → Green → Refactor」のサイクルを回す、真の TDD を体験しました。自分の頭だけで考えるオーガニックコーディングは久しぶりで、新鮮な楽しさがありました。同時に、エージェンティックコーディングにおいても TDD が有用であるということを体感出来た気がします。小さなサイクルで実装を進めていくことで commit が分割されやすくなり、人間にとっての理解のしやすさや、後の整理のしやすさにつながるのだと思います。&lt;/p&gt;
+
+&lt;p&gt;TDD のサイクルは、AI と開発する時代でも人間の理解を置き去りにしない、あるいは置き去りになっても後から取り返しがつくようにするための土台になると感じました。これからは翻弄されるのではなく、TDD を味方につけて、AI との使い分けを自分で決められるエンジニアになっていきたいです！&lt;/p&gt;
+
+&lt;h3 id="satton"&gt;satton&lt;/h3&gt;
+
+&lt;p&gt;「AI がコードを書いてくれる時代になぜ TDD なのか」という問いへの答えが、この研修で少しヒントが見えた気がしました。AI によるコード生成が先行して人間の理解がついてこない「認知負債」という概念が印象に残り、TDD がその認知負債に効くのかもしれないと感じました。AI をどう使うかだけでなく、自分の理解をどう守るかも考えていきたいと思えた研修でした。&lt;/p&gt;
+
+&lt;h3 id="yukyan"&gt;yukyan&lt;/h3&gt;
+
+&lt;p&gt;去年に続いて今年も研修を行っていただき、大変感謝しています。午後の研修については、直近だと BuriKaigi 2026 のワークショップでも受けさせていただきました。同じ研修を複数回受けても、休憩中に他の方の TDD の進め方を眺められる時間があるおかげで、毎回「こんなやり方があるのか！」という新しい発見につながり、二度目でも変わらず楽しく、学びの多い時間になっています。実際に業務でも、実装を書く前にまずテストを書く（テストファースト）を心がけるようになり、受けて本当に良かったと思っています。ありがとうございました！&lt;/p&gt;
+
+&lt;h3 id="どすこい"&gt;どすこい&lt;/h3&gt;
+
+&lt;p&gt;TDD 研修は Burikaigi2026 でもワークショップをさせていただいたので、今年は二回目の体験となりました。また、自分が1年目で新卒研修を受けたときにも TDD ワークショップを受講させていただきました（&lt;a href="https://tech.pepabo.com/2024/08/20/tdd-workshop-2024/"&gt;t_wada さんによる2024年度版 TDD ワークショップを開催しました&lt;/a&gt;）。&lt;/p&gt;
+
+&lt;p&gt;ワークショップでは、他の新卒エンジニアの皆さんのチームと比較して、ずっと遅くじっくりとした進行になっていたところが印象的でした。そもそもエラーをどうするのか、テストに何を残すべきなのか、どういった入力や出力にすべきかというところの議論や実施に時間を多く使っていました。逆に、具体的な機能群の実装に関しては、割とサクサク進んでいました。&lt;/p&gt;
+
+&lt;p&gt;一番最初の TDD のワークショップから、エンジニアとしてのキャリアを2年間歩んでみて、機能の実装以外にも想いを馳せることができるようになったんだなという気づきを得たワークショップでした！&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;この記事では、参加者の感想から浮かび上がった3つのテーマに沿って、今年のワークショップを振り返ってきました。AI に理解が追いつかない「認知負債」（3章）、AI を止めて手を動かすことで理解を取り戻す体験（4章）、レビューの役割をテストへ引っ越す試み（5章）。切り口はさまざまでも、どれも「AI と開発する時代に、人間の理解をどう守り続けるか」という同じ問いに向き合ったものでした。&lt;/p&gt;
+
+&lt;p&gt;私たちも、AI と共に開発する時代のなかで、手を動かして得た「理解」を大切にしていきたいと思います。この記事が、これから講師をお招きする方や、AI 時代の開発に向き合う方の参考になれば幸いです。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>GMOペパボの開発体験や技術スタック 2026上期</title>
+      <link>https://tech.pepabo.com/2026/08/12/tech-survey-2026-first-half/</link>
+      <guid>https://tech.pepabo.com/2026/08/12/tech-survey-2026-first-half/</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは、技術広報のsennaです。GMOペパボで8年間広報を務め、この7月から技術広報を兼任することになりました。
+技術広報になったものの、これまでコーポレートやサービスの広報をメインで行っていたので、そもそもエンジニアのみんながどんなことを考えているか、どんな技術を使っているかもほとんど知識ゼロの状態・・・。なので、まずはエンジニアのみんなのことを知りたいと思い、全社エンジニアを対象に業務における開発体験や各自の技術スタックなどについて調査を実施しました。開発体験の満足度、使っている言語やツール、アウトプットの状況まで・・・GMOペパボのエンジニアのリアルをデータでお伝えします。&lt;/p&gt;
+
+&lt;h2 id="サマリー"&gt;サマリー&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;7割以上が技術選定に十分満足！ツールや技術を自由に選べる環境&lt;/li&gt;
+  &lt;li&gt;自然言語でのコーディング、複数AIを活用するエンジニアも多数&lt;/li&gt;
+  &lt;li&gt;CI/CDやドキュメントに伸びしろがあるが、半数以上が概ね満足！開発体験の全体像&lt;/li&gt;
+  &lt;li&gt;業務とプライベートで最も差が大きいのはPython！業務vsプライベート言語ギャップ&lt;/li&gt;
+  &lt;li&gt;82%が社外に向けてアウトプット、2026年上期のアウトプット状況&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="ツールや技術を自由に選べる環境"&gt;ツールや技術を自由に選べる環境&lt;/h2&gt;
+
+&lt;p&gt;みなさんは、開発体験という言葉を聞いたことがありますか？開発体験（Developer Experience／DX）とは開発者が業務を行う上で使用するツールや開発のプロセス、組織文化など環境全体を表す言葉です( • ̀ω•́ )✧。どや顔で説明していますが、私は最近知りました（おそらくエンジニアの方にとっては当たり前の言葉ですよね・・・）。最近知ったけど、仕事の時は10年前から知ってるような顔をして使っています( • ̀ω•́ )✧。開発体験なんてよければよいほどいいよね！と思ったのですが、私はエンジニアではないので実態を知らないわけです。なので、今回の調査で聞いてみました。果たして・・・その結果や如何に・・・！！！
+さて、今回の調査では、開発体験に関する7項目を4段階評価で評価してもらいました。技術選定の裁量は「ほぼない〜十分にある」、それ以外は「ほとんど満足していない〜十分に満足している」で評価してもらっています。&lt;/p&gt;
+
+&lt;p&gt;※本記事では&lt;a href="https://tech.pepabo.com/engineers/#position"&gt;ペパボの職位制度&lt;/a&gt;に基づき、便宜上4等級以上をシニア、3等級以下をジュニアと表記しています。&lt;/p&gt;
+
+&lt;p&gt;7項目のうち、「ツール・環境の自由度」と「技術選定の裁量」は突出して高い結果で、「十分に満足している」と回答した人が75%と73%でした。また「ツール・環境の自由度」はジュニア74%・シニア75%と、等級を問わず高い水準にあります。&lt;/p&gt;
+
+&lt;p&gt;その結果はエディタの多様性に表れています。Vim/Neovim（32%）とVS Code（30%）が僅差でトップを争い、ほかにもEmacs、Textbringerなど計10種類以上が共存しています。Zedは利用者全員がシニア、逆にCursorは全員がジュニアと、等級によるエディタ選択の傾向も見えます。
+さらに、エディタ欄に「一年前からエディタを開かなくなりました」「terminalでAIに指示」と回答した人もいました。AIの台頭によって、エディタを使わない開発スタイルも広がっています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/12/tech-survey-2026-first-half/editor.png" alt="横棒グラフ：業務で一番使用しているエディタ・IDE上位5つ。Vim/Neovim 32%、VS Code 30%、Zed 8%、Xcode 7%、Cursor 7%" /&gt;&lt;/p&gt;
+
+&lt;h2 id="自然言語でのコーディング複数aiを活用するエンジニアも多数"&gt;自然言語でのコーディング、複数AIを活用するエンジニアも多数&lt;/h2&gt;
+
+&lt;p&gt;Claude Codeは全社導入ツールであり、回答者全員が利用しています。そこに各自が選んだツールを組み合わせ、1人あたり平均2.6個のAIツールを使い分けています。ChatGPT（50%）、Claude Chat（47%）、Gemini（33%）の併用が多く、Codex（10%）も利用が広がっています。&lt;/p&gt;
+
+&lt;p&gt;使い方の幅も広く、業務言語の選択肢に「自然言語」と書いた人や、「claudeをしばいています」と答えた人、「コードは全部AIに任せている」という人も。さらに「ccを実装計画、codexを実装役にしてagmsg&lt;sup id="fnref:1"&gt;&lt;a href="#fn:1" class="footnote" rel="footnote" role="doc-noteref"&gt;1&lt;/a&gt;&lt;/sup&gt;で対話させながら実装するといい感じになる」と、複数のAIエージェントを役割分担させる実践的な回答もありました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/12/tech-survey-2026-first-half/ai-tools.png" alt="横棒グラフ：利用しているAIツール（複数回答）。Claude Code 100%、ChatGPT 50%、Claude（チャット）47%、Gemini 33%、Codex 10%、Cursor 7%" /&gt;&lt;/p&gt;
+
+&lt;h2 id="開発体験の全体像"&gt;開発体験の全体像&lt;/h2&gt;
+
+&lt;p&gt;開発体験7項目の満足度を4段階で評価してもらいました。すべての項目において半数以上が4（十分に満足している）もしくは3と回答しています。
+一方、CI/CDの整備やドキュメントの充実度に関して「十分に満足」と答えた割合は、CI/CDが28%、ドキュメントは22%にとどまります。半数以上が概ね満足しているが、まだ十分ではない——ここに開発組織としての伸びしろがあると考えます。
+GMOペパボは20年以上動いている歴史のあるサービスも多く、サービス数も10以上あります（しかも最近急速に増えています）。そのため、エンジニア全員が十分に満足できるドキュメントを整備するのはなかなか骨の折れる仕事です。AIも活用してもっと満足度が高まるようにしていけるといいですよね。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;最高評価（4）を回答した割合と上位2段階（4もしくは3）のいずれかを回答した割合&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/12/tech-survey-2026-first-half/dx.png" alt="横棒グラフ：開発体験満足度を最高評価と上位2段階の割合で表示。ツール・環境の自由度 75%/97%、技術選定の裁量 73%/90%、デプロイの容易さ 37%/82%、テスト環境 33%/82%、コードレビュー 30%/82%、CI/CD 28%/78%、ドキュメント充実度 22%/57%" /&gt;&lt;/p&gt;
+
+&lt;p&gt;※技術選定の裁量は「ほぼない〜十分にある」、それ以外は「ほとんど満足していない〜十分に満足している」の尺度。&lt;/p&gt;
+
+&lt;p&gt;CI/CDの整備やドキュメントに対しては、改善の動きが始まっています。具体的な事例がいくつかアンケート内で上がっていたので紹介します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;CI高速化：&lt;/strong&gt;「CIが速くなった。ataniさんのこれ&lt;sup id="fnref:2"&gt;&lt;a href="#fn:2" class="footnote" rel="footnote" role="doc-noteref"&gt;2&lt;/a&gt;&lt;/sup&gt;が特によかった」。YJIT導入、jemalloc切り替え、CPU使用量改善など、パフォーマンス改善の取り組みが複数の回答者から「いいなと思った取り組み」として挙がりました。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ドキュメント駆動の動き：&lt;/strong&gt; 「データ基盤のphilosophyを形式知化して、Agentにここを見せ、方針策定時などに考慮されるようになってます」。ムームードメインではリポジトリに仕様がまとまり、AI経由で仕組みを把握できるようになっています。ドキュメント×AIの組み合わせで、知識を活用しやすい状態になってきました。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;AI活用の進化：&lt;/strong&gt; Claude Codeのskill化、MCP実装、マルチAIエージェント連携。「kazuさんがminne-overviewというスキルをつくってくれたのですが、minneサービスの仕組みなどを質問できたりします」。devcontainerで安全なローカル環境を構築する取り組みや、AIコーディングエージェントごとにGit worktreeを分けて並列開発する運用も生まれています。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;開発プロセス改善：&lt;/strong&gt; PRの自動マージ、社内マーケットプレイスによる業務効率化など、開発ライフサイクル全体にわたる改善が複数挙がりました。&lt;/p&gt;
+
+&lt;h2 id="業務で使用する言語とプライベートで使用する言語のギャップ"&gt;業務で使用する言語とプライベートで使用する言語のギャップ&lt;/h2&gt;
+
+&lt;p&gt;普段業務で使用している言語・ツールと、趣味・個人開発などプライベートで使用している言語・ツールについて質問してみたところ、業務とプライベートで大きなギャップが生まれていました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/12/tech-survey-2026-first-half/language.png" alt="横棒グラフ：業務vsプライベートの言語利用率（%、複数回答）。Ruby 業務65/プライベート33、Shell/Bash 42/23、TS/JS 38/43、Go 30/38、PHP 27/8、Swift 15/20、Kotlin 12/10、Rust 5/7、Python 5/32" /&gt;&lt;/p&gt;
+
+&lt;p&gt;業務ではRubyが65%で最多。フレームワーク・ライブラリはRails（63%）が主力で、Terraform/Pulumi（40%）、React（28%）、Next.js（23%）と続きました。
+プライベートではTypeScript（43%）がトップで、次いでGo（38%）、Ruby（33%）。最もギャップが大きいのはPythonで、業務5%に対しプライベート32%。逆にPHPは、業務27%に対し、プライベート8%と、業務特化の色が強い結果でした。
+Rubyが最多というのは、普段のエンジニアのコミュニティイベントへの注力なども見ていて順当に感じました。個人的に意外だったのはPythonの少なさでした。技術知識ほぼゼロのひよっこ技術広報は、Python＝AIくらいの知識量しかないため、最近こんなにAI関連の機能やサービスを連発しているのに、Pythonの業務利用はなぜ少ないの？と思ってしまいました。この結果を見て調べたのですが、AI関連のサービスを作る＝Pythonを使うというわけではないんですねぇ。ちなみに、私は普段の業務でClaude Codeを使っていますが、5日に1回くらい「スプレッドシートに書き込む権利がありません」と言ってきます。その時は「Python使ったらできるよ」と伝えるようにしています。ある意味、私の方が業務でPythonを使っているかもしれません。&lt;/p&gt;
+
+&lt;h2 id="2026年上期82が社外に向けて何らかをアウトプット"&gt;2026年上期、82%が社外に向けて何らかをアウトプット&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボは、みんなが大切にしている3つのことの中の1つに「アウトプットすること」があります。そこで、エンジニアが2026年上期にどんなアウトプットをしたかを聞いてみました。
+82%が社外向けのアウトプットを行っており、社内ナレッジ整備（60%）や社内LT（34%）などの社内向けを含めると、何らかのアウトプットをした人は92%にのぼりました。インプット面では技術書を読む習慣のあるエンジニアが83%を占め、個人開発（72%）や新技術の素振り（74%）も盛んです。&lt;/p&gt;
+
+&lt;p&gt;2026年上期に新しく触り始めた技術についても聞きました。AIを使って専門外の領域にチャレンジしている様子が回答からわかりました。&lt;/p&gt;
+
+&lt;p&gt;「Swiftが全くわかりませんが Codex App と一緒に個人で使う iOS アプリを作り始めました」&lt;/p&gt;
+
+&lt;p&gt;「AIを使ってフロントエンドの技術(Next.jsなど)にも挑戦できて良い」&lt;/p&gt;
+
+&lt;p&gt;業務外では、PicoRubyで電子工作、Blenderで3Dプリント、家族向けブラウザゲーム開発など、技術の幅は業務の枠に収まりません。
+最近では、エンジニアだけでなくデザイナー・ディレクター・バックオフィスのパートナーもAIを活用してどんどんプロダクトを作っています。これからどんどん自分の領域を越境したチャレンジが増えていきそうですね。
+ちなみに私は最近JavaScriptを使って診断サイトを作りました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/12/tech-survey-2026-first-half/output.png" alt="横棒グラフ：2026年上期の社外向けアウトプット（複数回答）。個人ブログ・Zenn等 66%、テックブログ執筆 40%、OSS貢献 32%、カンファレンス登壇 22%、書籍・メディア執筆 6%" /&gt;&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;ツールの自由度と裁量の高さ、活発なアウトプット文化はペパボのエンジニア組織の強みです。ドキュメントとCI/CDはこれからもっと伸びていくことを期待して、技術広報としてエンジニア組織をよくするお手伝いができればいいなと思っています。
+技術についてもこれから勉強していくのでよろしくお願いします。&lt;/p&gt;
+
+&lt;p&gt;※本記事は2026年7月実施の社内テックサーベイに基づいています。&lt;/p&gt;
+
+&lt;h2 id="編集後記余談"&gt;編集後記（余談）&lt;/h2&gt;
+&lt;p&gt;本ブログの初稿を書いた時に、調査分析の記事なのでできるだけ自我を排除し、プレスリリースのような気持ちで記事を書いてレビューに出しました。もちろん分析や文章のたたき作成にAIは使いましたがAIが作ったものから5割くらいは自分でリライトしていたのです。それでもレビューしたkenchanくんさんに「全部AIで生成しましたねってまるわかり」といわれてしまいまして、どうしたら・・・と思い悩みました。具体的にAIっぽさが出ているところを聞いたところ、なんと・・・その部分は全くAIの手が入っていない私が完全に書いた部分だったのです・・・！！！（該当箇所はあえて記事に残しました）この記事を読んだ方がAIっぽいなと思った部分、それは本当にAIが書いた箇所かもしれませんし、実は私が書いた箇所かもしれません・・・。人とAIを見分けるのって本当に難しいですね。&lt;/p&gt;
+&lt;div class="footnotes" role="doc-endnotes"&gt;
+  &lt;ol&gt;
+    &lt;li id="fn:1"&gt;
+      &lt;p&gt;&lt;a href="https://github.com/fujibee/agmsg"&gt;fujibee/agmsg&lt;/a&gt; &lt;a href="#fnref:1" class="reversefootnote" role="doc-backlink"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id="fn:2"&gt;
+      &lt;p&gt;&lt;a href="https://zenn.dev/pepabo/articles/ci-speedup-rails-infra-and-app"&gt;8,706回のINSERTがCIを殺していた — Rails CI 55%短縮の全手順&lt;/a&gt; &lt;a href="#fnref:2" class="reversefootnote" role="doc-backlink"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    <item>
+      <title>Agentic Engineering時代における「作り上げる力」を鍛える！2026年度新卒エンジニア研修を実施しました</title>
+      <link>https://tech.pepabo.com/2026/08/05/training-2026/</link>
+      <guid>https://tech.pepabo.com/2026/08/05/training-2026/</guid>
+      <pubDate>Wed, 05 Aug 2026 00:00:00 +0900</pubDate>
+      <description>&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;新卒エンジニア研修を担当しました、ugo、yukyan、てつを、どすこい、haruotsuです！&lt;/p&gt;
+
+&lt;p&gt;2026年度も新たな新卒エンジニアを迎え、講師陣一同で研修を実施しました。本記事では、各研修を設計・実施した講師陣が、カリキュラムの設計意図や工夫、実施の様子を紹介します。新卒エンジニア研修の設計に携わる方々の参考になれば幸いです。ぜひ最後までご覧ください。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#はじめに" id="markdown-toc-はじめに"&gt;はじめに&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#2026年度新卒エンジニア研修概要" id="markdown-toc-2026年度新卒エンジニア研修概要"&gt;2026年度新卒エンジニア研修概要&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#webアプリケーション研修バックエンド" id="markdown-toc-webアプリケーション研修バックエンド"&gt;Webアプリケーション研修(バックエンド)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#フロントエンド研修" id="markdown-toc-フロントエンド研修"&gt;フロントエンド研修&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#モデリング設計研修" id="markdown-toc-モデリング設計研修"&gt;モデリング/設計研修&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#インフラ仮想化研修" id="markdown-toc-インフラ仮想化研修"&gt;インフラ/仮想化研修&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#sre研修" id="markdown-toc-sre研修"&gt;SRE研修&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#障害対応100本ノックの概要" id="markdown-toc-障害対応100本ノックの概要"&gt;障害対応100本ノックの概要&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#設計意図" id="markdown-toc-設計意図"&gt;設計意図&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#効果" id="markdown-toc-効果"&gt;効果&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#セキュリティ研修" id="markdown-toc-セキュリティ研修"&gt;セキュリティ研修&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#セキュリティレビュー体験" id="markdown-toc-セキュリティレビュー体験"&gt;セキュリティレビュー体験&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#脆弱性診断の体験" id="markdown-toc-脆弱性診断の体験"&gt;脆弱性診断の体験&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#機械学習データエンジニアリング研修" id="markdown-toc-機械学習データエンジニアリング研修"&gt;機械学習＆データエンジニアリング研修&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="2026年度新卒エンジニア研修概要"&gt;2026年度新卒エンジニア研修概要&lt;/h2&gt;
+
+&lt;p&gt;今年の新卒エンジニア研修は&lt;strong&gt;「Agentic Engineering時代における作り上げる力」&lt;/strong&gt;をテーマに、次の3つを目的として設計しました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;自分が何を知らないかを知り、自律的に学び続けられる状態になる&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;配属後すぐに事業インパクトを出せる助走をつける&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;AIを前提とした技術選定・判断・実装ができ、顧客体験まで考えられるようになる&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;AIがコードを書いてくれる時代だからこそ、専門職としてのエンジニアとなることを重視しました。
+AIの出力の表面をなぞるのではなく、背後の技術体系を理解し実践していること。
+将来の事業価値に、開発がどのように結びつくのか議論できること。
+リリースした先の運用まで責任を持てること。AIが速く賢くなっても、説明責任と運用責任は人間が引き受けるものだと考えました。&lt;/p&gt;
+
+&lt;p&gt;こうした狙いのもと、Webアプリケーション開発を足掛かりとしました。そのうえで、AIエージェントを用いた開発で重要となるもの、AIエージェントを組み込んだサービス開発で重要となるものを基準に、研修の単元を選定しました。&lt;/p&gt;
+
+&lt;p&gt;各研修は次の順で実施しました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;実施順&lt;/th&gt;
+      &lt;th&gt;研修&lt;/th&gt;
+      &lt;th&gt;日数&lt;/th&gt;
+      &lt;th&gt;担当&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;Webアプリケーション研修(バックエンド)&lt;/td&gt;
+      &lt;td&gt;5.5日&lt;/td&gt;
+      &lt;td&gt;harachan、shiorin&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;フロントエンド研修&lt;/td&gt;
+      &lt;td&gt;4日&lt;/td&gt;
+      &lt;td&gt;nacal、てつを&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;モデリング/設計研修&lt;/td&gt;
+      &lt;td&gt;3日&lt;/td&gt;
+      &lt;td&gt;donokun、はらちゃん&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;インフラ/仮想化研修&lt;/td&gt;
+      &lt;td&gt;9日&lt;/td&gt;
+      &lt;td&gt;drumato、homirun、n01e0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;SRE研修&lt;/td&gt;
+      &lt;td&gt;5日&lt;/td&gt;
+      &lt;td&gt;pochy、homirun&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;6&lt;/td&gt;
+      &lt;td&gt;セキュリティ研修&lt;/td&gt;
+      &lt;td&gt;2日&lt;/td&gt;
+      &lt;td&gt;n01e0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;機械学習＆データエンジニアリング研修&lt;/td&gt;
+      &lt;td&gt;2日&lt;/td&gt;
+      &lt;td&gt;miyakey&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;去年の新卒エンジニア研修について気になる方は、&lt;a href="https://tech.pepabo.com/2025/10/14/training-2025/"&gt;目指せシニアエンジニア！2025年度新卒エンジニア研修資料を一部公開します&lt;/a&gt;もぜひご覧ください。&lt;/p&gt;
+
+&lt;p&gt;ここからは各研修の講師陣が、それぞれのカリキュラムを紹介します。&lt;/p&gt;
+
+&lt;h2 id="webアプリケーション研修バックエンド"&gt;Webアプリケーション研修(バックエンド)&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: harachan、shiorin&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Webアプリケーション研修(バックエンド)は、新卒エンジニア研修の一番最初のステップとして、harachanとshiorinで担当しました。この研修でまず体感してもらいたかったことは3つあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Webアプリケーションを1から作る際にどんな言葉が出てきて何が行われているのかという「索引(インデックス)」を持つこと&lt;/li&gt;
+  &lt;li&gt;チーム・複数人で開発を進めるとはどういうことかを知ること&lt;/li&gt;
+  &lt;li&gt;AIとともにチーム開発を円滑に進める方法を考えること&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;「MVC」「マイグレーション」「セッション」といった言葉を全く知らない状態から、聞いたときに「ああ、あの辺りの話か」となんとなく思い浮かぶ状態までいければ十分、というくらいの解像度を目指しました。索引を先に持っておけば、その先の研修や配属後に実際に必要になったタイミングで、自分で調べにいけるはずだと考えたためです。&lt;/p&gt;
+
+&lt;p&gt;題材にはRuby on Railsを選びました。20年分のWeb開発のベストプラクティスが型として詰まっているためです。そのRailsチュートリアルを5.5営業日(昨年からおよそ半分に圧縮した日数)で完走することを、受講者全員が満たすべき要件としてセットしました。ただ内容の理解が置き去りにならないよう、Claude Codeとともに実装を進めながらPRを立ててもらいました。そのPRをまず受講者同士でレビューし、そのあと講師である私たちがレビューする、という2段階の体制をとりました。&lt;/p&gt;
+
+&lt;p&gt;受講者同士のレビューでは、誰かと一緒にPRを返しながら開発を進めるとはどういうことか、レビューではどんな観点を見るとよいか、そしてレビューにおける責任を実感してもらうことを狙いました。講師レビューでは、AIがただコードを書いて動いただけの状態にならないよう、「このパターンだったらどうなる？」「どうしてこの実装になっているんだろう？」と問いを投げて理解を深めてもらいました。同時に、普段の業務でどんな観点・コメントの仕方でレビューしているかを見て学び取ってもらうことも意識しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/web-app-review-01.png" alt="レビューの様子1" /&gt;
+&lt;img src="/blog/2026/08/05/training-2026/images/web-app-review-02.png" alt="レビューの様子2" /&gt;
+&lt;cite&gt;受講者同士でPRレビューを進めている様子&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;実際にやってみると、8名それぞれが自分の実装を進めながら、レビューという新しいタスクにも同時に向き合うことになり、そのバランスの取り方に苦戦する様子が見られました。&lt;/p&gt;
+
+&lt;p&gt;一番最初に受ける研修だからこそ、与えられた要件を甘く見ずにマストとして完遂する姿勢は、配属後の実務でも重要になると考えました。そこで研修の後半に一度立ち止まってもらい、受講者同士だけで相談する時間を設けました。講師はあえて入らず、残りの日数で完走するにはどうすればいいか、「完走」を具体的にどこに置くか、全員がその要件を満たすにはどうすればいいかを考えてもらいました。伝えた要件は、Railsチュートリアルの最後の章まで到達し、そこで作る機能がすべて動くようにすること、そして冒頭に掲げていたインデックスを少しでも貼れる状態にすることの2つです。&lt;/p&gt;
+
+&lt;p&gt;受講者たちが自分たちで考え直した進め方を、講師陣は「無理のない計画か」「要件を満たしているか」という観点を中心にレビューしました。残りの少ない日数で本当にやり切れるのか、不安に思っている部分は一緒に解消していきました。特に「インデックスを貼れる状態にする」という抽象的な要件は、何を満たせば達成と言えるのかを受講者側と講師側ですり合わせました。そうやってお互いに「これならいける」と思える状態を作ったうえで、残りの日数を進めてもらいました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/webapp-training-estimation-meeting.jpg" alt="受講者たちが集まって見積もり会を行っている様子" /&gt;
+&lt;cite&gt;受講者たちが集まって見積もり会を行っている様子&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;この相談の中では、受講者たちから「PRを通じて講師側が身につけてほしいと考えていたスキルはもう掴めたので、ここから先は進捗を優先してレビューを任意にしたい」という提案がありました。当初必須としていた相互レビューについて、求められていたことの本質を自分たちで言語化し、それを踏まえて講師陣と交渉して合意を得て運用を変えたのです。マネージャーなど要件を出した相手と優先順位や認識をすり合わせ、説得して合意を得るという実務そのものの動きを研修の中で経験できていて、講師としてもとても嬉しい出来事でした。&lt;/p&gt;
+
+&lt;p&gt;その結果、全員が昨年の半分の日数である5.5営業日でRailsチュートリアルを完走できました。何より大きかったのは、受け身だった空気が「どうすれば達成できるか」を自分たちで考える能動的なマインドに変わったことです。講師があえて手を引いて、受講者同士で考える時間を作ったことが効いていました。講師側が進め方を決めすぎず、受講者自身に委ねたほうが、双方にとって良い結果につながる。この研修を通して、そういう気づきを得られました。最終日には振り返り会も開き、次の研修にどう向き合うといいかまで自分たちで考えられるようになっていました。新卒エンジニア研修に最終日まで一緒に取り組む「チーム」として、能動的に立ち向かう一歩を踏み出せたと感じています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/webapp-training-instructors.jpg" alt="Webアプリケーション研修を担当したharachanとshiorin" /&gt;
+&lt;cite&gt;Webアプリケーション研修を担当したharachanとshiorin&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;Rubyコミュニティに触れるきっかけをつくるため、5/21に開催された&lt;a href="https://railstokyo.connpass.com/event/385285/"&gt;RailsTokyo#4&lt;/a&gt;へ、受講者全員で参加しました。業務時間扱いで参加し、社内外のRubyistと交流する時間も持てました。「コミュニティへ参加する楽しさ」を体感してもらう一歩になったと考えています。&lt;/p&gt;
+
+&lt;p&gt;AIと一緒に開発を進められる時代だからこそ、要件を自分ごととして捉えてチームでやり切る経験を、配属前の早い段階でしてもらえたことには大きな意味がありました。この研修で掴んだ「まずは自分たちで考え抜く」感覚を、今後の研修や実際の業務でも活かしてもらえれば嬉しいです。&lt;/p&gt;
+
+&lt;h2 id="フロントエンド研修"&gt;フロントエンド研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: nacal、てつを&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;今年のフロントエンド研修は「最高のフロントエンド」について考えてもらうことをテーマとし、nacalとてつをの2名で、4日間実施しました。&lt;/p&gt;
+
+&lt;p&gt;研修全体のテーマとして「Agentic Engineering時代における作り上げる力」が置かれている中で、AIを活用すれば、ある程度動くフロントエンドは誰でも容易に実装できるようになってきています。その中でフロントエンドを実装するエンジニアとして、最高のプロダクトにするには何をすべきか、何を意識すべきかを考えてもらいます。その周辺知識を入り口に深く潜り込んでいくことを主な目的として、このテーマを設定しました。&lt;/p&gt;
+
+&lt;p&gt;具体的な研修内容としては、SUZURI APIを利用したECサイトのWebフロントエンドを実装してもらい、それぞれ工夫した点や意識したポイントについて発表してもらいました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/frontend-training-ui-review.jpg" alt="成果発表の一例。VLMがブラウザを操作してUIの使いやすさをタスクベースで定量評価し、失敗タスクの分析をもとにAIが生成した添削付きの改善モック画像" /&gt;
+&lt;cite&gt;成果発表の一例。VLMにブラウザを操作させてUIをタスクベースで定量評価し、失敗タスクの分析をもとにAIが生成した添削付きの改善モック&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;受講者には、Webフロントエンド未経験の人もいました。それでも成果発表では、アクセシビリティやWeb Core Vitalsといった定量的な指標を自ら発見して評価項目とする人や、理想のUXから逆算して技術スタックを提案する人が現れました。それぞれが自分のアプローチで「最高のフロントエンド」を考えて実現するところまでやり切ってくれて、短い期間で横断的にフロントエンド領域の理解を深められたと感じています。&lt;/p&gt;
+
+&lt;p&gt;「最高のフロントエンド」に唯一の正解はありません。だからこそ、それぞれが自分なりの切り口で問いを立て、答えにたどり着くまで試行錯誤したこと自体が、フロントエンドに限らずどんな領域でも通用する財産になるはずです。&lt;/p&gt;
+
+&lt;p&gt;AIが「動くもの」を素早く生み出せるようになった今、その先の「最高とは何か」を自ら問い、技術で形にする力の価値は、これまで以上に高まっていくと考えています。この研修が、受講者それぞれにとって「最高のプロダクトとは何か」を追い求め続けるための出発点になれば嬉しいです。&lt;/p&gt;
+
+&lt;h2 id="モデリング設計研修"&gt;モデリング/設計研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: donokun、harachan&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;設計研修は、ペパボの新卒エンジニア研修で「設計」を独立したコンテンツとして扱う初めての試みです。donokunとharachanの2名で、3日間実施しました。&lt;/p&gt;
+
+&lt;p&gt;配属後の受講者には、コードを書く前に「何をどう変えるか」を文書にまとめ、レビューを通じて合意してから実装に進む、という仕事の進め方が待っています。はじめて「設計を書いてみて」と言われたとき、そもそも何を出せば設計と呼べるのかがわからない。この最初のつまずきをなくすことを研修の目的に置き、ゴールを「Webアプリケーションへの変更の提案を書け、その提案の良し悪しを判断し、レビューを受けて補強できる状態」と定めました。&lt;/p&gt;
+
+&lt;p&gt;研修は「書き方」「考え方・伝え方」の2章で構成しました。&lt;/p&gt;
+
+&lt;p&gt;「書き方」は、設計を表現する道具を身につける章です。静的な構成を表すC4モデルの抽象化レイヤと、動的な振る舞いを表す図（シーケンス図、状態遷移図、データフロー図）を学び、実際に図を描いて講師のフィードバックを受けます。&lt;/p&gt;
+
+&lt;p&gt;「考え方・伝え方」は、表現された設計の良し悪しを判断する章です。品質特性、なかでも変更容易性と複雑さの関係を学びます。Railsチュートリアルで作ったアプリケーションへの機能追加を題材に、提案を書いてレビューを受けて改稿するまでを実践します。&lt;/p&gt;
+
+&lt;p&gt;最終日には、受講者が機能追加の実現方式を複数案比較した提案ドキュメントを書き上げ、レビューを受けて改稿するところまで完走しました。実務で設計を任されたときに何を作ることが求められているのか、その像を持って配属に向かってもらえたはずです。&lt;/p&gt;
+
+&lt;p&gt;配属後、施策を任された際に、この研修で体験した「要件を抽出して設計書に落とし込む」経験が活かせたようで、スムーズに業務を行えたという嬉しいフィードバックもありました。&lt;/p&gt;
+
+&lt;p&gt;課題も見つかりました。演習中、コーディングエージェントの提示する知識や意見に受講者が振り回される、という場面があったのです。AIの出力を自分の評価軸で判断するには、各技術領域の知識がもう少し必要でした。設計研修をエンジニア研修の後半に配置する、演習の題材を実際のプロダクトに近づける、といった改善案を来年に引き継ぎます。&lt;/p&gt;
+
+&lt;script defer="" class="speakerdeck-embed" data-id="0317761caf744c6c9c704fd49229d211" data-ratio="1.7777777777777777" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;
+
+&lt;h2 id="インフラ仮想化研修"&gt;インフラ/仮想化研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: drumato、homirun、n01e0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/infra-and-virtualization.png" alt="研修資料のスクリーンショット" /&gt;&lt;/p&gt;
+
+&lt;p&gt;インフラ/仮想化研修は、2年間続いていたコンテナ研修をさらに拡大した、今年度から新しく設計された研修です。drumatoとhomirun、n01e0の3名で、9日間実施しました。&lt;/p&gt;
+
+&lt;p&gt;ソフトウェアエンジニアに求められる貢献のベースラインはAIによって引き上げられました。それぞれのエンジニアは自身の専門性と関心領域についてパフォーマンスを出すだけではなく、自身の価値を提供するまでの一連のサイクルを完遂する、そのためにパフォーマンスの領域を広げる力が求められています。&lt;/p&gt;
+
+&lt;p&gt;そこで、本研修の前提を &lt;strong&gt;今日において、知とパフォーマンスの領域はAIによって広げられる&lt;/strong&gt; とおきました。価値提供に関わるすべてのプロセスに関われるエンジニアとして、不必要にレベルを下げずにインフラ/仮想化技術を学ぶ内容です。&lt;/p&gt;
+
+&lt;p&gt;具体的には、以下のような内容を含む研修として実施されました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;LinuxのNetwork namespaceを利用したネットワーク入門&lt;/strong&gt;。VM上でNetwork namespaceを利用して仮想ホストを構築してもらいました。プロトコルキャプチャによるネットワークプロトコルの理解や、ルーティングの設定を体験してもらいました。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code&gt;clone(2)&lt;/code&gt;を利用したミニマムなコンテナランタイム自作&lt;/strong&gt;。受講者それぞれが好きな言語でコンテナランタイムを自作しながら、既存のコンテナランタイムと比較してもらいました。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Virtualization frameworkを利用したVM自作&lt;/strong&gt;。コンテナ技術とのトレードオフを理解してもらうために、Virtualization frameworkを利用したVM作成を体験してもらいました。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Kubernetesクラスタの思想と設計から学ぶ実運用の課題&lt;/strong&gt;。ここまでの技術の整理として、ペパボで主に採用されているKubernetesを仕組みから理解してもらいました。そのうえで、実際のサービス運用における関心と課題を導入しました。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;講義全体を通して意識したことは、技術書やWeb上の記事などで当たり前に解説されているこれらインフラ技術について考察してもらうということでした。「このような技術がないとどう困るだろうか」「この技術は何を解決し、どのような関心を持ち込んだか」といった観点です。AI時代において特に重要なのは課題抽出ができ、意図が説明できることです。この具体的なシミュレーションとして適切な題材だったと考えています。&lt;/p&gt;
+
+&lt;p&gt;研修後半では、受講者それぞれに作りたいものを考えてもらい、講師と議論しながら1つのレポートを完成させてもらいました。テーマはAIエージェント用のサンドボックス/ロードバランサ/eBPFイベントトレース/PyTorch Compiler/Gateway API Controller/楕円曲線暗号など多彩でした。それぞれの技術特性と解決される課題について議論できました。&lt;/p&gt;
+
+&lt;h2 id="sre研修"&gt;SRE研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: pochy、homirun&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;過去二年間&lt;a href="https://tech.pepabo.com/2024/07/23/o11y-training-2024/"&gt;「オブザーバビリティ研修」&lt;/a&gt;として続いた枠でしたが、今年は満を持して「SRE研修」と名付けました。&lt;/p&gt;
+
+&lt;p&gt;その内容は「障害対応100本ノック」としました。この節では、実施した内容と設計意図、その効果を記します。&lt;/p&gt;
+
+&lt;h3 id="障害対応100本ノックの概要"&gt;障害対応100本ノックの概要&lt;/h3&gt;
+
+&lt;p&gt;この研修では、受講者には5営業日の間、システムの管理者として障害対応をしつづけることを求めました。&lt;/p&gt;
+
+&lt;p&gt;この研修で実施したことを説明します。準備として講師は研修用のKubernetesクラスタを用意し、その上に3つのサービスを稼働させました。このとき、それぞれのサービスには主に可用性の観点で脆弱な実装やアーキテクチャを複数（100個）仕込みました。また、それぞれのサービスのソースコードを管理するリポジトリは用意したものの、リリースフローの自動化やIaCは不十分な状態としました。
+研修初日に、受講者にそのクラスタへのadmin権限を与えました。講師は5営業日間、事前に仕込んだ障害が起きるようにシステムに負荷をかけ続けました。受講者には、比喩や誇張ではなく実際に100本の障害へ対応することを求めました。&lt;/p&gt;
+
+&lt;p&gt;この研修においてはロールプレイとして、受講者はそのシステムの管理者であるとしました。また、講師2名は、「Slackにはいるものの、たまたま2名とも遠くへ旅行に行っている」という設定にしました。すなわち、「詳しい人」は実際に作業できないが、「現場にいて権限がある人」がなんとかして障害へ対応しなければいけない、という状況設定です。&lt;/p&gt;
+
+&lt;p&gt;また、座学用のテキストも用意しました。ただ状況を与えるだけでは何をしたらいいか分からなくなる懸念があったので、リリース自動化や監視、可観測性の整備などに必要な知識はテキストファイルにして読める場所に配置しておきました。具体的にはArgoCD、GitHub Actions、Grafanaなどの技術要素と、それらが必要になる背景を読み物として執筆しました。&lt;/p&gt;
+
+&lt;p&gt;5営業日の最後の2時間程度は、ポストモーテムの時間としました。起きた障害に対して、何が起きていたのか、何がうまくいったか、次はどのようにしたらもっとうまくできるかを講師がファシリテーションしつつ受講者間で議論してもらいました。&lt;/p&gt;
+
+&lt;h3 id="設計意図"&gt;設計意図&lt;/h3&gt;
+
+&lt;p&gt;この研修は、ロールプレイによる実践を主として、SREのプラクティスをその身を以て学ぶことを目的としました。&lt;/p&gt;
+
+&lt;p&gt;研修設計を考える際に主にインスパイアされたのは&lt;a href="https://www.theregister.com/software/2026/03/19/fixing-claude-with-claude-anthropic-reports-on-ai-sre/5224819"&gt;AnthropicによるSREについての報告記事&lt;/a&gt;でした。曰く、複雑なシステムで根本原因を究明するためには「痛い目に遭う」必要があるとのことです。生成AI技術が全盛を極め続けるこの時代においては、知りたい技術や知識は湯水のように手に入ります。だからといって、SREで必要なトラブルシューティング能力がすぐさま手に入るわけではないと私は感じています。そこで、ひたすら「痛い目に遭う」ような研修を思いつきました。&lt;/p&gt;
+
+&lt;p&gt;3サービスは、講師がそれまでにペパボの中で運用を担当したサービスの中から、アーキテクチャが異なる3つを模したものにしました。様々なアーキテクチャのシステムに立ち向かえる能力を養うことと、実務ですぐに使える知識を獲得することがこの決定の目的です。&lt;/p&gt;
+
+&lt;p&gt;仕込んだ障害には、すべて過去にペパボの中で起きた障害の機序を使いました。ペパボの中ではポストモーテム文化が浸透しているため、過去の障害履歴を参照することが容易です。起こした障害の例は次のとおりです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;大量のN+1クエリによるレスポンス遅延&lt;/li&gt;
+  &lt;li&gt;キャッシュ戦略の不備による参照データの競合&lt;/li&gt;
+  &lt;li&gt;k8s podのliveness probeの瑕疵による可用性毀損&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;パフォーマンス問題やデータ不整合問題などさまざまなレイヤの問題を配置することによって、原因究明のために可観測性技術を習得しなければいけない状況を作りました。
+受講者には研修が完了した後に、起きた障害はすべて過去のポストモーテムから引用したものであることを伝えました。自分たちの対応が実務に繋がるものだと伝えること、そしてペパボのポストモーテム文化を知ってもらうことを目的とした設計です。&lt;/p&gt;
+
+&lt;p&gt;リリースフローの自動化やIaCが不徹底な状態から取り組んでもらったのは、ソフトウェアの偉大さを感じてもらうためです。SREのプラクティスの1つに、トイルの解消があります。自動化が何もない状況で障害対応をしてもなかなか捗りません。そこで、最初に対応が遅くなったとしても少しずつ自動化を進めることで、時間のレバレッジによって最終的には多量の成果を出すことができる経験をしてもらいたいという意図を込めました。&lt;/p&gt;
+
+&lt;p&gt;受講者8名に対して3サービスを用意した意図は、実際の運用で頻発するコミュニケーションを実践してもらうためです。3サービスが与えられたことで、受講者は自然と3チームに分かれました。しかし3サービスはKubernetesクラスタやDBインスタンス、ArgoCDサーバーを共有する構成になっていました。すなわち、「複数サービスが共有しているリソースがボトルネックになる」事象が発生します。これによって、チーム間でどのようにコミュニケーションをとってボトルネックの解消に取り組むと効果が出やすいのか、あるいは出にくいのかを体感してもらえる研修になりました。ペパボのエンジニア組織が掲げるバリューの1つに「&lt;a href="https://tech.pepabo.com/engineers/#value:~:text=%E3%81%97%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%80%82-,%E3%81%99%E3%81%B9%E3%81%A6%E3%81%8C%E8%87%AA%E5%88%86%E3%81%94%E3%81%A8,-%E3%83%81%E3%83%BC%E3%83%A0%E3%81%AE%E8%AA%B2%E9%A1%8C"&gt;すべてが自分ごと&lt;/a&gt;」というフレーズがあります。担当サービスの外だからという理由で誰かが直してくれるのを祈っているだけでは何も解決しないので、どうにかして直そうとする姿勢が必要であると知る機会にしてほしいという意図も込めました。&lt;/p&gt;
+
+&lt;h3 id="効果"&gt;効果&lt;/h3&gt;
+
+&lt;p&gt;概ね、期待した効果が得られたのではないかと考えています。&lt;/p&gt;
+
+&lt;p&gt;講師として印象的だったのは、チーム間での越境の動きです。チーム分けは講師が明示したものではなく自然発生的にできたものではあるものの、一度決まったチームを越境することは心理的な負担が大きいと私は思っています。そのような中で、共有リソースがボトルネックだと見抜いてチューニングに取り組む動きや、あるアプリケーションでのチューニング方法を受講者間で共有する動きが見えました。これは頼もしかったです。また、講師がちらっと口に出した「推測するな、計測せよ」や「監視で気付けない障害が起きていたら負け」といったフレーズがふりかえりの際に受講者の口からも出てきたことは講師冥利に尽きるなあと思いました。&lt;/p&gt;
+
+&lt;p&gt;一方で、AI時代と言っても、5営業日で100本は多いということもわかりました。実際に解消された障害は50本程度で、他は検知されつつも直しきれなかったり、そもそも検知すらされない障害もありました。次からは50本ノックに調整してもよさそうです。&lt;/p&gt;
+
+&lt;h2 id="セキュリティ研修"&gt;セキュリティ研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: n01e0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;今年もセキュリティ研修を担当しました。セキュリティ対策室のn01e0です。日程は色々あって2日間での開催となりました。&lt;a href="https://tech.pepabo.com/2025/10/14/training-2025/#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E7%A0%94%E4%BF%AEn01e0"&gt;昨年&lt;/a&gt;と大きな違いはありませんが密度が高くなっています。&lt;/p&gt;
+
+&lt;p&gt;期間が短い為、座学はほとんど設けず導入にとどめ、ほとんどの時間をハンズオンに費やしてもらいました。&lt;/p&gt;
+
+&lt;h3 id="セキュリティレビュー体験"&gt;セキュリティレビュー体験&lt;/h3&gt;
+
+&lt;p&gt;初日は他のイベントも重なっており、作業時間があまり多く取れなかったため、セキュリティレビュー体験を行いました。
+Webアプリケーション研修で作成したリポジトリに対し、事前に私が作成した脆弱性のある機能追加のPRをレビューしてもらいました。&lt;/p&gt;
+
+&lt;p&gt;今回は受講者が8人いる為、それぞれのリポジトリに対して異なる機能や様々な脆弱性を埋め込むのが講師としての課題でした。しかし研修目的だと言うと、Agentもすんなり受け入れて意図的な脆弱性を埋め込んでくれました。気を使ってくれたのか、指示していない・意図していない脆弱性もいくつか埋め込んでくれました。助かります。&lt;/p&gt;
+
+&lt;p&gt;セキュリティレビューはもちろんですが、コードレビューをする際、「どのような意思決定の結果、マージされるコードが出来上がったのか」が大事だと私は考えています。&lt;/p&gt;
+
+&lt;p&gt;そのため、今回の研修では「一度出したPRを修正するのが面倒なVibe Coder」として振る舞い、以下の点を明示してもらうようにしました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;具体的に脆弱性の原因となっているコード&lt;/li&gt;
+  &lt;li&gt;なぜそれが脆弱性となるのか&lt;/li&gt;
+  &lt;li&gt;どういったリスクがあるのか&lt;/li&gt;
+  &lt;li&gt;悪用の可能性はあるのか&lt;/li&gt;
+  &lt;li&gt;どのように修正すれば良いのか&lt;/li&gt;
+  &lt;li&gt;どんなテストを追加すればよいのか&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これは暗に「PRの裏に相手のCoding Agentがいる」という現状に合わせた内容でもあります。レビューでの指摘を具体的にするほど、相手のAgentにも具体的な指示を伝えられます。&lt;/p&gt;
+
+&lt;h3 id="脆弱性診断の体験"&gt;脆弱性診断の体験&lt;/h3&gt;
+
+&lt;p&gt;昨年に引き続き、Rails製の脆弱なやられアプリの脆弱性を発見・修正してもらうハンズオンです。&lt;/p&gt;
+
+&lt;p&gt;私が目指す&lt;a href="https://tech.pepabo.com/2026/03/19/ai-and-security-team/#%E3%81%BE%E3%81%A8%E3%82%81"&gt;脆弱性診断の民主化&lt;/a&gt;を意識し、ツールやテクニックは共有しつつ、受講者主体で動いてもらいました。
+既にAgentの使い方が身についており、続々と大量の脆弱性を発見してくれます。教える事など無いんじゃないか？と感じる所ですが、先輩風を吹かせたいので頑張ります。&lt;/p&gt;
+
+&lt;p&gt;「XSSを見つけた」「LFIを見つけた」という所までは、Agentに簡単な指示を出すだけでもできます。しかし診断では「それらの脆弱性に最大でどういうリスクがあるのか」を理解・説明しなければなりません。そのうえで一般論でなく、今回のアプリケーションにおける具体的な攻撃を考えて、対応の優先度や方針を決めます。&lt;/p&gt;
+
+&lt;p&gt;「LFIで本来見えないはずのファイルが見える」で終わらせないことを意識してもらいました。「LFIで&lt;code&gt;/proc/self/env&lt;/code&gt;を見るとDBのクレデンシャルが書いてある」「XSSで管理者アカウントのCookieを窃取できる」「マウントされたホストのディレクトリを操作できる」。こういった事を実際に動かしながら理解してもらえて良かったです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/05/training-2026/images/security.png" alt="マウントされたホストのディレクトリを消し飛ばしている様子" /&gt;&lt;/p&gt;
+
+&lt;h2 id="機械学習データエンジニアリング研修"&gt;機械学習＆データエンジニアリング研修&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;担当: miyakey&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ペパボ研究所のmiyakeyです。機械学習＆データエンジニアリング研修として「AIエージェントを前提としたサービス設計と開発」を担当しました。&lt;/p&gt;
+
+&lt;p&gt;例年この研修では機械学習やAI活用の基礎知識を扱ってきましたが、今年はAIエージェントがサービス体験そのものを形づくり、開発プロセスの前提にもなりつつある状況を受けて内容を大きく組み替えました。狙いは、AIエージェントを「サービス体験の一部」として設計できること、そしてコーディングエージェントと協働しながら「何を作るか・何を満たすべきか」を自分たちで定義できることの2つです。AIから成果物を受け取るだけでなく、AIが投げかけてくる問いを受け取り、自分たちの判断基準を更新していける力を、設計と開発の両面から鍛えることを目的としました。&lt;/p&gt;
+
+&lt;p&gt;演習では、二人一組で「Webサービス内でユーザーまたは運用者を支援するAIエージェント機能を1つ設計・実装する」ことに取り組んでもらいました。作るものは完成度の高いアプリではなく、エージェントの振る舞いとその機序を説明できるプロトタイプです。設計にあたっては3つの要件を明示し、そのまま最終発表の評価軸としました。AIチャットや単純な自動化ではなくエージェントとして実現する理由があること（必然性）。Tool実行・状態保持・ワークフローとして実装可能であること（実現性）。どんな入力になぜそのToolを使い、なぜその応答になるのかを説明できること（了解性）です。「動くもの」はAIの力で誰でも作れる時代だからこそ、その振る舞いに必然性があり、機序を人間が説明できるかを問うことに重きを置いています。&lt;/p&gt;
+
+&lt;p&gt;実装は、Google Agent Development Kit（ADK）でToolを実装し、LM Studio上のローカルLLMに接続する制約を課しました。あえて手元のローカルモデルで動かすのは、強力なモデルなら雑な設計でもそれらしく動いてしまうためです。限られた性能で意図通りに動かそうとすると、Toolの切り分けや状態の持たせ方といった設計そのものと向き合わざるを得ません。エージェントの機序を自分の手で理解してもらううえで、この制約はよく効いたと感じています。&lt;/p&gt;
+
+&lt;p&gt;2日間の研修はDay1で設計とレビュー、Day2で実装・評価・発表という構成とし、「何を満たすべきか」を先に言語化する流れを体験してもらいました。最終発表では、設計と機序の理解を一緒に確かめました。短い期間ながら各チームが「この場面でこそエージェントが要る」という必然性を自分の言葉で説明し、ローカルLLMとToolで振る舞いを形にし、なぜそう動くのかを説明しきってくれました。この経験を、配属後のサービス開発でAIや機械学習を積極的に活用していく土台にしてもらえれば嬉しいです。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;2026年度の新卒エンジニア研修は、「Agentic Engineering時代における作り上げる力」をテーマに実施しました。AIとの開発が当たり前になった時代で求められる力を、各講師がそれぞれの領域で問い直すカリキュラムとなりました。&lt;/p&gt;
+
+&lt;p&gt;振り返ってみると、どの研修にも共通していたのは、AIの出力をそのまま受け取るのではなく、その背後にある技術体系や課題を自分の言葉で説明できることを受講者に求めていた点です。Railsチュートリアルを自分たちで計画を立て直して完走する、障害対応で「痛い目に遭う」、エージェントの振る舞いの必然性と機序を説明しきる。形は違えど、「動くものはAIが作れる。ではエンジニアは何に責任を持つのか」という問いに、受講者たちは正面から向き合ってくれました。&lt;/p&gt;
+
+&lt;p&gt;この記事が、新卒エンジニア研修の設計のヒントになれば幸いです。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>ロリポップ！ゼロトラストリンクがLinuxとESP32に対応したのでStackChanで試してみる</title>
+      <link>https://tech.pepabo.com/2026/08/03/stackchan-zero-trust-link/</link>
+      <guid>https://tech.pepabo.com/2026/08/03/stackchan-zero-trust-link/</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;人とAIを安全につなぐGMOペパボの新サービス「&lt;a href="https://ztna.lolipop.jp/"&gt;ロリポップ！ゼロトラストリンク&lt;/a&gt;」の、Linux版とESP32版クライアントを公開しました。&lt;/p&gt;
+
+&lt;p&gt;これまでクライアントがあったのはmacOS、Windows、iOS、Androidで、どれも人が手で触る端末です。今回のLinux版とESP32版のリリースで、サーバとマイコンが加わりました。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#pcからサーバiotデバイスまで" id="markdown-toc-pcからサーバiotデバイスまで"&gt;PCからサーバ、IoTデバイスまで&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#これまでのiotのつなぎ方との違い" id="markdown-toc-これまでのiotのつなぎ方との違い"&gt;これまでのIoTのつなぎ方との違い&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#stackchanに喋らせる" id="markdown-toc-stackchanに喋らせる"&gt;StackChanに喋らせる&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#esp32版の使い方" id="markdown-toc-esp32版の使い方"&gt;ESP32版の使い方&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#依存を追加する" id="markdown-toc-依存を追加する"&gt;依存を追加する&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#接続情報を用意する" id="markdown-toc-接続情報を用意する"&gt;接続情報を用意する&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#つなぐ" id="markdown-toc-つなぐ"&gt;つなぐ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#通信する" id="markdown-toc-通信する"&gt;通信する&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#aiエージェントクラウドとつなぐ" id="markdown-toc-aiエージェントクラウドとつなぐ"&gt;AIエージェントクラウドとつなぐ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="pcからサーバiotデバイスまで"&gt;PCからサーバ、IoTデバイスまで&lt;/h2&gt;
+
+&lt;p&gt;ロリポップ！ゼロトラストリンク（以下、ZTL）は、離れた場所にある機器同士をポート公開なしで直接つなぐサービスです。参加した機器にはネットワーク内だけで通用するIPアドレスが振られ、そのアドレスで相手に届きます。&lt;/p&gt;
+
+&lt;p&gt;Linux版はサーバやコンテナ用で、systemdで常駐させます。root権限もカーネルのTUNデバイスも使わないモードがあるので、権限を絞ったコンテナの中でも動かせます。&lt;/p&gt;
+
+&lt;p&gt;ESP32版はESP-IDFのコンポーネントです。後述する通り、既存のファームウェアに依存を1つ足して関数を3つ呼ぶと、マイコン自身がネットワークに参加します。センサーやロボットにESP32が載ってさえいれば、開発機や本番サーバと対等に通信できます。なお、ESP32版は実験的な位置づけでのリリースです。&lt;/p&gt;
+
+&lt;h2 id="これまでのiotのつなぎ方との違い"&gt;これまでのIoTのつなぎ方との違い&lt;/h2&gt;
+
+&lt;p&gt;IoTデバイスとクラウドのやり取りには、向きが2つあります。デバイスがクラウドのサービスを呼ぶ向きと、外からデバイスへ指示を送る向きです。&lt;/p&gt;
+
+&lt;p&gt;前者の定番は、クラウド側のサービスをインターネットへ公開し、デバイスに持たせたAPIキーで認証する構成です。世界中から届く窓口を開けておいて、キーの強さだけで守ることになります。後者は、NATの内側のデバイスに外から直接は届かないので、双方がMQTTのようなブローカーへ接続しておき、そこ経由で指示を押し込むのが定番です。どちらの向きでも、インターネットへの公開か、中継サービスの追加が要ります。&lt;/p&gt;
+
+&lt;p&gt;ゼロトラストリンクではデバイス自身がネットワークに参加するので、どちらの向きもアドレス指定の直接通信になります。デバイスはNATの内側のまま、ネットワーク上の他のノードから届くようになります。クラウド側のサービスも、インターネットに公開しておく必要がなくなります。&lt;/p&gt;
+
+&lt;p&gt;アクセス許可の単位は通信元のアドレスではなく、認証されたデバイスです。ZTLのダッシュボードからデバイスを一元管理できます。&lt;/p&gt;
+
+&lt;h2 id="stackchanに喋らせる"&gt;StackChanに喋らせる&lt;/h2&gt;
+
+&lt;p&gt;Linux版とESP32版のクライアントの利用例として、&lt;a href="https://docs.m5stack.com/en/StackChan/"&gt;StackChan&lt;/a&gt;を題材に説明します。StackChanとは、オープンソース発の卓上ロボットで、今回はM5Stackの公式キット（型番K151）を組み立てて使いました。制御部はキット同梱のM5Stack CoreS3で、ファームウェアはここに書き込みます。ソースは&lt;a href="https://github.com/kentaro/rino-stackchan"&gt;kentaro/rino-stackchan&lt;/a&gt;にあります。&lt;/p&gt;
+
+&lt;div style="text-align: center;"&gt;
+  &lt;video width="90%" controls=""&gt;
+    &lt;source src="/blog/2026/08/03/stackchan-zero-trust-link/stackchan-promo.mp4" type="video/mp4" /&gt;&amp;lt;/source&amp;gt;
+    ※現在の環境は動画再生に対応していません
+  &lt;/video&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/03/stackchan-zero-trust-link/architecture.png" alt="入出力だけのデバイスと、トンネル越しのホストの構成図" width="90%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;p&gt;StackChanを上図の構成で動かします。StackChanは話しかけられた声をマイクで拾ってZTLのESP32版クライアントを通じてネットワークに流し、返ってきたAIエージェントによる発話音声を鳴らします。音声認識、発話内容の生成、音声合成をするサーバはネットワークの向こう側にあって、ZTLのLinux版クライアントを通じてつながっています。&lt;/p&gt;
+
+&lt;h2 id="esp32版の使い方"&gt;ESP32版の使い方&lt;/h2&gt;
+
+&lt;p&gt;ESP32版の使い方について、より詳しく見ていきましょう。&lt;/p&gt;
+
+&lt;h3 id="依存を追加する"&gt;依存を追加する&lt;/h3&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;idf.py add-dependency &lt;span class="s2"&gt;"gmo-pepabo/lolipop-ztl"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;導入は簡単で、上記の通りで&lt;code&gt;lolipop-ztl&lt;/code&gt;コンポーネントとその下で動く通信の実装が入ります。コンポーネントは&lt;a href="https://components.espressif.com/components/gmo-pepabo/lolipop-ztl"&gt;ESP Component Registry&lt;/a&gt;で公開しています。&lt;/p&gt;
+
+&lt;h3 id="接続情報を用意する"&gt;接続情報を用意する&lt;/h3&gt;
+
+&lt;p&gt;ZTLネットワークへ参加するには、デバイスごとの接続情報が必要です。デバイス認証フロー（&lt;a href="https://datatracker.ietf.org/doc/html/rfc8628"&gt;RFC 8628&lt;/a&gt;のOAuth 2.0 Device Authorization Grant）を通じて接続情報を入手します。テレビでサブスクにログインするとき、画面のコードをスマホで入力するあの方式です。&lt;/p&gt;
+
+&lt;p&gt;デバイスは起動するとまず保存済みの接続情報を探します。なければサービスへコードを要求し、受け取ったコードと承認URLを画面に出します。ユーザーがブラウザの承認ページでコードを入力すると、ポーリングしていたデバイスに接続情報が発行され、デバイスはそれを保存して接続します。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/08/03/stackchan-zero-trust-link/device-auth.png" alt="デバイス認証フローのシーケンス図" width="90%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;p&gt;コードにするとこうなります。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight c"&gt;&lt;code&gt;&lt;span class="n"&gt;ztl_config_t&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;ztl_config_resolve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// 初回起動。接続情報がまだ無いのでデバイス認証を実行する。&lt;/span&gt;
+    &lt;span class="c1"&gt;// 起動直後は回線が未確立なことがあるため、成功するまで繰り返す&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;run_device_auth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;vTaskDelay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pdMS_TO_TICKS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10000&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;ztl_config_resolve&lt;/code&gt;が保存済みの接続情報を読みます。2回目以降の起動はこれだけです。&lt;/p&gt;
+
+&lt;p&gt;初回だけ&lt;code&gt;ztl_device_auth&lt;/code&gt;を呼びます。コードの表示手段はデバイスごとに違うので、そこはコールバックでホストアプリに任される作りです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight c"&gt;&lt;code&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;device_auth_prompt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;user_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                               &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;verification_uri&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                               &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;verification_uri_complete&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                               &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;cb_arg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;verification_uri_complete&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="n"&gt;verification_uri_complete&lt;/span&gt;
+                                                    &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;verification_uri&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;face_show_auth_code&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;   &lt;span class="c1"&gt;// 画面にQRコードとコードを出す&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;run_device_auth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ztl_config_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;esp_err_t&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ztl_device_auth&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"rino-stackchan"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"esp32 (ESP-IDF v5.4)"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                    &lt;span class="n"&gt;device_auth_prompt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;face_hide_auth_code&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;ESP_OK&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;StackChanには画面があるので、今回作成した例では、デバイス承認のためのURLのQRコードと確認用コードを画面に表示しました。ユーザーがそれをスマホで読んで承認する流れです。画面のないデバイスなら、シリアルログにコードを出すことになります。&lt;/p&gt;
+
+&lt;h3 id="つなぐ"&gt;つなぐ&lt;/h3&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight c"&gt;&lt;code&gt;&lt;span class="n"&gt;ztl_callbacks_t&lt;/span&gt; &lt;span class="n"&gt;cbs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;state_cb&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;on_state_change&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;ztl_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ztl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ztl_connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;cbs&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;state_cb&lt;/code&gt;が状態変化のコールバックです。StackChanを用いた今回の例では、接続中や再接続中を画面のステータス行に出しています。&lt;/p&gt;
+
+&lt;h3 id="通信する"&gt;通信する&lt;/h3&gt;
+
+&lt;p&gt;つながったら、相手のアドレスを指定して通信します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight c"&gt;&lt;code&gt;&lt;span class="c1"&gt;// TCP&lt;/span&gt;
+&lt;span class="n"&gt;ztl_tcp_socket_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;sock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ztl_tcp_connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ztl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host_ip&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;15000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// UDP&lt;/span&gt;
+&lt;span class="n"&gt;ztl_udp_socket_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;usock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ztl_udp_create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ztl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;9000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;ztl_udp_set_rx_callback&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usock&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;on_udp_rx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;トンネルを通るのは、この&lt;code&gt;ztl_*&lt;/code&gt;のAPIで書いた通信だけです。ふだんのlwIPソケットは従来どおりの経路に出るため、&lt;code&gt;esp_http_client&lt;/code&gt;もトンネル越しには使えません。StackChanが叩く先はどれもHTTPなので、このTCPのAPIの上に、ヘッダを組んで&lt;code&gt;Content-Length&lt;/code&gt;ぶん読み切るだけの小さなクライアントを書きました。&lt;/p&gt;
+
+&lt;p&gt;UDPは、ネットワーク上の他のノードから話しかけるための口として開けています。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"こんにちは、調子はどう？"&lt;/span&gt; | nc &lt;span class="nt"&gt;-u&lt;/span&gt; &amp;lt;デバイスのアドレス&amp;gt; 9000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;これをMacから打つと、返事が声で返ってきます。&lt;/p&gt;
+
+&lt;p&gt;コードの全体は&lt;a href="https://github.com/kentaro/rino-stackchan"&gt;kentaro/rino-stackchan&lt;/a&gt;にあります。CoreS3でつまずいた設定（PSRAMやTLSのバッファ、マイクとスピーカーがI2Sのクロックを共有する件）もREADMEに書いてあります。&lt;/p&gt;
+
+&lt;h2 id="aiエージェントクラウドとつなぐ"&gt;AIエージェントクラウドとつなぐ&lt;/h2&gt;
+
+&lt;p&gt;StackChanのAIとしての本体は、&lt;a href="https://lolipop.jp/ai/agent-cloud/"&gt;ロリポップ！AIエージェントクラウド&lt;/a&gt;で動いているHermes Agentです。ロリポップ！AIエージェントクラウドは、OpenClawやHermes Agentをクラウド上で動かせるサービスです。クラウドでの常時稼働と安全性を両立するために、外部にポートを公開せず、操作はWebの管理画面かSlackやDiscordなどのチャットに限っています。&lt;/p&gt;
+
+&lt;p&gt;そこでZTLの出番です。筆者は、Hermes Agentの動く環境にLinux版クライアントを入れて、ZTLのネットワークへ参加させています。参加すると、環境の中で&lt;code&gt;127.0.0.1&lt;/code&gt;に閉じたままのチャットAPIや音声合成が、同じネットワークのStackChanからはアドレス指定で見えるようになります。どこにもポートを開けないまま、机の上のロボットとクラウドのAIが会話しています。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;Linux版とESP32版で、「ロリポップ！ゼロトラストリンク」はPCやモバイルだけでなく、サーバからIoTデバイスまで使えるようになりました。ESP32版の導入は簡単です。手元にESP32があれば、ぜひ何かひとつZTLのネットワークを通じてつないでみてください。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>集約ジョブパターンで解決するモノレポCIのrequired check問題</title>
+      <link>https://tech.pepabo.com/2026/07/03/monorepo-ci-orchestrator-migration/</link>
+      <guid>https://tech.pepabo.com/2026/07/03/monorepo-ci-orchestrator-migration/</guid>
+      <pubDate>Fri, 03 Jul 2026 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは！ロリポップ・ムームードメイン事業部ムームードメイングループの中村(&lt;a href="https://x.com/litencatt"&gt;@litencatt&lt;/a&gt;）です。&lt;/p&gt;
+
+&lt;p&gt;今回は、ムームードメインのモノレポで運用していたCIの統合ゲート（複数のCIの結果を1つの required check に集約する仕組み）を、GitHub Actionsネイティブの集約ジョブ方式に移行した話です。約500行のカスタムJavaScript + checks API + ポーリングで構成されていたプロキシ方式を廃止して、保守対象のコードは約335行に、障害モードは6種類まるごと消えました。&lt;/p&gt;
+
+&lt;p&gt;集約ジョブ方式は GitHub Actions の標準機能のみで構成されており、GitHub.com / GHES（GitHub Enterprise Server）を問わず、どのランナー環境でも導入できます。&lt;/p&gt;
+
+&lt;h3 id="tldr"&gt;TL;DR&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;モノレポで &lt;code&gt;paths:&lt;/code&gt; フィルタ付き CI を required check（マージ前に成功が必須のチェック）にすると、該当パスに変更がない PR で skipped のまま永久ブロックされる（GitHub の既知制約）&lt;/li&gt;
+  &lt;li&gt;これを解決するために checks API + ポーリングのプロキシを自前実装していたが、~500行のコードに6種の障害モードを抱える状態に&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code&gt;needs&lt;/code&gt; + &lt;code&gt;if: always()&lt;/code&gt; の集約ジョブパターン&lt;/strong&gt;に移行し、プラットフォームのネイティブ機能だけで required check 問題を解消&lt;/li&gt;
+  &lt;li&gt;既存 CI は &lt;code&gt;workflow_call&lt;/code&gt;（再利用可能ワークフロー呼び出し）で再利用し、コードの重複なく移行&lt;/li&gt;
+  &lt;li&gt;移行時の注意点: concurrency group 衝突、&lt;code&gt;workflow_run&lt;/code&gt; 非発火、check run 名の変化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#tldr" id="markdown-toc-tldr"&gt;TL;DR&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#背景モノレポciのrequired-check問題" id="markdown-toc-背景モノレポciのrequired-check問題"&gt;背景：モノレポCIの「required check問題」&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#ci統合ゲートの変遷" id="markdown-toc-ci統合ゲートの変遷"&gt;CI統合ゲートの変遷&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#第0世代個別ciをrequired-checkに登録2026年3月" id="markdown-toc-第0世代個別ciをrequired-checkに登録2026年3月"&gt;第0世代：個別CIをrequired checkに登録（〜2026年3月）&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#第1世代ポーリング方式のプロキシ2026年34月" id="markdown-toc-第1世代ポーリング方式のプロキシ2026年34月"&gt;第1世代：ポーリング方式のプロキシ（2026年3〜4月）&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#第2世代イベント駆動化2026年6月" id="markdown-toc-第2世代イベント駆動化2026年6月"&gt;第2世代：イベント駆動化（2026年6月）&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#理想形の発見とpoc" id="markdown-toc-理想形の発見とpoc"&gt;理想形の発見とPoC&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#pocで動作検証" id="markdown-toc-pocで動作検証"&gt;PoCで動作検証&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#新アーキテクチャci-オーケストレータ" id="markdown-toc-新アーキテクチャci-オーケストレータ"&gt;新アーキテクチャ：CI オーケストレータ&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#主要な設計決定" id="markdown-toc-主要な設計決定"&gt;主要な設計決定&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#実装で遭遇した落とし穴と解決" id="markdown-toc-実装で遭遇した落とし穴と解決"&gt;実装で遭遇した落とし穴と解決&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#concurrency-group-衝突問題" id="markdown-toc-concurrency-group-衝突問題"&gt;concurrency group 衝突問題&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#workflow_run-が発火しなくなる問題" id="markdown-toc-workflow_run-が発火しなくなる問題"&gt;workflow_run が発火しなくなる問題&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#check-run-名の変化" id="markdown-toc-check-run-名の変化"&gt;check run 名の変化&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#変更検知の整合性" id="markdown-toc-変更検知の整合性"&gt;変更検知の整合性&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#移行結果の比較" id="markdown-toc-移行結果の比較"&gt;移行結果の比較&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#他プロジェクトへの導入ガイド" id="markdown-toc-他プロジェクトへの導入ガイド"&gt;他プロジェクトへの導入ガイド&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#1-各-ci-の-on-を-workflow_call-に変更" id="markdown-toc-1-各-ci-の-on-を-workflow_call-に変更"&gt;1. 各 CI の &lt;code&gt;on:&lt;/code&gt; を &lt;code&gt;workflow_call&lt;/code&gt; に変更&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#2-オーケストレータを作成" id="markdown-toc-2-オーケストレータを作成"&gt;2. オーケストレータを作成&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#3-required-check-を-aggregate-に切り替え" id="markdown-toc-3-required-check-を-aggregate-に切り替え"&gt;3. required check を &lt;code&gt;aggregate&lt;/code&gt; に切り替え&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#注意点" id="markdown-toc-注意点"&gt;注意点&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="背景モノレポciのrequired-check問題"&gt;背景：モノレポCIの「required check問題」&lt;/h2&gt;
+
+&lt;p&gt;ムームードメインのモノレポでも、ご多分に漏れずこの問題にぶつかりました。&lt;/p&gt;
+
+&lt;p&gt;GitHub Actions では &lt;code&gt;paths:&lt;/code&gt; フィルタを使って「特定ディレクトリに変更があったときだけCIを実行する」ことができます。しかし、その CI をブランチ保護の required status check（PRをマージする前に成功が必須となるチェック）に登録すると、該当パスに変更がない PR では CI が起動せず skipped のまま永久にマージブロックされます。これは &lt;a href="https://github.com/orgs/community/discussions/44490"&gt;GitHub Community でも長く議論されている既知の制約&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;この制約に対する一般的な対処パターンは3つあります。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;変更検知 + 集約ジョブ&lt;/strong&gt;: 変更検知ジョブで対象サービスを判定し、条件付きで各CIを起動。末尾の集約ジョブ（&lt;code&gt;needs&lt;/code&gt; + &lt;code&gt;if: always()&lt;/code&gt;）で全体の合否を出し、これを required check にする。今回採用した方式&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;常時起動するプロキシジョブ&lt;/strong&gt;: 常に起動するジョブが checks API（GitHub が提供する、チェック結果を外部から作成・更新できる REST API）やポーリングで各CIの結果を収集し、1つのチェック結果にまとめる。柔軟だが複雑化しやすい&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;全CIを常時起動&lt;/strong&gt;: 全CIを毎回起動し、内部で skip 判定する。シンプルだがランナーのリソースを無駄に消費する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;ムームードメインのモノレポには複数の言語・フレームワークで構成されたサービスが共存しており、それぞれに独立した CI ワークフローがあります。この記事では、パターン2（プロキシ方式）を採用してから最終的にパターン1（集約ジョブ方式）に移行するまでの変遷を紹介します。&lt;/p&gt;
+
+&lt;h2 id="ci統合ゲートの変遷"&gt;CI統合ゲートの変遷&lt;/h2&gt;
+
+&lt;p&gt;この統合ゲートは一度にできたものではなく、問題が出るたびに直して、を繰り返してきました。&lt;/p&gt;
+
+&lt;h3 id="第0世代個別ciをrequired-checkに登録2026年3月"&gt;第0世代：個別CIをrequired checkに登録（〜2026年3月）&lt;/h3&gt;
+
+&lt;p&gt;最初期は、各サービスの CI ワークフローをそれぞれ独立した required check として登録していました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/07/03/monorepo-ci-orchestrator-migration/gen0.png" alt="第0世代: 個別CIをrequired checkに登録した構成。service-a のみ変更した PR では service-b-ci と service-c-ci が skipped のまま永久ブロックされる" width="60%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;p&gt;この構成はシンプルですが、前述の「required check問題」がそのまま発生します。&lt;code&gt;service-a/&lt;/code&gt; のみ変更した PR では &lt;code&gt;service-b-ci&lt;/code&gt; と &lt;code&gt;service-c-ci&lt;/code&gt; が起動せず、永久にマージブロックされます。&lt;/p&gt;
+
+&lt;h3 id="第1世代ポーリング方式のプロキシ2026年34月"&gt;第1世代：ポーリング方式のプロキシ（2026年3〜4月）&lt;/h3&gt;
+
+&lt;p&gt;required check 問題を解決するため、常時起動するプロキシジョブを導入しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/07/03/monorepo-ci-orchestrator-migration/gen1.png" alt="第1世代: ポーリング方式のプロキシ。統合ゲートが常時起動し、変更パスを判定した上で各CIの完了をポーリングで最大36分間待機する" width="60%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;p&gt;このジョブが変更パスを見て「どのCIが必要か」を判定し、checks API で該当 CI の完了をポーリングします。全ての必要な CI が成功すれば success、1つでも失敗すれば failure を返します。これを唯一の required check にすることで、不要な CI の skipped によるブロックを回避しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;この時点での課題&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CI が完了するまで &lt;strong&gt;最大約36分間ランナーを占有&lt;/strong&gt; する（ポーリングで待ち続けるため）&lt;/li&gt;
+  &lt;li&gt;CI が36分以内に終わらないと &lt;strong&gt;タイムアウトで誤失敗&lt;/strong&gt; する（CI自体は成功しているのにゲートが失敗）&lt;/li&gt;
+  &lt;li&gt;CI 完了からゲート反映まで &lt;strong&gt;最大60秒の遅延&lt;/strong&gt; がある（ポーリング間隔）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="第2世代イベント駆動化2026年6月"&gt;第2世代：イベント駆動化（2026年6月）&lt;/h3&gt;
+
+&lt;p&gt;ポーリングの課題を解消するため、&lt;code&gt;workflow_run&lt;/code&gt; イベント（別のワークフローの完了をトリガーに起動する仕組み）を活用したイベント駆動方式に改修しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/07/03/monorepo-ci-orchestrator-migration/gen2.png" alt="第2世代: イベント駆動化。各CIの完了時に workflow_run イベントで即座に Check Run を更新する。seed ジョブはバックストップとしてポーリングも実施" width="60%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_run&lt;/code&gt; イベントにより、各 CI の完了を即座に検知して Check Run を更新できるようになりました。ポーリングはバックストップに降格し、CI 完了からゲート反映までのラグがほぼゼロになりました。&lt;/p&gt;
+
+&lt;p&gt;しかし、この改修で新たな問題が発生しました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;checks API の cross-run update 禁止&lt;/strong&gt;: GitHub が2025年2月に導入した&lt;a href="https://github.blog/changelog/2025-01-13-github-actions-prevent-workflows-from-creating-or-approving-pull-requests-breaking-change/"&gt;仕様変更&lt;/a&gt;により、ある workflow run が作った Check Run を別の workflow run から更新できなくなり、本番で HttpError が発生しました。即日修正として、update ではなく常に create する方式に切り替えましたが、異なる run 間の通信に依存する設計自体が脆弱です&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ブランチ保護の不整合&lt;/strong&gt;: 自分たちの GHES 環境では、API で作成した独立 Check Run がブランチ保護の required check を満たさないケースがあり、commit status（もう1つのステータス報告手段）の併用が必要になりました。ゲートロジックがさらに複雑化しました&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;セキュリティ脆弱性の発見&lt;/strong&gt;: レビュー中に、&lt;code&gt;pull_request&lt;/code&gt; イベントが PR のブランチに含まれるワークフロー定義を実行するため、ゲートロジック自体を PR で改ざんできるバイパス経路が指摘されました。CODEOWNERS による保護を追加しましたが、補償的コントロールが増える一方でした&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;改修のたびに新たな問題が見つかり、補償的な対策が積み重なる一方でした。この時点でプロキシ方式は限界だと判断して、別のやり方を探し始めました。&lt;/p&gt;
+
+&lt;h2 id="理想形の発見とpoc"&gt;理想形の発見とPoC&lt;/h2&gt;
+
+&lt;p&gt;プロキシ方式の問題は、別ワークフローの結果を外部プロキシで集約するという設計そのものにありました。1つのワークフロー内で完結させられないか？と考えました。&lt;/p&gt;
+
+&lt;p&gt;調べていくと、GitHub Actions の標準機能だけで実現できることがわかりました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code&gt;workflow_call&lt;/code&gt;&lt;/strong&gt;（再利用可能ワークフロー呼び出し）: 既存の CI ワークフローを別のワークフローから &lt;code&gt;uses:&lt;/code&gt; で呼び出せる。ジョブ定義をコピーせず再利用が可能&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code&gt;needs&lt;/code&gt; + &lt;code&gt;if: always()&lt;/code&gt;&lt;/strong&gt;: &lt;code&gt;needs&lt;/code&gt; で依存する子ジョブの結果を &lt;code&gt;needs.*.result&lt;/code&gt; で参照でき、&lt;code&gt;if: always()&lt;/code&gt; を付ければ子ジョブが skipped や failure でも集約ジョブ自体は実行される&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;skipped は成功扱い&lt;/strong&gt;: 条件付きで起動しなかった子ジョブは &lt;code&gt;skipped&lt;/code&gt; になり、集約ジョブ側で成功として扱える&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;数百行のカスタム JavaScript + checks API + ポーリングでやっていたことが、プラットフォームの標準機能だけでできるわけです。&lt;/p&gt;
+
+&lt;h3 id="pocで動作検証"&gt;PoCで動作検証&lt;/h3&gt;
+
+&lt;p&gt;実際に PoC を作成し、以下の4項目を検証しました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ローカルの reusable workflow（&lt;code&gt;uses: ./.github/workflows/x.yml&lt;/code&gt;）が正常に呼び出せる&lt;/li&gt;
+  &lt;li&gt;条件不成立で起動しなかった &lt;code&gt;uses&lt;/code&gt; ジョブが &lt;code&gt;needs.*.result == 'skipped'&lt;/code&gt; を返す&lt;/li&gt;
+  &lt;li&gt;失敗した &lt;code&gt;uses&lt;/code&gt; ジョブが &lt;code&gt;needs.*.result == 'failure'&lt;/code&gt; を返す&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;needs&lt;/code&gt; + &lt;code&gt;if: always()&lt;/code&gt; の集約ジョブが上記を正しく判定できる&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;結果は全て成功。PoC の作成から検証完了まで1時間程度でした。&lt;/p&gt;
+
+&lt;h2 id="新アーキテクチャci-オーケストレータ"&gt;新アーキテクチャ：CI オーケストレータ&lt;/h2&gt;
+
+&lt;p&gt;移行後の構成は以下の通りです。&lt;code&gt;ci-orchestrator.yml&lt;/code&gt; という1つのワークフローに全てが収まっています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/07/03/monorepo-ci-orchestrator-migration/new-arch.png" alt="新アーキテクチャ: CIオーケストレータ。changes ジョブで変更を検知し、該当サービスの CI のみ workflow_call で起動。aggregate ジョブが全体の合否を集約して required check になる。変更なしのサービスは skipped = 成功扱い" width="60%" style="display:block;margin:0 auto" /&gt;&lt;/p&gt;
+
+&lt;h3 id="主要な設計決定"&gt;主要な設計決定&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;変更検知は &lt;code&gt;git diff&lt;/code&gt; インライン&lt;/strong&gt;。&lt;code&gt;changes&lt;/code&gt; ジョブ内のシェルスクリプトで &lt;code&gt;git diff --name-only&lt;/code&gt; を実行し、パスプレフィックスで判定しています。&lt;code&gt;dorny/paths-filter&lt;/code&gt; のような外部 action は使わず、依存ゼロで構成しました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;steps&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;uses&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;actions/checkout@v4&lt;/span&gt;
+    &lt;span class="na"&gt;with&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;fetch-depth&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+  &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Detect changed service areas&lt;/span&gt;
+    &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;detect&lt;/span&gt;
+    &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+      &lt;span class="s"&gt;BASE="${{ github.event.pull_request.base.sha }}"&lt;/span&gt;
+      &lt;span class="s"&gt;HEAD="${{ github.event.pull_request.head.sha }}"&lt;/span&gt;
+      &lt;span class="s"&gt;CHANGED=$(git diff --name-only "$BASE"..."$HEAD")&lt;/span&gt;
+
+      &lt;span class="s"&gt;# service-a: service-a/** から除外パスを引く&lt;/span&gt;
+      &lt;span class="s"&gt;EXCLUDED="service-a/docs/"&lt;/span&gt;
+      &lt;span class="s"&gt;if echo "$CHANGED" | grep -E "^service-a/" | grep -vE "^($EXCLUDED)" | grep -q .; then&lt;/span&gt;
+        &lt;span class="s"&gt;echo "service_a=true" &amp;gt;&amp;gt; "$GITHUB_OUTPUT"&lt;/span&gt;
+      &lt;span class="s"&gt;elif echo "$CHANGED" | grep -qF ".github/workflows/service-a-ci.yml"; then&lt;/span&gt;
+        &lt;span class="s"&gt;echo "service_a=true" &amp;gt;&amp;gt; "$GITHUB_OUTPUT"&lt;/span&gt;
+      &lt;span class="s"&gt;else&lt;/span&gt;
+        &lt;span class="s"&gt;echo "service_a=false" &amp;gt;&amp;gt; "$GITHUB_OUTPUT"&lt;/span&gt;
+      &lt;span class="s"&gt;fi&lt;/span&gt;
+      &lt;span class="s"&gt;# 他のサービスも同様...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;secrets は &lt;code&gt;secrets: inherit&lt;/code&gt;&lt;/strong&gt;。子ワークフローが多数の secrets を参照している場合、明示的な mapping は現実的ではありません。&lt;code&gt;secrets: inherit&lt;/code&gt; で呼び出し元の secrets を全て継承させています。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;service-a&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;needs&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;changes&lt;/span&gt;
+  &lt;span class="na"&gt;if&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;needs.changes.outputs.service_a == 'true'&lt;/span&gt;
+  &lt;span class="na"&gt;uses&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;./.github/workflows/service-a-ci.yml&lt;/span&gt;
+  &lt;span class="na"&gt;secrets&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;inherit&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;集約ジョブの判定は &lt;code&gt;needs.*.result&lt;/code&gt; のシェル判定のみ&lt;/strong&gt;。外部スクリプトは不要です。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;aggregate&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;needs&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;changes&lt;/span&gt;&lt;span class="pi"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;service-a&lt;/span&gt;&lt;span class="pi"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;service-b&lt;/span&gt;&lt;span class="pi"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;service-c&lt;/span&gt;&lt;span class="pi"&gt;]&lt;/span&gt;
+  &lt;span class="na"&gt;if&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;always()&lt;/span&gt;
+  &lt;span class="na"&gt;runs-on&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;ubuntu-latest&lt;/span&gt;
+  &lt;span class="na"&gt;steps&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Evaluate gate&lt;/span&gt;
+      &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+        &lt;span class="s"&gt;FAIL=0&lt;/span&gt;
+        &lt;span class="s"&gt;for PAIR in \&lt;/span&gt;
+          &lt;span class="s"&gt;"service-a:${{ needs.service-a.result }}" \&lt;/span&gt;
+          &lt;span class="s"&gt;"service-b:${{ needs.service-b.result }}" \&lt;/span&gt;
+          &lt;span class="s"&gt;"service-c:${{ needs.service-c.result }}"; do&lt;/span&gt;
+          &lt;span class="s"&gt;NAME="${PAIR%%:*}"&lt;/span&gt;
+          &lt;span class="s"&gt;R="${PAIR#*:}"&lt;/span&gt;
+          &lt;span class="s"&gt;case "$R" in&lt;/span&gt;
+            &lt;span class="s"&gt;success|skipped) ;;&lt;/span&gt;
+            &lt;span class="s"&gt;*) echo "BLOCKED: $NAME=$R"; FAIL=1 ;;&lt;/span&gt;
+          &lt;span class="s"&gt;esac&lt;/span&gt;
+        &lt;span class="s"&gt;done&lt;/span&gt;
+        &lt;span class="s"&gt;[ "$FAIL" = "1" ] &amp;amp;&amp;amp; exit 1&lt;/span&gt;
+        &lt;span class="s"&gt;echo "aggregate: SUCCESS"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;ラベル管理・通知は別ジョブに分離&lt;/strong&gt;。CI 失敗時のラベル付与や PR コメントでの通知は &lt;code&gt;ci-labels&lt;/code&gt; ジョブとして &lt;code&gt;aggregate&lt;/code&gt; の後段に配置しています。外部 API（GitHub API でのラベル操作等）のエラーが required check の安定性に影響しないようにするためです。&lt;/p&gt;
+
+&lt;h2 id="実装で遭遇した落とし穴と解決"&gt;実装で遭遇した落とし穴と解決&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_call&lt;/code&gt; 化は概念的にはシンプルですが、実際にやると予想外の挙動にいくつか遭遇しました。&lt;/p&gt;
+
+&lt;h3 id="concurrency-group-衝突問題"&gt;concurrency group 衝突問題&lt;/h3&gt;
+
+&lt;p&gt;GitHub Actions の &lt;code&gt;concurrency&lt;/code&gt; 設定は、同じグループ名のジョブが同時に走らないよう制御する仕組みです。&lt;code&gt;workflow_call&lt;/code&gt; で呼ばれた reusable workflow 内では、&lt;code&gt;github.workflow&lt;/code&gt;（現在のワークフロー名を返す変数）が&lt;strong&gt;呼び出し元のワークフロー名&lt;/strong&gt;に解決されます。そのため、子ワークフロー側に &lt;code&gt;concurrency: group: ${{ github.workflow }}-${{ github.ref }}&lt;/code&gt; が残っていると、全ての子ワークフローが同じ concurrency group に入り、&lt;strong&gt;相互にキャンセルされる&lt;/strong&gt;という事態が発生しました。&lt;/p&gt;
+
+&lt;p&gt;解決までに複数のアプローチを試しました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code&gt;workflow_ref&lt;/code&gt; ベースの group 分離 → 不十分&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;caller&lt;/code&gt; input を渡して group を分離 → 環境によっては効かない&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;reusable workflow 側の &lt;code&gt;concurrency&lt;/code&gt; を削除&lt;/strong&gt;（最終解）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最終的に、concurrency 制御はオーケストレータ側の1箇所のみで行う構成に落ち着きました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="c1"&gt;# ci-orchestrator.yml（呼び出し元）のみで制御&lt;/span&gt;
+&lt;span class="na"&gt;concurrency&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;group&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;${{ github.workflow }}-${{ github.ref }}&lt;/span&gt;
+  &lt;span class="na"&gt;cancel-in-progress&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id="workflow_run-が発火しなくなる問題"&gt;workflow_run が発火しなくなる問題&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_call&lt;/code&gt; 経由で実行された reusable workflow は&lt;strong&gt;独立した workflow run（ワークフローの個別の実行インスタンス）を生成しません&lt;/strong&gt;。これは GitHub Actions の仕様です。&lt;/p&gt;
+
+&lt;p&gt;影響として、各CIの完了時に &lt;code&gt;workflow_run&lt;/code&gt; トリガ（別ワークフローの完了を検知して起動する仕組み）で動いていた後続処理（CI失敗時のラベル管理、PR作者への通知等）が発火しなくなりました。&lt;/p&gt;
+
+&lt;p&gt;対応として、該当ロジックをオーケストレータ内の後段ジョブ（&lt;code&gt;ci-labels&lt;/code&gt;）に移設しました。&lt;code&gt;aggregate&lt;/code&gt; ジョブの outputs（どのCIが失敗したか）を受け取り、ラベルの付与・削除や通知コメントの投稿を行います。&lt;/p&gt;
+
+&lt;h3 id="check-run-名の変化"&gt;check run 名の変化&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_call&lt;/code&gt; 経由で実行されたジョブの check run 名（PR のチェック一覧に表示される名前）は、&lt;strong&gt;「親ワークフロー名 / ジョブ名」&lt;/strong&gt; 形式に変わります。例えば、従来 &lt;code&gt;service-a-ci&lt;/code&gt; だった名前が &lt;code&gt;CI / service-a&lt;/code&gt; になります。&lt;/p&gt;
+
+&lt;p&gt;これにより、旧来のジョブ名で完全一致の待機をしていた他のワークフロー（自動マージ等）が永久に pending になるという問題が発生しました。&lt;/p&gt;
+
+&lt;p&gt;対応として、他のワークフローの待機対象を個別の CI 名ではなく、集約ジョブ名の &lt;code&gt;aggregate&lt;/code&gt; 1つに一本化しました。集約ジョブが成功 = 全CI成功なので、個別の CI 名を知る必要がなくなります。&lt;/p&gt;
+
+&lt;h3 id="変更検知の整合性"&gt;変更検知の整合性&lt;/h3&gt;
+
+&lt;p&gt;オーケストレータの &lt;code&gt;git diff&lt;/code&gt; による変更検知と、各 CI の旧 &lt;code&gt;paths:&lt;/code&gt; 条件は正確に整合させる必要があります。ずれがあると以下の問題が起きます。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;集約ジョブが待つのに CI が起動しない&lt;/strong&gt;: デッドロック（集約ジョブが永久に完了しない）&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;CI が起動するのに集約ジョブが待たない&lt;/strong&gt;: ゲートバイパス（CI の結果を無視してマージできてしまう）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また、レビューで指摘されて気づいたのですが、&lt;strong&gt;CI 定義ファイル自身（&lt;code&gt;.github/workflows/*-ci.yml&lt;/code&gt;）の変更も検知に含める&lt;/strong&gt;必要があります。含めないと、CI 定義のみを変更する PR で対応する CI がスキップされてしまいます。&lt;/p&gt;
+
+&lt;h2 id="移行結果の比較"&gt;移行結果の比較&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;指標&lt;/th&gt;
+      &lt;th&gt;プロキシ方式&lt;/th&gt;
+      &lt;th&gt;集約ジョブ方式&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;CI 完了→ゲート確定のラグ&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;~30〜100 秒&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;数秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;ランナー占有（ゲート側）&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;最大 ~36 分&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;~1 分 + 数秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;保守対象コード&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;~500 行（JS + テスト + WF定義）&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;~335 行（WF定義のみ）&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;「CI 完了を待つ」仕組み&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;自前実装（ポーリング / イベント受信 / checks API）&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;GitHub の &lt;code&gt;needs&lt;/code&gt; 機構&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;攻撃面&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;checks API + 外部スクリプト + ワークフロー名同定&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;&lt;code&gt;needs.*.result&lt;/code&gt; のシェル判定のみ&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;既知の障害モード&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;6種（HttpError / bootstrap / 偽装 / 改ざん / timeout / 遅延）&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;構造的に発生しない&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;新規 CI 追加時の作業&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;3箇所の同期が必要&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;1ファイルに追記するだけ&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;一番大きいのは、既知の障害モードが構造的に発生しなくなったことです。プロキシ方式の問題は全て「別ワークフローの結果を外部プロキシで集約する」設計から来ていたので、その設計をやめれば問題も消えました。&lt;/p&gt;
+
+&lt;h2 id="他プロジェクトへの導入ガイド"&gt;他プロジェクトへの導入ガイド&lt;/h2&gt;
+
+&lt;p&gt;この方式は GitHub Actions の標準機能のみで構成されており、外部 action への依存もありません。以下の手順で導入できます。&lt;/p&gt;
+
+&lt;h3 id="1-各-ci-の-on-を-workflow_call-に変更"&gt;1. 各 CI の &lt;code&gt;on:&lt;/code&gt; を &lt;code&gt;workflow_call&lt;/code&gt; に変更&lt;/h3&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="c1"&gt;# before&lt;/span&gt;
+&lt;span class="na"&gt;on&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;pull_request&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;paths&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;service-a/**"&lt;/span&gt;
+
+&lt;span class="c1"&gt;# after&lt;/span&gt;
+&lt;span class="na"&gt;on&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;workflow_call&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;pull_request&lt;/code&gt; トリガと &lt;code&gt;concurrency&lt;/code&gt; ブロックは削除します（前述の concurrency group 衝突を回避するため）。&lt;/p&gt;
+
+&lt;h3 id="2-オーケストレータを作成"&gt;2. オーケストレータを作成&lt;/h3&gt;
+
+&lt;p&gt;変更検知（&lt;code&gt;changes&lt;/code&gt;）→ 各 CI の条件付き呼び出し（&lt;code&gt;uses:&lt;/code&gt;）→ 集約ジョブ（&lt;code&gt;aggregate&lt;/code&gt;）の構成でオーケストレータを作成します。&lt;code&gt;changes&lt;/code&gt; ジョブの検知パスは、各 CI の旧 &lt;code&gt;paths:&lt;/code&gt; 条件と正確に整合させてください。&lt;/p&gt;
+
+&lt;h3 id="3-required-check-を-aggregate-に切り替え"&gt;3. required check を &lt;code&gt;aggregate&lt;/code&gt; に切り替え&lt;/h3&gt;
+
+&lt;p&gt;ブランチ保護の required check を、旧来の個別 CI 名から &lt;code&gt;aggregate&lt;/code&gt; に切り替えます。check run 名は checks API 上のジョブ名（UI 表示の「CI / aggregate」ではなく &lt;code&gt;aggregate&lt;/code&gt;）です。&lt;/p&gt;
+
+&lt;h3 id="注意点"&gt;注意点&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;concurrency group の衝突&lt;/strong&gt;: reusable workflow 側の &lt;code&gt;concurrency&lt;/code&gt; を削除し、オーケストレータ側のみで制御する&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;&lt;code&gt;workflow_run&lt;/code&gt; が発火しなくなる&lt;/strong&gt;: &lt;code&gt;workflow_run&lt;/code&gt; トリガで動いていた後続処理がある場合、オーケストレータ内に移設する必要がある&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;check run 名の変化&lt;/strong&gt;: 他のワークフローで旧 CI 名に依存している箇所がないか確認する&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;変更検知の整合性&lt;/strong&gt;: CI 定義ファイル自身の変更も検知に含める&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;CI の統合ゲートは以下の変遷をたどりました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;個別 CI を required check に登録&lt;/strong&gt; → skipped で永久ブロック&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ポーリング方式のプロキシ&lt;/strong&gt; → ランナー長時間占有、タイムアウト誤失敗&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;イベント駆動化（workflow_run + checks API）&lt;/strong&gt; → GitHub 仕様変更で HttpError、補償的対策の積み重ね&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;集約ジョブ方式（needs + if: always()）&lt;/strong&gt; → 構造的に問題が発生しない&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;課題を直すたびに新しい問題が出てきて、最終的にプラットフォームの標準機能に任せるのが一番シンプルだった、という結論になりました。&lt;/p&gt;
+
+&lt;p&gt;移行時に遭遇した落とし穴（concurrency group 衝突、&lt;code&gt;workflow_run&lt;/code&gt; 非発火、check run 名の変化）は &lt;code&gt;workflow_call&lt;/code&gt; 化で踏みやすいものなので、先に知っておくと手戻りが減ると思います。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>【レポート】毬藻企画とGMOペパボでWebアクセシビリティのイベントを開催しました！</title>
+      <link>https://tech.pepabo.com/2026/06/12/suzuri-a11y-walkthrough/</link>
+      <guid>https://tech.pepabo.com/2026/06/12/suzuri-a11y-walkthrough/</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0900</pubDate>
+      <description>&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#この記事について" id="markdown-toc-この記事について"&gt;この記事について&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#イベントの背景概要" id="markdown-toc-イベントの背景概要"&gt;イベントの背景・概要&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#当日の様子" id="markdown-toc-当日の様子"&gt;当日の様子&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#アクセシビリティウォークスルー" id="markdown-toc-アクセシビリティウォークスルー"&gt;アクセシビリティウォークスルー&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#改善提案ディスカッション" id="markdown-toc-改善提案ディスカッション"&gt;改善提案ディスカッション&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#イベントを振り返って" id="markdown-toc-イベントを振り返って"&gt;イベントを振り返って&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#さいごに" id="markdown-toc-さいごに"&gt;さいごに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="この記事について"&gt;この記事について&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボの&lt;a href="https://x.com/tarutaruio"&gt;tarutaru&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;2026年3月24日、アクセシビリティエキスパート集団である&lt;a href="https://marimokikakugk.com/"&gt;毬藻企画合同会社&lt;/a&gt;さんとの共催で、「&lt;a href="https://pepabo.connpass.com/event/385692/"&gt;【GMOペパボ・毬藻企画】スクリーンリーダーによる実践的アクセシビリティウォークスルー 〜SUZURI byGMOペパボ編〜&lt;/a&gt;」というイベントを開催しました。&lt;/p&gt;
+
+&lt;p&gt;GMOペパボにとっては初めてのアクセシビリティイベント。この記事では、イベント当日の内容・様子など振り返っていきます。&lt;/p&gt;
+
+&lt;h2 id="イベントの背景概要"&gt;イベントの背景・概要&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボでは、「人類のアウトプットを増やす」というミッションのもと、誰もが表現活動の機会を持てる世界を目指してアクセシビリティ推進にも取り組んでいます。ただ、組織としての浸透も各サービスの改善も、まだ「道半ば」というのが正直なところで、SUZURIもその例外ではありませんでした。&lt;/p&gt;
+
+&lt;p&gt;そんな折に、SUZURIでグッズ販売をしてくださっている毬藻企画の&lt;a href="https://x.com/securecat"&gt;森田さん&lt;/a&gt;からお声がけいただきました。お話を重ねるなかで、「SUZURIのアクセシビリティ改善に取り組むなら、まずは現状の課題を知るところから。せっかくならオープンにやってみるといいんじゃないか」と、今回のイベントをご提案いただきました。&lt;/p&gt;
+
+&lt;p&gt;お話を受けて、弊社の事例を公開することが、アクセシビリティに取り組まれている方の学びや刺激になれば。そして、その外に向けた発信が巡り巡って社内のアクセシビリティ推進の後押しにもなれば。そんな期待もあって、今回共催という形でイベントを開催することにしました。&lt;/p&gt;
+
+&lt;p&gt;本イベントは、弊社のサービス「&lt;a href="https://suzuri.jp/"&gt;SUZURI byGMOペパボ&lt;/a&gt;」に対して、&lt;strong&gt;アクセシビリティウォークスルー&lt;/strong&gt;を実施いただくイベントとして開催されました。あまり聞き馴染みのないワードだと思いますが、アクセシビリティウォークスルーは、認知的ウォークスルー（初見のユーザーがUIを一手順ずつ操作していくプロセスを追体験し、つまずきを抽出する手法）とエキスパートレビューを組み合わせたもので、毬藻企画さんによる造語になります。&lt;/p&gt;
+
+&lt;p&gt;当日は、全盲のエンジニアである&lt;a href="https://yncat.net/"&gt;catさん（野澤 幸男さん）&lt;/a&gt;をゲストとしてお招きし、SUZURIをスクリーンリーダー（NVDA）で操作しながらウォークスルーを実施いただきました。ウォークスルー中は、毬藻企画の&lt;a href="https://x.com/magi1125"&gt;伊原さん&lt;/a&gt;がファシリテートと解説を担当。ウォークスルー後には、catさん・伊原さんに加え、毬藻企画の&lt;a href="https://x.com/mt_dew2"&gt;坂巻さん&lt;/a&gt;、SUZURIデザイナーの&lt;a href="https://tech.pepabo.com/authors/%E3%83%84%E3%83%90%E3%82%B5/"&gt;白石さん&lt;/a&gt;・&lt;a href="https://x.com/na0v0_matsu"&gt;並松さん&lt;/a&gt;も加わり問題点の振り返りと改善方法のディスカッションを行いました。&lt;/p&gt;
+
+&lt;p&gt;今回は現地参加のみの開催でしたが、デザイナー・エンジニアなど計40名の方にご参加いただきました。当日ご参加いただいた皆さんありがとうございました。&lt;/p&gt;
+
+&lt;h2 id="当日の様子"&gt;当日の様子&lt;/h2&gt;
+
+&lt;h3 id="アクセシビリティウォークスルー"&gt;アクセシビリティウォークスルー&lt;/h3&gt;
+
+&lt;p&gt;ウォークスルー本番の前に、比較材料としてまず晴眼者である私が、マウス操作でSUZURIの商品を購入するデモを行いました。SUZURI公式ショップで「忍者スリスリくんのパーカー」を探して、カートに入れ、注文を完了する。私は特に引っかかるところもなく注文を終え、晴眼者にとっては数分で完了するタスクでした。&lt;/p&gt;
+
+&lt;p&gt;これに続く形でcatさんにはアクセシビリティウォークスルーを始めていただきました。catさんには、SUZURI内の毬藻企画さんのショップで「アクセシスタディーズのアクリルスタンド」を購入する、というタスクを遂行してもらいました。商品を探して、カートに入れ、注文を完了させる。流れ自体は基本的に同じですが、それをスクリーンリーダーで行うことで先ほどの晴眼者のウォークスルーとどのくらいギャップがあるのか、を参加者の方には体感いただきました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/06/12/suzuri-a11y-walkthrough/walkthrough.jpg" alt="ウォークスルー中の会場の様子。参加者が着席して見守るなか、登壇者2名がスクリーン脇に立っている。メインスクリーンにはSUZURIのページが映し出され、サブモニターにはUDトークの字幕が表示されている" /&gt;&lt;/p&gt;
+
+&lt;p&gt;結果だけ言ってしまうと、ウォークスルー中には本当にさまざまな引っかかりが発生しました。一つの商品を購入するだけでこれだけのつまづきがあるのかと、普段から慣れ親しんだ自分たちのサービスが、まるで全然知らないサービスに見えるくらい衝撃を受けました。&lt;/p&gt;
+
+&lt;p&gt;ここですべてのつまづきを取り上げることはできないので1つだけピックアップさせていただきますが、イベントの中で会場が一番ざわついたのが、商品のサイズ選択の場面でした。&lt;/p&gt;
+
+&lt;p&gt;SUZURIでは、サイズを選ぶUIとしてHTMLの&lt;code&gt;select&lt;/code&gt;要素が使用されていました。これ自体はなんの違和感もないことですが、catさんがスクリーンリーダーでこの&lt;code&gt;select&lt;/code&gt;要素を操作してサイズを選択し、カートに入れるボタンを押してみたところ、カートに入れることができませんでした。カートに入れられなかった理由は”サイズが未選択だから”。先ほど確かにサイズを選択したのをこの目で確認したはずなのに、実際にはサイズは選ばれていない状態で、皆の頭に「？」が浮かぶ状況でした。&lt;/p&gt;
+
+&lt;p&gt;実際には何が起きていたかというと、実はこの&lt;code&gt;select&lt;/code&gt;要素、&lt;code&gt;select&lt;/code&gt;要素としての機能は無効化されており、マウスのクリックでカスタムのドロワーUIを開くためのトリガーとして使用されていました。サイズ選択は、そのドロワー側で選択しないとサイズが確定しない仕様になっていたのです。ところが、スクリーンリーダー（キーボード）からは通常の&lt;code&gt;select&lt;/code&gt;として操作も選択もできてしまったため「選んだのに、選べていない」という状態になっていたのです。&lt;/p&gt;
+
+&lt;p&gt;catさんはこの問題について、こう表現しました。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;お風呂用洗剤はお風呂を洗うために作られたのに他の目的で使うと何が起こるかわからない。つまり、用法用量を守って使ってほしい。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;ネイティブの&lt;code&gt;select&lt;/code&gt;要素には、ブラウザが保証する期待された動作があります。それを別の目的で使えば、期待どおりに動かないケースが出てくる。シンプルだけど重い指摘でした。（※ なお、このサイズ選択の問題については現在改善対応を進めており、近日中に修正される予定です。）&lt;/p&gt;
+
+&lt;p&gt;このサイズ選択のほかにも、フォーカスが移動せずモーダルウインドウの存在に気づけなかったり、支払い方法のラジオボタンのグルーピングが把握しづらかったり、広告バナーを誤クリックしてしまったりと、多くのつまずきが発生しましたが、それでもcatさんは最終的に注文を完了させ、無事に（？）ウォークスルーを終えることができました。&lt;/p&gt;
+
+&lt;h3 id="改善提案ディスカッション"&gt;改善提案ディスカッション&lt;/h3&gt;
+
+&lt;p&gt;ウォークスルーを終えた後は、catさん・伊原さん・坂巻さん・白石さん・並松さんの5名で、問題点の振り返りと改善方法を議論しました。モーダルウインドウへのフォーカス移動やアイコンのラベル付けなど、改善策はいくつも挙がりましたが、中でも印象に残ったのは、「グッズの探索しやすさ」をめぐるやり取りでした。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/06/12/suzuri-a11y-walkthrough/discussion.jpg" alt="改善提案ディスカッション中の会場の様子。参加者が着席して見守るなか、複数の登壇者がスクリーン脇から発言している。メインスクリーンにはSUZURIのページが映し出され、サブモニターにはUDトークの字幕が表示されている" /&gt;&lt;/p&gt;
+
+&lt;p&gt;きっかけは、並松さんからの問いかけでした。ウォークスルー中、catさんが「アクリルスタンド」と書かれたリンクを押すと、毬藻企画ショップ内ではなく、SUZURI全体のアクリルスタンドの商品一覧（毬藻とは関係のないアクスタが並ぶ画面）に飛んでしまう、という場面がありました。並松さんはここを取り上げて、「グッズを探しやすくするには、どんな工夫があり得るんでしょうか？」と切り出しました。&lt;/p&gt;
+
+&lt;p&gt;これに対しcatさんは、商品一覧から選ぶこと自体は不便ではなかったとしつつ、「そもそも『デザインを選ばないとTシャツやアクスタが出てこない』構造に気づくまでに時間がかかった」と振り返りました。これを受けて、伊原さんがSUZURIの構造的な特徴をこう整理してくれました。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SUZURIには「Tシャツやアクリルスタンドといったハードウェアとしての商品」と「その上に乗るデザイン」という二つの概念があり、これらが同じ画面に同居しているので、自分がいま触れているのが商品の話なのかデザインの話なのかがユーザーには見えづらい。catさんがリンクを押して関係のない商品一覧に飛んでしまったのも、まさにこの概念の混在が原因。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;また、地続きの話として白石さんから興味深い補足が入りました。SUZURIショップのトップに並ぶナビゲーション（「デザイン」「グッズ」など）は、実はショップオーナー側でカスタマイズできる仕様になっており、SUZURI公式ショップでは「グッズ」というタブが並んでいるのに対し、今回の毬藻企画ショップのナビゲーションには「グッズ」が存在していなかったそうです。catさんがショップの構造を掴むのに時間がかかった一因も、おそらくここにあったのではないか。同じSUZURIでも、ショップによって構造の理解しやすさが揺らいでしまう、そんな現状そのものが課題として見えてきた、そんな議論でした。&lt;/p&gt;
+
+&lt;p&gt;最初はUIの小さな引っかかりに聞こえた話が、気づけば「SUZURIというサービスの情報構造をどう設計するか」という、もう一回り大きな問いに変わっていく。アクセシビリティは「スクリーンリーダーでどう読み上げさせるか」だけではなく、その手前にある情報設計のレイヤーまで含めて考えるべきテーマなのだと、改めて気づかされた時間でした。一つの問いからここまで議論が広がっていくその奥行きが、ディスカッションの中でもとくに面白く、印象に残ったセッションでした。&lt;/p&gt;
+
+&lt;h2 id="イベントを振り返って"&gt;イベントを振り返って&lt;/h2&gt;
+
+&lt;p&gt;イベントを終えた今正直に書くと、「まだアクセシビリティの取り組みが浅いSUZURIを題材にして本当に大丈夫か」という不安は企画当初からずっとありました。社内でも協議を重ね結果開催に至りましたが、その不安は当日まで消えませんでした。&lt;/p&gt;
+
+&lt;p&gt;それでも、いざイベントが始まってみると、catさんや伊原さんがユーモアを交えながら明るくウォークスルーを進めてくださり、ディスカッションでも「どうすれば良くなるか」が前向きに議論されていきました。参加者の皆さんもその一つひとつに真剣に耳を傾けてくださっていて、会場には終始「目の前の事象に一緒に向き合う」良い空気が流れていました。SNS上でもハッシュタグ &lt;a href="https://x.com/hashtag/pepabo_marimo"&gt;#pepabo_marimo&lt;/a&gt; で学びをポジティブにシェアしてくださり、読みながらほっとしたのを覚えています。&lt;/p&gt;
+
+&lt;p&gt;そうした空気のなかで、私自身もたくさんの学びを持ち帰った一日でした。中でも気づかされたのは、catさんが操作のほとんどの時間を「ページの構造を把握する／要素を把握する／情報を把握する」ことに費やしていた、という事実です。それはおそらく、晴眼者が視覚情報で無意識のうちにやっていることでもあります。この現状把握でつまずきが多いと、目的のアクションにはなかなかたどり着けないし、たどり着くまでに想像以上のエネルギーがかかってしまう。catさんはあらゆる手段を駆使して現状を把握されていましたが、それはエンジニアであるcatさんだからこその引き出しの多さでもあったはずです。誰もがこの把握をスムーズに行える状態を、当たり前のものとして目指していきたいな、と改めて感じる時間でした。&lt;/p&gt;
+
+&lt;p&gt;そしてもうひとつ、企画者として嬉しかったことがあります。当日参加していた弊社デザイナーが、翌日にはもう自分の担当サービスでアクセシビリティ改善のPRを立てていたのです。「社外に向けたイベントが、社内にもいい刺激になれば」とひそかに期待していたことが、想像よりずっと早く、目に見える形で動き出していました。&lt;/p&gt;
+
+&lt;p&gt;ディスカッションの終盤、catさんがこう言ってくださったのが、強く印象に残っています。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;みんなでいいものができていけばいいんじゃないかな。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;このひとことに、今回のイベントの空気が全部詰まっていたように思います。アクセシビリティは、一社あるいは一人だけで完結するテーマではありません。社内外で関わる人たちと一緒に課題に向き合いながら、少しずつ良いものに変えていく。今回のイベントが、その小さな一歩目になっていたら嬉しいです。&lt;/p&gt;
+
+&lt;h2 id="さいごに"&gt;さいごに&lt;/h2&gt;
+
+&lt;p&gt;以上、イベントのふりかえりでした。&lt;/p&gt;
+
+&lt;p&gt;改めて、catさん、毬藻企画の皆さん、当日ご参加くださった皆さん、そして運営に関わってくださった皆さん、本当にありがとうございました！&lt;/p&gt;
+
+&lt;p&gt;今回のイベントで見つかったSUZURIの課題は、これからひとつずつ改善していければと思っています。数も多いので時間がかかるものもあるかもしれませんが、ゆっくり見守っていただけたら嬉しいです。&lt;/p&gt;
+
+&lt;p&gt;ちなみに、初開催ということもあり、運営面での反省点・学びもありました。たとえば、UDトークの字幕にスクリーンリーダーの読み上げ音声まで一緒に拾われてしまい、品質に影響が出てしまったり。こうした学びは、次回以降のイベントでしっかり活かしていきます。&lt;/p&gt;
+
+&lt;p&gt;今回のイベントは、毬藻企画さんとcatさんのお力を大いにお借りしての開催となりました。弊社としても、アクセシビリティを通して良いものづくりにつながる取り組みを、これからも続けていきたいです。今回はスクリーンリーダーが切り口でしたが、ほかにもさまざまな角度からアクセシビリティに触れられる場を作っていき、皆さんと一緒に学ばせていただけたらと思っています。&lt;/p&gt;
+
+&lt;p&gt;アクセシビリティに関わるみなさんも、これから興味を持つみなさんも、一緒に学び、いいものづくりをしましょう！&lt;/p&gt;
+</description>
+    </item>
+  </channel>
+</rss>

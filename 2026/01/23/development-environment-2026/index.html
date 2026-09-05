@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>ペパボパートナーの開発環境現状確認 2026 - Pepabo Tech Portal</title>
+<meta content="
+
+「開発環境現状確認2026」に寄せて、ペパボパートナーの有志の開発環境を紹介します！@名前の環境詳細をみる をクリックして、各メンバーの詳細な環境を確認してみてください。
+
+" property="description" />
+<meta content="https://tech.pepabo.com/blog/2026/01/23/development-environment-2026/images/pepabo-development-environment-2026.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@kentaro" name="twitter:creator" />
+      <meta content="@kenchan" name="twitter:creator" />
+      <meta content="@tnmt" name="twitter:creator" />
+      <meta content="@rsym1290" name="twitter:creator" />
+      <meta content="@hokatabi" name="twitter:creator" />
+      <meta content="@n01e0" name="twitter:creator" />
+      <meta content="@takumakume" name="twitter:creator" />
+      <meta content="@haruotsu_hy" name="twitter:creator" />
+      <meta content="@atani" name="twitter:creator" />
+      <meta content="@yammerjp" name="twitter:creator" />
+      <meta content="@furudono2" name="twitter:creator" />
+      <meta content="@doskoi64" name="twitter:creator" />
+      <meta content="@kurotaky" name="twitter:creator" />
+      <meta content="@yoshikouki_" name="twitter:creator" />
+      <meta content="@tetsuwo0717" name="twitter:creator" />
+      <meta content="@yukyu30" name="twitter:creator" />
+<meta content="ペパボパートナーの開発環境現状確認 2026 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="
+
+「開発環境現状確認2026」に寄せて、ペパボパートナーの有志の開発環境を紹介します！@名前の環境詳細をみる をクリックして、各メンバーの詳細な環境を確認してみてください。
+
+" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"ペパボパートナーの開発環境現状確認 2026","author":{"@type":"Person","name":"kentaro"},"datePublished":"2026-01-23T00:00:00+09:00","image":"https://tech.pepabo.com/blog/2026/01/23/development-environment-2026/images/pepabo-development-environment-2026.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-development-environment-2026">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/エンジニア/" class="tag-default">エンジニア</a>
+      <a href="/tags/ペパボ/" class="tag-default">ペパボ</a>
+  </div>
+  <time class="article__time" datetime="2026-01-23">
+    2026-01-23
+  </time>
+  <h1 class="article__title">
+    <a href="/2026/01/23/development-environment-2026/">ペパボパートナーの開発環境現状確認 2026</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/エンジニア/" class="tag-default">エンジニア</a>
+      <a href="/tags/ペパボ/" class="tag-default">ペパボ</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2026/01/23/development-environment-2026/images/pepabo-development-environment-2026.png" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2026/01/23/development-environment-2026/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <!--
+【執筆者の皆さんへ】
+このファイルはペパボ有志で書き上げる「開発環境現状確認2026」ブログ記事です。
+下のテンプレートをコピーして、自分のセクションを追加してください！
+
+-->
+
+<p>「<a href="https://b.hatena.ne.jp/q/%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E7%8F%BE%E7%8A%B6%E7%A2%BA%E8%AA%8D">開発環境現状確認2026</a>」に寄せて、ペパボパートナーの有志の開発環境を紹介します！@名前の環境詳細をみる をクリックして、各メンバーの詳細な環境を確認してみてください。</p>
+
+<p></p>
+
+<ol id="markdown-toc">
+  <li><a href="#開発環境現状確認2026-まとめ" id="markdown-toc-開発環境現状確認2026-まとめ">開発環境現状確認2026 まとめ</a>    <ol>
+      <li><a href="#エディタ" id="markdown-toc-エディタ">エディタ</a></li>
+      <li><a href="#ターミナル" id="markdown-toc-ターミナル">ターミナル</a></li>
+      <li><a href="#シェル" id="markdown-toc-シェル">シェル</a></li>
+      <li><a href="#aiコーディングエージェント" id="markdown-toc-aiコーディングエージェント">AIコーディングエージェント</a></li>
+      <li><a href="#ランチャー" id="markdown-toc-ランチャー">ランチャー</a></li>
+      <li><a href="#バージョン管理ツール" id="markdown-toc-バージョン管理ツール">バージョン管理ツール</a></li>
+      <li><a href="#キーボード" id="markdown-toc-キーボード">キーボード</a></li>
+    </ol>
+  </li>
+  <li><a href="#kentaro" id="markdown-toc-kentaro">@kentaro</a>    <ol>
+      <li><a href="#section" id="markdown-toc-section">基本環境</a></li>
+      <li><a href="#ai" id="markdown-toc-ai">AIツール</a></li>
+      <li><a href="#section-6" id="markdown-toc-section-6">開発ツール</a></li>
+      <li><a href="#section-10" id="markdown-toc-section-10">環境構築・管理</a></li>
+      <li><a href="#section-13" id="markdown-toc-section-13">日本語入力</a></li>
+      <li><a href="#section-14" id="markdown-toc-section-14">ハードウェア</a></li>
+      <li><a href="#cli" id="markdown-toc-cli">CLIツール</a></li>
+      <li><a href="#section-17" id="markdown-toc-section-17">情報管理</a></li>
+      <li><a href="#section-19" id="markdown-toc-section-19">その他</a></li>
+      <li><a href="#section-23" id="markdown-toc-section-23">まとめ</a></li>
+    </ol>
+  </li>
+  <li><a href="#kenchan" id="markdown-toc-kenchan">@kenchan</a></li>
+  <li><a href="#tnmt" id="markdown-toc-tnmt">@tnmt</a></li>
+  <li><a href="#rsym1290" id="markdown-toc-rsym1290">@rsym1290</a>    <ol>
+      <li><a href="#section-24" id="markdown-toc-section-24">基本環境</a></li>
+      <li><a href="#ai-1" id="markdown-toc-ai-1">AIツール</a></li>
+      <li><a href="#section-25" id="markdown-toc-section-25">開発ツール</a></li>
+      <li><a href="#section-26" id="markdown-toc-section-26">環境構築</a></li>
+      <li><a href="#section-27" id="markdown-toc-section-27">ハードウェア</a></li>
+      <li><a href="#cli-1" id="markdown-toc-cli-1">CLIツール</a></li>
+      <li><a href="#section-28" id="markdown-toc-section-28">その他</a></li>
+      <li><a href="#section-29" id="markdown-toc-section-29">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#shibatch" id="markdown-toc-shibatch">@shibatch</a>    <ol>
+      <li><a href="#section-30" id="markdown-toc-section-30">基本環境</a></li>
+      <li><a href="#ai-2" id="markdown-toc-ai-2">AIツール</a></li>
+      <li><a href="#section-31" id="markdown-toc-section-31">開発ツール</a></li>
+      <li><a href="#section-32" id="markdown-toc-section-32">環境構築</a></li>
+      <li><a href="#section-33" id="markdown-toc-section-33">ハードウェア</a></li>
+      <li><a href="#cli-2" id="markdown-toc-cli-2">CLIツール</a></li>
+      <li><a href="#section-34" id="markdown-toc-section-34">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#n01e0" id="markdown-toc-n01e0">@n01e0</a>    <ol>
+      <li><a href="#section-35" id="markdown-toc-section-35">基本環境</a></li>
+      <li><a href="#ai-3" id="markdown-toc-ai-3">AIツール</a></li>
+      <li><a href="#section-36" id="markdown-toc-section-36">開発ツール</a></li>
+      <li><a href="#section-37" id="markdown-toc-section-37">環境構築・管理</a></li>
+      <li><a href="#section-38" id="markdown-toc-section-38">ハードウェア</a></li>
+      <li><a href="#cli-3" id="markdown-toc-cli-3">CLIツール</a></li>
+      <li><a href="#section-39" id="markdown-toc-section-39">その他</a></li>
+      <li><a href="#section-40" id="markdown-toc-section-40">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#takumakume" id="markdown-toc-takumakume">@takumakume</a>    <ol>
+      <li><a href="#section-41" id="markdown-toc-section-41">基本環境</a></li>
+      <li><a href="#ai-4" id="markdown-toc-ai-4">AIツール</a></li>
+      <li><a href="#section-42" id="markdown-toc-section-42">開発ツール</a></li>
+      <li><a href="#section-43" id="markdown-toc-section-43">環境構築</a></li>
+      <li><a href="#section-44" id="markdown-toc-section-44">ハードウェア</a></li>
+      <li><a href="#cli-4" id="markdown-toc-cli-4">CLIツール</a></li>
+      <li><a href="#section-45" id="markdown-toc-section-45">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#haruotsu" id="markdown-toc-haruotsu">@haruotsu</a>    <ol>
+      <li><a href="#section-46" id="markdown-toc-section-46">基本環境</a></li>
+      <li><a href="#ai-5" id="markdown-toc-ai-5">AIツール</a></li>
+      <li><a href="#section-47" id="markdown-toc-section-47">開発ツール</a></li>
+      <li><a href="#section-48" id="markdown-toc-section-48">環境構築</a></li>
+      <li><a href="#section-49" id="markdown-toc-section-49">ハードウェア</a></li>
+      <li><a href="#cli-5" id="markdown-toc-cli-5">CLIツール</a></li>
+      <li><a href="#section-50" id="markdown-toc-section-50">その他</a></li>
+      <li><a href="#section-51" id="markdown-toc-section-51">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#atani" id="markdown-toc-atani">@atani</a>    <ol>
+      <li><a href="#section-52" id="markdown-toc-section-52">基本環境</a></li>
+      <li><a href="#ai-6" id="markdown-toc-ai-6">AIツール</a></li>
+      <li><a href="#section-53" id="markdown-toc-section-53">開発ツール</a></li>
+      <li><a href="#section-54" id="markdown-toc-section-54">環境構築</a></li>
+      <li><a href="#section-55" id="markdown-toc-section-55">ハードウェア</a></li>
+      <li><a href="#cli-6" id="markdown-toc-cli-6">CLIツール</a></li>
+      <li><a href="#section-56" id="markdown-toc-section-56">その他</a></li>
+      <li><a href="#section-57" id="markdown-toc-section-57">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#shunhamm" id="markdown-toc-shunhamm">@shunhamm</a>    <ol>
+      <li><a href="#section-58" id="markdown-toc-section-58">基本環境</a></li>
+      <li><a href="#ai-7" id="markdown-toc-ai-7">AIツール</a></li>
+      <li><a href="#section-59" id="markdown-toc-section-59">開発ツール</a></li>
+      <li><a href="#section-60" id="markdown-toc-section-60">環境構築</a></li>
+      <li><a href="#section-61" id="markdown-toc-section-61">ハードウェア</a></li>
+      <li><a href="#cli-7" id="markdown-toc-cli-7">CLIツール</a></li>
+      <li><a href="#section-62" id="markdown-toc-section-62">コンテナ</a></li>
+      <li><a href="#section-63" id="markdown-toc-section-63">その他</a></li>
+      <li><a href="#section-64" id="markdown-toc-section-64">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#yammerjp" id="markdown-toc-yammerjp">@yammerjp</a>    <ol>
+      <li><a href="#yadm" id="markdown-toc-yadm">yadm</a></li>
+      <li><a href="#astronvim" id="markdown-toc-astronvim">AstroNvim</a></li>
+    </ol>
+  </li>
+  <li><a href="#furudono2" id="markdown-toc-furudono2">@furudono2</a>    <ol>
+      <li><a href="#section-65" id="markdown-toc-section-65">去年との差分</a></li>
+      <li><a href="#section-66" id="markdown-toc-section-66">今年の抱負</a></li>
+    </ol>
+  </li>
+  <li><a href="#doskoi64" id="markdown-toc-doskoi64">@doskoi64</a>    <ol>
+      <li><a href="#section-67" id="markdown-toc-section-67">基本環境</a></li>
+      <li><a href="#ai-8" id="markdown-toc-ai-8">AIツール</a></li>
+      <li><a href="#section-68" id="markdown-toc-section-68">開発ツール</a></li>
+      <li><a href="#section-69" id="markdown-toc-section-69">環境構築</a></li>
+      <li><a href="#section-70" id="markdown-toc-section-70">ハードウェア</a></li>
+      <li><a href="#cli-8" id="markdown-toc-cli-8">CLIツール</a></li>
+      <li><a href="#section-71" id="markdown-toc-section-71">その他</a></li>
+      <li><a href="#section-72" id="markdown-toc-section-72">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#kurotaky" id="markdown-toc-kurotaky">@kurotaky</a>    <ol>
+      <li><a href="#section-73" id="markdown-toc-section-73">基本環境</a></li>
+      <li><a href="#ai-9" id="markdown-toc-ai-9">AIツール</a></li>
+      <li><a href="#section-74" id="markdown-toc-section-74">開発ツール</a></li>
+      <li><a href="#section-75" id="markdown-toc-section-75">環境構築</a></li>
+      <li><a href="#section-76" id="markdown-toc-section-76">ハードウェア</a></li>
+      <li><a href="#cli-9" id="markdown-toc-cli-9">CLIツール</a></li>
+      <li><a href="#section-77" id="markdown-toc-section-77">コンテナ</a></li>
+      <li><a href="#section-78" id="markdown-toc-section-78">その他</a></li>
+      <li><a href="#section-79" id="markdown-toc-section-79">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#yoshikouki" id="markdown-toc-yoshikouki">@yoshikouki</a>    <ol>
+      <li><a href="#section-80" id="markdown-toc-section-80">基本環境</a></li>
+      <li><a href="#ai-10" id="markdown-toc-ai-10">AIツール</a></li>
+      <li><a href="#section-81" id="markdown-toc-section-81">開発ツール</a></li>
+      <li><a href="#section-82" id="markdown-toc-section-82">環境構築</a></li>
+      <li><a href="#section-83" id="markdown-toc-section-83">ハードウェア</a></li>
+      <li><a href="#cli-10" id="markdown-toc-cli-10">CLIツール</a></li>
+      <li><a href="#section-84" id="markdown-toc-section-84">その他</a></li>
+      <li><a href="#section-85" id="markdown-toc-section-85">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#tetsuwo0717" id="markdown-toc-tetsuwo0717">@tetsuwo0717</a>    <ol>
+      <li><a href="#section-86" id="markdown-toc-section-86">基本環境</a></li>
+      <li><a href="#ai-11" id="markdown-toc-ai-11">AIツール</a></li>
+      <li><a href="#section-87" id="markdown-toc-section-87">開発ツール</a></li>
+      <li><a href="#section-88" id="markdown-toc-section-88">環境構築</a></li>
+      <li><a href="#section-89" id="markdown-toc-section-89">ハードウェア</a></li>
+      <li><a href="#cli-11" id="markdown-toc-cli-11">CLIツール</a></li>
+      <li><a href="#section-90" id="markdown-toc-section-90">その他</a></li>
+      <li><a href="#section-91" id="markdown-toc-section-91">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#ugo" id="markdown-toc-ugo">@ugo</a>    <ol>
+      <li><a href="#section-92" id="markdown-toc-section-92">基本環境</a></li>
+      <li><a href="#ai-12" id="markdown-toc-ai-12">AIツール</a></li>
+      <li><a href="#section-93" id="markdown-toc-section-93">開発ツール</a></li>
+      <li><a href="#section-94" id="markdown-toc-section-94">環境構築</a></li>
+      <li><a href="#section-95" id="markdown-toc-section-95">ハードウェア</a></li>
+      <li><a href="#cli-12" id="markdown-toc-cli-12">CLIツール</a></li>
+      <li><a href="#section-96" id="markdown-toc-section-96">その他</a></li>
+      <li><a href="#section-97" id="markdown-toc-section-97">一言</a></li>
+    </ol>
+  </li>
+  <li><a href="#まとめ" id="markdown-toc-まとめ">まとめ</a></li>
+</ol>
+
+<h2 id="開発環境現状確認2026-まとめ">開発環境現状確認2026 まとめ</h2>
+
+<p>記事で紹介する17名のペパボパートナーの主要なツールを集計すると、以下のようになりました。
+詳細や各人が書いたコメントを知りたい方は、@名前の環境詳細をみる をクリックして、各メンバーの詳細な環境を確認してみてください！</p>
+
+<h3 id="エディタ">エディタ</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>エディタ</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Neovim</td>
+      <td>12名</td>
+    </tr>
+    <tr>
+      <td>Cursor</td>
+      <td>9名</td>
+    </tr>
+    <tr>
+      <td>VS Code</td>
+      <td>4名</td>
+    </tr>
+    <tr>
+      <td>Vim / vi</td>
+      <td>2名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="ターミナル">ターミナル</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ターミナル</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ghostty</td>
+      <td>4名</td>
+    </tr>
+    <tr>
+      <td>iTerm2</td>
+      <td>4名</td>
+    </tr>
+    <tr>
+      <td>WezTerm</td>
+      <td>3名</td>
+    </tr>
+    <tr>
+      <td>Alacritty</td>
+      <td>2名</td>
+    </tr>
+    <tr>
+      <td>その他（Kitty, Hyper, Warp, Windows Terminal）</td>
+      <td>4名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="シェル">シェル</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>シェル</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>zsh</td>
+      <td>14名</td>
+    </tr>
+    <tr>
+      <td>fish</td>
+      <td>3名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="aiコーディングエージェント">AIコーディングエージェント</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ツール</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Claude Code</td>
+      <td>17名（全員！）</td>
+    </tr>
+    <tr>
+      <td>Codex CLI</td>
+      <td>4名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="ランチャー">ランチャー</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ランチャー</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Raycast</td>
+      <td>12名</td>
+    </tr>
+    <tr>
+      <td>macOS標準 / Spotlight</td>
+      <td>2名</td>
+    </tr>
+    <tr>
+      <td>Alfred</td>
+      <td>1名</td>
+    </tr>
+    <tr>
+      <td>その他</td>
+      <td>2名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="バージョン管理ツール">バージョン管理ツール</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ツール</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>mise</td>
+      <td>4名</td>
+    </tr>
+    <tr>
+      <td>asdf</td>
+      <td>3名</td>
+    </tr>
+    <tr>
+      <td>rbenv / nodenv / pyenv 等</td>
+      <td>6名</td>
+    </tr>
+    <tr>
+      <td>その他</td>
+      <td>4名</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="キーボード">キーボード</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>キーボード</th>
+      <th>人数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>分割キーボード（Kinesis Advantage 360, Keychron Q11, Killer Whale DUO, Planck, Lily58）</td>
+      <td>5名</td>
+    </tr>
+    <tr>
+      <td>HHKB系（Studio, Hybrid Type-S）</td>
+      <td>4名</td>
+    </tr>
+    <tr>
+      <td>Realforce系</td>
+      <td>2名</td>
+    </tr>
+    <tr>
+      <td>その他（TeX Shura, MX Keys Mini, Lofree Flow2, Magic Keyboard, NuPhy等）</td>
+      <td>6名</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--
+=====================================
+テンプレート（これをコピーして使ってください）
+=====================================
+
+## [@名前](https://x.com/xxx)
+
+**所属** / 一言コメント
+
+<details markdown="1">
+<summary markdown="span"><a href="https://x.com/xxx">@名前</a>の環境詳細をみる</summary>
+
+### 基本環境
+
+- **OS**:
+- **エディタ**:
+- **ターミナル**:
+- **シェル**:
+
+### AIツール
+
+- **コーディングエージェント**:
+- **AIアシスタント**:
+
+### 開発ツール
+
+- **ブラウザ**:
+- **ランチャー**:
+- **フォント**:
+
+### 環境構築
+
+- **パッケージマネージャ**:
+- **バージョン管理**:
+- **dotfiles**:
+
+### ハードウェア
+
+- **キーボード**:
+- **日本語入力**:
+
+### CLIツール
+
+- **Git関連**:
+- **Fuzzy Finder**:
+
+### その他
+
+- **よく使う言語**:
+- **DBクライアント**:
+- **メモ**:
+
+### 一言
+
+（今年変えたいこと、気になってるツールなど自由に）
+
+</details>
+
+---
+
+=====================================
+テンプレートここまで
+=====================================
+-->
+
+<h2 id="kentaro"><a href="https://x.com/kentaro">@kentaro</a></h2>
+
+<p><strong>取締役CTO</strong> / 年初にMacBookが新しくなりました</p>
+
+<details>
+  <summary><a href="https://x.com/kentaro">@kentaro</a>の環境詳細をみる</summary>
+
+  <h3 id="section">基本環境</h3>
+
+  <h4 id="os">OS</h4>
+
+  <p>macOS Sequoia。MacBook Pro (M4 Max, 64GB)。</p>
+
+  <h4 id="section-1">エディタ</h4>
+
+  <p>Claude Code でコードを書かせることがほとんどで、エディタはあまり使わなくなりました。補助的に Neovim (LazyVim) を使っています。Cursor も入れていますがほぼ開きません。</p>
+
+  <h4 id="section-2">ターミナル</h4>
+
+  <p>Ghostty。フォントは JetBrains Mono Nerd Font、テーマは TokyoNight。</p>
+
+  <h4 id="section-3">シェル</h4>
+
+  <p>zsh + Starship。</p>
+
+  <h4 id="section-4">ターミナルマルチプレクサ</h4>
+
+  <p>tmux。プレフィックスは <code>Ctrl-t</code>。</p>
+
+  <h3 id="ai">AIツール</h3>
+
+  <h4 id="section-5">コーディングエージェント</h4>
+
+  <p>Claude Code がメイン。カスタムスキルを作成しています：</p>
+
+  <ul>
+    <li><code>/nippo</code> - 会話をObsidianに保存</li>
+    <li><code>/today</code> - Googleカレンダー+日経新聞をまとめる</li>
+    <li><code>/worktree</code> - git worktree 操作</li>
+    <li><code>/codex</code> - OpenAI Codex に相談</li>
+  </ul>
+
+  <p>OpenAI Codex CLI も併用。詰まったときのセカンドオピニオンとして。</p>
+
+  <h4 id="mcp">MCP</h4>
+
+  <p>Claude in Chrome 拡張でブラウザ自動化。</p>
+
+  <h3 id="section-6">開発ツール</h3>
+
+  <h4 id="section-7">ブラウザ</h4>
+
+  <p>Google Chrome。ちょっと前に、Chromeに戻ってきました。</p>
+
+  <h4 id="section-8">ランチャー</h4>
+
+  <p>Raycast。</p>
+
+  <h4 id="section-9">フォント</h4>
+
+  <p>JetBrains Mono Nerd Font。</p>
+
+  <h3 id="section-10">環境構築・管理</h3>
+
+  <h4 id="dotfiles">dotfiles</h4>
+
+  <p>chezmoi。</p>
+
+  <h4 id="section-11">パッケージ管理</h4>
+
+  <p>Homebrew。</p>
+
+  <h4 id="section-12">バージョン管理</h4>
+
+  <p>mise。Go, Rust, Erlang, Node, Elixir を管理。</p>
+
+  <h3 id="section-13">日本語入力</h3>
+
+  <h4 id="ime">IME</h4>
+
+  <p>azooKey。ニューラルかな漢字変換エンジン Zenzai 搭載。</p>
+
+  <h3 id="section-14">ハードウェア</h3>
+
+  <h4 id="section-15">キーボード</h4>
+
+  <p>HHKB Studio。ポインティングスティック内蔵。</p>
+
+  <h4 id="section-16">キーリマッパー</h4>
+
+  <p>Karabiner-Elements。SandS、Ctrl+Space (simultaneous)、Emacs風キーバインド。</p>
+
+  <h3 id="cli">CLIツール</h3>
+
+  <ul>
+    <li><strong>gh</strong> - GitHub CLI</li>
+    <li><strong>lazygit</strong> - TUI Git クライアント</li>
+    <li><strong>git-wt</strong> - git worktree ラッパー</li>
+    <li><strong>ghq</strong> - リポジトリ管理</li>
+    <li><strong>fzf</strong> - Fuzzy Finder</li>
+    <li><strong>atuin</strong> - コマンド履歴</li>
+  </ul>
+
+  <h3 id="section-17">情報管理</h3>
+
+  <h4 id="section-18">メモ</h4>
+
+  <p>Obsidian。Claude Code との会話を <code>/nippo</code> で自動保存。</p>
+
+  <h3 id="section-19">その他</h3>
+
+  <h4 id="section-20">プログラミング言語</h4>
+
+  <p>Elixir, Go, Rust, TypeScript。</p>
+
+  <h4 id="section-21">動画・音声</h4>
+
+  <p>OBS, Ableton Live 12 Suite。</p>
+
+  <h4 id="section-22">その他</h4>
+
+  <p>1Password, Spotify, Discord, Slack, Ollama。</p>
+
+  <h3 id="section-23">まとめ</h3>
+
+  <p>Claude Code + OpenAI Codex の組み合わせでエディタを開く機会が減りました。HHKB Studio + Karabiner-Elements + azooKey で入力環境は安定しています。</p>
+
+</details>
+
+<hr />
+
+<h2 id="kenchan"><a href="https://x.com/kenchan">@kenchan</a></h2>
+
+<p><strong>技術責任者</strong> / これを書いてからエディタをhelixにしました。</p>
+
+<p><a href="https://x.com/kenchan">@kenchan</a>の環境詳細は、Zennに書きました。<a href="https://zenn.dev/pepabo/articles/2549863d8efa6d">開発環境現状確認 2026 - Zenn</a></p>
+
+<hr />
+
+<h2 id="tnmt"><a href="https://x.com/tnmt">@tnmt</a></h2>
+
+<p><strong>技術部 シニアエンジニアリングリード</strong> / 環境いじり楽しいよね</p>
+
+<p><a href="https://x.com/tnmt">@tnmt</a>の環境詳細は、ブログに書きました。<a href="https://blog.tnmt.info/2026/01/21/setup2026/">開発環境現状確認2026 - hack in 3 minutes</a></p>
+
+<hr />
+
+<h2 id="rsym1290"><a href="https://x.com/rsym1290">@rsym1290</a></h2>
+
+<p><strong>技術部 技術基盤グループ エンジニアリングリード</strong> / Claude CodeとGeminiに助けられる日々</p>
+
+<details>
+  <summary><a href="https://x.com/rsym1290">@rsym1290</a>の環境詳細をみる</summary>
+
+  <h3 id="section-24">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / MacBook Pro(Apple M3 Pro / 36 GB)</li>
+    <li><strong>エディタ</strong>: AstroNvimメイン、時々Cursor</li>
+    <li><strong>ターミナル</strong>: iTerm2</li>
+    <li><strong>シェル</strong>: zsh + prezto + Powerlevel10k</li>
+    <li><strong>マルチプレクサ</strong>: tmux</li>
+  </ul>
+
+  <p>最近は減っていますがデータセンター作業での携帯性を踏まえて14inchのPCを選んでます。
+過去のモデルでもサイズの小さい方を選んでいました。</p>
+
+  <h3 id="ai-1">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code</li>
+    <li><strong>AIアシスタント</strong>: Gemini, Claude, ChatGPT</li>
+    <li><strong>MCP設定</strong>: いろいろ使っていますが <a href="https://awslabs.github.io/mcp/">AWS MCP Servers</a>には特にお世話になっています。</li>
+  </ul>
+
+  <p>AIアシスタントは最近はGeminiメインです。</p>
+
+  <h3 id="section-25">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome / Firefox</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+  </ul>
+
+  <p>ウィンドウマネージャーもクリップボードもブックマークを開く時もRaycastです。</p>
+
+  <h3 id="section-26">環境構築</h3>
+
+  <ul>
+    <li><strong>バージョン管理</strong>: asdf</li>
+    <li><strong>dotfiles</strong>: 個人リポジトリで管理しています</li>
+  </ul>
+
+  <h3 id="section-27">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: Keychron Q11 QMK （US ANSI 配列）</li>
+    <li><strong>トラックボール</strong>: Kensington Pro Fit Ergo TB450</li>
+    <li><strong>日本語入力</strong>: Google日本語入力</li>
+  </ul>
+
+  <p>Keychronの打鍵音が気に入ってます。
+トラックボールはデスクのどこに置くのがベストかいまだに解が見つかりません。</p>
+
+  <h3 id="cli-1">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, ghq</li>
+    <li><strong>Fuzzy Finder</strong>: fzf</li>
+  </ul>
+
+  <h3 id="section-28">その他</h3>
+
+  <ul>
+    <li>MacOS標準のウィジェットにGoogleカレンダーを同期してその日の予定をいつでも見られるようにしています</li>
+    <li>GitifyでGitHub上のメンションにできるだけ早く気づけるようにしています</li>
+  </ul>
+
+  <h3 id="section-29">一言</h3>
+
+  <p>長らくiTerm2を使っていますが別ターミナルに移行しようかなと考えています。
+あとNotion AIを使いこなせるようになりたいです。</p>
+
+</details>
+
+<hr />
+
+<h2 id="shibatch"><a href="https://x.com/hokatabi">@shibatch</a></h2>
+
+<p><strong>技術部技術基盤グループ リーダー</strong> / いつものんびりしています</p>
+
+<details>
+  <summary><a href="https://x.com/hokatabi">@shibatch</a>の環境詳細をみる</summary>
+
+  <h3 id="section-30">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / Apple M4 Pro / 48GB</li>
+    <li><strong>エディタ</strong>: iTerm2上のvi（ちょっとした修正用）、macOS標準のテキストエディット。 diffを視覚的に見たいときはCompareMerge2。</li>
+    <li><strong>ターミナル</strong>: iTerm2</li>
+    <li><strong>シェル</strong>: zsh</li>
+  </ul>
+
+  <p>あまり環境構築に凝りすぎず、OS標準の機能やシンプルなツールを組み合わせて使っています。</p>
+
+  <h3 id="ai-2">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code</li>
+    <li><strong>MCP設定</strong>: Amazon EKS</li>
+    <li><strong>対話型AI</strong>: Gemini</li>
+  </ul>
+
+  <p>あまり環境構築に凝りすぎず、OS標準の機能やシンプルなツールを組み合わせて使っています。自分でガッツリ書くことはあまりないので、ターミナル上でviを叩くかCCに任せるくらいがちょうどいいです。</p>
+
+  <h3 id="section-31">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome（たまにFirefox）</li>
+    <li><strong>拡張機能</strong>: OneLogin、1Password、Mark Tab Manager</li>
+  </ul>
+
+  <p>Chromeは重いと言われることもありますが、今のところ特に不自由は感じていません。</p>
+
+  <h3 id="section-32">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+    <li><strong>バージョン管理</strong>: mise</li>
+    <li><strong>dotfiles</strong>: ~/.dotfiles でGit管理</li>
+  </ul>
+
+  <p>miseちゃんと使いこなせている手応えあんまりないんですよね〜</p>
+
+  <h3 id="section-33">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: HHKB Professional HYBRID Type-S</li>
+    <li><strong>マウス</strong>: 職場: Logicool M750MGR、 家:Logicool MX MASTER 3s</li>
+    <li><strong>日本語入力</strong>: Google日本語入力</li>
+    <li><strong>ディスプレイ</strong>: 職場: Dell U2725QE(支給品) 家: LG 40WP95C-W</li>
+  </ul>
+
+  <p>出社前提ですが家と職場でそこまでハードウェアは変わらないようにしています！</p>
+
+  <h3 id="cli-2">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, git</li>
+    <li><strong>リポジトリ管理</strong>: ghq</li>
+  </ul>
+
+  <p>ghq + peco でリポジトリ間を移動しています。また、AWS EC2へSSMで接続することが多いため、接続を補助する自作のラッパースクリプトを活用しています。</p>
+
+  <h3 id="section-34">一言</h3>
+
+  <p>元々ツールに凝るほうではないのですが、とりわけ今はClaude Codeが快適に実行できたら困ることがなくなりましたね。</p>
+
+</details>
+
+<hr />
+
+<h2 id="n01e0"><a href="https://x.com/n01e0">@n01e0</a></h2>
+
+<p><strong>セキュリティ対策室 シニアエンジニア</strong> / 家ではLinux(<code>Pop!_OS</code>)を使っています。キーボードは統一しているもののModifierが根本的に違うのが微妙にしんどいです。</p>
+
+<details>
+  <summary><a href="https://x.com/n01e0">@n01e0</a>の開発環境をみる</summary>
+
+  <h3 id="section-35">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / Apple M3 Max / 64GB</li>
+    <li><strong>エディタ</strong>: Neovim, Vim</li>
+    <li><strong>ターミナル</strong>: WezTerm</li>
+    <li><strong>シェル</strong>: zsh</li>
+    <li><strong>ターミナルマルチプレクサ</strong>: tmux</li>
+  </ul>
+
+  <h3 id="ai-3">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code / Codex CLI</li>
+    <li><strong>AIアシスタント</strong>: FerriteChatter(自作)</li>
+  </ul>
+
+  <h3 id="section-36">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome / Chromium / FireFox / Arc</li>
+    <li><strong>フォント</strong>: Cica</li>
+  </ul>
+
+  <h3 id="section-37">環境構築・管理</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: brew</li>
+    <li><strong>バージョン管理ツール</strong>: asdf</li>
+    <li><strong>dotfiles</strong>: 人の手の温かみのあるGit管理された盆栽</li>
+  </ul>
+
+  <h3 id="section-38">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: Killer Whale DUO</li>
+    <li><strong>ポインティングデバイス</strong>: Killer Whale DUO</li>
+  </ul>
+
+  <h3 id="cli-3">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連ツール</strong>: Git, GitHub CLI, ghq, gwq</li>
+    <li><strong>リポジトリ管理</strong>: ghq</li>
+    <li><strong>Fuzzy Finder</strong>: fzf</li>
+    <li><strong>ディレクトリ移動</strong>: zoxide</li>
+  </ul>
+
+  <h3 id="section-39">その他</h3>
+
+  <ul>
+    <li><strong>よく使うプログラミング言語</strong>:
+      <ul>
+        <li><strong>Rust</strong></li>
+        <li><strong>Ruby</strong></li>
+        <li><strong>Python</strong></li>
+        <li><strong>Go</strong></li>
+        <li><strong>Node.js</strong></li>
+        <li><strong>PHP</strong></li>
+      </ul>
+    </li>
+    <li><strong>DBクライアント</strong>: Python</li>
+    <li><strong>コンテナ</strong>: Docker / Podman</li>
+  </ul>
+
+  <h3 id="section-40">一言</h3>
+
+  <p>miseに移行したい。chezmoiを使いたい。nixにしたい。などと言い続ける機械になっています。dotfilesって何か困らないと更新できなくないですか?</p>
+
+</details>
+
+<hr />
+
+<h2 id="takumakume"><a href="https://x.com/takumakume">@takumakume</a></h2>
+
+<p><strong>ロリポップ・ムームードメイン事業部CTO</strong> / できるだけデフォルトで使えるものを使ってます</p>
+
+<details>
+  <summary><a href="https://x.com/takumakume">@takumakume</a>の環境詳細をみる</summary>
+
+  <h3 id="section-41">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS</li>
+    <li><strong>エディタ</strong>: Cursor, VS Code</li>
+    <li><strong>ターミナル</strong>: iTerm</li>
+    <li><strong>シェル</strong>: zsh + oh-my-zsh</li>
+  </ul>
+
+  <h3 id="ai-4">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code</li>
+  </ul>
+
+  <h3 id="section-42">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Chrome</li>
+    <li><strong>ランチャー</strong>: Alfred</li>
+  </ul>
+
+  <h3 id="section-43">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+  </ul>
+
+  <h3 id="section-44">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: 会社ではMacbookのキーボード、家では Realforce for Mac (JIS)</li>
+    <li><strong>マウス</strong>: MX Master 3</li>
+    <li><strong>ヘッドホン</strong>: AirPods Pro, Bose QC35, AfterShokz AEROPEX</li>
+  </ul>
+
+  <h3 id="cli-4">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: ghq, tig</li>
+    <li><strong>Fuzzy Finder</strong>: peco</li>
+  </ul>
+
+  <h3 id="section-45">一言</h3>
+
+  <p>出先でもGeminiやChatGPTと会話をするために、iPad mini用のキーボードとペンシルを買いました。</p>
+
+  <p>クリップボードとシェルのヒストリーが私の記憶です。</p>
+
+</details>
+
+<hr />
+
+<h2 id="haruotsu"><a href="https://x.com/haruotsu_hy">@haruotsu</a></h2>
+
+<p><strong>ロリポップ・ムームードメイン事業部ムームードメイングループ</strong> / ポインティングスティックがある前提のキーボードホームポジション</p>
+
+<details>
+  <summary><a href="https://x.com/haruotsu_hy">@haruotsu</a>の環境詳細をみる</summary>
+
+  <h3 id="section-46">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / Apple M3 Max / 36 GB</li>
+    <li><strong>エディタ</strong>: Cursor, VS Code</li>
+    <li><strong>ターミナル</strong>: Hyper</li>
+    <li><strong>シェル</strong>: zsh + oh-my-zsh + Starship</li>
+    <li><strong>マルチプレクサ</strong>: tmux</li>
+  </ul>
+
+  <p>Starshipはカスタマイズして、Git状態・k8sコンテキスト・AWS/GCPプロファイルを表示しています。これで、contextやnamespaceで事故らない！\
+tmuxは Claude Code を複数ペインで並列実行するのに便利です。</p>
+
+  <h3 id="ai-5">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code</li>
+    <li><strong>AIアシスタント</strong>: Claude.app, ChatGPT.app</li>
+  </ul>
+
+  <p>最近はcommands や ruleを事業部全体に一気に配布したりもしています。\
+AIがコードを書く -&gt; AIがレビューをする -&gt; AIが修正をする -&gt; 最後に人間が見る というスタイルが、かなり整っています。</p>
+
+  <h3 id="section-47">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Chrome</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+  </ul>
+
+  <p>Raycastがないと生きていけない。画面分割やsnippet機能を多用しています。</p>
+
+  <h3 id="section-48">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew / mackup</li>
+    <li><strong>バージョン管理</strong>: rbenv / nodenv / pyenv</li>
+    <li><strong>dotfiles</strong>: 未整備なのでいつか…</li>
+  </ul>
+
+  <h3 id="section-49">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: <a href="https://www.century-direct.net/products/n0-17246">TeX Shura DIY Keyboard US配列</a></li>
+    <li><strong>ヘッドホン</strong>: <a href="https://jp.nothing.tech/products/headphone-1">Nothing Headphone (1)</a></li>
+  </ul>
+
+  <p>一度ThinkPadに触れたら、ポインティングスティックからは逃れられない・・・！</p>
+
+  <h3 id="cli-5">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, ghq</li>
+    <li><strong>Fuzzy Finder</strong>: peco</li>
+  </ul>
+
+  <p>ghq + peco でリポジトリ移動。<code>~/src</code> 配下に統一管理しています。<code>ctl+]</code>でリポジトリをガンガン移動しています。\
+昔はDesktop配下にcloneして、デスクトップパンパンになるみたいなことをしていました笑\
+git worktreeも多用しています。</p>
+
+  <h3 id="section-50">その他</h3>
+
+  <ul>
+    <li><strong>よく使う言語</strong>: Ruby, Go, PHP, Node.js, Python</li>
+    <li><strong>DBクライアント</strong>: DBeaver, Sequel Ace</li>
+    <li><strong>メモ</strong>: Issue, Obsidian</li>
+  </ul>
+
+  <h3 id="section-51">一言</h3>
+
+  <p>もう最近は、特定の言語しか触らない、みたいなことはなくなってきましたね〜
+AIにコンテキストを渡せること前提で、基本的にはコードベースでメモなども管理しています。</p>
+
+</details>
+
+<hr />
+
+<h2 id="atani"><a href="https://x.com/atani">@atani</a></h2>
+
+<p><strong>ロリポップ・ムームードメイン事業部 レンタルサーバーグループ</strong> / Claude Code + Zellij で快適ターミナル生活</p>
+
+<details>
+  <summary><a href="https://x.com/atani">@atani</a>の環境詳細をみる</summary>
+
+  <h3 id="section-52">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS (Darwin 24.6.0)</li>
+    <li><strong>エディタ</strong>: Neovim</li>
+    <li><strong>ターミナル</strong>: Kitty（最近乗り換えた）</li>
+    <li><strong>シェル</strong>: Zsh + Powerlevel10k</li>
+    <li><strong>マルチプレクサ</strong>: Zellij</li>
+  </ul>
+
+  <h3 id="ai-6">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code, Codex, Gemini</li>
+    <li><strong>AIアシスタント</strong>: Claude Code（vimMode有効、Japanese設定）</li>
+    <li><strong>MCP設定</strong>: mcp-mermaid (Claude Code), context7, serena (Codex)</li>
+  </ul>
+
+  <h3 id="section-53">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Chrome</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>フォント</strong>: Hack Nerd Font Mono (14pt), JetBrains Mono, Hiragino Sans</li>
+    <li><strong>ウィンドウマネージャー</strong>: Mac標準</li>
+  </ul>
+
+  <h3 id="section-54">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew (Brewfile管理)</li>
+    <li><strong>バージョン管理</strong>: mise (Node), rbenv (Ruby)</li>
+    <li><strong>dotfiles</strong>: chezmoi</li>
+  </ul>
+
+  <p>chezmoiでdotfilesを管理しています。Brewfileも含めて、新しいマシンでも <code>chezmoi init &amp;&amp; chezmoi apply</code> で環境構築完了！</p>
+
+  <h3 id="section-55">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: <a href="https://www.logicool.co.jp/ja-jp/shop/p/mx-keys-mini">MX Keys Mini</a></li>
+    <li><strong>ポインティングデバイス</strong>: <a href="https://www.logicool.co.jp/ja-jp/shop/p/mx-master-3s">MX Master 3S</a></li>
+    <li><strong>日本語入力</strong>: Google日本語入力</li>
+  </ul>
+
+  <h3 id="cli-6">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, ghq, lazygit</li>
+    <li><strong>リポジトリ管理</strong>: ghq (<code>~/.src</code>配下)</li>
+    <li><strong>Fuzzy Finder</strong>: fzf (Ctrl+R履歴, Ctrl+Tリポジトリ)</li>
+    <li><strong>ディレクトリ移動</strong>: zoxide (z)</li>
+    <li><strong>環境変数管理</strong>: direnv</li>
+  </ul>
+
+  <h3 id="section-56">その他</h3>
+
+  <ul>
+    <li><strong>よく使う言語</strong>: Ruby (ruby-lsp), PHP</li>
+    <li><strong>DBクライアント</strong>: DBeaver</li>
+    <li><strong>メモ</strong>: Obsidian</li>
+    <li><strong>TODO管理</strong>: Notion</li>
+  </ul>
+
+  <h3 id="section-57">一言</h3>
+
+  <p>ターミナルで完結する開発スタイルが好きです。iTerm2 -&gt; Alacritty -&gt; WezTerm から Kitty に乗り換えて楽しんでいます。</p>
+
+</details>
+
+<hr />
+
+<h2 id="shunhamm"><a href="https://github.com/shunhamm">@shunhamm</a></h2>
+
+<p><strong>ロリポップ・ムームードメイン事業部</strong> / 2026年はAIオーケストレーターエンジニアです</p>
+
+<details>
+  <summary><a href="https://github.com/shunhamm">@shunhamm</a>の環境詳細をみる</summary>
+
+  <h3 id="section-58">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS 15.7 (Sequoia) / MacBook Pro M4 Pro / 48GB</li>
+    <li><strong>エディタ</strong>: Cursor</li>
+    <li><strong>ターミナル</strong>: iTerm2</li>
+    <li><strong>シェル</strong>: zsh 5.9 + Starship</li>
+  </ul>
+
+  <h3 id="ai-7">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code 2.1.12</li>
+    <li><strong>AIアシスタント</strong>: Claude.app</li>
+    <li><strong>Claude Code設定</strong>: Hooksで作業完了・入力待ちをmacOS通知で表示。alwaysThinkingEnabled有効</li>
+  </ul>
+
+  <p>Claude Codeが作業完了や入力待ちになったときにmacOSの通知で知らせてくれるようにHooksを設定しています。並列でタスクを回しているときに便利です。</p>
+
+  <h3 id="section-59">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome（メイン）、Safari</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>フォント</strong>: iA Writer Mono</li>
+  </ul>
+
+  <h3 id="section-60">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew 5.0.11</li>
+    <li><strong>バージョン管理</strong>: rbenv 1.3.2、nvm</li>
+  </ul>
+
+  <h3 id="section-61">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: <a href="https://www.lofree.co/products/lofree-flow-84-keys-wireless-mechanical-keyboard">Lofree Flow2</a></li>
+    <li><strong>日本語入力</strong>: macOS標準</li>
+  </ul>
+
+  <p>Lofree Flow2は打鍵感が軽くて静かなので気に入っています。インテリアとしても優秀なので白デスク環境の方にオススメです！</p>
+
+  <h3 id="cli-7">CLIツール</h3>
+
+  <ul>
+    <li><strong>Fuzzy Finder</strong>: peco 0.5.11</li>
+    <li><strong>インフラ</strong>: Terraform、jq</li>
+    <li><strong>SSH接続</strong>: peco + Terraform state連携</li>
+  </ul>
+
+  <p>TerraformのstateファイルからjqでホストIP・名前を抽出し、pecoで絞り込んでSSH接続できる自作functionを使っています。サーバーが多いと手打ちは辛いので重宝しています。</p>
+
+  <h3 id="section-62">コンテナ</h3>
+
+  <ul>
+    <li>Docker 29.0.2（Docker Desktop）</li>
+  </ul>
+
+  <h3 id="section-63">その他</h3>
+
+  <ul>
+    <li><strong>よく使う言語</strong>: Ruby、PHP</li>
+    <li><strong>メモ</strong>: Cursorで適当なテキストファイルを作成</li>
+  </ul>
+
+  <h3 id="section-64">一言</h3>
+
+  <p>2026年は「AIオーケストレーター」として開発生産性向上と専門領域の拡大をやっていきます！</p>
+
+</details>
+
+<hr />
+
+<h2 id="yammerjp"><a href="https://x.com/yammerjp">@yammerjp</a></h2>
+
+<p><strong>EC事業部 事業部CTO</strong> / yadmとAstroNvimをご紹介します。</p>
+
+<details>
+  <summary><a href="https://x.com/yammerjp">@yammerjp</a>の環境詳細をみる</summary>
+
+  <p>さいきん手に馴染んでいるyadmとAstroNvimをご紹介します。</p>
+
+  <h3 id="yadm">yadm</h3>
+
+  <p>dotfilesの管理に<a href="https://yadm.io/">yadm</a>を使っています。個人の公開できるリポジトリ、個人の非公開リポジトリ、会社の公開リポジトリの3つにdotfilesを置いていて、自宅のマシンでは前者2つ、会社のマシンでは3つとの同期をyadmで行っています。
+シェルのaliasを貼ることで、どこにいてもdotfilesリポジトリを更新できるようにしているので、2026年はもっと頻繁にメンテナンスしていきたい所存です。</p>
+
+  <p><a href="https://www.chezmoi.io/">chezmoi</a>を使われている方を、さいきんX等でよくみかけるのですが、私の手にはyadmの方が馴染みました。
+yadmは実質的にGitのラッパーになっていて、いくつかのサブコマンドの名前は完全にGitと一致しています。
+Gitリポジトリには配置したいがローカルに配置したくないファイルがあるときはsparse-checkoutを使う必要があるなど、少し手の込んだ設定をする手間もありますが、振る舞いを隠さないシンプルさが気に入っています。</p>
+
+  <h3 id="astronvim">AstroNvim</h3>
+
+  <p>Claude Codeを使うようになってからは、会社のマシンでもWebブラウザかターミナルの中だけで生活するようになりました。
+メインのエディタもそれに合わせてNeovimにしたのですが、過去に使っていた設定ファイルはあまりメンテナンスできておらず、<a href="https://astronvim.com/">AstroNvim</a> を試してみて便利だったのですっかりそのまま使っています。</p>
+
+  <p>インストールが大変楽なのがよいです。
+また、どんなキーバインドで何ができるかを描画してくれるので、身体をAstroNvimにちょっとずつ馴染ませることができて助かっています。
+これをベースに改造していく気持ちを持っていたのですが、すっかりほぼそのままで半年以上開発しています。</p>
+
+  <p>そのほか、ひろく使われているツールが多いのですが、良い機会なので個人のブログ <a href="https://awkblog.net/@yammerjp/posts/36">開発環境現状確認2026 - awkblog</a> に書き出してみました。</p>
+
+</details>
+
+<hr />
+
+<h2 id="furudono2"><a href="https://x.com/furudono2">@furudono2</a></h2>
+
+<p><strong>EC事業部 ECグループ プロダクトチーム</strong> / イメチェンしたら赤ちゃんくらい構ってもらえて楽しいです</p>
+
+<details>
+  <summary><a href="https://x.com/furudono2">@furudono2</a>の環境詳細をみる</summary>
+
+  <p>個人ブログで公開してしまったので、そちらをご覧ください。</p>
+
+  <p><a href="https://dev.nfurudono.com/posts/setup2026/">開発環境2026 - dev.nfurudono.com</a></p>
+
+  <h3 id="section-65">去年との差分</h3>
+
+  <p>年明けにあった異動に伴いEUC-JPなコードを開く機会が出てきました。これまではZedエディタを使っていたのですが、文字コードがサポートされていなかったためNeovimの設定を書いて移行しました。AIが全てを教えてくれる、設定してくれるのでスムーズに移行できました。欲しい機能をなんでも詰め込む気概を持って設定を盛る今日この頃です。今日は <a href="https://github.com/s-show/extend_word_motion.nvim">https://github.com/s-show/extend_word_motion.nvim</a> を導入して、日本語の単語境界の判定をいい感じにしました。</p>
+
+  <p>また、会社の席がフリーアドレスから固定席になったことに伴いハードウェアを会社に置けるようになりました。会社支給のモニタに加え、同じサイズ（4K 27インチ）のモニタを縦にして合計二枚を並べています。モニタでは大体テキストをみているし、テキストをみるときには小さい横幅と長い縦幅が欲しいため快適です。そのほかにはパームレストをいただいて人生で初めて使っています。それまではMacBookのキーボードが一番打ちやすいと思っていたのですが、パームレストがあればなんでもいいと思えるようになりました。問題は段差の有無だったようです。</p>
+
+  <h3 id="section-66">今年の抱負</h3>
+
+  <p>今年はAIエージェントの振る舞いを自分にとって便利なように調整しようと思います。</p>
+
+</details>
+
+<hr />
+
+<h2 id="doskoi64"><a href="https://x.com/doskoi64">@doskoi64</a></h2>
+
+<p><strong>EC事業部 ECグループ 事業開発チーム</strong> / AIを前提とした開発ワークフローに移行しています。<a href="https://zenn.dev/pepabo/articles/97694394181e4c">こちらのzennの記事</a>にもっと詳しく書いています。</p>
+
+<details>
+  <summary><a href="https://x.com/doskoi64">@doskoi64</a>の環境詳細をみる</summary>
+
+  <h3 id="section-67">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS</li>
+    <li><strong>エディタ</strong>: Visual Studio Code（GitLens利用）、Neovim</li>
+    <li><strong>ターミナル</strong>: Ghostty</li>
+    <li><strong>シェル</strong>: zsh + Starship</li>
+  </ul>
+
+  <p>Ghosttyは速度が特徴で気に入っています。本当はポケモンを背景にしたいのですが苦戦中。
+基本的には<code>cmd+D</code>や<code>cmd+]</code>などでpaneを分割して移動したり、<code>cmd+t</code>でタブ分割したりしています。<code>cmd+w</code>で役割を終えた箇所に関しては閉じれます。
+tmuxやZellijを試したこともあるのですが、人間がデフォルトの動作に慣れる方が速いし楽だなという結論になりました。
+人間の目でDeep code readingをしたいなって時はエディタを使って読んでいます。</p>
+
+  <h3 id="ai-8">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code（Planモード活用）</li>
+    <li><strong>AIアシスタント</strong>: Claude Desktop、ChatGPT Plus、Gemini Deep Research、NotebookLM</li>
+    <li><strong>契約</strong>: Claude Max</li>
+  </ul>
+
+  <p>方針を定める場（Claude Desktop）と実装する場（Claude Code）を分離したワークフローを構築しています。
+開発のフローを意識するためにも、ここは分けることをオススメしています。</p>
+
+  <h3 id="section-68">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome（メイン）、Brave（プライベート）、Dia Browser</li>
+    <li><strong>ブラウザ拡張</strong>: Vimium</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>パスワード管理</strong>: 1Password</li>
+  </ul>
+
+  <p>Chrome拡張がVibe Codingで簡単に作れるので、それが使える環境を好んでいます。
+特筆すべきは、Vimiumが特に便利です。これ、とりあえず入れて試してみて欲しいです。
+少しずつキーボード上だけでネットを歩めるようになります。</p>
+
+  <p>あと、論文を読む時やドキュメントを読む時ににDia Browserが便利です。</p>
+
+  <h3 id="section-69">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+  </ul>
+
+  <h3 id="section-70">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: Apple Magic Keyboard</li>
+    <li><strong>ポインティングデバイス</strong>: Apple Magic Mouse</li>
+    <li><strong>イヤホン・マイク</strong>: <a href="https://jp.shokz.com/products/opencomm2uc-2025upgrade">Shokz OpenComm2</a>（骨伝導）</li>
+  </ul>
+
+  <p>最近は、脳内で考えていることを音声で発生して、その内容を文字起こしにして、AIにまとめさせて分析させるということをしています。
+骨伝導なので、他人から話しかけやすい状態を作りつつも、Claude Codeなどの通知音も聞き逃さずにいれるのでこだわっています。</p>
+
+  <h3 id="cli-8">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: <a href="https://github.com/x-motemen/ghq">ghq</a>、<a href="https://github.com/n3xem/gh-otui">gh-otui</a>、<a href="https://github.com/k1LoW/git-wt">git-wt</a></li>
+  </ul>
+
+  <p>これ、どれもめちゃくちゃ便利なので入れてみてください。軽く説明してみます。
+AIを用いた開発において、<a href="https://github.com/k1LoW/git-wt">git-wt</a>は使い勝手が良く便利。
+会社などのorgに複数リポジトリがあるときは<a href="https://github.com/n3xem/gh-otui">gh-otui</a>が便利。
+<a href="https://github.com/x-motemen/ghq">ghq</a>はいわずもがなです。</p>
+
+  <h3 id="section-71">その他</h3>
+
+  <ul>
+    <li><strong>メモ</strong>: GitHub、iPhoneメモ、紙</li>
+    <li><strong>日記</strong>: 同僚開発のカスタムアプリ</li>
+    <li><strong>ユーティリティ</strong>: Klack（キーボード音）、Shottr（スクリーンショット編集）</li>
+  </ul>
+
+  <p><a href="https://apps.apple.com/jp/app/klack/id6446206067?mt=12">Klack</a>のタイピング音を前述の骨伝導イヤホンで聴いているとめちゃくちゃ集中できます。
+試してみて欲しいです。</p>
+
+  <h3 id="section-72">一言</h3>
+
+  <p>AIによってソフトウェア側の進化が加速され、便利ツールの台頭や進化も目まぐるしく起きています。
+そんな中、「いったん受け入れて、とりあえず試してみる」こと、「その上で自分なりに判断する」こと、「良かったら環境を変えてみる」ことが重要だと考えています。
+ということで、2026年はいろいろ試してみて、たくさん変えてみるようにします！
+みなさんの環境も教えてください！</p>
+
+</details>
+
+<h2 id="kurotaky"><a href="https://x.com/kurotaky">@kurotaky</a></h2>
+
+<p><strong>SUZURI・minne事業部 事業部CTO</strong> / Claude Code と開発するのが日課</p>
+
+<details>
+  <summary><a href="https://x.com/kurotaky">@kurotaky</a>の環境詳細をみる</summary>
+
+  <h3 id="section-73">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / Apple M3 Max / 64GB</li>
+    <li><strong>エディタ</strong>: Neovim（メイン）, Cursor（サブ）</li>
+    <li><strong>ターミナル</strong>: WezTerm（Nordテーマ）</li>
+    <li><strong>シェル</strong>: zsh + Starship</li>
+  </ul>
+
+  <p>ターミナルはWezTermを使っています。Nordカラースキームで統一。フォントはHack Nerd Fontを使用。</p>
+
+  <h3 id="ai-9">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code（Opusモデル使用）</li>
+    <li><strong>MCP設定</strong>: context7（ライブラリドキュメント参照用）</li>
+    <li><strong>hooks</strong>: terminal-notifierで応答待ち時に通知</li>
+  </ul>
+
+  <p>Claude Codeを使って日々の開発を行っています。hooksでterminal-notifierを設定しているので、待機状態になったら通知が飛んできます。</p>
+
+  <h3 id="section-74">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Google Chrome（メイン）, Arc, Firefox</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>フォント</strong>: Hack Nerd Font</li>
+  </ul>
+
+  <h3 id="section-75">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+    <li><strong>バージョン管理</strong>: rbenv, nodenv, pyenv</li>
+    <li><strong>dotfiles</strong>: ~/.dotfiles でGit管理</li>
+  </ul>
+
+  <h3 id="section-76">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーリマッパー</strong>: Karabiner-Elements</li>
+    <li><strong>日本語入力</strong>: Google日本語入力</li>
+  </ul>
+
+  <h3 id="cli-9">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, git</li>
+    <li><strong>リポジトリ管理</strong>: ghq（<code>~/ghq</code>配下に75リポジトリ）</li>
+    <li><strong>Fuzzy Finder</strong>: fzf</li>
+    <li><strong>その他</strong>: colordiff, starship</li>
+  </ul>
+
+  <p>ghq + fzf でリポジトリ移動。<code>ghl</code>というエイリアスで <code>ghq list -p | fzf</code> を実行してサクッと移動しています。</p>
+
+  <h3 id="section-77">コンテナ</h3>
+
+  <ul>
+    <li>Docker</li>
+  </ul>
+
+  <h3 id="section-78">その他</h3>
+
+  <ul>
+    <li><strong>よく使う言語</strong>: Ruby, Node.js, Go, Python</li>
+    <li><strong>コミュニケーション</strong>: Slack, Discord, Zoom</li>
+  </ul>
+
+  <h3 id="section-79">一言</h3>
+
+  <p>Claude Codeでの開発が快適すぎて、エディタを開く時間がどんどん減っています。</p>
+
+</details>
+
+<hr />
+
+<h2 id="yoshikouki"><a href="https://x.com/yoshikouki">@yoshikouki</a></h2>
+
+<p><strong>事業開発部 エンジニアリングリード</strong> / 2026年なので Neovim に入門しました
+詳しい情報を <a href="https://note.com/yoshikouki/n/n34d5df01c248">note にも投稿しています</a></p>
+
+<details>
+  <summary><a href="https://x.com/yoshikouki_">@yoshikouki_</a>の環境詳細をみる</summary>
+
+  <h3 id="section-80">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS 15.6.1 (Sequoia) / Apple Silicon (ARM64)</li>
+    <li><strong>エディタ</strong>: Neovim（入門）, VSCode</li>
+    <li><strong>ターミナル</strong>: Warp（メイン）, Ghostty（サブ）</li>
+    <li><strong>シェル</strong>: fish</li>
+    <li><strong>マルチプレクサ</strong>: tmux（入門中）</li>
+  </ul>
+
+  <p>2026年になってから Neovim に入門しました。LazyVimから始めて少しずつカスタマイズしています。ターミナルのWarpは、入力欄がテキストエディタのように操作できるところが気に入って中々抜けられません。</p>
+
+  <h3 id="ai-10">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code（メイン）, Codex CLI（サブ）</li>
+    <li><strong>AIアシスタント</strong>: Claude Code プラグイン・MCP（github, code-review, context7, feature-dev, hookify など）</li>
+  </ul>
+
+  <p>基本的に各タスクの前にPlanモードで計画を練ってもらっています。React Inkなどの尖った自作スキルも作成。</p>
+
+  <h3 id="section-81">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Arc（メイン）, Google Chrome, Chrome Canary</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>フォント</strong>: Hack Nerd Font, Symbols Only Nerd Font</li>
+  </ul>
+
+  <p>Raycastでウィンドウマネージャー（以前はRectangle）も兼ねています。</p>
+
+  <h3 id="section-82">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew, lazy.nvim</li>
+    <li><strong>バージョン管理</strong>: asdf（Node.js, Bun, Deno, Python, Ruby, Rust, Go, Terraform等）</li>
+    <li><strong>dotfiles</strong>: https://github.com/yoshikouki/dotfiles</li>
+  </ul>
+
+  <p>asdfで多数の言語・ツールを一元管理しています。</p>
+
+  <h3 id="section-83">ハードウェア</h3>
+
+  <ul>
+    <li>HHKB Studio: いいですね。通勤で気軽に持っていける重さではないことが残念</li>
+    <li><strong>キーリマッパー</strong>: Karabiner-Elements（hjkl移動に慣れるのに役立った）</li>
+    <li><strong>日本語入力</strong>: azooKey</li>
+  </ul>
+
+  <p>azooKeyのライブ変換精度がすごくいい。iPhoneで感動してmacOSにも導入しました。</p>
+
+  <h3 id="cli-10">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: GitHub Desktop, lazygit, git-delta, GitHub CLI (gh)</li>
+    <li><strong>リポジトリ管理</strong>: ghq</li>
+    <li><strong>Fuzzy Finder</strong>: fzf</li>
+    <li><strong>ディレクトリ移動</strong>: zoxide</li>
+    <li><strong>その他</strong>: bat, ripgrep (rg), fd, yazi</li>
+  </ul>
+
+  <p>lazygitをNeovimと連携して使用。git-deltaをdiff viewerとして活用しています。</p>
+
+  <h3 id="section-84">その他</h3>
+
+  <ul>
+    <li><strong>DBクライアント</strong>: TablePlus</li>
+    <li><strong>メモ</strong>: Notion, Notion Calendar, Notion Mail</li>
+    <li><strong>TODO管理</strong>: macOS純正リマインダー（Raycastで起動）</li>
+    <li><strong>コンテナ</strong>: colima</li>
+  </ul>
+
+  <h3 id="section-85">一言</h3>
+
+  <p>Neovim がある程度のものになったら tmux にいきます</p>
+
+</details>
+
+<hr />
+
+<h2 id="tetsuwo0717"><a href="https://x.com/tetsuwo0717">@tetsuwo0717</a></h2>
+
+<p><strong>事業開発部</strong> / AIが全部やります</p>
+
+<details>
+  <summary><a href="https://x.com/tetsuwo0717">@tetsuwo0717</a>の環境詳細をみる</summary>
+
+  <h3 id="section-86">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS 26.2 / Apple M3 Pro / 36 GB</li>
+    <li><strong>エディタ</strong>: Neovim（メイン）, Cursor（サブ）</li>
+    <li><strong>ターミナル</strong>: WezTerm</li>
+    <li><strong>シェル</strong>: zsh + oh-my-zsh + Powerlevel10k</li>
+    <li><strong>マルチプレクサ</strong>: WezTerm内蔵</li>
+  </ul>
+
+  <p>WezTermはNordカラースキームで統一。フォントはFirge35Nerd Console。</p>
+
+  <h3 id="ai-11">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code, Codex</li>
+  </ul>
+
+  <h3 id="section-87">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Chrome, Safari（動作確認とか）</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>ウィンドウマネージャー</strong>: Rectangle</li>
+    <li><strong>フォント</strong>: Firge35Nerd Console</li>
+  </ul>
+
+  <h3 id="section-88">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+    <li><strong>バージョン管理</strong>: rbenv, pyenv, nvm, asdf</li>
+  </ul>
+
+  <h3 id="section-89">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: <a href="https://nuphy.com/products/air75-v2">NuPhy Air75 V2</a></li>
+    <li><strong>キーリマッパー</strong>: Karabiner-Elements</li>
+  </ul>
+
+  <p>デザインが好きで選びました。</p>
+
+  <h3 id="cli-11">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh, ghq</li>
+    <li><strong>リポジトリ管理</strong>: ghq (<code>~/src</code>配下)</li>
+    <li><strong>Fuzzy Finder</strong>: fzf</li>
+    <li><strong>ディレクトリ移動</strong>: zoxide</li>
+    <li><strong>その他</strong>: bat, eza</li>
+  </ul>
+
+  <h3 id="section-90">その他</h3>
+
+  <ul>
+    <li><strong>DBクライアント</strong>: DBeaver</li>
+    <li><strong>メモ</strong>: Obsidian</li>
+    <li><strong>コンテナ</strong>: colima</li>
+  </ul>
+
+  <h3 id="section-91">一言</h3>
+
+  <p>ターミナルでClaude Codeをn並列して使っています。ただディレクトリのtreeが常に見えている方が心理的に安定するので、Neovimのnvim-tree拡張で心理的安全性を確保しています。</p>
+
+</details>
+
+<h2 id="ugo"><a href="https://x.com/yukyu30">@ugo</a></h2>
+
+<p><strong>メタバース推進室 エンジニアリングリード</strong> / MacをメインにつかいたまにWindowsを使ったり。今回はMacを載せます。</p>
+
+<details>
+  <summary><a href="https://x.com/yukyu30">@ugo</a>の環境詳細をみる</summary>
+
+  <h3 id="section-92">基本環境</h3>
+
+  <ul>
+    <li><strong>OS</strong>: macOS / Apple M3 Pro / 36 GB</li>
+    <li><strong>エディタ</strong>: Cursor</li>
+    <li><strong>ターミナル</strong>: Ghostty</li>
+    <li><strong>シェル</strong>: zsh</li>
+    <li><strong>マルチプレクサ</strong>: Zellij(最近使い始めた)</li>
+  </ul>
+
+  <h3 id="ai-12">AIツール</h3>
+
+  <ul>
+    <li><strong>コーディングエージェント</strong>: Claude Code</li>
+    <li><strong>AIアシスタント</strong>: Claude, ChatGPT, Gemini</li>
+  </ul>
+
+  <h3 id="section-93">開発ツール</h3>
+
+  <ul>
+    <li><strong>ブラウザ</strong>: Arc, たまに使うWindowsはGoogle Chrome</li>
+    <li><strong>ランチャー</strong>: Raycast</li>
+    <li><strong>ウィンドマネージャー</strong>: <a href="https://github.com/MrKai77/Loop">Loop</a></li>
+  </ul>
+
+  <p>ブラウザは会社MacはArc, 社用WindowsはChrome、私用MacはDia、私用WindowsはCommetと全部で異なるブラウザを使ってます。</p>
+
+  <h3 id="section-94">環境構築</h3>
+
+  <ul>
+    <li><strong>パッケージマネージャ</strong>: Homebrew</li>
+    <li><strong>バージョン管理</strong>: rbenv, nodenv</li>
+    <li><strong>dotfiles</strong>: ~/.zshrc</li>
+    <li><strong>コンテナ</strong>: OrbStack</li>
+  </ul>
+
+  <h3 id="section-95">ハードウェア</h3>
+
+  <ul>
+    <li><strong>キーボード</strong>: Lily58</li>
+    <li><strong>ポインティングデバイス</strong>: MX Master 3</li>
+  </ul>
+
+  <h3 id="cli-12">CLIツール</h3>
+
+  <ul>
+    <li><strong>Git関連</strong>: gh</li>
+    <li><strong>リポジトリ管理</strong>: ghq（<code>~/src</code>以下)</li>
+    <li><strong>Fuzzy Finder</strong>: peco</li>
+  </ul>
+
+  <h3 id="section-96">その他</h3>
+
+  <ul>
+    <li><strong>スクリーンショット</strong>: Shottr</li>
+    <li><strong>ブックマーク</strong>: mymind</li>
+    <li><strong>よく使う言語</strong>: Ruby, Node.js</li>
+  </ul>
+
+  <h3 id="section-97">一言</h3>
+
+  <p>GUI派だったのですが、Claude CodeでCLIを使うタイミングが多くなり、ターミナル環境をいい感じにしたいと思ってます！</p>
+
+</details>
+
+<hr />
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>今回は17名のペパボパートナーの開発環境をご紹介しました！</p>
+
+<p>2026年はAIエージェントとの協業が当たり前になった年でした。コードを書くという行為そのものが変化しており、AI前提での開発のためのツールや環境をみなさん整えている印象です。</p>
+
+<p>また、ターミナル環境への回帰が進んでいること、挑戦しようとしている人が多くいるのも印象的でした。</p>
+
+<p>2027年にはきっとまたそれぞれの環境が大きく変わっているはず。
+その時また、開発環境を語り合えることが楽しみです！</p>
+
+<p>皆さんの環境はいかがですか？ぜひ感想とともにSNSで教えてください！</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/graduate?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="/images/banner_feature_graduate.png" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2026/01/23/development-environment-2026/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+        
+    <section class="related-articles">
+      <h3 class="related-articles__title">関連記事</h3>
+      <div class="related-articles__list">
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/15/senior-engineer-haruotsu/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/04/15/senior-engineer-haruotsu/images/senior-engineer-haruotsu-thumbnail.png" alt="シニアエンジニア所信表明 — レバレッジと横断性で事業やサービスが向かうべき先に未来を作る" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-15
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/15/senior-engineer-haruotsu/" class="related-articles__title-link">シニアエンジニア所信表明 — レバレッジと横断性で事業やサービスが向かうべき先に未来を作る</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/エンジニア/" class="related-articles__tag-link">エンジニア</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/13/engineer-entry-article/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/04/13/engineer-entry-article/./images/DSC2140.jpg" alt="「技術で事業の成長曲線を変える」── 事業成長を軸に働くエンジニアがGMOペパボを選んだ理由" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-13
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/13/engineer-entry-article/" class="related-articles__title-link">「技術で事業の成長曲線を変える」── 事業成長を軸に働くエンジニアがGMOペパボを選んだ理由</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/エンジニア/" class="related-articles__tag-link">エンジニア</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/10/senior-furudono/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="シニアエンジニア所信表明 - 不変条件を見極めて、システムを組み替える" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-10
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/10/senior-furudono/" class="related-articles__title-link">シニアエンジニア所信表明 - 不変条件を見極めて、システムを組み替える</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/エンジニア/" class="related-articles__tag-link">エンジニア</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/01/senior-principal-engineer-and-coherently-fittable-system/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="シニア・プリンシパルエンジニア所信表明 - なめらかなシステムの実現に向けて" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-01
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/01/senior-principal-engineer-and-coherently-fittable-system/" class="related-articles__title-link">シニア・プリンシパルエンジニア所信表明 - なめらかなシステムの実現に向けて</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/エンジニア/" class="related-articles__tag-link">エンジニア</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+      </div>
+    </section>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/b9bbd70bc64eb74de63dfeba17fe8473?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kentaro/">kentaro</a>
+          </p>
+          <p class="article__author-description">
+            M4 Max 64GBでClaude Code並列実行
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/kentaro" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kentaro" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/9954ebf9f8dd39da739d008ce2f6bc0c?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kenchan/">kenchan</a>
+          </p>
+          <p class="article__author-description">
+            今年の目標はスト6ハイマス、いやグラマスで！
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/kenchan" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kenchan" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/d7df6557c6b98f29ac546911e2b1a4d4?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/tnmt/">tnmt</a>
+          </p>
+          <p class="article__author-description">
+            最近は少し離れたけどNixもいいぞ
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/tnmt" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/tnmt" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/0840b50e2827fae3cbb7247cc1b09ac1?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/ressy/">ressy</a>
+          </p>
+          <p class="article__author-description">
+            Claude CodeとGeminiに助けられる日々
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/rsym1290" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/rsym" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/01c116d5b83f22c89d17a01dffce4919?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/shibatch/">shibatch</a>
+          </p>
+          <p class="article__author-description">
+            いつも次の旅行先を考えてる
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/hokatabi" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/bc2b74581660589ac5c0d4366b8fe9d8?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/n01e0/">n01e0</a>
+          </p>
+          <p class="article__author-description">
+            今年も良いLinuxデスクトップ元年にしていきたいですね
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/n01e0" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/n01e0" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/22522e2bc35255ab75308c399ff782f6?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/takumakume/">takumakume</a>
+          </p>
+          <p class="article__author-description">
+            便利になっても生産性はあまり変わらないので自動化をやりきる年にします
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/takumakume" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/a21d2a799dfb071b68abb03133e17506?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/haruotsu/">haruotsu</a>
+          </p>
+          <p class="article__author-description">
+            レバレッジの効く形で、生産性を向上させるための仕組みづくりをしていきたい
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/haruotsu_hy" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/haruotsu" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/8d0de51af0774898858969de9d919779?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/atani/">atani</a>
+          </p>
+          <p class="article__author-description">
+            Claude Code と ペアプロ する毎日
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/atani" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/atani" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/ef404944e5dacc23981a30bf85000174?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/shunhamm/">shunhamm</a>
+          </p>
+          <p class="article__author-description">
+            2026年はAIオーケストレーターエンジニアです
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://github.com/shunhamm" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/8c653f1257636312a8e88612ccb27718?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E3%82%84%E3%82%93%E3%81%BE%E3%83%BC/">やんまー</a>
+          </p>
+          <p class="article__author-description">
+            今年もawkの年
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/yammerjp" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/yammerjp" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/530d78e0718b76ee9bf6b6a3c90f0720?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/donokun/">donokun</a>
+          </p>
+          <p class="article__author-description">
+            イメチェンしました
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/furudono2" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/naoyafurudono" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/0aa9a5767b7e010417bb0b7a5af220d4?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E3%81%A9%E3%81%99%E3%81%93%E3%81%84/">どすこい</a>
+          </p>
+          <p class="article__author-description">
+            ウエストが増えていないかの自動テストとしてキツめのジーンズを買ったのですが、2日履いたら、伸びてPassするようになっちゃいました。Flakyテストだけは許せないです。
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/doskoi64" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/t-daisuke" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/0b2426ff15397042caa863cc7965c091?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/kurotaky/">kurotaky</a>
+          </p>
+          <p class="article__author-description">
+            Claude Code と開発するのが日課
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/kurotaky" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kurotaky" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/1353948fa85cb2de002b0d2c9456e8ef?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/yoshikouki/">yoshikouki</a>
+          </p>
+          <p class="article__author-description">
+            2026年なので Neovim に入門しました
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/yoshikouki_" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/yoshikouki" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/df3bc34ff997db036831472f16b83dec?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E3%81%A6%E3%81%A4%E3%82%92/">てつを</a>
+          </p>
+          <p class="article__author-description">
+            AIが全部やります
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/tetsuwo0717" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/te2wow" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/25d25adfd6d6516d8664e2d37a7c9c6a?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/%E3%81%86%E3%81%94/">うご</a>
+          </p>
+          <p class="article__author-description">
+            個人的ターミナル元年
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/yukyu30" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/yukyu30" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-02
+            </span>
+            <span class="sidebar__list-title">
+              AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              igaigaさんによるDBモデリングワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/focus-cost-schema/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/minorun-rag-agent-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-28
+            </span>
+            <span class="sidebar__list-title">
+              AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/20/tdd-workshop-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-20
+            </span>
+            <span class="sidebar__list-title">
+              t_wadaさんによる2026年度版TDDワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/12/tech-survey-2026-first-half/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-12
+            </span>
+            <span class="sidebar__list-title">
+              GMOペパボの開発体験や技術スタック 2026上期
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (93)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (82)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (58)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (47)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (44)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (40)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ai/" class="sidebar__tags-link">AI (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (26)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (24)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (23)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (20)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/go/" class="sidebar__tags-link">Go (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/tdd/" class="sidebar__tags-link">tdd (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/aws/" class="sidebar__tags-link">aws (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/dbt/" class="sidebar__tags-link">dbt (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/vibe-coding/" class="sidebar__tags-link">Vibe Coding (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ロリポップ-for-gamers/" class="sidebar__tags-link">ロリポップ! for Gamers (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/alive-project/" class="sidebar__tags-link">Alive Project (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ec/" class="sidebar__tags-link">EC (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/キャリア/" class="sidebar__tags-link">キャリア (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/architecture/" class="sidebar__tags-link">architecture (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/nuxt/" class="sidebar__tags-link">Nuxt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/github/" class="sidebar__tags-link">github (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/unleash/" class="sidebar__tags-link">Unleash (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/swift/" class="sidebar__tags-link">Swift (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/sql/" class="sidebar__tags-link">SQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ユニットテスト/" class="sidebar__tags-link">ユニットテスト (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/バージョンアップ/" class="sidebar__tags-link">バージョンアップ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/競技プログラミング/" class="sidebar__tags-link">競技プログラミング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/業務効率化/" class="sidebar__tags-link">業務効率化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/kotlin/" class="sidebar__tags-link">Kotlin (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/コミュニティ/" class="sidebar__tags-link">コミュニティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/カンファレンス/" class="sidebar__tags-link">カンファレンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/kaigi-on-rails/" class="sidebar__tags-link">Kaigi on Rails (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/colorme/" class="sidebar__tags-link">colorme (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/wordpress/" class="sidebar__tags-link">wordpress (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/claude-code/" class="sidebar__tags-link">claude code (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/space/" class="sidebar__tags-link">space (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/gemini/" class="sidebar__tags-link">Gemini (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mysql/" class="sidebar__tags-link">MySQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/事業開発部/" class="sidebar__tags-link">事業開発部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/パフォーマンスチューニング/" class="sidebar__tags-link">パフォーマンスチューニング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/アーキテクチャ/" class="sidebar__tags-link">アーキテクチャ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/next-js/" class="sidebar__tags-link">Next.js (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/flaky-test/" class="sidebar__tags-link">flaky test (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ci/" class="sidebar__tags-link">ci (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/cloud-workflows/" class="sidebar__tags-link">Cloud Workflows (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/llm/" class="sidebar__tags-link">LLM (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/アクセシビリティ/" class="sidebar__tags-link">アクセシビリティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

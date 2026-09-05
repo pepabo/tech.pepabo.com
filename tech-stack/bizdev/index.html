@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>GMOペパボの技術スタック · 事業開発部 - Pepabo Tech Portal</title>
+<meta content="事業開発部では、GMO即レスAI・Alive Project・Alive Studio・ストリーマーマガジン・GMOレンシュといった新規事業を運営しています。「独自のビジネス領域で新規事業を展開し、同時に次世代のリーダーを育成する」を目的として2023年10月に発足し、スピードを重視した事業開発を行っています。" property="description" />
+<meta content="https://tech.pepabo.com/images/tech-stack/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+  <meta content="@pepabo" name="twitter:creator" />
+<meta content="GMOペパボの技術スタック · 事業開発部 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="事業開発部では、GMO即レスAI・Alive Project・Alive Studio・ストリーマーマガジン・GMOレンシュといった新規事業を運営しています。「独自のビジネス領域で新規事業を展開し、同時に次世代のリーダーを育成する」を目的として2023年10月に発足し、スピードを重視した事業開発を行っています。" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link --current">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class=" --current">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="tech-stack">
+      <div class="wrapper">
+        <main class="main">
+          <article class="tech-stach__body">
+            <header class="tech-stack__header">
+  <h1 class="tech-stack__title">
+    事業開発部
+  </h1>
+</header>
+
+<div class="tech-stack__description">
+  <p>
+    事業開発部では、<a href="https://sokuresu.ai/" target="_blank" rel="noreferrer noopener">GMO即レスAI</a>・<a href="https://alive-project.com/" target="_blank" rel="noreferrer noopener">Alive Project</a>・<a href="https://alive-project.com/studio" target="_blank" rel="noreferrer noopener">Alive Studio</a>・<a href="https://alive-project.com/streamer-magazine/" target="_blank" rel="noreferrer noopener">ストリーマーマガジン</a>・<a href="https://renshu.com/" target="_blank" rel="noreferrer noopener">GMOレンシュ</a>といった新規事業を運営しています。「独自のビジネス領域で新規事業を展開し、同時に次世代のリーダーを育成する」を目的として2023年10月に発足し、現在は20名を超えるパートナーが在籍しています。
+  </p>
+
+  <p>
+    事業開発部の特徴は、スピードを重視した事業開発にあります。新規事業の立ち上げから成長、そして収益化までの事業開発を迅速に進めるため、AIツールを活用した開発効率化と、市場の変化に柔軟に対応できる技術選定を行っています。とくに注力プロジェクトであるAlive Projectでは、動画・ライブ配信支援事業として、配信の表現活動を支える多様なプロダクトの提供を目指しています。
+  </p>
+
+  <p>
+    その中でもAlive Studioは、OBS Studio内蔵のブラウザ機能であるCEF (Chromium Embedded Framework) 上で動作する独立したWebアプリケーションとして構築されています。Web技術を採用することで、OBS Studio以外の配信用ソフトウェアでも動作する可能性を持ち、より多くの配信者に価値提供できる設計となっています。
+  </p>
+
+  <p>
+    GMO即レスAIでは、<a href="https://sokuresu.ai/solution/dify" target="_blank" rel="noreferrer noopener">Dify</a>やAIチャットボットなどのAI技術による業務プロセスの改善提案を行っています。Difyを含む複数のプラットフォームでのワークフロー構築やサーバーの保守運用、顧客サポート対応などを実施しています。
+  </p>
+
+  <p>
+    また、開発面ではClaude Code ActionやDevinなどのAIエージェントを積極的に活用し、開発効率の向上と迅速なプロトタイプ開発を実現しています。
+  </p>
+
+  <p>
+    新規事業を次々に展開する部門の特性上、最新技術の積極的な検証と導入を行っており、サービスリリース後に公開されたReact 19、Next.js 15、TailwindCSS 4などの比較的大きな変更が加えられたライブラリへの追従も迅速に行っています。
+  </p>
+</div>
+
+<section class="tech-stack-table">
+  <h2 class="tech-stack-table__title">
+    技術スタックのリスト
+  </h2>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Programming languages / Frameworks / Libraries etc.
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <div class="tech-stack-table__sub-section">
+        <h4 class="tech-stack-table__sub-section-title">
+          Web Frontend
+        </h4>
+
+        <ul class="tech-stack-table__list">
+          <li>Next.js</li>
+          <li>React</li>
+          <li>TypeScript</li>
+          <li>TailwindCSS</li>
+          <li>HTML</li>
+        </ul>
+      </div>
+
+      <div class="tech-stack-table__sub-section">
+        <h4 class="tech-stack-table__sub-section-title">
+          Backend
+        </h4>
+
+        <ul class="tech-stack-table__list">
+          <li>Node.js</li>
+          <li>Ruby on Rails</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Infrastructure
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>AWS</li>
+        <li>Fly.io</li>
+        <li>Heroku</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Monitoring
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Sentry</li>
+        <li>Grafana</li>
+        <li>Mackerel</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Database
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>PostgreSQL</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Middleware
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>nginx</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      CI/CD
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>GitHub Actions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Environment setup（環境構築）
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Terraform</li>
+        <li>Docker</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Communication
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>Slack</li>
+        <li>GitHub</li>
+        <li>Notion</li>
+        <li>Figma</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-stack-table__section">
+    <h3 class="tech-stack-table__section-title">
+      Other
+    </h3>
+
+    <div class="tech-stack-table__body">
+      <ul class="tech-stack-table__list">
+        <li>OpenAI API</li>
+        <li>Dify</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tech-stack-related-article">
+  <h2 class="tech-stack-related-article__title">
+    事例紹介
+  </h2>
+
+    <div class="digest slug-introduction-bizdev">
+    <div class="digest__eye-catch">
+  <div class="digest__eye-catch-inner">
+    <a href="/2025/03/19/introduction-bizdev/" class="digest__eye-catch-img" style="background-image: url(/blog/2025/03/19/introduction-bizdev/eyecatch.webp);"></a>
+  </div>
+</div>
+<div class="digest__body">
+<a href="/2025/03/19/introduction-bizdev/" class="digest__title-link">    <time class="digest__date">
+      2025-03-19
+    </time>
+    <h2 class="digest__title">
+      GMOペパボの事業開発部を紹介 〜エンジニアリングリードの就任挨拶を添えて〜
+    </h2>
+</a>  <ul class="digest__tags">
+    <li class="digest__tag tag-default">
+      <a href="/tags/事業開発部/" class="digest__tag-link">事業開発部</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/鹿児島/" class="digest__tag-link">鹿児島</a>
+    </li>
+  </ul>
+  <p class="digest__summary">
+    <a href="/2025/03/19/introduction-bizdev/" class="digest__summary-link">はじめに
+
+こんにちは！ 鹿児島オフィスで働いている よしこ @yoshikouki です。
+
+このたび、2025年3月1日付けで事業開発部のエン...</a>
+  </p>
+  <ul class="digest__authors">
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/1353948fa85cb2de002b0d2c9456e8ef?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/yoshikouki/">yoshikouki</a>
+        </span>
+      </li>
+  </ul>
+</div>
+
+  </div>
+  <div class="digest slug-alive-project-ai">
+    <div class="digest__eye-catch">
+  <div class="digest__eye-catch-inner">
+    <a href="/2025/05/21/alive-project-ai/" class="digest__eye-catch-img" style="background-image: url(/blog/2025/05/21/alive-project-ai/images/eye-catch.webp);"></a>
+  </div>
+</div>
+<div class="digest__body">
+<a href="/2025/05/21/alive-project-ai/" class="digest__title-link">    <time class="digest__date">
+      2025-05-21
+    </time>
+    <h2 class="digest__title">
+      職種の壁を超える! Alive ProjectのAI活用事例を紹介
+    </h2>
+</a>  <ul class="digest__tags">
+    <li class="digest__tag tag-default">
+      <a href="/tags/ai/" class="digest__tag-link">AI</a>
+    </li>
+    <li class="digest__tag tag-default">
+      <a href="/tags/alive-project/" class="digest__tag-link">Alive Project</a>
+    </li>
+  </ul>
+  <p class="digest__summary">
+    <a href="/2025/05/21/alive-project-ai/" class="digest__summary-link">
+  はじめに(てつを)
+  フィルター制作プロジェクトの概要（てつを）
+  AI活用ポイント①：ドキュメント化と知見の蓄積（hinapiyo）
+...</a>
+  </p>
+  <ul class="digest__authors">
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/df3bc34ff997db036831472f16b83dec?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/tetsuwo/">tetsuwo</a>
+        </span>
+      </li>
+      <li class="digest__author">
+        <span class="digest__author-image">
+          <img src="//www.gravatar.com/avatar/54898f69a55f35fabaf1aacf3517413d?size=80" alt="" />
+        </span>
+        <span class="digest__author-name">
+          <a href="/authors/hinapiyo/">hinapiyo</a>
+        </span>
+      </li>
+  </ul>
+</div>
+
+  </div>
+
+</section>
+
+          </article>
+        </main>
+
+        <div class="sidebar">
+          <div class="sidebar__sections">
+            <h2 class="sidebar__title">
+              技術スタック
+            </h2>
+            <ul class="sidebar__list">
+              <li class="sidebar__list-item">
+<a href="/tech-stack/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    トップページ
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/ec/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    EC事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/hosting/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    ロリポップ・ムームードメイン事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/minne/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    minne事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/suzuri/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    SUZURI事業部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/bizdev/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    事業開発部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/tech-div/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    技術部
+                  </span>
+</a>              </li>
+              <li class="sidebar__list-item">
+<a href="/tech-stack/security-team/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    セキュリティ対策室
+                  </span>
+</a>              </li>
+            </ul>
+          </div>
+
+          <div class="sidebar__sections">
+            <ul class="sidebar__list">
+              <li class="sidebar__list-item">
+<a href="/" class="sidebar__list-link">                  <span class="sidebar__list-title">
+                    ペパボテックブログ トップ
+                  </span>
+</a>              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay"></div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

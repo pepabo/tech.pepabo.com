@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>CODE BLUE 2024参加レポート - Pepabo Tech Portal</title>
+<meta content="こんにちは。セキュリティ対策室のn01e0です。11/14~11/15にかけて開催された国際的な情報セキュリティカンファレンスであるCODE BLUE 2024に昨年に続き参加してきました。
+
+
+  CODE BLUEとは、世界トップ...
+" property="description" />
+<meta content="https://tech.pepabo.com/blog/2024/11/21/codeblue2024/images/sponsor_board.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@n01e0" name="twitter:creator" />
+<meta content="CODE BLUE 2024参加レポート - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="こんにちは。セキュリティ対策室のn01e0です。11/14~11/15にかけて開催された国際的な情報セキュリティカンファレンスであるCODE BLUE 2024に昨年に続き参加してきました。
+
+
+  CODE BLUEとは、世界トップ...
+" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"CODE BLUE 2024参加レポート","author":{"@type":"Person","name":"n01e0"},"datePublished":"2024-11-21T00:00:00+09:00","image":"https://tech.pepabo.com/blog/2024/11/21/codeblue2024/images/sponsor_board.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-codeblue2024">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/security/" class="tag-default">security</a>
+      <a href="/tags/イベントレポート/" class="tag-default">イベントレポート</a>
+  </div>
+  <time class="article__time" datetime="2024-11-21">
+    2024-11-21
+  </time>
+  <h1 class="article__title">
+    <a href="/2024/11/21/codeblue2024/">CODE BLUE 2024参加レポート</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/security/" class="tag-default">security</a>
+      <a href="/tags/イベントレポート/" class="tag-default">イベントレポート</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2024/11/21/codeblue2024/./images/sponsor_board.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2024/11/21/codeblue2024/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>こんにちは。セキュリティ対策室の<a href="https://x.com/n01e0">n01e0</a>です。11/14~11/15にかけて開催された国際的な情報セキュリティカンファレンスである<a href="https://codeblue.jp/">CODE BLUE 2024</a>に<a href="https://tech.pepabo.com/2023/11/13/codeblue2023/">昨年</a>に続き参加してきました。</p>
+
+<blockquote>
+  <p>CODE BLUEとは、世界トップクラスの情報セキュリティ専門家による最先端の講演と、国や言語の垣根を越えた情報交換・交流の機会を提供する国際会議です。</p>
+
+  <p>欧米の著名な研究者を招へいし、最新の成果を共有するとともに、日本をはじめとするアジア各国の優れた研究者を発掘し、その研究成果を世界へと発信していきます。</p>
+
+  <p>医療の世界で使われるCODE BLUEという言葉は、「緊急事態発生」や「関係者招集」を意味します。</p>
+
+  <p>インターネットの世界においても、IoT（Internet of Things）の時代を迎えるなど、セキュリティ対策の重要性が高まっており、世界各国の研究者を招集し、事態への対処や解決策を共に考える場が必要とされています。</p>
+
+  <p>CODE BLUEは国際的なコミュニティ形成の場となることを目的にするとともに、CODE（技術）によってBLUE（海）を超えて人と人をつなぎ、よりよいインターネットの世界作りに貢献していきます。
+<a href="https://codeblue.jp/">https://codeblue.jp/</a></p>
+</blockquote>
+
+<p>この記事では、特に印象に残っている発表やワークショップ、コンテストをいくつかピックアップして紹介します。</p>
+
+<ol id="markdown-toc">
+  <li><a href="#ワークショップ" id="markdown-toc-ワークショップ">ワークショップ</a>    <ol>
+      <li><a href="#biohacking-village" id="markdown-toc-biohacking-village">BioHacking Village</a></li>
+    </ol>
+  </li>
+  <li><a href="#コンテスト" id="markdown-toc-コンテスト">コンテスト</a>    <ol>
+      <li><a href="#capture-the-flag-code-dark-biohacking-village-ctf-challenge" id="markdown-toc-capture-the-flag-code-dark-biohacking-village-ctf-challenge">Capture the Flag “Code D.A.R.K.: Biohacking Village CTF Challenge”:</a></li>
+    </ol>
+  </li>
+  <li><a href="#発表" id="markdown-toc-発表">発表</a>    <ol>
+      <li><a href="#piloting-edge-copilot--jun-kokatsu" id="markdown-toc-piloting-edge-copilot--jun-kokatsu">Piloting Edge Copilot : Jun Kokatsu</a></li>
+      <li><a href="#pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki" id="markdown-toc-pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki">PkgFuzzプロジェクト:オープンソースソフトウェアのための新たな継続的ファジング : Yuhei Kawakoya, Eitaro Shioji, Yuta Otsuki</a></li>
+    </ol>
+  </li>
+  <li><a href="#まとめ" id="markdown-toc-まとめ">まとめ</a></li>
+</ol>
+
+<h2 id="ワークショップ">ワークショップ</h2>
+<h3 id="biohacking-village">BioHacking Village</h3>
+<blockquote>
+  <p>Biohacking Villageは、常に世界中の専門家を結集し、医療、技術、サイバーセキュリティの専門家が生物医学セキュリティの最新の革新を探求する場を提供することに尽力しています。
+今回のCODEBLUE では Device Lab と Capture the Flag の2つを体験いただけます。 これらは、医療機器業界の専門家、医療従事者、およびセキュリティ研究者が、セキュリティに関する知識を共有し、新しい技術を探求するための安全な環境を提供します。 私たちは、相互尊重の上での意見交換が、革新を推進し、医療を前進させる鍵であると信じています。
+<a href="https://codeblue.jp/program/contests-workshops/biohackingvillage/">https://codeblue.jp/program/contests-workshops/biohackingvillage/</a></p>
+</blockquote>
+
+<p><a href="https://www.villageb.io/">BioHacking Village</a>は医療技術とサイバーセキュリティの橋渡しを目的として開催されており、現地では実際に使用されている医療機器を触ることができます。</p>
+
+<p>分解してみるとデバッグ用のパッドが露出していたり、意外とシンプルな作りになっていて面白かったです。</p>
+
+<p>また、<a href="#capture-the-flag-code-dark-biohacking-village-ctf-challenge">CTF</a>も併設されていました。</p>
+
+<h2 id="コンテスト">コンテスト</h2>
+<h3 id="capture-the-flag-code-dark-biohacking-village-ctf-challenge">Capture the Flag “Code D.A.R.K.: Biohacking Village CTF Challenge”:</h3>
+
+<blockquote>
+  <p>医療とサイバーセキュリティの世界を橋渡しする CTF です。
+各チャレンジは、デジタル資産を保護するのと同様に重要な、生物データを保護する内容になっています。
+また CTF に参加するのが初めての方には、CTFを始めるためのヒント、トリック、およびツールを用いたガイダンスを提供します。
+<a href="https://codeblue.jp/program/contests-workshops/biohackingvillage/">https://codeblue.jp/program/contests-workshops/biohackingvillage/</a></p>
+</blockquote>
+
+<p><a href="https://ctftime.org/team/269765/">BunkyoWesterns</a>として参加し、優勝しました。</p>
+
+<p><img src="/blog/2024/11/21/codeblue2024/images/scoreboard.png" alt="scoreboard" /></p>
+
+<p>問題数が非常に多く、解答すると問題が増えるスタイルはSANSのNetWarsを思い出しました。</p>
+
+<p>こういったスタイルのCTFでは、「解きやすく、配点が高い」問題を優先して解くと良いです。</p>
+
+<p>いくつか問題をピックアップして解説します</p>
+
+<h4 id="insulin-pump-malware">insulin pump malware</h4>
+<p>「医療機器を対象としたマルウェアを解析する」というコンセプトの問題のようです。</p>
+
+<p>問題のバイナリはarm64のMach-Oです。CTFでMach-Oのバイナリを解析するのは初めてなので少し楽しかったです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; iI
+arch     arm
+baddr    0x100000000
+binsz    33768
+bintype  mach0
+bits     64
+canary   true
+injprot  false
+class    MACH064
+compiler clang
+crypto   false
+endian   little
+havecode true
+intrp    /usr/lib/dyld
+laddr    0x0
+lang     c
+linenum  false
+lsyms    false
+machine  all
+nx       false
+os       macos
+pic      true
+relocs   false
+sanitize false
+static   false
+stripped false
+subsys   darwin
+va       true
+[0x100003de4]&gt; afl
+0x100003ec0    1     12 sym.imp.__stack_chk_fail
+0x100003ecc    1     12 sym.imp.printf
+0x100003ed8    1     12 sym.imp.strcmp
+0x100003ee4    1     12 sym.imp.strlen
+0x100003de4   12    220 sub.main_100003de4
+0x100003d4c    4    152 sub._check_killswitch_100003d4c
+0x100003ce0    6    108 sub._decode_100003ce0
+</code></pre></div>
+<p>こんな感じのバイナリです。</p>
+
+<p>問題はいくつかのパートに分かれており、最終的にはKillSwitchを特定するのが目標となります</p>
+
+<p>arm64かつMach-Oという、普段使っているもののあまり読まないタイプのバイナリではありますが、基本は同じです。</p>
+
+<p>特に難読化もされていないので、<code>main</code>を読んでみましょう</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; pdf @main
+            ;-- main:
+            ;-- entry0:
+            ;-- _main:
+            ;-- func.100003de4:
+            ;-- pc:
+┌ 220: sub.main_100003de4 (int argc, char **argv, int64_t envp);
+│           ; arg int argc @ x0
+│           ; arg char **argv @ x1
+│           ; arg int64_t envp @ sp+0x60
+│           ; var int64_t var_0h_3 @ sp+0x0
+│           ; var char **var_10h @ sp+0x10
+│           ; var int64_t var_0h_2 @ sp+0x18
+│           ; var int64_t var_0h @ sp+0x1c
+│           ; var int64_t var_20h @ sp+0x20
+│           ; var int64_t var_20h_2 @ sp+0x28
+│           0x100003de4      ffc300d1       sub sp, sp, 0x30
+│           0x100003de8      fd7b02a9       stp x29, x30, [var_20h]
+│           0x100003dec      fd830091       add x29, sp, 0x20
+│           0x100003df0      bfc31fb8       stur wzr, [x29, -4]        ; argc
+│           0x100003df4      a0831fb8       stur w0, [x29, -8]         ; argc
+│           0x100003df8      e10b00f9       str x1, [var_10h]          ; argv
+│           0x100003dfc      a8835fb8       ldur w8, [x29, -8]
+│           0x100003e00      08090071       subs w8, w8, 2
+│           0x100003e04      e8179f1a       cset w8, eq
+│       ┌─&lt; 0x100003e08      88010037       tbnz w8, 0, 0x100003e38
+│      ┌──&lt; 0x100003e0c      01000014       b 0x100003e10
+│      ││   ; CODE XREF from sub.main_100003de4 @ 0x100003e0c(x)
+│      └──&gt; 0x100003e10      e80b40f9       ldr x8, [var_10h]
+│       │   0x100003e14      080140f9       ldr x8, [x8]
+│       │   0x100003e18      e9030091       mov x9, sp
+│       │   0x100003e1c      280100f9       str x8, [x9]
+│       │   0x100003e20      00000090       adrp x0, 0x100003000
+│       │   0x100003e24      00e03b91       add x0, x0, 0xef8          ; 0x100003ef8 ; "Usage: %s &lt;killswitch&gt;\n" ; const char *format
+│       │   0x100003e28      29000094       bl sym.imp.printf          ; int printf(const char *format)
+│       │   0x100003e2c      28008052       mov w8, 1
+│       │   0x100003e30      a8c31fb8       stur w8, [x29, -4]
+│      ┌──&lt; 0x100003e34      1f000014       b 0x100003eb0
+│      ││   ; CODE XREF from sub.main_100003de4 @ 0x100003e08(x)
+│      │└─&gt; 0x100003e38      e80b40f9       ldr x8, [var_10h]
+│      │    0x100003e3c      000540f9       ldr x0, [x8, 8]            ; const char *s
+│      │    0x100003e40      29000094       bl sym.imp.strlen          ; size_t strlen(const char *s)
+│      │    0x100003e44      082000f1       subs x8, x0, 8
+│      │    0x100003e48      e8179f1a       cset w8, eq
+│      │┌─&lt; 0x100003e4c      08010037       tbnz w8, 0, 0x100003e6c
+│     ┌───&lt; 0x100003e50      01000014       b 0x100003e54
+│     │││   ; CODE XREF from sub.main_100003de4 @ 0x100003e50(x)
+│     └───&gt; 0x100003e54      00000090       adrp x0, 0x100003000
+│      ││   0x100003e58      00403c91       add x0, x0, 0xf10          ; 0x100003f10 ; "Invalid killswitch. Malware still active.\n" ; const char *format
+│      ││   0x100003e5c      1c000094       bl sym.imp.printf          ; int printf(const char *format)
+│      ││   0x100003e60      28008052       mov w8, 1
+│      ││   0x100003e64      a8c31fb8       stur w8, [x29, -4]
+│     ┌───&lt; 0x100003e68      12000014       b 0x100003eb0
+│     │││   ; CODE XREF from sub.main_100003de4 @ 0x100003e4c(x)
+│     ││└─&gt; 0x100003e6c      e80b40f9       ldr x8, [var_10h]
+│     ││    0x100003e70      000540f9       ldr x0, [x8, 8]            ; int64_t arg1
+│     ││    0x100003e74      b6ffff97       bl sub._check_killswitch_100003d4c
+│     ││    0x100003e78      08000071       subs w8, w0, 0
+│     ││    0x100003e7c      e8179f1a       cset w8, eq
+│     ││┌─&lt; 0x100003e80      c8000037       tbnz w8, 0, 0x100003e98
+│    ┌────&lt; 0x100003e84      01000014       b 0x100003e88
+│    ││││   ; CODE XREF from sub.main_100003de4 @ 0x100003e84(x)
+│    └────&gt; 0x100003e88      00000090       adrp x0, 0x100003000
+│     │││   0x100003e8c      00ec3c91       add x0, x0, 0xf3b          ; 0x100003f3b ; "Killswitch activated. Malware deactivated: Achievement unlocked: Cyber Guardian of the Pancreas!\n" ; const char *format
+│     │││   0x100003e90      0f000094       bl sym.imp.printf          ; int printf(const char *format)
+│    ┌────&lt; 0x100003e94      05000014       b 0x100003ea8
+│    ││││   ; CODE XREF from sub.main_100003de4 @ 0x100003e80(x)
+│    │││└─&gt; 0x100003e98      00000090       adrp x0, 0x100003000
+│    │││    0x100003e9c      00403c91       add x0, x0, 0xf10          ; 0x100003f10 ; "Invalid killswitch. Malware still active.\n" ; const char *format
+│    │││    0x100003ea0      0b000094       bl sym.imp.printf          ; int printf(const char *format)
+│    │││┌─&lt; 0x100003ea4      01000014       b 0x100003ea8
+│    ││││   ; CODE XREFS from sub.main_100003de4 @ 0x100003e94(x), 0x100003ea4(x)
+│    └──└─&gt; 0x100003ea8      bfc31fb8       stur wzr, [x29, -4]
+│     ││┌─&lt; 0x100003eac      01000014       b 0x100003eb0
+│     │││   ; CODE XREFS from sub.main_100003de4 @ 0x100003e34(x), 0x100003e68(x), 0x100003eac(x)
+│     └└└─&gt; 0x100003eb0      a0c35fb8       ldur w0, [x29, -4]
+│           0x100003eb4      fd7b42a9       ldp x29, x30, [var_20h]
+│           0x100003eb8      ffc30091       add sp, sp, 0x30
+└           0x100003ebc      c0035fd6       ret
+</code></pre></div>
+<p>雰囲気で読めます。</p>
+
+<p><code>check_killswitch</code>が怪しいですね。</p>
+
+<p>中で<code>strcmp</code>も呼んでいます</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; axt @sym.imp.strcmp
+sub._check_killswitch_100003d4c 0x100003d9c [CALL:--x] bl sym.imp.strcmp
+</code></pre></div>
+<p>おそらく入力値とKillswitchを比較しているのでしょう。</p>
+
+<p><code>check_killswitch</code>の中身はこうなっています</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; pdf @0x100003d9c
+            ;-- _check_killswitch:
+            ;-- func.100003d4c:
+            ; CALL XREF from sub.main_100003de4 @ 0x100003e74(x)
+┌ 152: sub._check_killswitch_100003d4c (int64_t arg1, char *s2, char *s1, int64_t arg_50h);
+│           ; arg int64_t arg1 @ x0
+│           ; arg char *s2 @ sp+0x58
+│           ; arg char *s1 @ sp+0x68
+│           ; arg int64_t arg_50h @ sp+0xa0
+│           ; var int64_t var_0h_3 @ sp+0x8
+│           ; var int64_t var_14h @ sp+0x14
+│           ; var int64_t var_0h_2 @ sp+0x18
+│           ; var int64_t var_19h @ sp+0x27
+│           ; var int64_t var_0h_4 @ sp+0x2f
+│           ; var int64_t var_10h @ sp+0x30
+│           ; var int64_t var_0h @ sp+0x38
+│           ; var int64_t var_40h @ sp+0x40
+│           ; var int64_t var_40h_2 @ sp+0x48
+│           0x100003d4c      ff4301d1       sub sp, sp, 0x50
+│           0x100003d50      fd7b04a9       stp x29, x30, [var_40h]
+│           0x100003d54      fd030191       add x29, sp, 0x40
+│           0x100003d58      080000b0       adrp x8, reloc.__stack_chk_fail ; 0x100004000
+│           0x100003d5c      080540f9       ldr x8, [x8, 8]            ; 0x100004008
+│                                                                      ; reloc.__stack_chk_guard
+│           0x100003d60      080140f9       ldr x8, [x8]
+│           0x100003d64      a8831ff8       stur x8, [x29, -8]
+│           0x100003d68      e00f00f9       str x0, [arg_50hx18]       ; arg1
+│           0x100003d6c      08000090       adrp x8, 0x100003000
+│           0x100003d70      08c13b91       add x8, x8, 0xef0          ; 0x100003ef0
+│                                                                      ; section.2.__TEXT.__const
+│           0x100003d74      080140f9       ldr x8, [x8]               ; 0x100003ef0
+│                                                                      ; section.2.__TEXT.__const
+│           0x100003d78      a04300d1       sub x0, x29, 0x10          ; int64_t arg1
+│           0x100003d7c      a8031ff8       stur x8, [x29, -0x10]
+│           0x100003d80      a16700d1       sub x1, x29, 0x19          ; int64_t arg2
+│           0x100003d84      e10700f9       str x1, [var_0h_3]
+│           0x100003d88      02018052       mov w2, 8
+│           0x100003d8c      d5ffff97       bl sub._decode_100003ce0
+│           0x100003d90      e10740f9       ldr x1, [var_0h_3]         ; const char *s2
+│           0x100003d94      bff31e38       sturb wzr, [x29, -0x11]
+│           0x100003d98      e00f40f9       ldr x0, [arg_50hx18]       ; const char *s1
+│           0x100003d9c      4f000094       bl sym.imp.strcmp          ; int strcmp(const char *s1, const char *s2)
+│           0x100003da0      08000071       subs w8, w0, 0
+│           0x100003da4      e8179f1a       cset w8, eq
+│           0x100003da8      e81700b9       str w8, [var_14h]
+│           0x100003dac      a9835ff8       ldur x9, [x29, -8]
+│           0x100003db0      080000b0       adrp x8, reloc.__stack_chk_fail ; 0x100004000
+│           0x100003db4      080540f9       ldr x8, [x8, 8]            ; 0x100004008
+│                                                                      ; reloc.__stack_chk_guard
+│           0x100003db8      080140f9       ldr x8, [x8]
+│           0x100003dbc      080109eb       subs x8, x8, x9
+│           0x100003dc0      e8179f1a       cset w8, eq
+│       ┌─&lt; 0x100003dc4      68000037       tbnz w8, 0, 0x100003dd0
+│      ┌──&lt; 0x100003dc8      01000014       b 0x100003dcc
+│      ││   ; CODE XREF from sub._check_killswitch_100003d4c @ 0x100003dc8(x)
+│      └──&gt; 0x100003dcc      3d000094       bl sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)
+│       │   ; CODE XREF from sub._check_killswitch_100003d4c @ 0x100003dc4(x)
+│       └─&gt; 0x100003dd0      e81740b9       ldr w8, [var_14h]
+│           0x100003dd4      00010012       and w0, w8, 1
+│           0x100003dd8      fd7b44a9       ldp x29, x30, [var_40h]
+│           0x100003ddc      ff430191       add sp, sp, 0x50
+└           0x100003de0      c0035fd6       ret
+</code></pre></div>
+<p><code>0x100003ef0</code>の内容は</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; px 8 @0x100003ef0
+- offset -   F0F1 F2F3 F4F5 F6F7 F8F9 FAFB FCFD FEFF  0123456789ABCDEF
+0x100003ef0  e8e3 e5e9 f3e8 eff8                      ........
+</code></pre></div>
+<p>で、これが<code>decode</code>に渡されるようです</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; pdf @sub._decode_100003ce0
+            ;-- section.0.__TEXT.__text:
+            ;-- _decode:
+            ;-- func.100003ce0:
+            ; NULL XREF from aav.0x100000020 @ +0xb0(r)
+            ; CALL XREF from sub._check_killswitch_100003d4c @ 0x100003d8c(r)
+┌ 108: sub._decode_100003ce0 (int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg_20h);
+│           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
+│           ; arg int64_t arg3 @ x2
+│           ; arg int64_t arg_20h @ sp+0x40
+│           ; var signed int64_t var_8h @ sp+0x8
+│           ; var int64_t var_ch @ sp+0xc
+│           ; var int64_t var_10h @ sp+0x10
+│           ; var int64_t var_18h @ sp+0x18
+│           0x100003ce0      ff8300d1       sub sp, sp, 0x20           ; [00] -r-x section size 480 named 0.__TEXT.__text
+│           0x100003ce4      e00f00f9       str x0, [arg_20hx18]       ; arg1
+│           0x100003ce8      e10b00f9       str x1, [arg_20hx10]       ; arg2
+│           0x100003cec      e20f00b9       str w2, [var_ch]           ; arg3
+│           0x100003cf0      ff0b00b9       str wzr, [var_8h]          ; arg1
+│       ┌─&lt; 0x100003cf4      01000014       b 0x100003cf8
+│       │   ; CODE XREFS from sub._decode_100003ce0 @ 0x100003cf4(x), 0x100003d40(x)
+│      ┌└─&gt; 0x100003cf8      e80b40b9       ldr w8, [var_8h]
+│      ╎    0x100003cfc      e90f40b9       ldr w9, [var_ch]
+│      ╎    0x100003d00      0801096b       subs w8, w8, w9
+│      ╎    0x100003d04      e8b79f1a       cset w8, ge
+│      ╎┌─&lt; 0x100003d08      e8010037       tbnz w8, 0, 0x100003d44
+│     ┌───&lt; 0x100003d0c      01000014       b 0x100003d10
+│     │╎│   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d0c(x)
+│     └───&gt; 0x100003d10      e80f40f9       ldr x8, [arg_20hx18]
+│      ╎│   0x100003d14      e90b80b9       ldrsw x9, [var_8h]
+│      ╎│   0x100003d18      08696938       ldrb w8, [x8, x9]
+│      ╎│   0x100003d1c      49158052       mov w9, 0xaa
+│      ╎│   0x100003d20      0801094a       eor w8, w8, w9
+│      ╎│   0x100003d24      e90b40f9       ldr x9, [arg_20hx10]
+│      ╎│   0x100003d28      ea0b80b9       ldrsw x10, [var_8h]
+│      ╎│   0x100003d2c      28692a38       strb w8, [x9, x10]
+│     ┌───&lt; 0x100003d30      01000014       b 0x100003d34
+│     │╎│   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d30(x)
+│     └───&gt; 0x100003d34      e80b40b9       ldr w8, [var_8h]
+│      ╎│   0x100003d38      08050011       add w8, w8, 1
+│      ╎│   0x100003d3c      e80b00b9       str w8, [var_8h]
+│      └──&lt; 0x100003d40      eeffff17       b 0x100003cf8
+│       │   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d08(x)
+│       └─&gt; 0x100003d44      ff830091       add sp, sp, 0x20
+└           0x100003d48      c0035fd6       ret
+</code></pre></div>
+<p><code>decode</code>ではその値が<code>0xaa</code>とXORされているので、実際に計算してみましょう</p>
+
+<p><code>radare2</code>で対象のバイト列を配列のフォーマットで取得したいときは<code>pc</code>を使います</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x100003de4]&gt; pc 8 @0x100003ef0
+#define _BUFFER_SIZE 8
+const uint8_t buffer[_BUFFER_SIZE] = {
+  0xe8, 0xe3, 0xe5, 0xe9, 0xf3, 0xe8, 0xef, 0xf8
+};
+</code></pre></div>
+<div class="highlight"><pre class="highlight python"><code><span class="s">''</span><span class="p">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">x</span> <span class="o">^</span> <span class="mh">0xaa</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mh">0xe8</span><span class="p">,</span> <span class="mh">0xe3</span><span class="p">,</span> <span class="mh">0xe5</span><span class="p">,</span> <span class="mh">0xe9</span><span class="p">,</span> <span class="mh">0xf3</span><span class="p">,</span> <span class="mh">0xe8</span><span class="p">,</span> <span class="mh">0xef</span><span class="p">,</span> <span class="mh">0xf8</span><span class="p">]])</span>
+<span class="c1"># 'BIOCYBER'
+</span></code></pre></div>
+<p>復号できました</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ ./malware_insulin_pump BIOCYBER
+Killswitch activated. Malware deactivated: Achievement unlocked: Cyber Guardian of the Pancreas!
+</code></pre></div>
+<p>実際に試してみると正しいことがわかります</p>
+
+<h4 id="insulin-pump-malware-2">insulin pump malware 2</h4>
+<p>今度はELFのバイナリです。</p>
+
+<p>複数の難読化手法が用いられており、「どういった難読化が施されているか」という問題もありました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x004010a0]&gt; iI
+arch     x86
+baddr    0x400000
+binsz    12625
+bintype  elf
+bits     64
+canary   true
+injprot  false
+class    ELF64
+compiler GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0 clang version 10.0.0-4ubuntu1
+crypto   false
+endian   little
+havecode true
+intrp    /lib64/ld-linux-x86-64.so.2
+laddr    0x0
+lang     c
+linenum  false
+lsyms    false
+machine  AMD x86-64 architecture
+nx       true
+os       linux
+pic      false
+relocs   false
+relro    full
+rpath    NONE
+sanitize false
+static   false
+stripped true
+subsys   linux
+va       true
+[0x004010a0]&gt; afl
+0x00401030    1      6 sym.imp.getenv
+0x00401040    1      6 sym.imp.strlen
+0x00401050    1      6 sym.imp.__stack_chk_fail
+0x00401060    1      6 sym.imp.printf
+0x00401070    1      6 sym.imp.strcmp
+0x00401080    1      6 sym.imp.memcpy
+0x00401090    1      6 sym.imp.exit
+0x004010a0    1     46 sub.entry0_4010a0
+0x00401740    4     90 sub.main_401740
+0x00401180    5     55 sub.entry.init0_401180
+0x00401150    3     32 sub.entry.fini0_401150
+0x004010e0    4     31 fcn.004010e0
+0x00401190    4    187 fcn.00401190
+0x004014b0    6    137 sub.n_4014b0
+0x00401460    3     68 sub.DEBUG_401460
+0x00401540    1     53 sub.sub.n_4014b0_401540
+0x004013f0    1    109 fcn.004013f0
+0x00401580   18    441 sub.sub.DEBUG_401460_401580
+0x00401000    3     27 sub.init_401000
+0x00401250    4     78 fcn.00401250
+0x004012a0    4     78 fcn.004012a0
+0x004012f0    4     81 fcn.004012f0
+0x00401350    4     78 fcn.00401350
+0x004013a0    4     78 fcn.004013a0
+0x004010d0    1      5 fcn.004010d0
+0x004017a0    4    101 sub.sub.init_401000_4017a0
+0x00401810    1      5 fcn.00401810
+0x00401818    1     13 sub.fini_401818
+[0x004010a0]&gt; izq
+0x402004 6 5 DEBUG
+0x40200a 32 31 Debugging detected! Exiting...\n
+0x40202a 25 24 Processing sector %d...\n
+0x402043 30 29 Sector %d analysis complete.\n
+0x402061 41 40 Opaque predicate failed: Access denied.\n
+0x40208a 37 36 Killswitch matched: Access granted.\n
+0x4020af 37 36 Killswitch mismatch: Access denied.\n
+0x4020d4 24 23 Usage: %s &lt;killswitch&gt;\n
+</code></pre></div>
+<p>シンボルはstripされています。</p>
+
+<p>まずは<code>main</code>から読んでみましょう。</p>
+
+<div class="highlight"><pre class="highlight c"><code><span class="p">[</span><span class="mh">0x004010a0</span><span class="p">]</span><span class="o">&gt;</span> <span class="n">pdg</span> <span class="err">@</span><span class="n">main</span>
+
+<span class="n">uint</span> <span class="n">sub</span><span class="p">.</span><span class="n">main_401740</span><span class="p">(</span><span class="kt">int32_t</span> <span class="n">param_1</span><span class="p">,</span> <span class="n">ulong</span> <span class="o">*</span><span class="n">param_2</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">ulong</span> <span class="n">uVar1</span><span class="p">;</span>
+    <span class="n">ulong</span> <span class="o">*</span><span class="n">apuStack_20</span> <span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class="kt">int32_t</span> <span class="n">iStack_10</span><span class="p">;</span>
+    <span class="n">uint</span> <span class="n">uStack_c</span><span class="p">;</span>
+
+    <span class="n">uStack_c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">apuStack_20</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_2</span><span class="p">;</span>
+    <span class="n">iStack_10</span> <span class="o">=</span> <span class="n">param_1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">param_1</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">uVar1</span> <span class="o">=</span> <span class="n">param_2</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="mh">0x20</span> <span class="o">+</span> <span class="o">-</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x40178e</span><span class="p">;</span>
+        <span class="n">uStack_c</span> <span class="o">=</span> <span class="n">sub</span><span class="p">.</span><span class="n">sub</span><span class="p">.</span><span class="n">DEBUG_401460_401580</span><span class="p">(</span><span class="n">uVar1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">uVar1</span> <span class="o">=</span> <span class="o">*</span><span class="n">param_2</span><span class="p">;</span>
+        <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="mh">0x20</span> <span class="o">+</span> <span class="o">-</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x401775</span><span class="p">;</span>
+        <span class="n">sym</span><span class="p">.</span><span class="n">imp</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;killswitch&gt;</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">uVar1</span><span class="p">);</span>
+        <span class="n">uStack_c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">uStack_c</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>実行時の引数を<code>sub.sub.DEBUG_401460_401580</code>に渡しているようです。関数名が分かりづらいので変えておきましょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x004010a0]&gt; afn check_killswitch sub.sub.DEBUG_401460_401580
+[0x004010a0]&gt; pdf @check_killswitch
+            ; CALL XREF from sub.main_401740 @ 0x401789(x)
+┌ 441: check_killswitch (int64_t arg1);
+│           ; arg int64_t arg1 @ rdi
+│           ; var int64_t var_8h @ rbp-0x8
+│           ; var int64_t var_10h @ rbp-0x10
+│           ; var int64_t var_11h @ rbp-0x11
+│           ; var char *s2 @ rbp-0x19
+│           ; var int64_t var_20h @ rbp-0x20
+│           ; var char *s1 @ rbp-0x28
+│           ; var signed int64_t var_2ch @ rbp-0x2c
+│           ; var int64_t var_30h @ rbp-0x30
+│           ; var int64_t var_34h @ rbp-0x34
+│           ; var size_t var_38h @ rbp-0x38
+│           ; var int64_t var_3ch @ rbp-0x3c
+│           ; var uint32_t var_40h @ rbp-0x40
+│           ; var int64_t var_44h @ rbp-0x44
+│           0x00401580      55             push rbp
+│           0x00401581      4889e5         mov rbp, rsp
+│           0x00401584      4883ec50       sub rsp, 0x50
+│           0x00401588      64488b0425..   mov rax, qword fs:[0x28]
+│           0x00401591      488945f8       mov qword [var_8h], rax
+│           0x00401595      48897dd8       mov qword [s1], rdi         ; arg1
+│           0x00401599      e8c2feffff     call sub.DEBUG_401460
+│           0x0040159e      488d75e7       lea rsi, [s2]
+│           0x004015a2      488d7df0       lea rdi, [var_10h]
+│           0x004015a6      488b053f0b..   mov rax, qword [0x004020ec] ; [0x4020ec:8]=0xe3a2a3c4d3e0aebe
+│           0x004015ad      488945f0       mov qword [var_10h], rax
+│           0x004015b1      ba08000000     mov edx, 8
+│           0x004015b6      e885ffffff     call sub.sub.n_4014b0_401540
+│           0x004015bb      c645ef00       mov byte [var_11h], 0
+│           0x004015bf      c745d40000..   mov dword [var_2ch], 0
+│           ; CODE XREF from check_killswitch @ 0x40161b(x)
+│       ┌─&gt; 0x004015c6      837dd40a       cmp dword [var_2ch], 0xa
+│      ┌──&lt; 0x004015ca      0f8d50000000   jge 0x401620
+│      │╎   0x004015d0      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x004015d3      0faf45d4       imul eax, dword [var_2ch]
+│      │╎   0x004015d7      8945d0         mov dword [var_30h], eax
+│      │╎   0x004015da      8b45d0         mov eax, dword [var_30h]
+│      │╎   0x004015dd      83f864         cmp eax, 0x64               ; 'd' ; 100
+│     ┌───&lt; 0x004015e0      0f8516000000   jne 0x4015fc
+│     ││╎   0x004015e6      8b75d4         mov esi, dword [var_2ch]
+│     ││╎   0x004015e9      488d3d3a0a..   lea rdi, str.Processing_sector__d..._n ; 0x40202a ; "Processing sector %d...\n" ; const char *format
+│     ││╎   0x004015f0      b000           mov al, 0
+│     ││╎   0x004015f2      e869faffff     call sym.imp.printf         ; int printf(const char *format)
+│    ┌────&lt; 0x004015f7      e911000000     jmp 0x40160d
+│    │││╎   ; CODE XREF from check_killswitch @ 0x4015e0(x)
+│    │└───&gt; 0x004015fc      8b75d4         mov esi, dword [var_2ch]
+│    │ │╎   0x004015ff      488d3d3d0a..   lea rdi, str.Sector__d_analysis_complete._n ; 0x402043 ; "Sector %d analysis complete.\n" ; const char *format
+│    │ │╎   0x00401606      b000           mov al, 0
+│    │ │╎   0x00401608      e853faffff     call sym.imp.printf         ; int printf(const char *format)
+│    │ │╎   ; CODE XREF from check_killswitch @ 0x4015f7(x)
+│    └┌───&lt; 0x0040160d      e900000000     jmp 0x401612
+│     ││╎   ; CODE XREF from check_killswitch @ 0x40160d(x)
+│     └───&gt; 0x00401612      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x00401615      83c001         add eax, 1
+│      │╎   0x00401618      8945d4         mov dword [var_2ch], eax
+│      │└─&lt; 0x0040161b      e9a6ffffff     jmp 0x4015c6
+│      │    ; CODE XREF from check_killswitch @ 0x4015ca(x)
+│      └──&gt; 0x00401620      c745cc0000..   mov dword [var_34h], 0
+│           0x00401627      488b7dd8       mov rdi, qword [s1]         ; const char *s
+│           0x0040162b      e810faffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+│           0x00401630      8945c8         mov dword [var_38h], eax
+│           0x00401633      c745c40000..   mov dword [var_3ch], 0
+│           ; CODE XREF from check_killswitch @ 0x401683(x)
+│       ┌─&gt; 0x0040163a      8b45c4         mov eax, dword [var_3ch]
+│       ╎   0x0040163d      3b45c8         cmp eax, dword [var_38h]
+│      ┌──&lt; 0x00401640      0f8d42000000   jge 0x401688
+│      │╎   0x00401646      8b45c4         mov eax, dword [var_3ch]
+│      │╎   0x00401649      83f001         xor eax, 1
+│      │╎   0x0040164c      83e006         and eax, 6
+│      │╎   0x0040164f      8b4dc8         mov ecx, dword [var_38h]
+│      │╎   0x00401652      81f1a5a5a5a5   xor ecx, 0xa5a5a5a5
+│      │╎   0x00401658      01c8           add eax, ecx
+│      │╎   0x0040165a      0345cc         add eax, dword [var_34h]
+│      │╎   0x0040165d      8945cc         mov dword [var_34h], eax
+│      │╎   0x00401660      8b45cc         mov eax, dword [var_34h]
+│      │╎   0x00401663      c1e005         shl eax, 5
+│      │╎   0x00401666      8b4dcc         mov ecx, dword [var_34h]
+│      │╎   0x00401669      c1e91b         shr ecx, 0x1b
+│      │╎   0x0040166c      09c8           or eax, ecx
+│      │╎   0x0040166e      3345cc         xor eax, dword [var_34h]
+│      │╎   0x00401671      8945cc         mov dword [var_34h], eax
+│      │╎   0x00401674      8b45cc         mov eax, dword [var_34h]
+│      │╎   0x00401677      8945cc         mov dword [var_34h], eax
+│      │╎   0x0040167a      8b45c4         mov eax, dword [var_3ch]
+│      │╎   0x0040167d      83c001         add eax, 1
+│      │╎   0x00401680      8945c4         mov dword [var_3ch], eax
+│      │└─&lt; 0x00401683      e9b2ffffff     jmp 0x40163a
+│      │    ; CODE XREF from check_killswitch @ 0x401640(x)
+│      └──&gt; 0x00401688      6945c85a5a..   imul eax, dword [var_38h], 0x5a5a5a5a
+│           0x0040168f      3345cc         xor eax, dword [var_34h]
+│           0x00401692      8945cc         mov dword [var_34h], eax
+│           0x00401695      8b45cc         mov eax, dword [var_34h]
+│           0x00401698      8945cc         mov dword [var_34h], eax
+│           0x0040169b      8b7dcc         mov edi, dword [var_34h]
+│           0x0040169e      e84dfdffff     call fcn.004013f0
+│           0x004016a3      83f800         cmp eax, 0
+│       ┌─&lt; 0x004016a6      0f851a000000   jne 0x4016c6
+│       │   0x004016ac      488d3dae09..   lea rdi, str.Opaque_predicate_failed:_Access_denied._n ; 0x402061 ; "Opaque predicate failed: Access denied.\n" ; const char *format
+│       │   0x004016b3      b000           mov al, 0
+│       │   0x004016b5      e8a6f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│       │   0x004016ba      c745e00100..   mov dword [var_20h], 1
+│      ┌──&lt; 0x004016c1      e949000000     jmp 0x40170f
+│      ││   ; CODE XREF from check_killswitch @ 0x4016a6(x)
+│      │└─&gt; 0x004016c6      488d75e7       lea rsi, [s2]               ; const char *s2
+│      │    0x004016ca      488b7dd8       mov rdi, qword [s1]         ; const char *s1
+│      │    0x004016ce      e89df9ffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│      │    0x004016d3      8945c0         mov dword [var_40h], eax
+│      │    0x004016d6      837dc000       cmp dword [var_40h], 0
+│      │┌─&lt; 0x004016da      0f851a000000   jne 0x4016fa
+│      ││   0x004016e0      488d3da309..   lea rdi, str.Killswitch_matched:_Access_granted._n ; 0x40208a ; "Killswitch matched: Access granted.\n" ; const char *format
+│      ││   0x004016e7      b000           mov al, 0
+│      ││   0x004016e9      e872f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│      ││   0x004016ee      c745e00000..   mov dword [var_20h], 0
+│     ┌───&lt; 0x004016f5      e915000000     jmp 0x40170f
+│     │││   ; CODE XREF from check_killswitch @ 0x4016da(x)
+│     ││└─&gt; 0x004016fa      488d3dae09..   lea rdi, str.Killswitch_mismatch:_Access_denied._n ; 0x4020af ; "Killswitch mismatch: Access denied.\n" ; const char *format
+│     ││    0x00401701      b000           mov al, 0
+│     ││    0x00401703      e858f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│     ││    0x00401708      c745e00100..   mov dword [var_20h], 1
+│     ││    ; CODE XREFS from check_killswitch @ 0x4016c1(x), 0x4016f5(x)
+│     └└──&gt; 0x0040170f      8b45e0         mov eax, dword [var_20h]
+│           0x00401712      64488b0c25..   mov rcx, qword fs:[0x28]
+│           0x0040171b      488b55f8       mov rdx, qword [var_8h]
+│           0x0040171f      4839d1         cmp rcx, rdx
+│           0x00401722      8945bc         mov dword [var_44h], eax
+│       ┌─&lt; 0x00401725      0f8509000000   jne 0x401734
+│       │   0x0040172b      8b45bc         mov eax, dword [var_44h]
+│       │   0x0040172e      4883c450       add rsp, 0x50
+│       │   0x00401732      5d             pop rbp
+│       │   0x00401733      c3             ret
+│       │   ; CODE XREF from check_killswitch @ 0x401725(x)
+└       └─&gt; 0x00401734      e817f9ffff     call sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)
+</code></pre></div>
+<p>最初に呼ばれている<code>sub.DEBUG_401460</code>ですが、これは<code>DEBUG</code>という環境変数を確認しているだけのようです。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>[0x004010a0]&gt; pdg @sub.DEBUG_401460
+
+void sub.DEBUG_401460(void)
+
+{
+    ulong uStack_20;
+    uchar auStack_18 [4];
+    uint uStack_14;
+    int64_t iStack_10;
+
+    *(*0x20 + -0x20) = 0x401474;
+    iStack_10 = sym.imp.getenv("DEBUG");
+    if (iStack_10 != 0) {
+        *(*0x20 + -0x18 + -8) = 0x401491;
+        uStack_14 = sym.imp.printf("Debugging detected! Exiting...\n");
+    // WARNING: Subroutine does not return
+        *(*0x20 + -0x18 + -8) = 0x40149e;
+        sym.imp.exit(1);
+    }
+    return;
+}
+</code></pre></div>
+<p>デバッガの検知かと思いましたが、杞憂でしたね。</p>
+
+<p>というわけでgdbを使用した動的解析に切り替えます。</p>
+
+<p>こういったバイナリは入力とFlagを比較していることが多いので、それらしきアドレスを特定してbreakpointをおいておきましょう。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>│      │└─&gt; 0x004016c6      488d75e7       lea rsi, [s2]               ; const char *s2
+│      │    0x004016ca      488b7dd8       mov rdi, qword [s1]         ; const char *s1
+│      │    0x004016ce      e89df9ffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│      │    0x004016d3      8945c0         mov dword [var_40h], eax
+│      │    0x004016d6      837dc000       cmp dword [var_40h], 0
+│      │┌─&lt; 0x004016da      0f851a000000   jne 0x4016fa
+│      ││   0x004016e0      488d3da309..   lea rdi, str.Killswitch_matched:_Access_granted._n ; 0x40208a ; "Killswitch matched: Access granted.\n" ; const char *format
+│      ││   0x004016e7      b000           mov al, 0
+│      ││   0x004016e9      e872f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│      ││   0x004016ee      c745e00000..   mov dword [var_20h], 0
+│     ┌───&lt; 0x004016f5      e915000000     jmp 0x40170f
+│     │││   ; CODE XREF from check_killswitch @ 0x4016da(x)
+│     ││└─&gt; 0x004016fa      488d3dae09..   lea rdi, str.Killswitch_mismatch:_Access_denied._n ; 0x4020af ; "Killswitch mismatch: Access denied.\n" ; const char *format
+│     ││    0x00401701      b000           mov al, 0
+│     ││    0x00401703      e858f9ffff     call sym.imp.printf         ; int printf(const char *format)
+</code></pre></div>
+<p>ここでは<code>0x004016ce</code>の<code>strcmp</code>が怪しいので、ここにbreakpointを設定して引数を見てみます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>gdb-peda$ b *0x004016ce
+Breakpoint 1 at 0x4016ce
+gdb-peda$ r foobarbaz
+Starting program: /home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv foobarbaz
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+Opaque predicate failed: Access denied.
+[Inferior 1 (process 2016993) exited with code 01]
+Warning: not running
+</code></pre></div>
+<p>残念ながら呼ばれませんでした。他にも検証があるようです。</p>
+
+<p>こういうときは大体文字列の長さで先に弾かれています。</p>
+
+<p>怪しいのは</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>│           0x004015a6      488b053f0b..   mov rax, qword [0x004020ec] ; [0x4020ec:8]=0xe3a2a3c4d3e0aebe
+│           0x004015ad      488945f0       mov qword [var_10h], rax
+│           0x004015b1      ba08000000     mov edx, 8
+│           0x004015b6      e885ffffff     call sub.sub.n_4014b0_401540
+│           0x004015bb      c645ef00       mov byte [var_11h], 0
+│           0x004015bf      c745d40000..   mov dword [var_2ch], 0
+│           ; CODE XREF from check_killswitch @ 0x40161b(x)
+│       ┌─&gt; 0x004015c6      837dd40a       cmp dword [var_2ch], 0xa
+│      ┌──&lt; 0x004015ca      0f8d50000000   jge 0x401620
+│      │╎   0x004015d0      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x004015d3      0faf45d4       imul eax, dword [var_2ch]
+│      │╎   0x004015d7      8945d0         mov dword [var_30h], eax
+│      │╎   0x004015da      8b45d0         mov eax, dword [var_30h]
+│      │╎   0x004015dd      83f864         cmp eax, 0x64               ; 'd' ; 100
+│     ┌───&lt; 0x004015e0      0f8516000000   jne 0x4015fc
+│     ││╎   0x004015e6      8b75d4         mov esi, dword [var_2ch]
+│     ││╎   0x004015e9      488d3d3a0a..   lea rdi, str.Processing_sector__d..._n ; 0x40202a ; "Processing sector %d...\n" ; const char *format
+│     ││╎   0x004015f0      b000           mov al, 0
+│     ││╎   0x004015f2      e869faffff     call sym.imp.printf         ; int printf(const char *format)
+│    ┌────&lt; 0x004015f7      e911000000     jmp 0x40160d
+│    │││╎   ; CODE XREF from check_killswitch @ 0x4015e0(x)
+│    │└───&gt; 0x004015fc      8b75d4         mov esi, dword [var_2ch]
+│    │ │╎   0x004015ff      488d3d3d0a..   lea rdi, str.Sector__d_analysis_complete._n ; 0x402043 ; "Sector %d analysis complete.\n" ; const char *format
+│    │ │╎   0x00401606      b000           mov al, 0
+│    │ │╎   0x00401608      e853faffff     call sym.imp.printf         ; int printf(const char *format)
+│    │ │╎   ; CODE XREF from check_killswitch @ 0x4015f7(x)
+│    └┌───&lt; 0x0040160d      e900000000     jmp 0x401612
+│     ││╎   ; CODE XREF from check_killswitch @ 0x40160d(x)
+│     └───&gt; 0x00401612      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x00401615      83c001         add eax, 1
+│      │╎   0x00401618      8945d4         mov dword [var_2ch], eax
+│      │└─&lt; 0x0040161b      e9a6ffffff     jmp 0x4015c6
+│      │    ; CODE XREF from check_killswitch @ 0x4015ca(x)
+│      └──&gt; 0x00401620      c745cc0000..   mov dword [var_34h], 0
+</code></pre></div>
+<p>このあたりです。最初の<code>0x4015a6</code>で<code>rax</code>に入れられた値<code>0xe3a2a3c4d3e0aebe</code>がエンコードされたkillswitchだと推測できます。</p>
+
+<p>というわけで8文字で改めて動的解析を試してみましょう</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>gdb-peda$ r hogefuga
+Starting program: /home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv hogefuga
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+[----------------------------------registers-----------------------------------]
+RAX: 0x1
+RBX: 0x0
+RCX: 0x7f8
+RDX: 0x7fffffffdf01 --&gt; 0x6f68007664615f70 ('p_adv')
+RSI: 0x7fffffffd9f7 ("P@ncR34s")
+RDI: 0x7fffffffdf07 ("hogefuga")
+RBP: 0x7fffffffda10 --&gt; 0x7fffffffda30 --&gt; 0x2
+RSP: 0x7fffffffd9c0 --&gt; 0x1
+RIP: 0x4016ce (call   0x401070 &lt;strcmp@plt&gt;)
+R8 : 0x0
+R9 : 0x7fffffffd897 --&gt; 0xbc1cd7085aa00039
+R10: 0x0
+R11: 0x246
+R12: 0x7fffffffdb48 --&gt; 0x7fffffffdeb3 ("/home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv")
+R13: 0x401740 (push   rbp)
+R14: 0x0
+R15: 0x7ffff7ffd040 --&gt; 0x7ffff7ffe2e0 --&gt; 0x0
+EFLAGS: 0x202 (carry parity adjust zero sign trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x4016c1:    jmp    0x40170f
+   0x4016c6:    lea    rsi,[rbp-0x19]
+   0x4016ca:    mov    rdi,QWORD PTR [rbp-0x28]
+=&gt; 0x4016ce:    call   0x401070 &lt;strcmp@plt&gt;
+   0x4016d3:    mov    DWORD PTR [rbp-0x40],eax
+   0x4016d6:    cmp    DWORD PTR [rbp-0x40],0x0
+   0x4016da:    jne    0x4016fa
+   0x4016e0:    lea    rdi,[rip+0x9a3]        # 0x40208a
+Guessed arguments:
+arg[0]: 0x7fffffffdf07 ("hogefuga")
+arg[1]: 0x7fffffffd9f7 ("P@ncR34s")
+[------------------------------------stack-------------------------------------]
+0000| 0x7fffffffd9c0 --&gt; 0x1
+0008| 0x7fffffffd9c8 --&gt; 0x1
+0016| 0x7fffffffd9d0 --&gt; 0x800400040
+0024| 0x7fffffffd9d8 --&gt; 0x9a6342a400000008
+0032| 0x7fffffffd9e0 --&gt; 0xa00000051 ('Q')
+0040| 0x7fffffffd9e8 --&gt; 0x7fffffffdf07 ("hogefuga")
+0048| 0x7fffffffd9f0 --&gt; 0x50007ffff7fc1000
+0056| 0x7fffffffd9f8 --&gt; 0x73343352636e40 ('@ncR34s')
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x00000000004016ce in ?? ()
+gdb-peda$
+</code></pre></div>
+<p>というわけで<code>P@ncR34s</code>がKillswitchのようです。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>./malware_insulin_pump_adv P@ncR34s
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+Killswitch matched: Access granted.
+</code></pre></div>
+<p><code>pancreas</code>って何かと思ったら膵臓らしいです。最初の問題でも出てきましたね。</p>
+
+<h4 id="優勝">優勝</h4>
+
+<p>初日に圧倒的な差で1位だったので油断していたら、終盤に怒涛の追い上げをされ、終了30分くらい前には一度1位の座を奪われました。油断してはいけない。</p>
+
+<p>なんとか取り返し、無事賞品の<a href="https://www.villageb.io/2024badge">バッジ</a>とメダル、ステッカーをもらうことができました。</p>
+
+<p><img src="/blog/2024/11/21/codeblue2024/images/prizes.png" alt="賞品" /></p>
+
+<p>セキュリティカンファレンスでは、このような”Badge”と呼ばれる基板が作成されることが多くあります。</p>
+
+<p>機能は様々で、例えば以前のCODE BLUE 2019で作成したバッジは現地ではんだ付けをし、スイッチを入れるとLEDが光るというものでした。</p>
+
+<p>今回もらったバッジは光る以外に、アルコールチェッカーとしての機能がある他、CTFの問題も内包しているようです。</p>
+
+<h2 id="発表">発表</h2>
+<h3 id="piloting-edge-copilot--jun-kokatsu">Piloting Edge Copilot : Jun Kokatsu</h3>
+<p>発表者のKokatsu Jun氏は、元MicrosoftでEdgeのセキュリティチームに所属しており、現在はGoogleでブラウザとAIのセキュリティを研究しています。</p>
+
+<p>今回は、Microsoft EdgeのCopilotに関する機能の脆弱性についての発表でした。</p>
+
+<blockquote>
+  <p>WebブラウザのAI機能はユーザーにとって便利だが、攻撃者にとってはどうだろうか？ この講演では、Microsoft Edgeブラウザに搭載されたAI機能であるEdge Copilotによって発生した複数の脆弱性を紹介する。例えば、あらゆるサイトの情報を盗む方法や、ユーザーの許可なしにマイクやカメラへのアクセスを行う方法などである。 さらにこの講演では、比較的安全なシステム（Edge）と安全なシステムではない（Bing）の統合により、安全なシステムに実装された緩和策が安全ではないシステムを介してどのようにバイパスされるかを説明する。さらに、従来のセキュリティ緩和策では防げない、LLM（大規模言語モデル）固有のリーク手法も解説する。
+<a href="https://codeblue.jp/program/time-table/day1-002/">https://codeblue.jp/program/time-table/day1-002/</a></p>
+</blockquote>
+
+<hr />
+
+<p>Edgeには<code>Edge Copilot</code>と呼ばれる機能が搭載されており、この機能では現在開いているページの要約などができる。</p>
+
+<p>この機能には<code>edge://discover-chat</code>が使われており、ここでは強力なCSPとTrusted Typesが有効化されているため、XSSの可能性は現実的ではなかった。</p>
+
+<p>さらに、そこで使われる<code>edgeservices.bing.com</code>についても強力な保護が施されていたため、<code>bing.com</code>自体の脆弱性を探すことに。</p>
+
+<p>結果、<code>bing.com</code>には複数の脆弱性が見つかり、<code>bing.com</code>から使えるようになっていたブラウザのAPIを使用してさらなる攻撃にも繋げられた。</p>
+
+<p>通常、Edge Copilotに送られるページの内容は保護されていて聞き出せないが、一度関係ない質問を挟むことでリークさせる、プロンプトインジェクションのような手法も通じた。</p>
+
+<hr />
+
+<p>安全なアプリケーションを新たに作成したとしても、依存している古いコンポーネントが脆弱な状態だと、新しいアプリケーションにも被害が生じる。ということが実感できる発表でした。</p>
+
+<p>また、LLMに対する攻撃としてプロンプトインジェクションなどが取り上げられることが多いものの、XSSなどのプリミティブな脆弱性も通用することを忘れてはいけないと感じました。</p>
+
+<h3 id="pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki">PkgFuzzプロジェクト:オープンソースソフトウェアのための新たな継続的ファジング : Yuhei Kawakoya, Eitaro Shioji, Yuta Otsuki</h3>
+<p>NTTセキュリティホールディングス及びNTT社会情報研究所の研究者チームによる発表です。</p>
+
+<blockquote>
+  <p>Googleが2016年に開始したOSS-Fuzzプロジェクトは2023年8月時点でさまざまなソフトウェアのバグを3万6000件以上見つけている。このプロジェクトでは「ファジング」という自動的にソフトウェアのバグを検出する技術が中核として使われている。ファジングは、自動的なバグ検出技術と言われるが、実際にファジングを実施するためにはハーネス（検査対象ソフトウェアを呼び出すプログラム）の作成、ファジング用バイナリの生成、コマンドライン引数の調整、初期シードの準備、などの人手による作業が必要である。特に、異なる複数のソフトウェアをファジングする場合、これらの作業が障害（自動化阻害要因）となり、ファジングワークフロー全体を自動化できない。このため、効率的に多種多様なソフトウェアのファジングを行うことが難しい。
+われわれは、これら自動化阻害要因を解消し、ファジング・ワークフロー全体を自動化するシステム、PkgFuzzを開発した。PkzFuzzでは、ソフトウェア・パッケージのビルドプロセスを監視し、ファジング可能なパッケージを選び出す。また、同時にファジングに必要な情報を収集する。このPkgFuzzを利用したファジングキャンペーン、PkgFuzz Projectについて発表する。PkgFuzz Projectでは、多種多様なソフトウェアが含まれるUbuntu 23.10のDebianパッケージに対するファジングキャンペーンを実施したところ、人間の介在なしに、265のパッケージから、6万4658件のクラッシュを得た。これらを精査したところ、攻撃に利用可能な4件の脆弱性を発見した。これらをIPAへ報告し、3件のアドバイザリとCVEの発行へとつなげた。
+PkgFuzzがファジングを自動実行した265のパッケージのうち、OSS-Fuzzでもファジングが実施されていたOSSプロジェクトはわずか32件（12％程度）であった。これは、PkgFuzz Projectが、OSS-Fuzzが今までファジング対象としていなかったOSSをファジングできていることを示している。PkgFuzz Projectではファジングの準備を自動化できる。つまり、OSS-Fuzzとは異なり、ハーネスの作成やコマンドライン引数の調整など、OSS開発者によるファジングのためだけの開発コストを要求しないため、ファジング導入のハードルが低い。そのため、今までファジングによるセキュリティテストを導入できていなかったOSSプロジェクト（特に今までOSS-Fuzzの恩恵をあまり受けていない小規模なOSS）に対してもファジングキャンペーンを実施することができる。PkgFuzz Projectにより、バグを発見、修正していくことで、より多くのOSSプロジェクトに対してセキュリティレベルの向上を促進し、安心なソフトウェア基盤の実現を可能にすると考える。</p>
+</blockquote>
+
+<p><a href="https://codeblue.jp/program/time-table/day2-002/">https://codeblue.jp/program/time-table/day2-002/</a></p>
+
+<hr />
+
+<p>OSSに対するファジングは、現在Googleが行っているOSS-Fuzzなどのプロジェクトが存在するが、OSSメンテナ側にも負荷が存在する。</p>
+
+<p>それらの自動化を阻害している要因を特定・解析し、より簡単に自動化を行えるようにしようというプロジェクトがPkgFuzz。</p>
+
+<p>自動化阻害要因</p>
+
+<ol>
+  <li>ハーネスの準備
+    <ul>
+      <li>ライブラリ関数などのファジングを行うためには、その関数を呼び出すようなコードを書く必要がある。</li>
+    </ul>
+  </li>
+  <li>コマンドライン引数の調整</li>
+  <li>ファジング用バイナリのビルド</li>
+  <li>初期シードファイルの作成
+    <ul>
+      <li>ファイルを入力に受け取る場合、ある程度正確なファイルを用意しないと効率が大幅に落ちてしまう。</li>
+    </ul>
+  </li>
+</ol>
+
+<p>これらの要因に対して、ソフトウェアパッケージ(<code>.deb</code>など)のビルドプロセスを監視し、必要な情報を収集するというアイデア。</p>
+
+<p>テストとしてライブラリ関数を呼んでいるソースコードや、テスト用ファイルの活用、ビルド用オプションの特定などが比較的容易になる。</p>
+
+<p>アイデアを元に、</p>
+
+<ol>
+  <li>パッケージの解析</li>
+  <li>ファジングの実行</li>
+  <li>クラッシュのトリアージ</li>
+</ol>
+
+<p>をUbuntu23.10のパッケージのうち265件に対して行った。</p>
+
+<p>結果、 計606回のファジングが実行され、合計で64658件のクラッシュを検出、AFLTriageによるトリアージを行った結果1186件のクラッシュを特定した。</p>
+
+<p>一つ以上のクラッシュが観測されたパッケージの割合は65.6%、深刻度中以上のクラッシュを一つ以上含むパッケージは24.5%となった。</p>
+
+<p>また、解析結果から、クラッシュの主な原因はメモリの読み書きであった。</p>
+
+<p>自動化阻害要因に対して、メンテナが自力で解決して対応を行っているOSS-Fuzzと比較しても同程度の結果を自動的に得られた。</p>
+
+<hr />
+
+<p>Fuzzingは「自動でバグを発見する夢の方法」のように思われがちですが、その導入や、正しく効率的なFuzzingを行うための作業は簡単なものではなく、無限の計算資源さえあれば誰でもできる。というものではありませんでした。</p>
+
+<p>OSSのFuzzing導入に対するハードルを下げる、社会へ貢献する研究だと思います。</p>
+
+<p>発表資料は<a href="https://github.com/ntt-zerolab/PkgFuzz_Project">こちら</a>で公開されています。</p>
+
+<h2 id="まとめ">まとめ</h2>
+<p>今年のCODE BLUEのタイムテーブルを見てみると、昨年に引き続き「LLM・ASM・Fuzzing」の3つが大きなトレンドになっているのを感じます。</p>
+
+<p>非常に個人的な感想を述べると、今年は会場が家に近くてありがたかったです。来年もぜひ参加したい思っています。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/graduate?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="/images/banner_feature_graduate.png" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2024/11/21/codeblue2024/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+        
+    <section class="related-articles">
+      <h3 class="related-articles__title">関連記事</h3>
+      <div class="related-articles__list">
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/06/12/suzuri-a11y-walkthrough/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/06/12/suzuri-a11y-walkthrough/eyechatch.png" alt="【レポート】毬藻企画とGMOペパボでWebアクセシビリティのイベントを開催しました！" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-06-12
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/06/12/suzuri-a11y-walkthrough/" class="related-articles__title-link">【レポート】毬藻企画とGMOペパボでWebアクセシビリティのイベントを開催しました！</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/イベントレポート/" class="related-articles__tag-link">イベントレポート</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/03/19/ai-and-security-team/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/03/19/ai-and-security-team/images/eyecatch.png" alt="AI前提のセキュリティ対策室での仕事" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-03-19
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/03/19/ai-and-security-team/" class="related-articles__title-link">AI前提のセキュリティ対策室での仕事</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/security/" class="related-articles__tag-link">security</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2025/12/24/aikido-safe-chain/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="緊急パッチが当たらない？Aikido Safe Chainの運用で直面した課題とGitHub Actionsによる解決策" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2025-12-24
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2025/12/24/aikido-safe-chain/" class="related-articles__title-link">緊急パッチが当たらない？Aikido Safe Chainの運用で直面した課題とGitHub Actionsによる解決策</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/security/" class="related-articles__tag-link">security</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2025/12/12/potatotips-93/" class="related-articles__eye-catch-link">                  <img src="/blog/2025/12/12/potatotips-93/images/eyecatch.jpg" alt="potatotips#93をハイブリッドで開催しました！" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2025-12-12
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2025/12/12/potatotips-93/" class="related-articles__title-link">potatotips#93をハイブリッドで開催しました！</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/イベントレポート/" class="related-articles__tag-link">イベントレポート</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+      </div>
+    </section>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/bc2b74581660589ac5c0d4366b8fe9d8?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/n01e0/">n01e0</a>
+          </p>
+          <p class="article__author-description">
+            初星学園に多額の寄付をしています
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/n01e0" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/n01e0" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-02
+            </span>
+            <span class="sidebar__list-title">
+              AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              igaigaさんによるDBモデリングワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/focus-cost-schema/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/minorun-rag-agent-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-28
+            </span>
+            <span class="sidebar__list-title">
+              AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/20/tdd-workshop-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-20
+            </span>
+            <span class="sidebar__list-title">
+              t_wadaさんによる2026年度版TDDワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/12/tech-survey-2026-first-half/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-12
+            </span>
+            <span class="sidebar__list-title">
+              GMOペパボの開発体験や技術スタック 2026上期
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (93)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (82)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (58)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (47)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (44)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (40)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ai/" class="sidebar__tags-link">AI (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (26)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (24)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (23)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (20)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/go/" class="sidebar__tags-link">Go (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/tdd/" class="sidebar__tags-link">tdd (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/aws/" class="sidebar__tags-link">aws (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/dbt/" class="sidebar__tags-link">dbt (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/vibe-coding/" class="sidebar__tags-link">Vibe Coding (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ロリポップ-for-gamers/" class="sidebar__tags-link">ロリポップ! for Gamers (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/alive-project/" class="sidebar__tags-link">Alive Project (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ec/" class="sidebar__tags-link">EC (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/キャリア/" class="sidebar__tags-link">キャリア (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/architecture/" class="sidebar__tags-link">architecture (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/nuxt/" class="sidebar__tags-link">Nuxt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/github/" class="sidebar__tags-link">github (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/unleash/" class="sidebar__tags-link">Unleash (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/swift/" class="sidebar__tags-link">Swift (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/sql/" class="sidebar__tags-link">SQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ユニットテスト/" class="sidebar__tags-link">ユニットテスト (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/バージョンアップ/" class="sidebar__tags-link">バージョンアップ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/競技プログラミング/" class="sidebar__tags-link">競技プログラミング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/業務効率化/" class="sidebar__tags-link">業務効率化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/kotlin/" class="sidebar__tags-link">Kotlin (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/コミュニティ/" class="sidebar__tags-link">コミュニティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/カンファレンス/" class="sidebar__tags-link">カンファレンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/kaigi-on-rails/" class="sidebar__tags-link">Kaigi on Rails (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/colorme/" class="sidebar__tags-link">colorme (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/wordpress/" class="sidebar__tags-link">wordpress (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/claude-code/" class="sidebar__tags-link">claude code (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/space/" class="sidebar__tags-link">space (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/gemini/" class="sidebar__tags-link">Gemini (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mysql/" class="sidebar__tags-link">MySQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/事業開発部/" class="sidebar__tags-link">事業開発部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/パフォーマンスチューニング/" class="sidebar__tags-link">パフォーマンスチューニング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/アーキテクチャ/" class="sidebar__tags-link">アーキテクチャ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/next-js/" class="sidebar__tags-link">Next.js (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/flaky-test/" class="sidebar__tags-link">flaky test (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ci/" class="sidebar__tags-link">ci (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/cloud-workflows/" class="sidebar__tags-link">Cloud Workflows (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/llm/" class="sidebar__tags-link">LLM (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/アクセシビリティ/" class="sidebar__tags-link">アクセシビリティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

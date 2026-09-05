@@ -1,0 +1,38 @@
+<div class="highlight"><pre class="highlight plaintext"><code>sequenceDiagram
+    actor User as ユーザー
+    participant Client as iOS/Android
+    participant Rails as Rails(API)
+    participant GC as Google Cloud&lt;br/&gt;(BigQuery/Pub/Sub/&lt;br/&gt;Cloud Functions/Firestore)
+    participant AWS as AWS&lt;br/&gt;(SQS/Lambda/&lt;br/&gt;DynamoDB/Step Functions)
+
+    Note over User, AWS: ① ミッション進捗の記録（非同期）
+    User -&gt;&gt; Client: アプリ操作
+    Client -&gt;&gt; Rails: 行動ログ送信
+    Rails -&gt;&gt; Rails: fluentd → fluentd（aggregator）
+    Rails -&gt;&gt; GC: Cloud Pub/Sub
+    par Pub/Sub subscriptions
+        GC -&gt;&gt; GC: BigQuery に蓄積
+    and
+        GC -&gt;&gt; GC: Cloud Functions → Firestore に進捗記録
+    end
+
+    Note over User, AWS: ② ミッション一覧の表示
+    User -&gt;&gt; Client: ミッション画面を開く
+    Client -&gt;&gt; Rails: ミッション一覧取得
+    Rails -&gt;&gt; GC: Firestore から進捗取得
+    Rails --&gt;&gt; Client: ミッション一覧 + 進捗状態
+
+    Note over User, AWS: ③ 報酬の受け取り（動画広告視聴 → コイン仮付与）
+    User -&gt;&gt; Client: 報酬を受け取る
+    Client -&gt;&gt; Rails: 広告視聴開始
+    Rails --&gt;&gt; Client: イベントID
+    Client -&gt;&gt; Client: 動画広告を視聴
+    Client -&gt;&gt; Rails: 広告視聴完了
+    Rails -&gt;&gt; AWS: SQS → Lambda
+    AWS -&gt;&gt; AWS: DynamoDB に PENDING 記録
+
+    Note over User, AWS: ④ コインの確定（翌日バッチ）
+    AWS -&gt;&gt; AWS: Step Functions 起動
+    AWS -&gt;&gt; AWS: 広告プラットフォームのデータと突合
+    AWS -&gt;&gt; AWS: コイン付与（確定）
+</code></pre></div>

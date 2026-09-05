@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>Cloud Composer環境における信頼性向上のためのトラブルシュート事例、あるいはOSSにコントリビュートしたらそのOSSを壊してしまった経験について - Pepabo Tech Portal</title>
+<meta content="技術部の染矢です。
+
+最近は社内のデータ基盤「Bigfoot」の信頼性向上や機能開発をおこなっています。
+
+Bigfootは、Google CloudのBigQueryとCloud Composerで主に構築された社内システムです。
+..." property="description" />
+<meta content="https://tech.pepabo.com/blog/2024/12/11/airflow-trouble-shoot/images/eyecatch.jpg" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+      <meta content="@kesompochy" name="twitter:creator" />
+<meta content="Cloud Composer環境における信頼性向上のためのトラブルシュート事例、あるいはOSSにコントリビュートしたらそのOSSを壊してしまった経験について - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="技術部の染矢です。
+
+最近は社内のデータ基盤「Bigfoot」の信頼性向上や機能開発をおこなっています。
+
+Bigfootは、Google CloudのBigQueryとCloud Composerで主に構築された社内システムです。
+..." property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"Cloud Composer環境における信頼性向上のためのトラブルシュート事例、あるいはOSSにコントリビュートしたらそのOSSを壊してしまった経験について","author":{"@type":"Person","name":"pochy"},"datePublished":"2024-12-11T00:00:00+09:00","image":"https://tech.pepabo.com/blog/2024/12/11/airflow-trouble-shoot/images/eyecatch.jpg","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-airflow-trouble-shoot">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/データ基盤/" class="tag-default">データ基盤</a>
+  </div>
+  <time class="article__time" datetime="2024-12-11">
+    2024-12-11
+  </time>
+  <h1 class="article__title">
+    <a href="/2024/12/11/airflow-trouble-shoot/">Cloud Composer環境における信頼性向上のためのトラブルシュート事例、あるいはOSSにコントリビュートしたらそのOSSを壊してしまった経験について</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/データ基盤/" class="tag-default">データ基盤</a>
+  </div>
+    <div class="article__eye-catch">
+      <img src="/blog/2024/12/11/airflow-trouble-shoot/./images/eyecatch.jpg" alt="" />
+    </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2024/12/11/airflow-trouble-shoot/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>技術部の染矢です。</p>
+
+<p>最近は社内のデータ基盤「Bigfoot」の信頼性向上や機能開発をおこなっています。</p>
+
+<p>Bigfootは、Google CloudのBigQueryとCloud Composerで主に構築された社内システムです。<br />
+この記事では、Cloud Composer環境におけるデータパイプラインの信頼性を向上させた事例を紹介します。</p>
+
+<p>前半では、Cloud Composer環境において信頼性を低下させる原因であったソフトウェアのバグに気付くまでの調査過程を説明します。Cloud Composer環境で調査可能なメトリクスやログ、そして具体的なコマンドを紹介しながら説明していきます。<br />
+後半では、そのバグに関連する修正のためにOSSにコントリビュートしようとしたら、さらにバグを作ってしまった失敗談を綴ります。OSSのコードリーディングをしながら、そのバグの原因であったPythonのshallow copyの挙動についてサンプルコードとともに解説していきます。</p>
+
+<ol id="markdown-toc">
+  <li><a href="#cloud-composer環境における信頼性とは" id="markdown-toc-cloud-composer環境における信頼性とは">Cloud Composer環境における信頼性とは</a></li>
+  <li><a href="#なぜか失敗するdag" id="markdown-toc-なぜか失敗するdag">なぜか失敗するDAG</a>    <ol>
+      <li><a href="#調査1-cloud-composerが提供するメトリクス" id="markdown-toc-調査1-cloud-composerが提供するメトリクス">調査1. Cloud Composerが提供するメトリクス</a></li>
+      <li><a href="#調査2-cloud-composerが提供するログ" id="markdown-toc-調査2-cloud-composerが提供するログ">調査2. Cloud Composerが提供するログ</a></li>
+      <li><a href="#調査3-gkeが提供するメトリクス" id="markdown-toc-調査3-gkeが提供するメトリクス">調査3. GKEが提供するメトリクス</a></li>
+      <li><a href="#調査4-コンテナのファイルシステム" id="markdown-toc-調査4-コンテナのファイルシステム">調査4. コンテナのファイルシステム</a></li>
+      <li><a href="#cosmosとは" id="markdown-toc-cosmosとは">Cosmosとは</a></li>
+      <li><a href="#解消" id="markdown-toc-解消">解消</a></li>
+    </ol>
+  </li>
+  <li><a href="#一件落着ならよかったのに" id="markdown-toc-一件落着ならよかったのに">一件落着ならよかったのに</a>    <ol>
+      <li><a href="#仮想環境が使われない" id="markdown-toc-仮想環境が使われない">仮想環境が使われない</a></li>
+      <li><a href="#揮発するプロパティ" id="markdown-toc-揮発するプロパティ">揮発するプロパティ</a></li>
+      <li><a href="#入れ替わるオブジェクトインスタンス" id="markdown-toc-入れ替わるオブジェクトインスタンス">入れ替わるオブジェクトインスタンス</a></li>
+      <li><a href="#airflowにおけるoperatorインスタンスのshallow-copy" id="markdown-toc-airflowにおけるoperatorインスタンスのshallow-copy">AirflowにおけるOperatorインスタンスのshallow copy</a></li>
+      <li><a href="#三件落着" id="markdown-toc-三件落着">三件落着</a></li>
+    </ol>
+  </li>
+  <li><a href="#まとめ" id="markdown-toc-まとめ">まとめ</a></li>
+</ol>
+
+<h2 id="cloud-composer環境における信頼性とは">Cloud Composer環境における信頼性とは</h2>
+
+<p>Cloud Composerは、Apache Airflow（以降”Airflow”と表記します）ベースのマネージドサービスです。<br />
+Airflowは、DAGを実行するためのプロダクトです。DAGとは、Directed Acyclic Graphの略で、日本語では有向非巡回グラフと呼ばれます。始まりから終わりに向かい、ループしないようなグラフ構造のことです。データパイプラインにおいては、例えば「データを取り込んだ後に、複数のデータ加工タスクを実行する」などといったタスク同士の依存関係を表現するために利用されます。</p>
+
+<p>Bigfootでは、複数のDAGが毎日定期的に実行されています。<br />
+<strong>しかし、このDAGが、失敗するのです。</strong></p>
+
+<p>月に1回の失敗であればそこまで大きな問題にはなりません。しかし毎日何回も失敗されてしまうと、リカバリのために人手を使わなければいけなくなるし、何よりそのシステムを信頼できなくなります。<br />
+ユーザー（社内のBigfoot利用者）は、定義したDAGが毎回成功するものとして普段の業務をしています。しかし何度も失敗してしまうのであれば話が変わります。信頼できないシステムは使いたくなくなります。せっかく便利な仕組みを作ったのに、その仕組みが使われないのであればそれは即ちビジネス的な損失です。<br />
+そのため、DAGの成功率は高く保ち続ける必要があります。</p>
+
+<p>ペパボのデータ基盤チームでは、各DAGの成功率をSLI（Service Level Indicator、サービスレベル指標）の一つとして指標化しています。また、そのSLIが維持するべき目標値をSLO（Service Level Objective、サービスレベル目標）として設定しています。SLOを破るような指標があれば機能開発の手を止めて信頼性回復のために時間を使うという運用にしています。</p>
+
+<h2 id="なぜか失敗するdag">なぜか失敗するDAG</h2>
+
+<p>いつ頃からか、「なぜか失敗するDAG」が増えていました。DAGタスクの実行ログを見ても手がかりが得られないような失敗です。<br />
+前述の通り、DAGの失敗率は低く保ちたいため本腰を入れて調査をすることにしました。</p>
+
+<h3 id="調査1-cloud-composerが提供するメトリクス">調査1. Cloud Composerが提供するメトリクス</h3>
+
+<p>Cloud Composerは、その環境のメトリクスをいくつか提供しています。その中に、<code>Pod evictions</code>というメトリクスがあります。確認してみると、DAGの失敗が発生した時刻と、<code>Pod evictions</code>のメトリクスに変化があった時刻とが大まかに一致していました。</p>
+
+<p>Pod evictionはKubernetesの概念です。PodがNode上で終了されることがPod evictionです。</p>
+
+<blockquote>
+  <p>Eviction is the process of terminating one or more Pods on Nodes.</p>
+</blockquote>
+
+<p>参考: <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/">Scheduling, Preemption and Eviction | Kubernetes</a></p>
+
+<p>Airflowの話をしていたと思ったら急にKubernetesの話をされて驚いている読者もいるかもしれませんが、Cloud ComposerはGKE（Google Kubernetes Engine）とその他いくつかのサービスを組み合わせてAirflow環境を提供するようなマネージドサービスです。そのためCloud ComposerにおいてはAirflowとKubernetesは密接に関連します。このあとしばらくはKubernetesの話です。</p>
+
+<p>Airflowの構成要素の一つに、Workerというプロセスがあります。Workerプロセスが実際にDAGタスクを実行します。Cloud Composer上のAirflow環境ではWorkerプロセスはKubernetesの一つのPodとして動きます。<br />
+さて、このWorker PodにPod evictionが発生すると、タスクの実行に悪影響を及ぼします。単純にそのプロセスが中断されるため、そのプロセスによって実行されているタスクが「失敗」として扱われることに繋がります。</p>
+
+<p>そのため、Pod evictionの発生とDAGの失敗には関連があると判断しました。</p>
+
+<h3 id="調査2-cloud-composerが提供するログ">調査2. Cloud Composerが提供するログ</h3>
+
+<p>次に、なぜPod evictionが発生したのかを調べるためにログを調査しました。
+Google Cloudではそれぞれのサービスから発生したログをCloud Loggingというサービスから調査できます。</p>
+
+<p>Pod evictionが発生した時刻のログを調べていると、次のログを発見しました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>A worker pod was evicted at 2024-08-27T23:56:15Z with message: Pod ephemeral local storage usage exceeds the total limit of containers 5119Mi. 
+</code></pre></div>
+<p><strong><code>Pod ephemeral local storage usage exceeds the total limit</code></strong>だそうです。他の時刻の失敗近辺のログも確認したところ、同じようなログを発見しました。ローカルストレージの使用量が上限を超えてしまったためにPodが終了されたと考えていいでしょう。</p>
+
+<p>5119Miはほぼ5GiBです。Podのローカルストレージの使用量が5GiBを頻繁に超えてしまうことはあまり考えられません。ストレージについて何か異常なことが起きているようだ、と推測が立ちました。</p>
+
+<h3 id="調査3-gkeが提供するメトリクス">調査3. GKEが提供するメトリクス</h3>
+
+<p>GKEはそのKubernetesクラスタのメトリクスを提供しています。</p>
+
+<p>参考: <a href="https://cloud.google.com/monitoring/api/metrics_kubernetes">GKE system metrics</a></p>
+
+<p>Cloud MonitoringのMetrics explorer機能によってメトリクスを確認できます。特定のPodのメトリクスに絞り込むために、Airflowのタスクのログから、失敗したタスクが実行されたPodを取得しました。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>"Running &lt;TaskInstance: some_service_task_1.wait_upstream_dags.get_execution_delta_hoge_fuga scheduled__2024-08-27T00:00:00+00:00 [running]&gt; on host airflow-worker-fl28g"
+</code></pre></div>
+<p>Pod名は<code>airflow-worker-fl28g</code>であることが分かります。</p>
+
+<p>Cloud Monitoringでは、次のように、PromQLの形式でメトリクスをクエリできます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>kubernetes_io:container_ephemeral_storage_used_bytes{pod_name=~".*fl28g"}
+</code></pre></div>
+<p>このクエリから次のメトリクスが可視化されました。</p>
+
+<p><img src="/blog/2024/12/11/airflow-trouble-shoot/images/image.png" alt="Cloud Monitoringのメトリクス画面のスクリーンショット。階段状に増加しつづけているグラフである。9:05AMから9:30AMまでに0Gから5Gまで増加している。" /></p>
+
+<p>Podの起動から30分足らずでローカルストレージの使用量が5GBを超えたことが分かります。すごい！！</p>
+
+<h3 id="調査4-コンテナのファイルシステム">調査4. コンテナのファイルシステム</h3>
+
+<p>Cloud Composerはマネージドサービスといえど、そのパーツはGKEです。Kubernetes APIにアクセスするための認証情報さえ得られれば、<code>kubectl</code>コマンドによってクラスタ内部の状態をインタラクティブに調査できます。</p>
+
+<p>GKEにおいては、必要な権限を得てから<code>gcloud</code>コマンドによってKubernetesクラスタへの認証情報を得られます。</p>
+
+<p>参考: <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl?hl=ja#default_cluster_kubectl">kubectl をインストールしてクラスタ アクセスを構成する</a></p>
+
+<p>ここから先は勘で進めていきました。メトリクスの動きやDAG失敗の頻度に若干の規則性がある気がしたため、それに合わせたタイミングでコンテナの内部状態を調査しました。<br />
+いろいろと調べた末に、次の通り原因を見つけました。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> airflow-worker-hogefuga <span class="nt">--</span> <span class="nb">du</span> <span class="nt">-sh</span> /tmp/<span class="k">*</span>
+7.6M    /tmp/cosmos
+406M    /tmp/cosmos-venv0k4rdj03
+406M    /tmp/cosmos-venv3h0tgrmm
+406M    /tmp/cosmos-venv4i4noepm
+406M    /tmp/cosmos-venv5f9d2t4e
+406M    /tmp/cosmos-venv6ic6dauo
+408M    /tmp/cosmos-venv7jae8s7h
+406M    /tmp/cosmos-venv8_3_0sjh
+406M    /tmp/cosmos-venv93rohh8e
+406M    /tmp/cosmos-venvao9p5wmo
+408M    /tmp/cosmos-venveyb6hzm3
+408M    /tmp/cosmos-venvj8xutud8
+408M    /tmp/cosmos-venvjeikwmz1
+406M    /tmp/cosmos-venvjqmgubl9
+406M    /tmp/cosmos-venvk63f97dv
+406M    /tmp/cosmos-venvlr1q383r
+406M    /tmp/cosmos-venvlrb5ogu8
+408M    /tmp/cosmos-venvmu14p2ro
+408M    /tmp/cosmos-venvpafsre8l
+406M    /tmp/cosmos-venvqd5tdcze
+406M    /tmp/cosmos-venvs9894gir
+408M    /tmp/cosmos-venvu7tfllt4
+408M    /tmp/cosmos-venvwi1jztce
+406M    /tmp/cosmos-venvys0qyf4h
+406M    /tmp/cosmos-venvyu3tn_th
+4.0K    /tmp/hsperfdata_root
+4.0K    /tmp/pymp-k2c1n3t8
+4.0K    /tmp/tmp30d8de7m
+272K    /tmp/tmp3njoepht
+4.0K    /tmp/tmp3wbe7yno
+4.0K    /tmp/tmp4hyhr84m
+4.0K    /tmp/tmp8xk1vctx
+4.0K    /tmp/tmp90cli_w6
+272K    /tmp/tmpb1bgh6t2
+4.0K    /tmp/tmpcnrm_0og
+272K    /tmp/tmpfc17xxo_
+4.0K    /tmp/tmpfyfcef4z
+4.0K    /tmp/tmph760qvpa
+272K    /tmp/tmpi8_22z6r
+4.0K    /tmp/tmpi_dbzvi3
+4.0K    /tmp/tmpigpnxcei
+272K    /tmp/tmpiyx3q_cy
+4.0K    /tmp/tmpj2nmk7p5
+272K    /tmp/tmpla5x51qw
+4.0K    /tmp/tmpoy4unv2k
+4.0K    /tmp/tmpr5814b9d
+4.0K    /tmp/tmprwgwn3jv
+4.0K    /tmp/tmpsq9mqu1d
+4.0K    /tmp/tmpswy35_fw
+272K    /tmp/tmpt9i_ad1r
+4.0K    /tmp/tmpvivu9i4j
+272K    /tmp/tmpxtmv7b12
+4.0K    /tmp/tmpxwbgtytr
+4.0K    /tmp/tmpzubyeui2
+</code></pre></div>
+<p><code>kubeectl exec</code>コマンドによってPodのコンテナに対して実行コマンドを与えられます。<code>du</code>コマンドは、ディスク使用量を確認するためのコマンドです。<code>-h</code>オプションは、人間が読みやすいKBやMBの単位で出力するためのオプションです。<code>-s</code>オプションは、それぞれのディレクトリのサブディレクトリは表示せず、そのディレクトリの使用量合計のみを出力するためのオプションです。</p>
+
+<p>見ての通り、<code>/tmp/cosmos-venv*</code>というディレクトリが、それぞれ400MB程度使っています。さらにそのディレクトリが10以上もあります。これなら5GBを超えるのにも納得できます。いや、納得できません。なぜ<code>/tmp</code>ディレクトリでこんなに容量を使っているのでしょうか。<code>/tmp</code>ならすぐに消えてもよさそうに思えますが、メトリクスの動きを見るに、消えずに残り続けているようです。</p>
+
+<h3 id="cosmosとは">Cosmosとは</h3>
+
+<p>BigfootにおいてはAirflowのタスクとしてdbtを実行するために、<a href="https://github.com/astronomer/astronomer-cosmos">astronomer/astronomer-cosmos</a>（以降、”Cosmos”と呼びます）というプロダクトを使用しています。</p>
+
+<p>dbtとは、データ変換をソフトウェアエンジニアリングの手法で管理・実行するためのツールです。</p>
+
+<p>参考: <a href="https://docs.getdbt.com/">https://docs.getdbt.com/</a></p>
+
+<p>膨れ上がっているディレクトリ名から、このCosmosが原因ではないかとアタリをつけました。</p>
+
+<h3 id="解消">解消</h3>
+
+<p>CosmosのGitHubリポジトリのissueを探して読むと、この<code>/tmp/cosmos-venv*</code>ディレクトリが消えない事象は既知の問題であり、バージョン1.6.0以降で修正されているらしいということが分かりました。
+早速、Bigfootで使用しているバージョンを1.5.0から1.6.0に変更したところ、目に見える効果が現れました。</p>
+
+<p><img src="/blog/2024/12/11/airflow-trouble-shoot/images/image-1.png" alt="Slackのスクリーンショット。筆者であるpochyがグラフを共有しながら「完全勝利した気がする。やったか！？」と発言している。" /></p>
+
+<p>ephemeral storageの使用量が頭打ちになるようなグラフから、一時的に上がって下がる山のようなグラフになったことが分かります。
+解決したかった事象である、Pod evictionによるDAG Runの失敗も減りました。</p>
+
+<h2 id="一件落着ならよかったのに">一件落着ならよかったのに</h2>
+
+<p>さて、私はCosmosの一時ディレクトリが消えない問題を調査するために、自分のマシン上でAirflow環境を構築してCosmosの挙動を検証していました。
+その途中で、不思議な挙動に気がつきました。バージョン1.5.0から1.6.0への変更によって、一時ディレクトリが消えない問題が解消された代わりに、Pythonの仮想環境構築が2回実行されるようになったのです。</p>
+
+<p>おそらくこれは意図していない挙動であると私は考えました。一回のdbtコマンドの実行において、仮想環境の構築は一回で十分なはずです。バージョン1.5.0では一つのタスク実行において仮想環境の構築は一回のみでした。</p>
+
+<p>そこで、CosmosのGitHubリポジトリにこの問題を解決するためのPull Requestを作成しました。</p>
+
+<p>https://github.com/astronomer/astronomer-cosmos/pull/1200</p>
+
+<p>このPRはマージされました。しかし、<strong>この変更によって重大な問題が発生していることに気がつきました</strong>。</p>
+
+<h3 id="仮想環境が使われない">仮想環境が使われない</h3>
+
+<p>私の変更が含まれた新しいバージョン1.7.0では、仮想環境のdbtではなく、そのホスト環境のdbtが実行されていました。
+コードを確認してみると、どうやら実行するPythonのパスが、仮想環境のパスではなく、デフォルトのホスト環境のパスになっているようです。</p>
+
+<p><img src="/blog/2024/12/11/airflow-trouble-shoot/images/image-3.png" alt="Slackのスクリーンショット。筆者であるpochyが「1.7にしたらvenvのdbtじゃなくてノードのdbtが使われるようになっちゃった...」と発言した後にコードリーディングをしながら原因を探している。" /></p>
+
+<p>私は自分の変更箇所について十分なカバレッジになるようテストを書きつつ、手元の環境でも検証をしていたつもりでした。それでも気がつけない問題が入り込んでいました。</p>
+
+<h3 id="揮発するプロパティ">揮発するプロパティ</h3>
+
+<p>手元のAirflow環境でCosmosを使ったdbtタスクを実行させつつ、デバッグのためのログを出してみると、興味深い事象が見つかりました。<br />
+タスク実行の途中で設定しているはずのOperatorインスタンスのプロパティの値が、リセットされているように見えました。Operatorとは、AirflowにおいてDAGタスクを実際に実行するクラスです。</p>
+
+<p>実行するPythonのパスは<code>self._py_bin</code>というプロパティに設定されています。
+また、CosmosのOperatorにおいては<code>run_subprocess()</code>メソッドによって実際のタスクが実行されます。
+バージョン1.7.0では、実行処理がこの<strong><code>run_subprocess()</code>メソッドに突入した瞬間に、<code>self._py_bin</code>の値が<code>None</code>になっていました</strong>。<code>run_subprocess()</code>メソッドが実行される前では、確かに<code>self._py_bin</code>の値が仮想環境のパス<code>/tmp/cosmos-venvhoge/bin/dbt</code>だったにも拘らずです。</p>
+
+<h3 id="入れ替わるオブジェクトインスタンス">入れ替わるオブジェクトインスタンス</h3>
+
+<p>もう少し調べてみると、どうやら<code>rub_subprocess()</code>メソッドに入った時点で、<code>self</code>自体が異なるインスタンスになっているようだと発見しました。</p>
+
+<p>メソッドの至る所に次のデバッグコードを仕込んで検証しました。</p>
+
+<div class="highlight"><pre class="highlight python"><code><span class="bp">self</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"method called on instance %s"</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</code></pre></div>
+<p>参考: <a href="https://docs.python.org/ja/3/library/functions.html#id">組み込み関数 — Python 3.13.1 ドキュメント</a></p>
+
+<p><code>id()</code>関数は、オブジェクトの “識別値” を返すPythonの組み込み関数です。</p>
+
+<blockquote>
+  <p>オブジェクトの “識別値” を返します。この値は整数で、このオブジェクトの有効期間中は一意かつ定数であることが保証されています。有効期間が重ならない 2 つのオブジェクトは同じ id() 値を持つかもしれません。</p>
+</blockquote>
+
+<p>このデバッグログの結果は、次の通りでした。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>...
+[2024-10-08, 05:24:15 UTC] {virtualenv.py:145} INFO - execute called on instance 275939531936
+[2024-10-08, 05:24:15 UTC] {virtualenv.py:158} INFO - _prepare_virtualenv called on instance 275939531936 
+[2024-10-08, 05:26:20 UTC] {virtualenv.py:90} INFO - run_subprocess called on instance 275940314992 # ここでselfが異なるインスタンスになっている
+...
+</code></pre></div>
+<p><code>run_subprocess()</code>メソッドに入った時点で、<code>self</code>が異なるインスタンスになっています。なんてこった。
+何が起きているのでしょうか。実は、この現象は、Cosmosのバージョン1.5.0において一時ディレクトリが消えない現象と同じ部分を根にしていました。バージョン1.5.0から1.7.0においてずっと同じ潜在的なバグがあったということです。1.5から1.6で消えたように見えたバグが、私の変更によって再度顕在化したのです。</p>
+
+<h3 id="airflowにおけるoperatorインスタンスのshallow-copy">AirflowにおけるOperatorインスタンスのshallow copy</h3>
+
+<p>問題は、Cosmosのコードの次の部分にありました。</p>
+
+<p>https://github.com/astronomer/astronomer-cosmos/blob/534a14ebc7f56158f92bf8fe183a0b4f5e49f92a/cosmos/operators/local.py#L192-L194</p>
+
+<div class="highlight"><pre class="highlight python"><code>    <span class="k">def</span> <span class="nf">_set_invocation_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="s">"""Sets the associated run and exception handling methods based on the invocation mode."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">invocation_mode</span> <span class="o">==</span> <span class="n">InvocationMode</span><span class="p">.</span><span class="n">SUBPROCESS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">invoke_dbt</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">run_subprocess</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">handle_exception</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">handle_exception_subprocess</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="p">.</span><span class="n">invocation_mode</span> <span class="o">==</span> <span class="n">InvocationMode</span><span class="p">.</span><span class="n">DBT_RUNNER</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">invoke_dbt</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">run_dbt_runner</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">handle_exception</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">handle_exception_dbt_runner</span>
+</code></pre></div>
+<p>この<code>_set_invocation_methods</code>メソッドは<code>__init__</code>メソッドで実行されます。条件に応じて<code>self.invoke_dbt</code>に自身のメソッドを代入するという処理です。<code>self.invoke_dbt</code>に代入されるメソッドは、<code>run_subprocess</code>か<code>run_dbt_runner</code>です。<br />
+問題は、<code>self.run_subprocess()</code>実行中における<code>self</code>が、それを実行しているインスタンスと一致するとは限らないということです。</p>
+
+<p>例えば、<strong>このインスタンスがshallow copyされたらどうなる</strong>でしょうか。次のようなコードを考えます。</p>
+
+<div class="highlight"><pre class="highlight python"><code><span class="c1"># test_shallow_copy.py
+</span><span class="kn">import</span> <span class="nn">copy</span>
+
+
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">"original value"</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">bound_method</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">get_value</span>  <span class="c1"># メソッドを属性として保存
+</span>
+    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">"another value"</span>
+
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"self id in get_value: </span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">value</span>
+
+
+<span class="c1"># オリジナルインスタンス
+</span><span class="n">original_instance</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Original instance id: </span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">original_instance</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># shallow copyを作成
+</span><span class="n">copied_instance</span> <span class="o">=</span> <span class="n">copy</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">original_instance</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Copied instance id: </span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">copied_instance</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="c1"># コピーされたインスタンスのメソッドを実行
+</span><span class="n">copied_instance</span><span class="p">.</span><span class="n">set_value</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">copied_instance</span><span class="p">.</span><span class="n">bound_method</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Result: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">copied_instance</span><span class="p">.</span><span class="n">get_value</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Result: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div>
+<p>実行結果は次のようになります。</p>
+
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>python test_shallow_copy.py
+Original instance <span class="nb">id</span>: 4369879312
+Copied instance <span class="nb">id</span>: 4369887824
+self <span class="nb">id </span><span class="k">in </span>get_value: 4369879312
+Result: original value
+self <span class="nb">id </span><span class="k">in </span>get_value: 4369887824
+Result: another value
+</code></pre></div>
+<p>shallow copyであるため、<code>copied_instance</code>には、<code>original_instance</code>の中のオブジェクトへの参照が挿入されます。そのため、<code>copied_instance</code>の<code>bound_method()</code>は<code>copied_instance</code>ではなく<code>original_instance</code>の<code>get_value()</code>メソッドを参照しています。なので、<code>copied_instance.bound_method()</code>を実行した結果には<code>copied_instance.set_value()</code>の結果は反映されません。</p>
+
+<p>参考: <a href="https://docs.python.org/ja/3/library/copy.html">copy — 浅いコピーおよび深いコピー操作 — Python 3.13.1 ドキュメント</a></p>
+
+<blockquote>
+  <p>浅いコピー (shallow copy) は新たな複合オブジェクトを作成し、その後 (可能な限り) 元のオブジェクト中に見つかったオブジェクトに対する 参照 を挿入します。</p>
+</blockquote>
+
+<p>さて、ここでAirflowにおけるOperatorインスタンスに対する操作をコードから追っていきましょう。</p>
+
+<p>https://github.com/apache/airflow/blob/5f4a30117d82e5981a36cec99a0bbda2bddb54d9/airflow/models/taskinstance.py#L2951-L2957</p>
+
+<p><code>TaskInstance</code>クラスの<code>run()</code>メソッドでは<code>_run_raw_task()</code>関数を呼び出します。</p>
+
+<div class="highlight"><pre class="highlight python"><code>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="n">ignore_all_deps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">ignore_depends_on_past</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">wait_for_past_depends_before_skipping</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">ignore_task_deps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">ignore_ti_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">mark_success</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">test_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="n">pool</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="bp">None</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">NEW_SESSION</span><span class="p">,</span>
+        <span class="n">raise_on_defer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+<span class="p">...</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">_run_raw_task</span><span class="p">(</span>
+            <span class="n">mark_success</span><span class="o">=</span><span class="n">mark_success</span><span class="p">,</span>
+            <span class="n">test_mode</span><span class="o">=</span><span class="n">test_mode</span><span class="p">,</span>
+            <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">,</span>
+            <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+            <span class="n">raise_on_defer</span><span class="o">=</span><span class="n">raise_on_defer</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre></div>
+<p>https://github.com/apache/airflow/blob/5f4a30117d82e5981a36cec99a0bbda2bddb54d9/airflow/models/taskinstance.py#L261-L262</p>
+
+<p><code>_run_raw_task()</code>関数では、<code>TaskInsntance</code>インスタンスの<code>task</code>（Operatorインスタンス）に対して<code>prepare_for_execution()</code>メソッドを呼び出します。</p>
+
+<div class="highlight"><pre class="highlight python"><code><span class="k">def</span> <span class="nf">_run_raw_task</span><span class="p">(</span>
+    <span class="n">ti</span><span class="p">:</span> <span class="n">TaskInstance</span><span class="p">,</span>
+    <span class="n">mark_success</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="n">test_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="n">pool</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="bp">None</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+    <span class="n">raise_on_defer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="bp">None</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskReturnCode</span> <span class="o">|</span> <span class="bp">None</span><span class="p">:</span>
+<span class="p">...</span>
+    <span class="k">with</span> <span class="n">set_current_task_instance_session</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">ti</span><span class="p">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">ti</span><span class="p">.</span><span class="n">task</span><span class="p">.</span><span class="n">prepare_for_execution</span><span class="p">()</span>
+</code></pre></div>
+<p>https://github.com/apache/airflow/blob/8ca061ddf5fb85c79b1212ca29112190ebb0aab5/airflow/models/baseoperator.py#L704-L708</p>
+
+<p><code>BaseOperator</code>クラスの<code>prepare_for_execution()</code>メソッドでは、<strong>自身をshallow copyしたインスタンスを返します</strong>。</p>
+
+<div class="highlight"><pre class="highlight python"><code>    <span class="k">def</span> <span class="nf">prepare_for_execution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseOperator</span><span class="p">:</span>
+        <span class="s">"""Lock task for execution to disable custom action in ``__setattr__`` and return a copy."""</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="n">copy</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">other</span><span class="p">.</span><span class="n">_lock_for_execution</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="n">other</span>
+</code></pre></div>
+<p>このAirflowの機構によって、CosmosのOperatorインスタンスが実行される際には<code>run_subprocess()</code>メソッド内における<code>self</code>がshallow copyされる前のインスタンスになるという仕組みです。それによって、実行時に設定しているはずの<code>self._py_bin</code>プロパティの値が<code>None</code>になってしまっていました。その結果、<code>self._py_bin</code>で指定されるはずのpython仮想環境が使われなかったのです。そして同様に、Cosmosのバージョン1.5.0における一時ディレクトリが消えない問題は、一時ディレクトリのパスを保持するプロパティに<code>run_subprocess()</code>内でアクセスしていたことが原因でした。実行時に一時ディレクトリのパスがプロパティに記録されるのに、実行前のインスタンスのプロパティが参照されていたため、一時ディレクトリが消えなかったということです。</p>
+
+<h3 id="三件落着">三件落着</h3>
+
+<p>問題に気がついた私は、CosmosのGitHubリポジトリに、この問題を報告するためのIssueを作成しました。
+ちなみに、このときの私はshallow copyによる問題であると理解しておらず、<a href="https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/models/dagpickle/index.html">Airflowの<code>dagpickle</code></a>によるものでは？とコメントしています。</p>
+
+<p>そして、問題を修正するためのPull Requestを作成しました。</p>
+
+<p>https://github.com/astronomer/astronomer-cosmos/pull/1252</p>
+
+<p>私のPRは無事にマージされました。これによって、一時ディレクトリが消えない問題と仮想環境が使われない問題の両方の原因が解消されました。さらに、一つのdbtタスクに対する仮想環境の構築回数が2回から1回になったことで、dbtタスクの実行時間も削減されました。ペパボ社内の環境における変更前後の一週間分のdbtタスクの実行時間を比べてみると、2割以上減っていました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>以上、Cloud Composer環境の信頼性向上のためのトラブルシュート事例を紹介しました。shallow copy, deep copyの違いによるトラブルはたまに見かけますが、まさかここでも出会うことになるとは、Airflowのコードから該当箇所を見つけるまで予期していませんでした。</p>
+
+<p>また、バグを見つけて修正できた！と思ったら致命的なバグを出してしまったので私は落ち込んでいました。しかし、修正のPRをCosmosのメンテナの方にレビューしていただいたときに、印象に残る言葉をかけてもらいました。曰く、「コードを書くときには常にバグを出すリスクがあります。そして、今回のようなケースではレビュワーはPRを出した本人と同等の責任を負います。なので自分を責めないでください（筆者による和訳）」とのことでした。</p>
+
+<p>OSSにバグを仕込んでしまったことを誇るわけではありませんし、自分の失敗を正当化する意図もありません。しかし、このように許容してもらえて私は安堵しました。
+そして、ソフトウェアエコシステムの一部として活動するエンジニアの一人として、大切なことを学べたと思っています。それは、よく「HRT」という言葉で表される、謙虚・尊敬・信頼の重要性です。Cosmosのメンテナの方のコミュニケーションのとりかたは、まさにHRTな態度であったと思います。<br />
+現代ではまだ、多くのソフトウェアは人間が書くものです。そのため、人間同士でそれぞれのパフォーマンスを最大化できるように、謙虚・尊敬・信頼にあふれたコミュニケーションをとることが重要であると感じました。<br />
+大きめの失態を技術記事として公開することに引け目もありましたが、それ以上に学びの大きい体験であったためこの記事を執筆しました。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/graduate?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="/images/banner_feature_graduate.png" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2024/12/11/airflow-trouble-shoot/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+        
+    <section class="related-articles">
+      <h3 class="related-articles__title">関連記事</h3>
+      <div class="related-articles__list">
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/09/01/focus-cost-schema/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/09/01/focus-cost-schema/eye-catch.png" alt="クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-09-01
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/09/01/focus-cost-schema/" class="related-articles__title-link">クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/データ基盤/" class="related-articles__tag-link">データ基盤</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/05/11/cloud-composer-retirement/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="データ基盤のワークフロー構成変更によるコスト84%削減とCI 34倍高速化" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-05-11
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/05/11/cloud-composer-retirement/" class="related-articles__title-link">データ基盤のワークフロー構成変更によるコスト84%削減とCI 34倍高速化</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/データ基盤/" class="related-articles__tag-link">データ基盤</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/04/09/sale-progress-data-mart/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="ビジネスロジックのSQL化——セール進捗管理をdbtで再設計する" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-04-09
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/04/09/sale-progress-data-mart/" class="related-articles__title-link">ビジネスロジックのSQL化——セール進捗管理をdbtで再設計する</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/データ基盤/" class="related-articles__tag-link">データ基盤</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/02/19/tech-division-agent-ready-2026/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/02/19/tech-division-agent-ready-2026/eye-catch.png" alt="Agent Ready: 技術部が挑むAIエージェント前提の技術基盤づくり" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-02-19
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/02/19/tech-division-agent-ready-2026/" class="related-articles__title-link">Agent Ready: 技術部が挑むAIエージェント前提の技術基盤づくり</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/データ基盤/" class="related-articles__tag-link">データ基盤</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+      </div>
+    </section>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/984e1808c59dbc0fae6c243744600691?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/pochy/">pochy</a>
+          </p>
+          <p class="article__author-description">
+            ナンモワカランアザラシ
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://x.com/kesompochy" class="article__author-link article__author-link--twitter" target="_blank">              <img src="/images/icons/icon_x.svg" alt="Xアカウント">
+</a><a href="https://github.com/kesompochy" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-02
+            </span>
+            <span class="sidebar__list-title">
+              AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              igaigaさんによるDBモデリングワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/focus-cost-schema/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/minorun-rag-agent-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-28
+            </span>
+            <span class="sidebar__list-title">
+              AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/20/tdd-workshop-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-20
+            </span>
+            <span class="sidebar__list-title">
+              t_wadaさんによる2026年度版TDDワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/12/tech-survey-2026-first-half/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-12
+            </span>
+            <span class="sidebar__list-title">
+              GMOペパボの開発体験や技術スタック 2026上期
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (93)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (82)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (58)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (47)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (44)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (40)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ai/" class="sidebar__tags-link">AI (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (26)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (24)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (23)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (20)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/go/" class="sidebar__tags-link">Go (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/tdd/" class="sidebar__tags-link">tdd (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/aws/" class="sidebar__tags-link">aws (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/dbt/" class="sidebar__tags-link">dbt (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/vibe-coding/" class="sidebar__tags-link">Vibe Coding (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ロリポップ-for-gamers/" class="sidebar__tags-link">ロリポップ! for Gamers (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/alive-project/" class="sidebar__tags-link">Alive Project (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ec/" class="sidebar__tags-link">EC (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/キャリア/" class="sidebar__tags-link">キャリア (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/architecture/" class="sidebar__tags-link">architecture (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/nuxt/" class="sidebar__tags-link">Nuxt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/github/" class="sidebar__tags-link">github (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/unleash/" class="sidebar__tags-link">Unleash (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/swift/" class="sidebar__tags-link">Swift (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/sql/" class="sidebar__tags-link">SQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ユニットテスト/" class="sidebar__tags-link">ユニットテスト (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/バージョンアップ/" class="sidebar__tags-link">バージョンアップ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/競技プログラミング/" class="sidebar__tags-link">競技プログラミング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/業務効率化/" class="sidebar__tags-link">業務効率化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/kotlin/" class="sidebar__tags-link">Kotlin (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/コミュニティ/" class="sidebar__tags-link">コミュニティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/カンファレンス/" class="sidebar__tags-link">カンファレンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/kaigi-on-rails/" class="sidebar__tags-link">Kaigi on Rails (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/colorme/" class="sidebar__tags-link">colorme (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/wordpress/" class="sidebar__tags-link">wordpress (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/claude-code/" class="sidebar__tags-link">claude code (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/space/" class="sidebar__tags-link">space (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/gemini/" class="sidebar__tags-link">Gemini (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mysql/" class="sidebar__tags-link">MySQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/事業開発部/" class="sidebar__tags-link">事業開発部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/パフォーマンスチューニング/" class="sidebar__tags-link">パフォーマンスチューニング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/アーキテクチャ/" class="sidebar__tags-link">アーキテクチャ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/next-js/" class="sidebar__tags-link">Next.js (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/flaky-test/" class="sidebar__tags-link">flaky test (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ci/" class="sidebar__tags-link">ci (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/cloud-workflows/" class="sidebar__tags-link">Cloud Workflows (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/llm/" class="sidebar__tags-link">LLM (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/アクセシビリティ/" class="sidebar__tags-link">アクセシビリティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

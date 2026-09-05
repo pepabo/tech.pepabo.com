@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="width=device-width" name="viewport" />
+<title>Vue.jsとViteを活用したフロントエンドアプリケーションの漸進的な改善 - Pepabo Tech Portal</title>
+<meta content="快適なショップ運営体験を目指して、カラーミーショップ上での商いを支援する「管理画面」のユーザー体験の改善を続けています。
+
+このアプリケーションを長期間運用していく中で、開発体験に関する以下のような問題が出てきました。
+
+
+  DOM...
+" property="description" />
+<meta content="https://tech.pepabo.com/images/ogpimage.png" property="og:image" />
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PS72ZW2');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P8WMGG');
+</script>
+
+<meta content="summary_large_image" name="twitter:card" />
+<meta content="@pepabo" name="twitter:site" />
+<meta content="Vue.jsとViteを活用したフロントエンドアプリケーションの漸進的な改善 - Pepabo Tech Portal" property="og:title" />
+<meta content="blog" property="og:type" />
+<meta content="快適なショップ運営体験を目指して、カラーミーショップ上での商いを支援する「管理画面」のユーザー体験の改善を続けています。
+
+このアプリケーションを長期間運用していく中で、開発体験に関する以下のような問題が出てきました。
+
+
+  DOM...
+" property="og:description" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
+<link href="/stylesheets/style-99290410.css" rel="stylesheet" />
+<script src="/javascripts/script.js"></script>
+<link href="/images/favicon.ico" rel="icon" type="image/ico" />
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed.rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+  <script type="application/ld+json">
+    {"@context":"http://schema.org","@type":"NewsArticle","headline":"Vue.jsとViteを活用したフロントエンドアプリケーションの漸進的な改善","author":{"@type":"Person","name":"gatchan"},"datePublished":"2025-07-07T00:00:00+09:00","image":"https://tech.pepabo.com/images/ogpimage.png","publisher":{"@type":"Organization","name":"GMO Pepabo, Inc."}}
+  </script>
+<link href="//platform.twitter.com" rel="preconnect dns-prefetch" />
+<link href="//www.facebook.com" rel="preconnect dns-prefetch" />
+<link href="//connect.facebook.net" rel="preconnect dns-prefetch" />
+<link href="//www.googletagmanager.com" rel="preconnect dns-prefetch" />
+
+  </head>
+  <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PS72ZW2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P8WMGG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.0";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+    
+<header class="global-header">
+  <div class="global-header__container">
+    <div class="global-header__brand">
+      <a href="/" rel="home">
+        <img class="global-header__logo" src="/images/logo_tech_portal.svg" alt="Pepabo Tech Portal">
+      </a>
+    </div>
+
+    <nav class="global-header__nav" aria-label="メニュー">
+      <ul class="global-header-nav">
+          <li class="global-header-nav__item">
+            <a href="/" class="global-header-nav__link" rel="home">ブログ</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tags/ai/" class="global-header-nav__link">AI活用</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/tech-stack/" class="global-header-nav__link">技術スタック</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="/engineers/" class="global-header-nav__link">エンジニア組織と制度</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://rand.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">研究開発</a>
+          </li>
+          <li class="global-header-nav__item">
+            <a href="https://recruit.pepabo.com/" class="global-header-nav__link" rel="noopener noreferrer" target="_blank">採用サイト</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="global-header__menu-toggle-switch">
+    <div role="button" class="js-navigation-drawer-switch">
+      <span>メニューを開く</span>
+    </div>
+  </div>
+</header>
+
+<div class="navigation-drawer js-navigation-drawer">
+  <div class="navigation-drawer__scrim"></div>
+  <div class="navigation-drawer__wrapper">
+    <div class="navigation-drawer__spacer js-navigation-drawer-switch"></div>
+    <div class="navigation-drawer__container">
+      <header class="navigation-drawer__header">
+        <div class="_content">
+          <div class="_body">
+            <h2 class="_title">
+              メニュー
+            </h2>
+          </div>
+        </div>
+      </header>
+      <div class="navigation-drawer__body">
+        <div class="interactive-list -density-normal">
+          <ul class="_list">
+              <li class="_item">
+<a href="/" class="" rel="home">                  <div class="_body">
+                    <div class="_title">
+                      ブログ
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tags/ai/" class="">                  <div class="_body">
+                    <div class="_title">
+                      AI活用
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/tech-stack/" class="">                  <div class="_body">
+                    <div class="_title">
+                      技術スタック
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/engineers/" class="">                  <div class="_body">
+                    <div class="_title">
+                      エンジニア組織と制度
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://rand.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      研究開発
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" class="" rel="noopener noreferrer" target="_blank">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            最新記事
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="/2026/09/02/minne-ai-native-org-2026/">                  <div class="_body">
+                    <div class="_title">
+                      AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+                    </div>
+                    <div class="_description">
+                      2026-09-02
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/">                  <div class="_body">
+                    <div class="_title">
+                      igaigaさんによるDBモデリングワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/focus-cost-schema/">                  <div class="_body">
+                    <div class="_title">
+                      クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/09/01/minorun-rag-agent-2026/">                  <div class="_body">
+                    <div class="_title">
+                      みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-09-01
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/">                  <div class="_body">
+                    <div class="_title">
+                      AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+                    </div>
+                    <div class="_description">
+                      2026-08-28
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/20/tdd-workshop-2026/">                  <div class="_body">
+                    <div class="_title">
+                      t_wadaさんによる2026年度版TDDワークショップを開催しました
+                    </div>
+                    <div class="_description">
+                      2026-08-20
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="/2026/08/12/tech-survey-2026-first-half/">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボの開発体験や技術スタック 2026上期
+                    </div>
+                    <div class="_description">
+                      2026-08-12
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+
+        <div class="interactive-list -density-normal">
+          <h3 class="_title">
+            リンク
+          </h3>
+          <ul class="_list">
+              <li class="_item">
+<a href="https://pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      GMOペパボ株式会社
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://recruit.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      採用サイト
+                    </div>
+                  </div>
+</a>              </li>
+              <li class="_item">
+<a href="https://hr.pepabo.com/" target="_blank" rel="noopener noreferrer">                  <div class="_body">
+                    <div class="_title">
+                      HRブログ
+                    </div>
+                  </div>
+</a>              </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="wrapper">
+      <div class="main" role="main">
+          <article class="article slug-progressive-frontend-update">
+    <div class="article__inner">
+      <header class="article__header">
+  <div class="article__topic">
+      <a href="/tags/フロントエンド/" class="tag-default">フロントエンド</a>
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+  </div>
+  <time class="article__time" datetime="2025-07-07">
+    2025-07-07
+  </time>
+  <h1 class="article__title">
+    <a href="/2025/07/07/progressive-frontend-update/">Vue.jsとViteを活用したフロントエンドアプリケーションの漸進的な改善</a>
+  </h1>
+  <div class="article__topic article__topic--pc">
+      <a href="/tags/フロントエンド/" class="tag-default">フロントエンド</a>
+      <a href="/tags/カラーミーショップ/" class="tag-default">カラーミーショップ</a>
+  </div>
+</header>
+
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2025/07/07/progressive-frontend-update/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+      <div class="article__body">
+        <p>快適なショップ運営体験を目指して、カラーミーショップ上での商いを支援する「管理画面」のユーザー体験の改善を続けています。</p>
+
+<p>このアプリケーションを長期間運用していく中で、開発体験に関する以下のような問題が出てきました。</p>
+
+<ul>
+  <li>DOM APIを直接利用した手続き的なUIの実装により、管理する状態が複雑になるにつれてコードの見通しが悪くなる</li>
+  <li>適切にモジュール化されていないスクリプトによるテスタブルではない実装</li>
+</ul>
+
+<p>ユーザー体験の向上のために多機能なUIを提供しつづけるためには、これらの課題も同時に解決する必要がありました。</p>
+
+<p>管理画面はショップ運営において重要なWebアプリケーションであることから開発頻度も高く、日々機能が追加されていきます。
+また、注文の処理や顧客管理、ECサイトのエディタなど、提供している機能も多岐に渡ります。</p>
+
+<p>このため、ショップ運営や他の開発プロジェクトに影響を与えないように、徐々に、かつ継続的に取り組みを広げていくことが重要となります。
+Nuxtをはじめとしたフロントエンドフレームワークベースのアプリケーションサーバに機能を移行すれば、統合されたフロントエンド開発環境を手にいれることができ、かつSSRをはじめとした機能によって快適なユーザー体験を提供できますが、作業量の観点から、現時点では全面的に移行する作戦を取ることは困難でした。</p>
+
+<p>この前提のもとに、Vue.jsを活用し、様々な工夫によりフロントエンド関連技術を徐々に導入しているので、その事例を紹介します。</p>
+
+<h2 id="vueコンポーネントをカスタム要素ライブラリ化して利用する">Vueコンポーネントをカスタム要素ライブラリ化して利用する</h2>
+
+<p>Vueコンポーネントは <code>defineCustomElement()</code> APIを介することで、Web Componentsにおけるカスタム要素として利用することができます。
+HTML上に直接配置できるようになるメリットのほかに、スタイルやUIに必要なスクリプトをDOMの構造と一緒に配信できるので、UIコンポーネントのポータビリティを高めることができます。</p>
+
+<p>以前からこのAPIを活用することで、サーバサイドのテンプレートエンジンで描画するHTMLのあらゆる箇所で、Vueコンポーネントを部分的に利用しています。</p>
+
+<ul>
+  <li><a href="https://tech.pepabo.com/2021/03/23/admin-ui-components/">ショップ運営を支えるプロダクトにフロントエンド開発環境を薄く導入している</a></li>
+  <li><a href="https://tech.pepabo.com/2022/10/31/colorme-vue3-migration/">カラーミーショップの管理画面のVue 3マイグレーションを行っています</a></li>
+</ul>
+
+<p>加えて、パッケージ構成を工夫することで、再利用性に配慮しています。</p>
+
+<p>コンポーネントは、たとえばボタンや<a href="https://pepabo.github.io/inhouse-components-web/stories-web/?path=/story/components-snackbar--neutral">スナックバー</a>、<a href="https://pepabo.github.io/inhouse-components-web/stories-web/?path=/story/components-progressindicator-circular--indeterminate">ローディングスピナー</a>などの「再利用性の高いコンポーネント」と「他のコンポーネント群で構成した具体性の高いコンポーネント」に大別できます。
+前者の場合は他のVueコンポーネントから参照されることもあるので、カスタム要素化せずに利用する場合もあります。</p>
+
+<p>このため、パッケージ構成を以下のように「再利用性の高いコンポーネント群」、「具体性の高いコンポーネント群」、「カスタム要素変換層」で構成しています。
+コンポーネントは、カスタム要素変換層を経て選択的にカスタム要素化します。</p>
+
+<p><img src="/blog/2025/07/07/progressive_frontend_update/custom-elements-proxy.png" alt="汎用性の高いコンポーネントはより具体性の高いコンポーネントに依存される。両者のコンポーネントはカスタム要素変換層を経てHTMLに配置される。" /></p>
+
+<p>カスタム要素ライブラリ内のコンポーネントには利用頻度の低いものも含まれるので、バンドルサイズを抑制するという目的から、ページに必要なカスタム要素をクライアント側で検索してDynamic Importによってコンポーネントを取得しています。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">defineCustomElement</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span>
+
+<span class="nx">load</span><span class="p">({</span>
+  <span class="dl">"</span><span class="s2">colorme-textbox</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// コンポーネントとスタイルはDynamic Importしておくことでロード時に解決しない</span>
+    <span class="c1">// (バンドル時にこのスクリプトとは分割されたスクリプトが出力されるようになる)</span>
+    <span class="na">component</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">import</span><span class="p">(</span><span class="dl">"</span><span class="s2">@colorme/admin-components/ColormeTextbox.vue</span><span class="dl">"</span><span class="p">),</span>
+    <span class="na">style</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">import</span><span class="p">(</span><span class="dl">"</span><span class="s2">@colorme/admin-components/ColormeTextbox.css?inline</span><span class="dl">"</span><span class="p">),</span>
+  <span class="p">},</span>
+  <span class="p">...</span>
+<span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">load</span> <span class="o">=</span> <span class="p">(</span><span class="nx">componentMap</span><span class="p">:</span> <span class="p">{[</span><span class="nx">tagName</span><span class="p">:</span> <span class="nx">string</span><span class="p">]:</span> <span class="nx">ComponentMap</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">componentMap</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span>
+    <span class="k">async</span> <span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// 読み込む必要のあるコンポーネントを検索する</span>
+      <span class="kd">const</span> <span class="nx">el</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">el</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">const</span> <span class="nx">componentLoader</span> <span class="o">=</span> <span class="nx">componentMap</span><span class="p">[</span><span class="nx">key</span><span class="p">].</span><span class="nx">component</span>
+        <span class="kd">const</span> <span class="nx">styleLoader</span> <span class="o">=</span> <span class="nx">componentMap</span><span class="p">[</span><span class="nx">key</span><span class="p">].</span><span class="nx">style</span>
+        <span class="c1">// 必要になった時点でコンポーネントを解決する (=ビルド時にチャンク分割されたコンポーネントがここではじめてリクエストされる)</span>
+        <span class="kd">const</span> <span class="p">[</span><span class="nx">component</span><span class="p">,</span> <span class="nx">css</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span><span class="nx">componentLoader</span><span class="p">(),</span> <span class="nx">styleLoader</span><span class="p">()])</span>
+
+        <span class="c1">// defineCustomElementはカスタム要素に注入できる `styles` プロパティを受け入れる</span>
+        <span class="c1">// `styles` のCSSはカスタム要素内にインラインCSSとして展開される</span>
+        <span class="kd">const</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">defineCustomElement</span><span class="p">({...</span><span class="nx">component</span><span class="p">.</span><span class="k">default</span><span class="p">,</span> <span class="na">styles</span><span class="p">:</span> <span class="p">[</span><span class="nx">css</span><span class="p">.</span><span class="k">default</span><span class="p">]})</span>
+        <span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>一方で、どのコンポーネントを利用するにしても、エントリポイントとなるスクリプトとカスタム要素コンポーネントで必ず2回以上のリクエストが必要となってしまいます。
+現状は、利用頻度の高いコンポーネントは一つにバンドルして配信するようにして最適化を図っています。</p>
+
+<p>このように適切な単位でモジュール化を実施することで、VueコンポーネントをVueアプリケーション上でも、カスタム要素としてHTML上でも利用でき、再利用性に配慮しています。</p>
+
+<h3 id="フォーム要素のカスタム要素化">フォーム要素のカスタム要素化</h3>
+
+<p>Vue 3.5 以前においては、VueコンポーネントはShadow DOMでラップされて提供されていたことにより、前述したカスタム要素の「スタイルをコンポーネントと一緒に配布できる」という利点がありました。
+一方で、HTMLフォームの取り扱いが難しいという問題がありました。</p>
+
+<p>たとえば、<code>&lt;colorme-textarea&gt;</code> といったフォーム要素をカスタム要素として利用しようとしても、Shadow DOMによってDOMツリーが分断されていることから、テキストボックスの入力内容は送信されません。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"https://colorme.test/path/to/submit"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;colorme-textarea</span> <span class="na">value=</span><span class="s">"サンプルテキスト"</span><span class="nt">&gt;&lt;/colorme-textarea&gt;</span>
+
+  <span class="c">&lt;!-- このボタンを押下しても colorme-textarea のvalueは送信されない --&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>送信<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div>
+<p><code>&lt;colorme-button&gt;</code> のようなボタン要素を作成した場合も同様に、ボタンを押下してもフォームが送信されることはありません。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"https://colorme.test/path/to/submit"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;colorme-textarea&gt;&lt;/colorme-textarea&gt;</span>
+
+  <span class="c">&lt;!-- このボタンを押下しても何も起きない --&gt;</span>
+  <span class="nt">&lt;colorme-button</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>送信<span class="nt">&lt;/colorme-button&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div>
+<p>Shadow DOMによって分断されたInput要素やボタンをフォームに「参加」させるには、たとえば <a href="https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/attachInternals">HTMLElementの<code>attachInternals()</code></a> メソッドを利用できますが、Vue.jsのカスタム要素サポートにおいて、このDOM APIにアクセスする術はありませんでした。</p>
+
+<p>Vue.js 3.5 以降は、<a href="https://blog.vuejs.org/posts/vue-3-5#custom-elements-improvements">Shadow DOMの利用を選択的にできるように</a>なり、DOMツリーを分断しないという選択ができるようになりました。
+このおかげでフォーム要素をカスタム要素化しやすくなりました。
+(ただし、CSSをカスタム要素に同梱することはできないので、ビルド時に出力されるCSSを別途 <code>&lt;link&gt;</code> タグなどで読み込む必要があります。)</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">defineCustomElement</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">ColormeTextarea</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/ColormeTextarea.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">ColormeButton</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/ColormeButton.vue</span><span class="dl">'</span>
+
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span>
+  <span class="dl">'</span><span class="s1">colorme-textarea</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">defineCustomElement</span><span class="p">(</span><span class="nx">ColormeTextarea</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">shadowRoot</span><span class="p">:</span> <span class="kc">false</span>  <span class="c1">// Shadow DOMを利用しない</span>
+  <span class="p">})</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>進化するVue.jsのカスタム要素サポートをフルに活用し、開発したVueコンポーネントをあらゆる場所で利用できるようにしています。</p>
+
+<h2 id="機能毎にパッケージを開発する">機能毎にパッケージを開発する</h2>
+
+<p>複数のUIコンポーネントが協調して動作したり、入力バリデーションの実施やWeb APIリクエストなどの機能固有のスクリプトを実装する必要がある場合は、前述したカスタム要素ライブラリとは独立したパッケージとして、機能ごとにフロントエンドアプリケーションを開発する手法を採用しています。</p>
+
+<h3 id="パッケージの構成">パッケージの構成</h3>
+
+<p>機能ごとに、共有すべき状態やコンポーネントをひとまとめにしたパッケージを作成します。</p>
+
+<p>たとえば、サイドナビゲーションには現在表示しているページを登録するショートカット機能があり、ページ内の登録ボタンを押下することでショートカットリストに追加されます。</p>
+
+<p><img src="/blog/2025/07/07/progressive_frontend_update/shortcut.png" alt="ショートカット登録ボタンを押すとサイドナビゲーション内のショートカットリストにアイテムが追加される" /></p>
+
+<p>このような動作を実現するには、サイドナビゲーションとショートカット登録ボタンの間でリアクティブな状態を共有している必要があるため、両者のコンポーネントは同一のパッケージで提供します。</p>
+
+<p>これらのパッケージは、以下のようなmonorepoの構成の下で開発をしています。
+新しい機能を開発する際には、以下のディレクトリに対して新しいパッケージを追加することで対応します。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>frontends
+├── side-navigation-app (ショートカット機能付きサイドナビゲーション)
+│   └── package.json
+├── admin-components (管理画面Vueコンポーネントライブラリ)
+│   └── package.json
+├── inhouse-vue-components (再利用性の高いUIコンポーネントライブラリ)
+│   └── package.json
+└── vue-custom-elements-proxy (カスタム要素変換層 + (後述する) ページ毎のスクリプト配信パッケージ)
+    └── package.json
+</code></pre></div><p>(inhouse-vue-components という名前は、ペパボ共通基盤デザインシステム <a href="https://design.pepabo.com/inhouse/">Inhouse</a> から名前を借りています)</p>
+
+<p>パッケージの単位をなるべく小さく、かつ共有すべき状態のスコープにあわせて決定することで、コードのメンテナンス性にも寄与すると考えています。</p>
+
+<p>パッケージ間の依存関係は以下のようになっています。</p>
+
+<p><img src="/blog/2025/07/07/progressive_frontend_update/module-dependencies.png" alt="カスタム要素変換層およびページごとのスクリプト配信パッケージが各パッケージを公開する" /></p>
+
+<p>それぞれのパッケージは、前述したカスタム要素変換層に加え、後述するページごとのスクリプトをビルドする仕組みをもった <code>vue-custom-elements-proxy</code> パッケージを経由して公開します。
+このパッケージが公開するJavaScriptを必要に応じて <code>&lt;script&gt;</code> タグでロードします。</p>
+
+<h3 id="離れたuiコンポーネント間の状態の共有">離れたUIコンポーネント間の状態の共有</h3>
+
+<p>例に取り上げたショートカット機能つきサイドナビゲーションは、以下のように配置されています。</p>
+
+<p><img src="/blog/2025/07/07/progressive_frontend_update/side-nav.png" alt="ショートカット登録ボタンとサイドナビゲーションがひとつのアプリケーションとして開発されているが、離れた位置に存在できている。また、カスタム要素変換層を経て提供されているコンポーネントも引き続き利用している。" /></p>
+
+<p>これらのコンポーネントは以下のように記述すれば、状態を共有することができそうですが、<code>&lt;SideNavigation&gt;</code> と <code>&lt;ShortcutToggle&gt;</code> コンポーネントは同じDOMツリーの枝の中に存在しなければならないので、両者を離れた場所に設置することができません。</p>
+
+<div class="highlight"><pre class="highlight vue"><code><span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="nx">SideNavigation</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/SideNavigation.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">ShortcutToggle</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/ShortcutToggle.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span>
+  <span class="nx">useShortcut</span><span class="p">,</span>
+  <span class="nx">shortcutStateKey</span><span class="p">,</span>
+  <span class="nx">currentShortcutKey</span><span class="p">,</span>
+  <span class="nx">updateShortcutKey</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Composables/useShortcut</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">provide</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;SideNavigation</span> <span class="na">:shortcuts=</span><span class="s">"shortcutState"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;ShortcutToggle</span> <span class="na">:current-shortcut=</span><span class="s">"currentShortcut"</span> <span class="na">:updator=</span><span class="s">"updateShortcut"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div>
+<p>この問題を解決するために、<code>&lt;SideNavigation&gt;</code> と <code>&lt;ShortcutToggle&gt;</code> はそれぞれカスタム要素として公開しつつ、カスタム要素間の状態の共有は <a href="https://ja.vuejs.org/guide/components/provide-inject.html">Provide/Inject</a> を用いて、Vueのrefオブジェクトを共有して実現しました。</p>
+
+<p>以下のように、サイドナビゲーションにはショートカットの一覧表示に必要なリストを、ショートカット登録解除ボタンには現在ページのショートカット登録状況および更新処理をProvideします。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="nx">SideNavigation</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/SideNavigation.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">ShortcutToggle</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Components/ShortcutToggle.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span>
+  <span class="nx">useShortcut</span><span class="p">,</span>
+  <span class="nx">shortcutStateKey</span><span class="p">,</span>
+  <span class="nx">currentShortcutKey</span><span class="p">,</span>
+  <span class="nx">updateShortcutKey</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./Composables/useShortcut</span><span class="dl">'</span>
+
+<span class="kd">const</span> <span class="nx">currentPage</span> <span class="o">=</span> <span class="nx">getCurrentPage</span><span class="p">()</span>
+
+<span class="c1">// ショートカット機能を提供するVueコンポーザブル</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">shortcutState</span><span class="p">,</span> <span class="nx">currentShortcut</span><span class="p">,</span> <span class="nx">updateShortcut</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useShortcut</span><span class="p">(</span><span class="nx">currentPage</span><span class="p">)</span>
+
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span>
+  <span class="dl">'</span><span class="s1">side-navigation</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">defineCustomElement</span><span class="p">(</span><span class="nx">SideNavigation</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">configureApp</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// ショートカット一覧を描画するためにショートカットの状態を提供</span>
+      <span class="c1">// Vueのrefオブジェクトを提供することで、一覧はショートカットの登録解除によって再レンダリングされる</span>
+      <span class="nx">app</span><span class="p">.</span><span class="nx">provide</span><span class="p">(</span><span class="nx">shortcutStateKey</span><span class="p">,</span> <span class="nx">shortcutState</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">})</span>
+<span class="p">)</span>
+
+<span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span>
+  <span class="dl">'</span><span class="s1">shortcut-toggle</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">defineCustomElement</span><span class="p">(</span><span class="nx">ShortcutToggle</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">configureApp</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// ショートカット登録解除ボタンは、いま表示しているページが登録済かどうかを注入する</span>
+      <span class="nx">app</span><span class="p">.</span><span class="nx">provide</span><span class="p">(</span><span class="nx">currentShortcutKey</span><span class="p">,</span> <span class="nx">currentShortcut</span><span class="p">)</span>
+      <span class="nx">app</span><span class="p">.</span><span class="nx">provide</span><span class="p">(</span><span class="nx">updateShortcutKey</span><span class="p">,</span> <span class="nx">updateShortcut</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">})</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>なお、カスタム要素化したVueコンポーネントがProvideするコンテキストは、他のカスタム要素化したVueコンポーネントがInjectすることもできます。
+たとえば、上記のコードは以下のように書き直すこともできます。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="c">&lt;!-- カスタム要素の配置 --&gt;</span>
+<span class="nt">&lt;navigation-app-context&gt;</span>
+  <span class="nt">&lt;side-navigation&gt;&lt;/side-navigation&gt;</span>
+  <span class="nt">&lt;shortcut-toggle&gt;&lt;/shortcut-toggle&gt;</span>
+<span class="nt">&lt;/navigation-app-context&gt;</span>
+</code></pre></div>
+<p>このときのnavigation-app-contextに対応するVueコンポーネントは、以下のようになります。</p>
+
+<div class="highlight"><pre class="highlight vue"><code><span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;slot</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">provide</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span>
+<span class="kd">const</span> <span class="nx">currentPage</span> <span class="o">=</span> <span class="nx">getCurrentPage</span><span class="p">()</span>
+
+<span class="c1">// ショートカット機能を提供するVueコンポーザブル</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">shortcutState</span><span class="p">,</span> <span class="nx">currentShortcut</span><span class="p">,</span> <span class="nx">updateShortcut</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useShortcut</span><span class="p">(</span><span class="nx">currentPage</span><span class="p">)</span>
+
+<span class="c1">// side-navigation, shortcut-toggle が依存する状態を注入</span>
+<span class="nx">provide</span><span class="p">(</span><span class="nx">currentShortcutKey</span><span class="p">,</span> <span class="nx">currentShortcut</span><span class="p">)</span>
+<span class="nx">provide</span><span class="p">(</span><span class="nx">updateShortcutKey</span><span class="p">,</span> <span class="nx">updateShortcut</span><span class="p">)</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+</code></pre></div>
+<p>カスタム要素化する際に各コンポーネントに依存を注入(Provide)することで、全体がVueコンポーネントとして実装されていなくても、DOMツリー上の離れた場所にあるコンポーネント間で協調した動作を実現できます。
+また、上記の例の場合は <code>useShortcut()</code> コンポーザブルに機能を集約し、UIコンポーネントがそれを利用するという構造にしておくことで、UIに依存しないような機能の単体テストを記述しやすくなりました。</p>
+
+<p>一方で、Provide / Inject による依存関係の注入はPropsによる状態のセットと比較して依存関係が見えにくく、かつ子孫コンポーネントも注入された状態を参照できるため、濫用すると依存関係の見通しが悪くなりそうです。
+まだこの問題は顕在化していないものの、いずれは何らかの対策を考慮する必要性はありそうなので、今後の課題として対応を検討する必要性を感じています。</p>
+
+<h2 id="viteを活用したパッケージのページへの埋め込みの自動化">Viteを活用したパッケージのページへの埋め込みの自動化</h2>
+
+<p>開発した機能パッケージは、規約に基づきファイルを配置することで自動的にWebページにロードするようにしています。</p>
+
+<p>前述のカスタム要素変換層パッケージのpathディレクトリ配下に、ページのパスに一致するディレクトリを準備し、さらにスクリプトのエントリポイントとなる <code>index.ts</code> を設置します。
+たとえば、 <code>/orders</code> でルーティングされたページで提供するスクリプトは、以下のファイルツリーにおける <code>frontends/vue-custom-elements-proxy/src/pages/path/orders</code> に <code>index.ts</code> を配置します。</p>
+
+<p>(説明を簡単にするために、パスは架空のものを用いて説明しています)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>frontends
+├── side-navigation-app
+├── colrome-admin-components
+├── inhouse-vue-components
+└── vue-custom-elements-proxy (カスタム要素変換層 + ページ毎のスクリプト配信パッケージ)
+    ├── package.json
+    └── src
+        ├── pages
+        │   └── path
+        │       ├── orders (パスに対応したディレクトリ名)
+        │       │   └── index.ts (ex. https://example.test/orders に対するスクリプト)
+        │       ├── customers
+        │       │   └── index.ts (ex. https://example.test/customers に対するスクリプト)
+        │       └── shoppages
+        │           └── index.ts (ex. https://example.test/shoppages に対するスクリプト)
+</code></pre></div>
+<p><code>path</code> ディレクトリに対して、ページごとのエントリポイントを<a href="https://ja.vite.dev/guide/features.html#glob-import">glob import</a>で収集し、<a href="https://ja.vite.dev/guide/api-javascript.html">ViteのJavaScript API</a>を利用したスクリプトを実行することでビルドしています。</p>
+
+<p>また、サーバアプリケーションとバンドルした成果物を統合するために、<a href="https://ja.vite.dev/guide/backend-integration.html">Viteのマニフェストファイル生成機能</a> を用いて作成し、さらにこれらの結果を統合した <code>files.json</code> を生成します。</p>
+
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">readFileSync</span><span class="p">,</span> <span class="nx">writeFileSync</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">glob</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">glob</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">join</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">path</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">build</span><span class="p">,</span> <span class="nx">type</span> <span class="nx">InlineConfig</span><span class="p">,</span> <span class="nx">type</span> <span class="nx">Manifest</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vite</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">vue</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@vitejs/plugin-vue</span><span class="dl">'</span>
+
+<span class="kd">const</span> <span class="nx">baseConfig</span> <span class="o">=</span> <span class="p">(</span><span class="nx">entry</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">name</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="nx">InlineConfig</span> <span class="o">=&gt;</span> <span class="p">({</span>
+  <span class="na">configFile</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">build</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">outDir</span><span class="p">:</span> <span class="s2">`./dist/pages/paths/</span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span>
+    <span class="na">manifest</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">lib</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nx">entry</span><span class="p">,</span>
+      <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">page</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">formats</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">umd</span><span class="dl">'</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="na">rollupOptions</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">entryFileNames</span><span class="p">:</span> <span class="dl">'</span><span class="s1">[name]-[hash].js</span><span class="dl">'</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="k">async</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">getEntries</span> <span class="o">=</span> <span class="k">async</span> <span class="p">():</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Record</span><span class="o">&lt;</span><span class="nx">string</span><span class="p">,</span> <span class="nx">string</span><span class="o">&gt;&gt;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// (簡略化のためにパスの深さは1と仮定する)</span>
+    <span class="kd">const</span> <span class="nx">files</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">glob</span><span class="p">(</span><span class="dl">'</span><span class="s1">src/pages/paths/*/index.ts</span><span class="dl">'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">files</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="na">acc</span><span class="p">:</span> <span class="nx">Record</span><span class="o">&lt;</span><span class="nx">string</span><span class="p">,</span> <span class="nx">string</span><span class="o">&gt;</span><span class="p">,</span> <span class="nx">file</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">const</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">file</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="nx">acc</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">file</span>
+      <span class="k">return</span> <span class="nx">acc</span>
+    <span class="p">},</span> <span class="p">{})</span>
+  <span class="p">}</span>
+
+  <span class="kd">const</span> <span class="nx">entries</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">getEntries</span><span class="p">()</span>
+  
+  <span class="k">for</span> <span class="p">(</span><span class="kd">const</span> <span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="nx">entry</span><span class="p">]</span> <span class="k">of</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">entries</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// ViteのJavaScript APIを用いてビルドする</span>
+    <span class="k">await</span> <span class="nx">build</span><span class="p">(</span><span class="nx">baseConfig</span><span class="p">(</span><span class="nx">entry</span><span class="p">,</span> <span class="nx">name</span><span class="p">))</span>
+  <span class="p">}</span>
+
+  <span class="c1">// バンドルされた結果のファイル名とページのパスの対応関係を示すkey-valueを作成</span>
+  <span class="kd">const</span> <span class="nx">fileMap</span> <span class="o">=</span> <span class="nb">Object</span>
+    <span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">entries</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">name</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="s2">`dist/pages/paths/</span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">/.vite/manifest.json`</span><span class="p">])</span>
+    <span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span> <span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="nx">manifestPath</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">const</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">manifestPath</span><span class="p">,</span> <span class="dl">'</span><span class="s1">utf-8</span><span class="dl">'</span><span class="p">))</span> <span class="k">as</span> <span class="nx">Manifest</span>
+
+      <span class="kd">const</span> <span class="nx">entry</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">content</span><span class="p">).</span><span class="nx">filter</span><span class="p">(</span><span class="nx">c</span> <span class="o">=&gt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">name</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">index</span><span class="dl">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+      <span class="nx">acc</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">file</span><span class="p">:</span> <span class="nx">join</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">entry</span><span class="p">.</span><span class="nx">file</span><span class="p">)</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">acc</span>
+    <span class="p">},</span> <span class="p">{})</span>
+
+  <span class="nx">writeFileSync</span><span class="p">(</span><span class="dl">'</span><span class="s1">dist/files.json</span><span class="dl">'</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">fileMap</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="nx">main</span><span class="p">()</span>
+</code></pre></div>
+<p>上記のビルドスクリプトを実行することで、次のようなファイルが出力されます。</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>frontends
+├── side-navigation-app
+├── colrome-admin-components
+├── inhouse-vue-components
+└── vue-custom-elements-proxy (カスタム要素変換層 + ページ毎のスクリプト配信パッケージ)
+    └── dist 
+        ├── files.json
+        ├── pages
+        │   └── path
+        │       ├── orders
+        │       │   └── index-a0b1c2.js
+        │       ├── customers
+        │       │   └── index-d3e4f5.js
+        │       └── shoppages
+        │           └── index-1f2d3a.js
+</code></pre></div>
+<p>これらのファイルの中から、URLのパスに対応するディレクトリ名にある <code>index.js</code> をロードします。</p>
+
+<div class="highlight"><pre class="highlight html"><code><span class="c">&lt;!-- /orders にアクセスしたときに埋め込まれるスクリプトタグ --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"/path/to/dist/pages/path/orders/index-a0b1c2.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div>
+<p>このとき、ファイル名に含まれるハッシュ値 <code>-a0b1c2</code> はスクリプトの内容に応じて変化します。
+先ほど作成しておいた <code>files.json</code> を用いてサーバサイドで対応関係を確認し、<code>src</code> 属性の値を動的に決定します。</p>
+
+<p>この <code>files.json</code> の内容は以下のようになっています。</p>
+
+<div class="highlight"><pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"orders"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"file"</span><span class="p">:</span><span class="s2">"orders/index-a0b1c2.js"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"customers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"file"</span><span class="p">:</span><span class="s2">"customers/index-d3e4f5.js"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"shoppages"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"file"</span><span class="p">:</span><span class="s2">"shoppages/index-1f2d3a.js"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>ファイルのパス (たとえば <code>/orders</code>) をキーにして上記のJSONから <code>index-a0b1c2.js</code> を得ることができます。</p>
+
+<p>このようなビルド環境を整備することで、規約で決めたディレクトリにファイルを配置しておけば、自動的にスクリプトをページに公開できるようになりました。</p>
+
+<h2 id="これらの方法の利点--欠点">これらの方法の利点 / 欠点</h2>
+
+<p>これらの方法には、以下のような利点があると考えています。</p>
+
+<ul>
+  <li>Vue.jsのWeb Componentsサポートを活用することで、必要な箇所だけを段階的にVue.jsで実装できる</li>
+  <li>機能ごとにパッケージ化することで、状態などのスコープが明確でコードをリーダブルにしやすい</li>
+  <li>コンポーネント間の依存関係が <code>package.json</code> を見れば明確になるので、管理しやすい</li>
+</ul>
+
+<p>特に、必要に応じてVue.jsを選択的に利用できるので、継続的に実施しやすいところが私たちにとってメリットになっています。</p>
+
+<p>一方で、以下のような欠点もあります。</p>
+
+<ul>
+  <li>カスタム要素間を連動させるための Provide / Inject による状態の注入は、状態のスコープを不必要に広げてしまうので何らかのガイドレールが必要</li>
+  <li>カスタム要素の変換層や、それをビルドするための複雑な仕組みが必要</li>
+</ul>
+
+<p>前提として、すべての機能をVue.js上に載せるような開発が難しいということから、欠点を利点が補っていると現状では判断し、このような構成を試行しています。
+仮に将来的にNuxt等に載せる決断をしたとしても、パッケージを機能ごとに分割していることでコードの見通しがよくなり、これまで開発したVueコンポーネント資産も活かしやすいのではないかと考えています。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>これらの手法により、冒頭に挙げた課題の解決(Vue.jsの活用によって得られるUIのコンポーネント化、宣言的UIによる状態の取り扱いの改善、Composablesを活用したロジックのテスタビリティ向上)をしやすくなりました。
+かつ、これらは漸進的に取り組めるものであり、日々の開発に無理なく適用できています。</p>
+
+<p>一方で、この取り組みは引き続き試行錯誤しながら方向性を模索中でもあります。</p>
+
+<p>これらの取り組みが皆様の参考になればうれしいです。</p>
+
+        <aside>
+          <h2>
+            GMOペパボでは、新しい仲間を募集しています
+          </h2>
+          <p>
+            募集中の職種や、詳しい社内の環境や制度に関しては <a href="https://recruit.pepabo.com/" id="ga-amp-ctr__recruit-career--footer-link" class="u-target-blank u-font-weight-bold ga-ctr" data-ga-ctr="recruit-career--footer-link">GMOペパボ株式会社 採用サイト</a> をご覧ください。エンジニア新卒採用に関する情報をまとめたページも公開中！
+          </p>
+<a href="https://recruit.pepabo.com/graduate?utm_source=tech&amp;utm_medium=services&amp;utm_campaign=graduate" class="banner-feature-graduate" target="_blank" rel="noreferrer noopener">            <img src="/images/banner_feature_graduate.png" alt="エンジニア新卒採用" width="480" height="100" />
+</a>        </aside>
+      </div>
+      <div class="social-buttons-wrapper">
+  <ul class="social-buttons">
+    <li class="social-buttons__item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="pepabotechblog">ツイート</a>
+      <script>
+        !function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+          if(!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p+'://platform.twitter.com/widgets.js';
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document, 'script', 'twitter-wjs');
+      </script>
+    </li>
+    <li class="social-buttons__item">
+      <div class="fb-like" data-action="like" data-href="/2025/07/07/progressive-frontend-update/" data-layout="button_count" data-share="true" data-show-faces="false" data-size="small"></div>
+    </li>
+    <li class="social-buttons__item">
+      <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+      <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+  </ul>
+</div>
+
+        
+    <section class="related-articles">
+      <h3 class="related-articles__title">関連記事</h3>
+      <div class="related-articles__list">
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2026/02/18/frontend-conference-kansai-2025/" class="related-articles__eye-catch-link">                  <img src="/blog/2026/02/18/frontend_conference_kansai_2025/images/eyecatch.png" alt="フロントエンドカンファレンス関西 2025 に参加 & 登壇してきました！" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2026-02-18
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2026/02/18/frontend-conference-kansai-2025/" class="related-articles__title-link">フロントエンドカンファレンス関西 2025 に参加 & 登壇してきました！</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/フロントエンド/" class="related-articles__tag-link">フロントエンド</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2025/10/02/frontend-conference-tokyo-2025/" class="related-articles__eye-catch-link">                  <img src="/blog/2025/10/02/frontend_conference_tokyo_2025/images/eyecatch.png" alt="フロントエンドカンファレンス東京 2025 に参加 & 登壇してきました！" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2025-10-02
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2025/10/02/frontend-conference-tokyo-2025/" class="related-articles__title-link">フロントエンドカンファレンス東京 2025 に参加 & 登壇してきました！</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/フロントエンド/" class="related-articles__tag-link">フロントエンド</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2025/05/07/design-token-linter/" class="related-articles__eye-catch-link">                  <img src="/images/eyecatch-placeholder.png" alt="デザイントークンが正しく利用できていることを開発サイクルで継続的に検査する" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2025-05-07
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2025/05/07/design-token-linter/" class="related-articles__title-link">デザイントークンが正しく利用できていることを開発サイクルで継続的に検査する</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/フロントエンド/" class="related-articles__tag-link">フロントエンド</a>
+                  </li>
+                  <li class="related-articles__tag">
+                    <a href="/tags/カラーミーショップ/" class="related-articles__tag-link">カラーミーショップ</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+          <article class="related-articles__item">
+            <div class="related-articles__eye-catch">
+<a href="/2025/02/13/gamers-frontend-component-test/" class="related-articles__eye-catch-link">                  <img src="/blog/2025/02/13/gamers-frontend-component-test/images/eye-catch.jpg" alt="ロリポップ for Gamers におけるフロントエンドテストの拡充" class="related-articles__eye-catch-img" />
+</a>            </div>
+            <div class="related-articles__content">
+              <time class="related-articles__date">
+                2025-02-13
+              </time>
+              <h4 class="related-articles__title-heading">
+                <a href="/2025/02/13/gamers-frontend-component-test/" class="related-articles__title-link">ロリポップ for Gamers におけるフロントエンドテストの拡充</a>
+              </h4>
+              <ul class="related-articles__tags">
+                  <li class="related-articles__tag">
+                    <a href="/tags/フロントエンド/" class="related-articles__tag-link">フロントエンド</a>
+                  </li>
+              </ul>
+            </div>
+          </article>
+      </div>
+    </section>
+
+      <footer class="article__footer">
+  <div class="article__author">
+  <h2 class="article__author-title">
+    書いた人
+  </h2>
+  <ul class="article__author-list">
+      <li class="article__author-list-item">
+        <p class="article__author-image">
+          <img src="//www.gravatar.com/avatar/22e56b1313cf56e305a539c1d745bfd4?size=80" alt="" />
+        </p>
+        <div class="article__author-data">
+          <p class="article__author-name">
+            <a href="/authors/gatchan/">gatchan</a>
+          </p>
+          <p class="article__author-description">
+            ほげほげふがふがぴよりんぱ
+          </p>
+        </div>
+        <div class="article__author-links">
+<a href="https://github.com/piyoppi" class="article__author-link article__author-link--github" target="_blank">              <i class="fa fa-github fa-fw"></i>
+</a>        </div>
+      </li>
+  </ul>
+</div>
+
+</footer>
+
+    </div>
+  </article>
+
+      </div>
+      <aside class="sidebar">
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      最新記事
+    </h2>
+    <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+<a href="/2026/09/02/minne-ai-native-org-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-02
+            </span>
+            <span class="sidebar__list-title">
+              AI前提のプロダクト開発組織を目指して、minneの2026年の現在地
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/igaiga-db-modeling-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              igaigaさんによるDBモデリングワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/focus-cost-schema/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              クラウドから物理サーバーまでのコストを共通スキーマFOCUSで統一して可視化する
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/09/01/minorun-rag-agent-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-09-01
+            </span>
+            <span class="sidebar__list-title">
+              みのるんさんによるRAG＆AIエージェント構築ハンズオンを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/28/llm-as-a-judge-quality-score/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-28
+            </span>
+            <span class="sidebar__list-title">
+              AIが生成したWebサイトの品質を数値化する — ルーブリック × LLM-as-a-Judge による評価駆動開発
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/20/tdd-workshop-2026/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-20
+            </span>
+            <span class="sidebar__list-title">
+              t_wadaさんによる2026年度版TDDワークショップを開催しました
+            </span>
+</a>        </li>
+        <li class="sidebar__list-item">
+<a href="/2026/08/12/tech-survey-2026-first-half/" class="sidebar__list-link">            <span class="sidebar__list-date">
+              2026-08-12
+            </span>
+            <span class="sidebar__list-title">
+              GMOペパボの開発体験や技術スタック 2026上期
+            </span>
+</a>        </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      タグ
+    </h2>
+    <ul class="sidebar__tags">
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/イベントレポート/" class="sidebar__tags-link">イベントレポート (93)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/デザイン/" class="sidebar__tags-link">デザイン (82)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/minne/" class="sidebar__tags-link">minne (58)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/イベント/" class="sidebar__tags-link">イベント (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/研修/" class="sidebar__tags-link">研修 (54)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ruby/" class="sidebar__tags-link">Ruby (47)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/勉強会/" class="sidebar__tags-link">勉強会 (44)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/engineering/" class="sidebar__tags-link">engineering (43)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/カラーミーショップ/" class="sidebar__tags-link">カラーミーショップ (40)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">SUZURI (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/登壇レポート/" class="sidebar__tags-link">登壇レポート (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ios/" class="sidebar__tags-link">iOS (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/android/" class="sidebar__tags-link">Android (31)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">pepabo (30)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/mobile/" class="sidebar__tags-link">mobile (29)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ai/" class="sidebar__tags-link">AI (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/sre/" class="sidebar__tags-link">SRE (28)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/インフラ/" class="sidebar__tags-link">インフラ (26)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データ基盤/" class="sidebar__tags-link">データ基盤 (24)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/エンジニア/" class="sidebar__tags-link">エンジニア (23)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ecブログリレー/" class="sidebar__tags-link">ECブログリレー (22)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/php/" class="sidebar__tags-link">PHP (20)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/hosting/" class="sidebar__tags-link">hosting (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/cto/" class="sidebar__tags-link">CTO (19)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/プロダクトマネジメント/" class="sidebar__tags-link">プロダクトマネジメント (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/フロントエンド/" class="sidebar__tags-link">フロントエンド (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/rails/" class="sidebar__tags-link">Rails (18)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/rails/" class="sidebar__tags-link">rails (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/productmanagement/" class="sidebar__tags-link">ProductManagement (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/security/" class="sidebar__tags-link">security (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/採用/" class="sidebar__tags-link">採用 (17)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/インターンシップ/" class="sidebar__tags-link">インターンシップ (16)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ロリポップ/" class="sidebar__tags-link">ロリポップ (15)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/github-actions/" class="sidebar__tags-link">GitHub Actions (14)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/クリエイターズネットワーク/" class="sidebar__tags-link">クリエイターズネットワーク (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/github/" class="sidebar__tags-link">GitHub (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/データ分析/" class="sidebar__tags-link">データ分析 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/開発プロセス/" class="sidebar__tags-link">開発プロセス (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/go/" class="sidebar__tags-link">Go (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/鹿児島/" class="sidebar__tags-link">鹿児島 (12)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/データエンジニアリング/" class="sidebar__tags-link">データエンジニアリング (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/フリーナンス/" class="sidebar__tags-link">フリーナンス (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/登壇情報/" class="sidebar__tags-link">登壇情報 (11)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">Kubernetes (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/management/" class="sidebar__tags-link">management (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/生成ai/" class="sidebar__tags-link">生成AI (10)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/event/" class="sidebar__tags-link">event (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/ヘテムル/" class="sidebar__tags-link">ヘテムル (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/aws/" class="sidebar__tags-link">AWS (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/社内向け技術文書/" class="sidebar__tags-link">社内向け技術文書 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/cre/" class="sidebar__tags-link">CRE (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/javascript/" class="sidebar__tags-link">JavaScript (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/読書会/" class="sidebar__tags-link">読書会 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/採用目的/" class="sidebar__tags-link">採用目的 (9)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/デザイン戦略チーム/" class="sidebar__tags-link">デザイン戦略チーム (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ナレッジシェア/" class="sidebar__tags-link">ナレッジシェア (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/ディレクター/" class="sidebar__tags-link">ディレクター (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/suzuri/" class="sidebar__tags-link">suzuri (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/pepabo/" class="sidebar__tags-link">Pepabo (8)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/ムームードメイン/" class="sidebar__tags-link">ムームードメイン (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/30days-album/" class="sidebar__tags-link">30days Album (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ptf/" class="sidebar__tags-link">PTF (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/tdd/" class="sidebar__tags-link">tdd (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/技術部/" class="sidebar__tags-link">技術部 (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/google-cloud/" class="sidebar__tags-link">Google Cloud (7)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/デザインリサーチ/" class="sidebar__tags-link">デザインリサーチ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/programming/" class="sidebar__tags-link">programming (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/css/" class="sidebar__tags-link">CSS (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/ペパボ/" class="sidebar__tags-link">ペパボ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/software/" class="sidebar__tags-link">software (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/スクラム開発/" class="sidebar__tags-link">スクラム開発 (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データベース/" class="sidebar__tags-link">データベース (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ci/" class="sidebar__tags-link">CI (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/slack/" class="sidebar__tags-link">Slack (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/グーペ/" class="sidebar__tags-link">グーペ (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/鹿児島オフィスチーム/" class="sidebar__tags-link">鹿児島オフィスチーム (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/aws/" class="sidebar__tags-link">aws (6)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/workshop/" class="sidebar__tags-link">workshop (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/bigquery/" class="sidebar__tags-link">BigQuery (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/iosdc/" class="sidebar__tags-link">iOSDC (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/データサイエンス/" class="sidebar__tags-link">データサイエンス (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/dbt/" class="sidebar__tags-link">dbt (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/conference/" class="sidebar__tags-link">conference (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/typescript/" class="sidebar__tags-link">TypeScript (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/ec/" class="sidebar__tags-link">ec (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/ホスティング/" class="sidebar__tags-link">ホスティング (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/機械学習/" class="sidebar__tags-link">機械学習 (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/docker/" class="sidebar__tags-link">docker (5)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/it/" class="sidebar__tags-link">IT (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/ia/" class="sidebar__tags-link">IA (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/cloudnative/" class="sidebar__tags-link">cloudnative (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/vibe-coding/" class="sidebar__tags-link">Vibe Coding (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/トラブルシューティング/" class="sidebar__tags-link">トラブルシューティング (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/新卒10期ブログリレー/" class="sidebar__tags-link">新卒10期ブログリレー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/vue/" class="sidebar__tags-link">Vue (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/web3/" class="sidebar__tags-link">web3 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/yapc/" class="sidebar__tags-link">YAPC (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/zendesk/" class="sidebar__tags-link">Zendesk (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/生産性/" class="sidebar__tags-link">生産性 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/インタビュー/" class="sidebar__tags-link">インタビュー (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/cs/" class="sidebar__tags-link">CS (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/builderscon/" class="sidebar__tags-link">builderscon (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/openstack/" class="sidebar__tags-link">OpenStack (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/ペパボのフロントエンドスタンダード/" class="sidebar__tags-link">ペパボのフロントエンドスタンダード (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/今日話したこと/" class="sidebar__tags-link">今日話したこと (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/notion/" class="sidebar__tags-link">notion (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/swiftui/" class="sidebar__tags-link">SwiftUI (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mail/" class="sidebar__tags-link">mail (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/技術基盤/" class="sidebar__tags-link">技術基盤 (4)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/テックブログ/" class="sidebar__tags-link">テックブログ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ロリポップ-for-gamers/" class="sidebar__tags-link">ロリポップ! for Gamers (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/alive-project/" class="sidebar__tags-link">Alive Project (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ec/" class="sidebar__tags-link">EC (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/nextjs/" class="sidebar__tags-link">nextjs (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/ngx-mruby/" class="sidebar__tags-link">ngx_mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/ストレージ/" class="sidebar__tags-link">ストレージ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/bayt/" class="sidebar__tags-link">Bayt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/slack/" class="sidebar__tags-link">slack (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/メンタリング/" class="sidebar__tags-link">メンタリング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/ec-chapter/" class="sidebar__tags-link">ec-chapter (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/oss/" class="sidebar__tags-link">oss (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/mruby/" class="sidebar__tags-link">mruby (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/ペパボカレッジ/" class="sidebar__tags-link">ペパボカレッジ (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/キャリア/" class="sidebar__tags-link">キャリア (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/mre/" class="sidebar__tags-link">MRE (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/productivity/" class="sidebar__tags-link">productivity (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/チームビルディング/" class="sidebar__tags-link">チームビルディング (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/pbtech/" class="sidebar__tags-link">pbtech (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/自動テスト/" class="sidebar__tags-link">自動テスト (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/architecture/" class="sidebar__tags-link">architecture (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/動画/" class="sidebar__tags-link">動画 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/design-scramble/" class="sidebar__tags-link">Design Scramble (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/nuxt/" class="sidebar__tags-link">Nuxt (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/rubygems/" class="sidebar__tags-link">RubyGems (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/git/" class="sidebar__tags-link">git (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/サービスデザイン/" class="sidebar__tags-link">サービスデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/技術書典/" class="sidebar__tags-link">技術書典 (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color16">
+            <a href="/tags/jugem/" class="sidebar__tags-link">JUGEM (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ビジュアルデザイン/" class="sidebar__tags-link">ビジュアルデザイン (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/kubernetes/" class="sidebar__tags-link">kubernetes (3)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/customer-ops/" class="sidebar__tags-link">Customer Ops (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/github/" class="sidebar__tags-link">github (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/サーバ/" class="sidebar__tags-link">サーバ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/nft/" class="sidebar__tags-link">NFT (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/unleash/" class="sidebar__tags-link">Unleash (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/寄稿レポート/" class="sidebar__tags-link">寄稿レポート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/uiデザイン/" class="sidebar__tags-link">UIデザイン (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/swift/" class="sidebar__tags-link">Swift (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/情シス/" class="sidebar__tags-link">情シス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ceg/" class="sidebar__tags-link">CEG (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/sql/" class="sidebar__tags-link">SQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/ユニットテスト/" class="sidebar__tags-link">ユニットテスト (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/iac/" class="sidebar__tags-link">IaC (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/バージョンアップ/" class="sidebar__tags-link">バージョンアップ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/openai/" class="sidebar__tags-link">OpenAI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/airbyte/" class="sidebar__tags-link">Airbyte (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color17">
+            <a href="/tags/nodejs/" class="sidebar__tags-link">nodejs (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/vertex-ai/" class="sidebar__tags-link">Vertex AI (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/コンテナ/" class="sidebar__tags-link">コンテナ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/競技プログラミング/" class="sidebar__tags-link">競技プログラミング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/業務効率化/" class="sidebar__tags-link">業務効率化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/isr/" class="sidebar__tags-link">ISR (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color11">
+            <a href="/tags/linux-kernel/" class="sidebar__tags-link">Linux Kernel (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/kotlin/" class="sidebar__tags-link">Kotlin (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ライティング/" class="sidebar__tags-link">ライティング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/コミュニティ/" class="sidebar__tags-link">コミュニティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/カンファレンス/" class="sidebar__tags-link">カンファレンス (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color5">
+            <a href="/tags/kaigi-on-rails/" class="sidebar__tags-link">Kaigi on Rails (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/colorme/" class="sidebar__tags-link">colorme (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color4">
+            <a href="/tags/ブログリレー/" class="sidebar__tags-link">ブログリレー (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/wordpress/" class="sidebar__tags-link">wordpress (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/claude-code/" class="sidebar__tags-link">claude code (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/へテムル/" class="sidebar__tags-link">へテムル (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/service/" class="sidebar__tags-link">service (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color14">
+            <a href="/tags/情報共有/" class="sidebar__tags-link">情報共有 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color12">
+            <a href="/tags/space/" class="sidebar__tags-link">space (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/デザイナー交流会/" class="sidebar__tags-link">デザイナー交流会 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/gemini/" class="sidebar__tags-link">Gemini (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/mysql/" class="sidebar__tags-link">MySQL (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color10">
+            <a href="/tags/事業開発部/" class="sidebar__tags-link">事業開発部 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/heroku/" class="sidebar__tags-link">Heroku (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/写真/" class="sidebar__tags-link">写真 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/image/" class="sidebar__tags-link">image (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/パフォーマンスチューニング/" class="sidebar__tags-link">パフォーマンスチューニング (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/thinkdesign/" class="sidebar__tags-link">ThinkDESIGN (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color7">
+            <a href="/tags/ペパボのデザイン思考/" class="sidebar__tags-link">ペパボのデザイン思考 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/アーキテクチャ/" class="sidebar__tags-link">アーキテクチャ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color6">
+            <a href="/tags/vault/" class="sidebar__tags-link">vault (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/sre/" class="sidebar__tags-link">sre (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/next-js/" class="sidebar__tags-link">Next.js (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/flaky-test/" class="sidebar__tags-link">flaky test (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/hackathon/" class="sidebar__tags-link">hackathon (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color3">
+            <a href="/tags/デザインプロセス展/" class="sidebar__tags-link">デザインプロセス展 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/ci/" class="sidebar__tags-link">ci (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/cloud-workflows/" class="sidebar__tags-link">Cloud Workflows (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color18">
+            <a href="/tags/rubykaigi/" class="sidebar__tags-link">rubykaigi (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color2">
+            <a href="/tags/llm/" class="sidebar__tags-link">LLM (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/デザインスプリント/" class="sidebar__tags-link">デザインスプリント (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color1">
+            <a href="/tags/アクセシビリティ/" class="sidebar__tags-link">アクセシビリティ (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color9">
+            <a href="/tags/ethereum/" class="sidebar__tags-link">ethereum (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color8">
+            <a href="/tags/カラーミーリピート/" class="sidebar__tags-link">カラーミーリピート (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color19">
+            <a href="/tags/可視化/" class="sidebar__tags-link">可視化 (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color13">
+            <a href="/tags/blockchain/" class="sidebar__tags-link">blockchain (2)</a>
+          </li>
+          <li class="sidebar__tags-item tag-color15">
+            <a href="/tags/flutter/" class="sidebar__tags-link">flutter (2)</a>
+          </li>
+    </ul>
+  </div>
+  <div class="sidebar__sections">
+    <h2 class="sidebar__title">
+      リンク
+    </h2>
+    <ul class="information">
+      <li>
+        <a href="https://pepabo.com/" target="_blank">GMOペパボ株式会社</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/" target="_blank">採用サイト</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/environment/engineer/" target="_blank">エンジニアの制度・働き方</a>
+      </li>
+      <li>
+        <a href="https://hr.pepabo.com/" target="_blank">HR ブログ</a>
+      </li>
+      <li>
+        <a href="https://recruit.pepabo.com/partner/interview/" target="_blank">スタッフインタビュー</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+    </div>
+    <footer class="footer">
+  <div class="credit">
+    <p class="credit__logo">
+      Pepabo Tech Portal
+    </p>
+    <ul class="credit__links">
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/overview/" target="_blank">会社概要</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/company/privacy/" target="_blank">プライバシーポリシー</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://recruit.pepabo.com/" target="_blank">採用情報</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/faq/" target="_blank">よくあるご質問</a>
+      </li>
+      <li class="credit__link">
+        <a href="https://pepabo.com/contact/" target="_blank">お問い合わせ</a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="js-pepabo-footer-container"></div>
+  <script async type="text/javascript" src="https://asset.pepabo.com/pepabo-footer/pepabo-footer.js"></script>
+
+    <script>
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.yjtag.jp/tag.js#site=g7Rx6Q9";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//b.yjtag.jp/iframe?c=g7Rx6Q9" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+
+    <div class="overlay">
+    </div>
+
+    <script
+  type="text/javascript"
+  charset="UTF-8"
+  src="https://cache.img.gmo.jp/gmo/header/script.min.js"
+  id="gmoheadertag"
+  async="async"
+></script>
+
+  </body>
+</html>

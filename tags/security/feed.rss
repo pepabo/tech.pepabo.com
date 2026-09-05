@@ -1,0 +1,2743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pepabo Tech Portal - security</title>
+    <link>https://tech.pepabo.com/</link>
+    <description>GMOペパボのエンジニア・デザイナーによる技術情報のポータルサイト - security についての記事</description>
+    <atom:link href="https://tech.pepabo.com/tags/security/feed.rss" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 19 Mar 2026 00:00:00 +0900</pubDate>
+    <item>
+      <title>AI前提のセキュリティ対策室での仕事</title>
+      <link>https://tech.pepabo.com/2026/03/19/ai-and-security-team/</link>
+      <guid>https://tech.pepabo.com/2026/03/19/ai-and-security-team/</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;セキュリティ対策室の&lt;a href="https://x.com/n01e0"&gt;n01e0&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;この記事では、セキュリティ対策室で私がAI(広義)をどのように活用しているかを紹介します。&lt;/p&gt;
+
+&lt;p&gt;Attack Surface Managementの自動化から、機械学習による異常検知、AIエージェントを活用した脆弱性診断まで、私の業務の各領域でAIが前提となりつつある現状をお伝えします。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#pasm-pepabo-attack-surface-management" id="markdown-toc-pasm-pepabo-attack-surface-management"&gt;PASM (Pepabo Attack Surface Management)&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#scratchコンテナで動くrustスキャナ" id="markdown-toc-scratchコンテナで動くrustスキャナ"&gt;scratchコンテナで動くRustスキャナ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ドメインの自動収集" id="markdown-toc-ドメインの自動収集"&gt;ドメインの自動収集&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ai-x-rust" id="markdown-toc-ai-x-rust"&gt;AI x Rust&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#agentic-ml" id="markdown-toc-agentic-ml"&gt;Agentic ML&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#令和最新版ビッグデータをエーアイで良い感じに" id="markdown-toc-令和最新版ビッグデータをエーアイで良い感じに"&gt;令和最新版「ビッグデータをエーアイで良い感じに」&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#データの正規化とgit管理" id="markdown-toc-データの正規化とgit管理"&gt;データの正規化とgit管理&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#shodanデータの可視化クエリ基盤" id="markdown-toc-shodanデータの可視化クエリ基盤"&gt;Shodanデータの可視化・クエリ基盤&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#スナップショットの差分抽出" id="markdown-toc-スナップショットの差分抽出"&gt;スナップショットの差分抽出&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ipの分類" id="markdown-toc-ipの分類"&gt;IPの分類&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ポートの希少性スコア" id="markdown-toc-ポートの希少性スコア"&gt;ポートの希少性スコア&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#異常検知" id="markdown-toc-異常検知"&gt;異常検知&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#human-in-the-loop" id="markdown-toc-human-in-the-loop"&gt;Human-in-the-Loop&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#mlは過渡的な手段" id="markdown-toc-mlは過渡的な手段"&gt;MLは過渡的な手段&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#agenticな脆弱性診断-unravelling" id="markdown-toc-agenticな脆弱性診断-unravelling"&gt;Agenticな脆弱性診断 (Unravelling)&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#人間の脆弱性診断フローを落とし込む" id="markdown-toc-人間の脆弱性診断フローを落とし込む"&gt;人間の脆弱性診断フローを落とし込む&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#llmに任せる部分とスクリプトに任せる部分" id="markdown-toc-llmに任せる部分とスクリプトに任せる部分"&gt;LLMに任せる部分とスクリプトに任せる部分&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#診断フロー" id="markdown-toc-診断フロー"&gt;診断フロー&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#whiteboxとgraybox" id="markdown-toc-whiteboxとgraybox"&gt;WhiteboxとGraybox&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#トリアージと修正" id="markdown-toc-トリアージと修正"&gt;トリアージと修正&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#false-negativeが増えるくらいならfalse-positiveを許容する" id="markdown-toc-false-negativeが増えるくらいならfalse-positiveを許容する"&gt;False Negativeが増えるくらいならFalse Positiveを許容する&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="pasm-pepabo-attack-surface-management"&gt;PASM (Pepabo Attack Surface Management)&lt;/h2&gt;
+
+&lt;p&gt;PASMはPepabo Attack Surface Managementの略称で、独自のスキャナとShodanなどの外部ソースからの情報収集を組み合わせ、Attack Surfaceの把握と管理を行うプロジェクトです。&lt;/p&gt;
+
+&lt;p&gt;スキャナはECS Fargate(Spot)上で稼働しており、Rustで書かれたバイナリをstatic linkでビルドしてscratchコンテナに載せています。コンテナサイズはわずか6.7MBで、1日あたりの実行コストは合計で約50円です(Shodan APIの方が圧倒的に高いです)。&lt;/p&gt;
+
+&lt;p&gt;スキャンは主にドメインを対象として実行しており、対象ドメインはAWSやCertificate Transparency、社内DNSから自動収集しています。監視対象のドメインは4,000件以上にのぼります。&lt;/p&gt;
+
+&lt;p&gt;主な検出項目として、意図せず公開されているエンドポイントの検出、Subdomain Takeoverリスクの検出、証明書の有効期限監視、WAFの動作確認、HTTPレスポンスヘッダからの情報漏洩検出などがあります。&lt;/p&gt;
+
+&lt;h3 id="scratchコンテナで動くrustスキャナ"&gt;scratchコンテナで動くRustスキャナ&lt;/h3&gt;
+
+&lt;p&gt;PASMのコンテナイメージのベースは&lt;code&gt;scratch&lt;/code&gt;です。scratchには&lt;code&gt;libc&lt;/code&gt;、&lt;code&gt;sh&lt;/code&gt;はもちろん、&lt;code&gt;/etc/hosts&lt;/code&gt;すら存在しないため、多くのアプリケーションはそのままでは動きません。これを実現するために以下の工夫をしています。&lt;/p&gt;
+
+&lt;p&gt;まず、ビルド時に&lt;code&gt;x86_64-unknown-linux-musl&lt;/code&gt;ターゲットで&lt;code&gt;RUSTFLAGS="-C target-feature=+crt-static"&lt;/code&gt;を指定し、musl libcを含むすべての依存を静的リンクします。DNS解決については、libcの&lt;code&gt;getaddrinfo&lt;/code&gt;に依存しないPure RustのDNSリゾルバである&lt;a href="https://github.com/hickory-dns/hickory-dns"&gt;hickory-resolver&lt;/a&gt;を使用しています。これにより、&lt;code&gt;/etc/resolv.conf&lt;/code&gt;も不要で、シングルバイナリで名前解決まで可能になります。&lt;/p&gt;
+
+&lt;p&gt;さらに、リリースビルドではサイズの最小化を徹底しています。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight toml"&gt;&lt;code&gt;&lt;span class="nn"&gt;[profile.release]&lt;/span&gt;
+&lt;span class="py"&gt;opt-level&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"z"&lt;/span&gt;
+&lt;span class="py"&gt;lto&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+&lt;span class="py"&gt;strip&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;
+&lt;span class="py"&gt;panic&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;'abort'&lt;/span&gt;
+&lt;span class="py"&gt;codegen-units&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;opt-level = "z"&lt;/code&gt;でサイズ優先の最適化、LTOでリンク時最適化、シンボルのstrip、panicをabortにしてunwind用のコードを除去、&lt;code&gt;codegen-units = 1&lt;/code&gt;でコンパイル単位を1つにまとめてさらなる最適化を可能にしています。この結果、4,000件以上のドメインを高速にスキャンするバイナリと設定ファイルが6.7MBのコンテナに収まっています。&lt;/p&gt;
+
+&lt;h3 id="ドメインの自動収集"&gt;ドメインの自動収集&lt;/h3&gt;
+
+&lt;p&gt;監視対象のドメインは手動管理ではなく、複数のソースから自動収集しています。&lt;/p&gt;
+
+&lt;p&gt;最大のソースはAWS Route53で、ペパボが管理する14以上のAWSアカウント(division)からDNSレコードを定期的に取得しています。基盤チームが管理するdivisionは変更頻度が高いため毎時更新、その他は日次で更新しています。&lt;/p&gt;
+
+&lt;p&gt;取得したRoute53のRecordSets JSONは、Rustで書かれたfilterバイナリに渡されます。filterはA/CNAMEレコードのみを対象とし、以下のフィルタを優先順位順に適用します。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ワイルドカードレコード(&lt;code&gt;*.example.com&lt;/code&gt;)の除外&lt;/li&gt;
+  &lt;li&gt;無視パターン(正規表現)による除外&lt;/li&gt;
+  &lt;li&gt;サービス固有の除外(ユーザに提供しているサブドメインなど)&lt;/li&gt;
+  &lt;li&gt;既存の監視対象との重複チェック&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;どのフィルタにもマッチしなかった(監視除外対象でない)ドメインは、Public Suffix Listを拡張したPepabo Suffix Listを使ってサービスに振り分けられ、サービスごとのYAMLファイルに追記されます。&lt;/p&gt;
+
+&lt;p&gt;Certificate Transparencyからの収集では、crt.shのAPIを通じてSSL証明書のCN(Common Name)とSAN(Subject Alternative Name)を抽出し、新しいサブドメインを発見しています。&lt;/p&gt;
+
+&lt;p&gt;これらの収集パイプラインはGitHub Actionsで自動化されており、新規ドメインが発見されるとPRが作成され、レビュー後にスキャン対象に追加される仕組みです。&lt;/p&gt;
+
+&lt;h3 id="ai-x-rust"&gt;AI x Rust&lt;/h3&gt;
+
+&lt;p&gt;PASMのスキャナはRustで実装していますが、AIはRustを書くのが基本的に上手です。以下の点さえ注意して指示すれば、良い実装を出してくれます。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;古いcrateを使いがち&lt;/li&gt;
+  &lt;li&gt;古いeditionを使いがち&lt;/li&gt;
+  &lt;li&gt;古いパターン(&lt;code&gt;mod.rs&lt;/code&gt;)で書きがち&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;型システムの強さとテストのしやすさが仕様の担保に役立っていると考えています。Rustは所有権やライフタイムといった概念が独特で学習コストの高さが課題とされてきました(本質的に難しいのはプログラミングそのものであり、Rustではないという意見もあり、私はその意見を支持しています)が、AIの登場によってその障壁は大幅に下がりました。&lt;/p&gt;
+
+&lt;p&gt;AIが生成したコードはコンパイラがチェックしてくれるため、「コンパイルが通ればおおむね正しい」というRustの特性がAIとの協業と非常に相性が良いと感じています。ただAI以前からRustが好きなのでバイアスはかかっていると思います。コンパイルが遅いことはデメリットですが。&lt;/p&gt;
+
+&lt;h2 id="agentic-ml"&gt;Agentic ML&lt;/h2&gt;
+
+&lt;h3 id="令和最新版ビッグデータをエーアイで良い感じに"&gt;令和最新版「ビッグデータをエーアイで良い感じに」&lt;/h3&gt;
+
+&lt;p&gt;ShodanのAPIで保有IPレンジのデータを取得・モニタリングしています。&lt;/p&gt;
+
+&lt;p&gt;ShodanにはAlertという機能があり、指定したIPやCIDR、ドメインのイベント(ポート変更など)を通知してくれる仕組みを使っています。&lt;/p&gt;
+
+&lt;p&gt;また、Search APIを利用することで指定したホストのスキャン結果を得られますが、以下の問題を抱えています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;データが不安定(UDPなど一部のポートは検出できたりできなかったりするような挙動があり、ポートが開閉してるように見える)&lt;/li&gt;
+  &lt;li&gt;IPが多すぎるため情報量も膨大
+    &lt;ul&gt;
+      &lt;li&gt;15,000以上のIP&lt;/li&gt;
+      &lt;li&gt;サービスや社内利用のIPだけでなく、ホスティング商材としてユーザが使用しているIPも含まれる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これらの課題に対して、AIエージェントと共にパイプラインを構築しました。モデルの選定は、目的と手元にあるデータの特性をもとに、エージェントと議論しつつペパボ研究所の&lt;a href="https://x.com/monochromegane"&gt;三宅&lt;/a&gt;さんにもアドバイスをもらいながら進めました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2026/03/19/ai-and-security-team/images/pipeline.png" alt="Agentic MLパイプライン" /&gt;&lt;/p&gt;
+
+&lt;h3 id="データの正規化とgit管理"&gt;データの正規化とgit管理&lt;/h3&gt;
+
+&lt;p&gt;Shodan APIが返すJSONはホストごとに非常に大きく、バナー情報やHTML本文、証明書チェーンの全体などノイズが多いデータ、サイズが大きすぎるデータも大量に含まれています。これをそのままgit管理すると容量が膨大になるため、APIから取得したJSONをポートごとにいくつかの特徴量に必要なフィールドに絞り込んでから&lt;code&gt;hostdb/*_ports.json&lt;/code&gt;としてgitで履歴管理しています。&lt;/p&gt;
+
+&lt;h3 id="shodanデータの可視化クエリ基盤"&gt;Shodanデータの可視化・クエリ基盤&lt;/h3&gt;
+
+&lt;p&gt;正規化したとはいえ、この規模のデータを人間が直接読んで分析するのは現実的ではありません。MetabaseやRedashのようなBIツールを立てる選択肢もありますが、利用者が限られる中でインフラを維持するのは割に合いません。そこで、ブラウザ上でSQLクエリを実行できる分析基盤をAIと一緒に構築しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://duckdb.org/docs/api/wasm/overview.html"&gt;DuckDB WASM&lt;/a&gt;を使い、&lt;code&gt;hostdb/&lt;/code&gt;のJSONをブラウザ上でパースしてテーブルに投入し、SQLで分析します。バックエンドサーバが不要なため運用コストが非常に小さいです。&lt;/p&gt;
+
+&lt;p&gt;時系列分析にはgitのコミット履歴を活用しています。&lt;code&gt;hostdb/&lt;/code&gt;の各コミットからスナップショットを生成し、&lt;code&gt;pasm_history&lt;/code&gt;テーブルとしてロードすることで、ポートの増減やサービス構成の変化をSQLで追えるようにしています。大規模な履歴データはビルド時にgzip圧縮し、ブラウザ側でストリーミング展開・バッチ挿入することでメモリ消費を抑えています。&lt;/p&gt;
+
+&lt;p&gt;また、HTTPタイトル、SSL証明書のフィンガープリント、ホスト名パターンなどを組み合わせたサービスマイグレーション検出も組み込んでおり、IPが別のサービスに移動した場合を追跡できます。リスク分析、脆弱性一覧、ポートサマリなどのプリセットクエリに加え、自由にSQLを書いて分析することも可能です。&lt;/p&gt;
+
+&lt;h3 id="スナップショットの差分抽出"&gt;スナップショットの差分抽出&lt;/h3&gt;
+
+&lt;p&gt;解析時には各コミットのJSONをパースし、IP × ポートの状態を正規化したスナップショットを生成し、2つの時点のスナップショットの差分からIPごとに以下の差分特徴量を生成します。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ポートの増減(新規・削除・変更)&lt;/li&gt;
+  &lt;li&gt;サービス情報の変化(product/versionの変更回数)&lt;/li&gt;
+  &lt;li&gt;SSL証明書の変更回数&lt;/li&gt;
+  &lt;li&gt;HTTPステータスの変化&lt;/li&gt;
+  &lt;li&gt;変化率(&lt;code&gt;total_change_count / max(prev_port_count, curr_port_count, 1)&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;etc…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これらを合わせた21の特徴量が、後段の分類・異常検知の入力となります。&lt;/p&gt;
+
+&lt;h3 id="ipの分類"&gt;IPの分類&lt;/h3&gt;
+
+&lt;p&gt;15,000以上のIPには、自社サービスのIP、社内利用のIP、そしてホスティング商材のユーザが利用するIPが混在しています。異常検知の精度を上げるには、IPがcustomer(ユーザ利用)かinternal(自社管理)かを正しく分類する必要があります。&lt;/p&gt;
+
+&lt;p&gt;分類は3段階のフォールバック構造です。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;CIDRレンジによる静的マッチ&lt;/strong&gt; — &lt;code&gt;ip_ranges.yaml&lt;/code&gt;に定義されたCIDRレンジで最長一致。確実に分類できるIPはここで決まる&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;MLによる分類&lt;/strong&gt; — CIDRで判定できないIPに対して、RandomForest + XGBoostのアンサンブルモデルで分類する。ポートの構成パターン、Webサーバの種類、SSL証明書の特徴(Let’s Encrypt率、商用CA率)、HTMLハッシュのシグネチャなど50以上の特徴量を使用し、SelectKBestで30に絞り込む&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;unknown&lt;/strong&gt; — MLの確信度が閾値に満たない場合はunknownとする&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id="ポートの希少性スコア"&gt;ポートの希少性スコア&lt;/h3&gt;
+
+&lt;p&gt;新しく開いたポートが「珍しいもの」かどうかを定量化するために、カテゴリ内での出現頻度から&lt;code&gt;-log10(frequency / total)&lt;/code&gt;で希少性スコアを算出しています。同じカテゴリ内で過去に一度も観測されていないポートが開いた場合、&lt;code&gt;new_port_unseen_count&lt;/code&gt;として強い異常シグナルになります。&lt;/p&gt;
+
+&lt;p&gt;customer IPについてはこの希少ポートのみに着目した&lt;code&gt;rare_change_rate&lt;/code&gt;を、internal IPについてはSNMP(161番ポート)のようなノイズの多いポートを除外した&lt;code&gt;filtered_change_rate&lt;/code&gt;を、それぞれの異常検知に用います。&lt;/p&gt;
+
+&lt;h3 id="異常検知"&gt;異常検知&lt;/h3&gt;
+
+&lt;p&gt;異常検知はMLとルールベースのハイブリッドです。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;One-Class SVM&lt;/strong&gt; はカテゴリ(customer / internal)ごとに個別のモデルを学習します。連続値の特徴量にはRBFカーネル、boolean特徴量にはHamming類似度を組み合わせたハイブリッドカーネルを使用しています。&lt;code&gt;decision_function&lt;/code&gt;のスコアが低いほど異常度が高く、customer IPについては&lt;code&gt;change_rate&lt;/code&gt;が低い場合に異常判定を抑制するルールも組み込んでいます。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ルールベース&lt;/strong&gt; はパーセンタイル閾値による検出です。たとえば変化率が90パーセンタイルを超えた場合や、過去に観測されていないポートが新たに開いた場合にスコアを加算します。閾値は訓練データから動的に算出されるため、データの分布が変わっても追従します。&lt;/p&gt;
+
+&lt;p&gt;両者のスコアをマージし、最終的な異常フラグを決定します。customerはルールスコアの閾値を高めに設定し、ノイズの多さに対応しています。&lt;/p&gt;
+
+&lt;h3 id="human-in-the-loop"&gt;Human-in-the-Loop&lt;/h3&gt;
+
+&lt;p&gt;IP分類の精度はパイプライン全体の精度に直結します。これを継続的に改善するため、以下のサイクルを回しています。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;ヒューリスティックによるラベル自動生成&lt;/strong&gt; — Shodanのメタデータ(HTMLハッシュ、SSL証明書のパターン、ホスト名、ポート構成)からcustomer/internalのスコアリングを行い、&lt;code&gt;training_labels_review.yaml&lt;/code&gt;に出力&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;人間によるレビュー&lt;/strong&gt; — 自動生成されたラベルを確認し、&lt;code&gt;pending_review&lt;/code&gt;から&lt;code&gt;approved&lt;/code&gt;に変更&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;モデルの再学習&lt;/strong&gt; — approvedラベルを使ってRandomForest + XGBoostを再学習&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;差分レビュー&lt;/strong&gt; — MLの分類結果とCIDRの分類結果が異なるIPを対話的にレビューし、正しい分類を&lt;code&gt;/32&lt;/code&gt;エントリとして&lt;code&gt;ip_ranges.yaml&lt;/code&gt;に追加&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;1ヶ月ほどこのサイクルを回したところで、ラベルの網羅性が上がり、本来の目的である異常検知も良い精度で機能するようになりました。&lt;/p&gt;
+
+&lt;h3 id="mlは過渡的な手段"&gt;MLは過渡的な手段&lt;/h3&gt;
+
+&lt;p&gt;ここで重要なのは、人間のタスクをAIで置き換えて終わりではないという点です。最終的なゴールはプログラムによる完全な自動化です。Human-in-the-Loopのサイクルを回し続けることで&lt;code&gt;ip_ranges.yaml&lt;/code&gt;のCIDRエントリが充実していけば、MLによる分類のフォールバックは不要になります。異常検知についても、ルールの閾値が十分にチューニングされればOne-Class SVMは外せます。つまりMLは、ルールを確立するまでの過渡的な手段です。&lt;/p&gt;
+
+&lt;p&gt;MLのクオリティはさておき、エージェントの登場によって目的に対する手段の選択肢が増えたことが大きな変化です。今までは自分が持っている武器しか使えませんでしたが、今ではあらゆる選択肢から最適なものを選べます(最適なものを選ぶ能力は別途必要ですが)。&lt;/p&gt;
+
+&lt;h2 id="agenticな脆弱性診断-unravelling"&gt;Agenticな脆弱性診断 (Unravelling)&lt;/h2&gt;
+
+&lt;h3 id="人間の脆弱性診断フローを落とし込む"&gt;人間の脆弱性診断フローを落とし込む&lt;/h3&gt;
+
+&lt;p&gt;脆弱性診断の民主化を目指し、Unravellingというツールセットを開発しています。誰がやっても同じような結果が得られること、誰でもできることが目標です。完全な内製化ではなく、SASTの拡張・DASTの代替という位置づけです。&lt;/p&gt;
+
+&lt;p&gt;このツールはClaude Code/Codex CLIのスキルシステム上に構築されており、13のスキル定義が9フェーズの診断パイプラインを駆動します。Playwright MCPでブラウザ操作を行い、ローカルで環境を構築するとコンテナに入ってMFA含むユーザ登録まで自動で行います。&lt;/p&gt;
+
+&lt;h3 id="llmに任せる部分とスクリプトに任せる部分"&gt;LLMに任せる部分とスクリプトに任せる部分&lt;/h3&gt;
+
+&lt;p&gt;実装上の特徴は、診断の本体(脆弱性の探索・検証・レビュー)にはプロンプトによるアプローチだけを使い、決定的に実行できる部分はスクリプトに分離していることです。&lt;/p&gt;
+
+&lt;p&gt;セットアップ(&lt;code&gt;bin/setup&lt;/code&gt;によるPlaywright MCPの登録やCLIインストール、&lt;code&gt;unravelling-init&lt;/code&gt;による対象リポジトリの初期化)、トリアージ(&lt;code&gt;unravelling-triage&lt;/code&gt;)、レポート生成(&lt;code&gt;unravelling-report&lt;/code&gt;)はRuby/Bashスクリプトで実装しています。これらは毎回同じ結果を返せばよいので、LLMを通す必要がありません。&lt;/p&gt;
+
+&lt;p&gt;一方、脆弱性の探索や検証はコンテキストに依存する判断の連続であり、ここにはSkillsのプロンプト設計を通じてモデルの能力を引き出すアプローチを取っています。&lt;/p&gt;
+
+&lt;p&gt;これは私個人の設計思想ですが、FN(見逃し)やFP(誤検知)の削減に寄与する要素を分解すると、最も支配的なのはモデル自体の性能だと考えています。自前でハーネスや診断ツールを作り込んでも、モデルが賢くなれば陳腐化しますし、モデルが対応できない領域をハーネスで補おうとするとメンテナンスコストが継続的に発生します。であれば、モデルの進化に乗る形でSkillsの設計に集中し、モデルの能力を最大限引き出す方が長期的に見て合理的だと考えています。&lt;/p&gt;
+
+&lt;h3 id="診断フロー"&gt;診断フロー&lt;/h3&gt;
+
+&lt;p&gt;アカウント情報と対象のソースコードを与えると、以下のフローで診断を実行します。各フェーズの完了状態は&lt;code&gt;scan_state.json&lt;/code&gt;で追跡されるため、途中で中断しても安全に再開できます。フェーズごとにキー(&lt;code&gt;login&lt;/code&gt;, &lt;code&gt;discovery&lt;/code&gt;, &lt;code&gt;scope&lt;/code&gt;, &lt;code&gt;threat_model&lt;/code&gt;, &lt;code&gt;candidates&lt;/code&gt;, &lt;code&gt;dedupe&lt;/code&gt;, &lt;code&gt;verify&lt;/code&gt;, &lt;code&gt;grouping&lt;/code&gt;, &lt;code&gt;report&lt;/code&gt;)が記録され、再実行時には完了済みフェーズを自動でスキップします。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 1: ログイン・セッション確立&lt;/strong&gt; — Playwright MCPで各アカウントにログインし、Cookieを抽出します。以降のフェーズではこのセッション情報を使い回します。診断中にセッションが切れた場合(401/403、ログインページへのリダイレクト、レスポンスにログインフォームが含まれる場合)は、自動で再ログインして継続します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 2: エンドポイント探索&lt;/strong&gt; — 2つのアプローチを組み合わせます。まずソースコードからフレームワークのルーティング定義を解析してエンドポイントを抽出します。Rails、Django、Laravel、Spring、Gin、FastAPI、Express等の主要フレームワークに対応しています。次にPlaywrightでリンクを辿りフォームを送信しながらネットワークトラフィックをキャプチャします。ここで重要なのは、各リクエストの実際のパラメータ(名前、位置、値、推定型)を&lt;code&gt;sample_requests&lt;/code&gt;として記録することです。このサンプルリクエストが後段のGrayboxエージェントにとって「実際のトラフィックがどう見えるか」の基準となります。両者をマージ・重複排除して&lt;code&gt;endpoints.json&lt;/code&gt;に出力します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 2.5: スコープ設定&lt;/strong&gt; — 対話を通じて診断範囲を決定します。3つのモードがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;ブランチdiffモード&lt;/strong&gt; — &lt;code&gt;git diff main...HEAD&lt;/code&gt;で変更ファイルを特定し、変更されたハンドラと、そのハンドラが依存するモデル・サービス層の変更から影響を受けるエンドポイントを自動特定します。機能ブランチの開発中に差分だけ診断したい場合に使います&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;パス手動指定モード&lt;/strong&gt; — 特定のパス配下だけを対象にします&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;フルスキャンモード&lt;/strong&gt; — 全エンドポイントを対象にします&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;どのモードでも&lt;code&gt;excludes&lt;/code&gt;(除外パス)と&lt;code&gt;context&lt;/code&gt;(エンドポイントごとのテスト方針)を設定できます。たとえば&lt;code&gt;/admin&lt;/code&gt;に対して「管理者用。操作の制限はゆるくして良いが、アクセス制限やXSS対策は厳しく確認する」というコンテキストを付与すると、後段のWhitebox/Grayboxエージェントがこの方針を考慮して診断します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 3: 脅威モデリング&lt;/strong&gt; — STRIDE(Spoofing, Tampering, Repudiation, Information Disclosure, DoS, Elevation of Privilege)に基づき、資産、アクター、データフロー、信頼境界を特定したうえで、エンドポイントごとの脅威を列挙します。この結果は後段のWhitebox/Grayboxエージェントが診断の優先順位付けに使用しますが、テスト範囲を制限するものではありません。脅威モデルにない脆弱性も検出対象です。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 4: 脆弱性探索&lt;/strong&gt; — 各エンドポイントに対して、WhiteboxとGrayboxの2つのSubagentを同時に起動します(並列数は設定可能)。全エージェントの完了を必ず待ちます。完了後にカバレッジチェックを行い、出力ファイルが欠落しているエンドポイントがあれば再起動します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 5: 重複排除&lt;/strong&gt; — Whitebox/Grayboxの検出結果を意味的に統合します。たとえば「CSRF保護なし」と「CSRFトークン未検証」は同一の脆弱性として扱います。Grayboxの動的な証拠を持つ方を優先的に代表として選出します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 6: 再現確認&lt;/strong&gt; — 候補ごとに検証エージェントを起動し、独立した手順で再現を試みます。検証エージェントは元のエージェントの説明を鵜呑みにせず、自分でソースコードを読み直してから検証アプローチを設計します。失敗した場合はレスポンスとコードを分析し、防御の見落としやアプローチの誤りを特定してリトライします(最大3回)。XSSやOpen Redirectについては、curlのレスポンスだけでは判断できないため、Playwrightでブラウザ上のDOM状態やスクリプト実行を確認します。再現できなかった場合は、何を試して何が起きたかを&lt;code&gt;unconfirmed_reason&lt;/code&gt;に詳細に記録します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 7: グルーピング&lt;/strong&gt; — 再現確認済みの検出結果を脆弱性カテゴリごとに集約します。confirmed(再現成功)とunconfirmed(再現未了)を分離し、レポートの構造を形成します。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Phase 8: 懐疑的レビュー&lt;/strong&gt; — グループごとに懐疑的なレビューエージェントを起動します。このエージェントは意図的に敵対的な立場を取り、「この検出は間違っている」という前提でソースコードを読み直します。フレームワークのデフォルト防御(RailsのCSRF保護やActiveRecordのパラメータ化クエリ、DjangoのCSRFミドルウェアやテンプレートの自動エスケープなど)、ミドルウェア、CSPなど、元のエージェントが見落とした防御策がないかを検証します。confirmed/likely/severity_overestimated/severity_underestimated/unlikely/false_positiveの6段階で判定を下します。&lt;/p&gt;
+
+&lt;h3 id="whiteboxとgraybox"&gt;WhiteboxとGraybox&lt;/h3&gt;
+
+&lt;p&gt;2種類のエージェントは相補的な役割を持ちます。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Whitebox&lt;/strong&gt; はソースコードの構造分析に特化しています。リクエストは送信しません。まずPhase 0として、脅威モデルとスコープのコンテキストを参照し、このエンドポイントで起こりうる脅威を列挙します。次にPhase 1で、フレームワークのセキュリティデフォルトやグローバル設定、他のエンドポイントで使われている共通パターンをベースラインとして把握します。Phase 2で対象エンドポイントのコードパス(ルーティング→ミドルウェア→ハンドラ→モデル→レスポンス)を分析し、ベースラインからの逸脱を検出します。&lt;/p&gt;
+
+&lt;p&gt;具体的に見ているのは、ミドルウェアや設定の欠落、認可モデルの不整合(他のエンドポイントでは&lt;code&gt;current_user.organization.users&lt;/code&gt;でスコープしているのにこのエンドポイントだけ&lt;code&gt;User.find(params[:id])&lt;/code&gt;)、データ露出(レスポンスシリアライザが意図しないフィールドを返す)、クロスエンドポイントのデータフロー(書き込み時にサニタイズされたデータが読み取り時に&lt;code&gt;raw&lt;/code&gt;/&lt;code&gt;html_safe&lt;/code&gt;で出力される)、依存ライブラリの危険な使用法などです。&lt;/p&gt;
+
+&lt;p&gt;出力にはコードの場所(&lt;code&gt;file:line&lt;/code&gt;)、問題のスニペット、正しいパターンとの比較、そして検証エージェントが使う&lt;code&gt;test_focus&lt;/code&gt;(「account2のセッションでaccount1のリソースIDを指定してPUTし、更新が成功するか確認」のような具体的な指示)を含めます。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Graybox&lt;/strong&gt; はソースコードを読んだうえで、実際にリクエストを送信して脆弱性を実証します。同じくPhase 0で脅威を列挙した後、Phase 1でリクエストのライフサイクルを追跡し、ユーザ入力がどこで消費されるか(SQLクエリ、シェルコマンド、ファイルパス、テンプレートレンダリング、正規表現、デシリアライゼーション)を特定します。各シンクに対する防御(ORMのパラメータ化、テンプレートの自動エスケープ、明示的なバリデーション)も確認します。&lt;/p&gt;
+
+&lt;p&gt;Phase 2で、コード分析に基づいた仮説駆動のテストを実行します。インジェクション系はコンテキスト固有のペイロード(SQLのシングルクォートを脱出する、HTMLの属性値を閉じるなど)を設計します。アクセス制御はセカンダリアカウントを使ったクロスアカウントIDOR、未認証アクセス、権限昇格をテストします。ビジネスロジックは状態遷移の不正操作、数値のマイナス値・オーバーフロー、競合状態(並行リクエスト10本)を確認します。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;sample_requests&lt;/code&gt;が存在する場合はそれをベースラインとし、テスト対象のパラメータだけを変異させます。これにより、Content-Typeやリクエスト構造の不整合による偽の検出を防ぎます。SSRFやBlind XSSの検証にはローカルのDockerネットワーク内にコールバックサーバを立てて確認します。&lt;/p&gt;
+
+&lt;p&gt;この二重構造により、Whiteboxが「あるべき防御が欠けている」という視点から、Grayboxが「実際に攻撃が成立する」という視点から、それぞれ脆弱性を捉えます。&lt;/p&gt;
+
+&lt;h3 id="トリアージと修正"&gt;トリアージと修正&lt;/h3&gt;
+
+&lt;p&gt;診断結果のトリアージには&lt;code&gt;unravelling-triage&lt;/code&gt;というCLIツールを使います。LLMを使わない純粋なRubyスクリプトで、Token消費なしで対話的にトリアージできます。各findingに対して承認・重大度変更・偽陽性・保留の判定を行い、結果は&lt;code&gt;triage.json&lt;/code&gt;に保存されます。&lt;/p&gt;
+
+&lt;p&gt;修正は&lt;code&gt;/fix&lt;/code&gt;スキルで1件ずつ行います。git worktreeで隔離されたブランチを作成し、修正を実装、回帰テスト(元の脆弱性が再現しないことを確認)を経てPRを作成します。1件完了ごとに会話が終了するため、コンテキストの消費を抑えます。人間が手動で修正した場合は&lt;code&gt;/resolve&lt;/code&gt;で対応を記録し、自動で回帰テストと修正差分の妥当性検証が実行されます。&lt;/p&gt;
+
+&lt;h3 id="false-negativeが増えるくらいならfalse-positiveを許容する"&gt;False Negativeが増えるくらいならFalse Positiveを許容する&lt;/h3&gt;
+
+&lt;p&gt;既存の多くの脆弱性診断自動化ツールではFalse Positive(誤検知)の低さが重視されます。報告書に誤検知が多いとツールの信頼性に関わるからです。一方、内製のツールではFalse Positiveはトリアージで除外すれば済む(トリアージ作業自体もAIによって効率化できる)ため、見逃し(False Negative)を減らす方が重要だと考えました。&lt;/p&gt;
+
+&lt;p&gt;この設計思想はツール全体に反映されています。検出の段階では感度を高く保ち、その後の再現確認と懐疑的レビューで精度を上げていく構造です。もちろんトリアージの過程でAgentとの対話により精度を高めることも可能です。&lt;/p&gt;
+
+&lt;p&gt;なお、Token消費量は診断対象の規模やエンドポイント数に大きく依存しますが、参考値として研修用に作成したやられアプリを対象にフルスキャンした際は約$100分のTokenを消費しました。&lt;/p&gt;
+
+&lt;p&gt;結果として、私に回ってくる診断はAIでは見つけられないような脆弱性を探すものになりました。AIがカバーできる範囲が広がるほど、人間にはより高度な判断が求められるようになっています。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;セキュリティ対策室のエンジニアは3名で、社内での脆弱性診断はこれまで主に私一人で対応することが多くなっていました。この記事で紹介したPASMとそれに付随するAgentic ML、診断の為のUnravellingは、いずれもこの体制の中で生まれたものです。&lt;/p&gt;
+
+&lt;p&gt;私の目標は私の仕事を無くすことです。セキュリティ業務の属人化を排除し、全てを自動でもしくは半自動で誰でも行えるようにすることがセキュリティの向上に繋がると考えています。AIが効いているのは、ベースラインの向上と専門性の民主化、そして属人化の排除という面です。PASMではAIがRustの学習障壁を下げることで高速で堅牢なスキャナの継続的な開発を可能にし、Agentic MLでは機械学習という自分の専門外の武器を手に入れ、Unravellingでは一人では到底回しきれなかった診断を誰でも実行できる形にしました。これまで私の頭の中にしかなかった診断の観点や判断基準がSkillsのプロンプトとして明文化されたことで、私が手を動かさなくても一定水準の診断が回るようになりました。&lt;/p&gt;
+
+&lt;p&gt;AIの検出精度が専門家に及ばないことは承知しています。しかし、専門家が手を回せずに診断されないままリリースされるよりも、AIによる診断が走っている方が確実に良い結果をもたらします。100点の診断を1件やるよりも、70点の診断を10件回す方が、組織全体のセキュリティレベルは上がります。&lt;/p&gt;
+
+&lt;p&gt;ただし、AIはあくまで手段であって目的ではありません。AIにタスクを実行させることは、自動化とは呼べないと考えています。AIは確率的に動作し、同じ入力に対して同じ出力を返す保証がありません。真の自動化とは、プログラマティックに、決定的に動作するシステムによる解決です。Agentic MLのセクションで「MLは過渡的な手段」と書いたのはまさにこの思想からで、Human-in-the-Loopで知識を蓄積し、最終的にはルールベースのプログラムに落とし込むことがゴールです。AIは、そのゴールに至るまでの道のりを大幅に短縮してくれる存在です。&lt;/p&gt;
+
+&lt;p&gt;3人のチームでもカバーできる範囲が大きく変わったのは事実ですが、それで満足するつもりはありません。私の仕事がプログラムに置き換わり、私がいなくても回る状態を作ること。それが、AIを前提としたセキュリティ対策室の目指す姿です。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>緊急パッチが当たらない？Aikido Safe Chainの運用で直面した課題とGitHub Actionsによる解決策</title>
+      <link>https://tech.pepabo.com/2025/12/24/aikido-safe-chain/</link>
+      <guid>https://tech.pepabo.com/2025/12/24/aikido-safe-chain/</guid>
+      <pubDate>Wed, 24 Dec 2025 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは！ロリポップ・ムームードメイン事業部の&lt;a href="https://x.com/taki73_cat"&gt;taki&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;近年、npmパッケージを標的としたサプライチェーン攻撃が急増しています。私たちのプロジェクトでもセキュリティ強化の一環として、パッケージの検証ツールである&lt;strong&gt;「Aikido Safe Chain」&lt;/strong&gt;を導入しました。&lt;/p&gt;
+
+&lt;p&gt;しかし、導入してすぐに一つの大きな壁にぶつかりました。それは、安全性のための&lt;strong&gt;「24時間制限」&lt;/strong&gt;が、緊急時のデプロイを妨げてしまうという問題です。&lt;/p&gt;
+
+&lt;p&gt;本記事では、Aikido Safe Chainを実運用に載せる中で見えてきた「落とし穴」と、GitHub Actionsの機能を駆使してセキュアかつ柔軟な運用を実現した試行錯誤の過程を共有します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#aikido-safe-chainとは" id="markdown-toc-aikido-safe-chainとは"&gt;Aikido Safe Chainとは&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#直面した課題緊急パッチが24時間制限でブロックされる" id="markdown-toc-直面した課題緊急パッチが24時間制限でブロックされる"&gt;直面した課題：緊急パッチが「24時間制限」でブロックされる&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#運用上の落とし穴" id="markdown-toc-運用上の落とし穴"&gt;運用上の「落とし穴」&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#解決までの試行錯誤" id="markdown-toc-解決までの試行錯誤"&gt;解決までの試行錯誤&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#workflow_dispatchを使う" id="markdown-toc-workflow_dispatchを使う"&gt;workflow_dispatchを使う&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#commit-status-apiを使う" id="markdown-toc-commit-status-apiを使う"&gt;Commit Status APIを使う&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#ブランチ名で条件分岐する成功" id="markdown-toc-ブランチ名で条件分岐する成功"&gt;ブランチ名で条件分岐する（成功！）&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#最終的なバイパス方法" id="markdown-toc-最終的なバイパス方法"&gt;最終的なバイパス方法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#tipsgithub-apiのレートリミット対策" id="markdown-toc-tipsgithub-apiのレートリミット対策"&gt;Tips：GitHub APIのレートリミット対策&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="aikido-safe-chainとは"&gt;Aikido Safe Chainとは&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://www.aikido.dev/products/safe-chain"&gt;Aikido Safe Chain&lt;/a&gt;は、npm・yarn・pnpmなどのパッケージマネージャーをラップし、パッケージダウンロード時に以下の検証をリアルタイムで行うツールです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;マルウェアチェック：&lt;/strong&gt; Aikido Intelと照合し、既知の脅威をブロック&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;公開日チェック：&lt;/strong&gt; 24時間以内に公開されたパッケージをブロック（デフォルト設定）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;特に後者は、未知の脆弱性や悪意のあるコードが公開直後に混入するリスクを低減するための強力な防衛策です。&lt;/p&gt;
+
+&lt;h2 id="直面した課題緊急パッチが24時間制限でブロックされる"&gt;直面した課題：緊急パッチが「24時間制限」でブロックされる&lt;/h2&gt;
+
+&lt;p&gt;Aikido Safe Chainをインストールすると、&lt;code&gt;npm install&lt;/code&gt;や&lt;code&gt;npm ci&lt;/code&gt;の実行時に自動で検証が走るようになります。
+私たちのプロジェクトでは、以下の3つの環境で運用を開始しました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ローカル開発環境&lt;/li&gt;
+  &lt;li&gt;CI（テスト実行）&lt;/li&gt;
+  &lt;li&gt;GitHub Actionsでのイメージビルド&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ここで問題になったのが、&lt;strong&gt;脆弱性が発見されたパッケージに対して公開直後の修正パッチを当てたい&lt;/strong&gt; という緊急ケースです。&lt;/p&gt;
+
+&lt;h3 id="運用上の落とし穴"&gt;運用上の「落とし穴」&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;npm ci --safe-chain-minimum-package-age-hours=0&lt;/code&gt;のように指定すれば24時間制限を無効化できますが、これを手動で運用しようとすると以下の手順が必要になります。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code&gt;ci.yml&lt;/code&gt;を書き換えてバイパスを有効化するPRを出し、マージする&lt;/li&gt;
+  &lt;li&gt;セキュリティパッチを当てる本命のPRを出し、マージする&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;ci.yml&lt;/code&gt;を元に戻すPRを出し、マージする&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;非常に面倒ですよね。さらに問題なのは、&lt;strong&gt;セキュアな状態に戻す部分まで手動&lt;/strong&gt;だということです。2の後、3を忘れてしまう未来が容易に想像できます。そうなるとプロジェクトはセキュアでない状態のまま放置されてしまいます。&lt;/p&gt;
+
+&lt;p&gt;必要なのは、自動でセキュアな状態に戻りつつ必要な時だけバイパスできる仕組みです。
+以下では、最終的な解決策に至るまでの試行錯誤を説明します。&lt;/p&gt;
+
+&lt;h2 id="解決までの試行錯誤"&gt;解決までの試行錯誤&lt;/h2&gt;
+&lt;p&gt;「必要な時だけバイパスし、通常時はセキュアに保つ」という目標に向け、3つのアプローチを試しました。&lt;/p&gt;
+
+&lt;p&gt;バイパスが正しく動作しているかは、&lt;code&gt;npm ci&lt;/code&gt;のログに&lt;code&gt;SAFE_CHAIN_MINIMUM_PACKAGE_AGE_HOURS: 0&lt;/code&gt;と表示されることで確認しました。&lt;/p&gt;
+
+&lt;h3 id="workflow_dispatchを使う"&gt;workflow_dispatchを使う&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_dispatch&lt;/code&gt;は、GitHub Actionsを手動で実行できるトリガーです。実行時にパラメータを指定することもできます。
+これを使って、24時間制限バイパスモードを選べるようにしました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;workflow_dispatch&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;inputs&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;bypass_safe_chain&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;description&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="s"&gt;Aikido&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;Safe&lt;/span&gt;&lt;span class="nv"&gt; &lt;/span&gt;&lt;span class="s"&gt;Chainの24時間制限をバイパス（緊急時のみ）'&lt;/span&gt;
+      &lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;boolean&lt;/span&gt;
+      &lt;span class="na"&gt;default&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;img src="/blog/2025/12/24/aikido-safe-chain/images/workflow_dispatch.png" alt="workflow_dispatchのRun workflowドロップダウン" /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_dispatch&lt;/code&gt;を使えば、PR上では通常のCI（バイパスなし）が動きつつ、緊急時には手動でバイパス付きのワークフローを実行できます。手動実行でも同じワークフローが成功すれば、PRのチェックを通過させられると考え、この方法を選びました。&lt;/p&gt;
+
+&lt;p&gt;さっそく実装して試してみましたが、想定通りにはいきませんでした。&lt;code&gt;workflow_dispatch&lt;/code&gt;でバイパスを行うこと自体はできましたが、問題はその結果の扱いです。&lt;/p&gt;
+
+&lt;p&gt;CIはPRのChecksとして動作しています。&lt;code&gt;workflow_dispatch&lt;/code&gt;で手動実行しても、その結果はPRのステータスには反映されませんでした。手動実行とPRのChecksは別物扱いのようなので、&lt;code&gt;workflow_dispatch&lt;/code&gt;でバイパスできても意味がありません。&lt;/p&gt;
+
+&lt;p&gt;一方、Dockerイメージビルドはmainにマージされた後に実行されるので、PRのChecksとは無関係です。こちらは&lt;code&gt;workflow_dispatch&lt;/code&gt;でのバイパスで対応できそうだということがわかりました。&lt;/p&gt;
+
+&lt;p&gt;というわけで、CI側は別の方法を検討する必要があります。&lt;/p&gt;
+
+&lt;h3 id="commit-status-apiを使う"&gt;Commit Status APIを使う&lt;/h3&gt;
+
+&lt;p&gt;次に、手動実行の結果を Commit Status API で特定のコミットに紐付けようと試みました。&lt;/p&gt;
+
+&lt;p&gt;Commit Status APIは、外部サービスやCIからコミットのステータス（success/failure/pending/error）を報告できるAPIです。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;workflow_dispatch&lt;/code&gt;で手動実行してもPRのChecksに反映されなかったのは、コミットへの紐付けがなかったからだと考えました。Commit Status APIを使えば、PRのコミットにステータスを紐付けられます。そうすればPRのChecksに反映されるはず、と考えました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Report status to PR&lt;/span&gt;
+  &lt;span class="na"&gt;if&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;github.event_name == 'workflow_dispatch' &amp;amp;&amp;amp; always()&lt;/span&gt;
+  &lt;span class="na"&gt;uses&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;actions/github-script@v7&lt;/span&gt;
+  &lt;span class="na"&gt;with&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;script&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+      &lt;span class="s"&gt;const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';&lt;/span&gt;
+      &lt;span class="s"&gt;await github.rest.repos.createCommitStatus({&lt;/span&gt;
+        &lt;span class="s"&gt;owner: context.repo.owner,&lt;/span&gt;
+        &lt;span class="s"&gt;repo: context.repo.repo,&lt;/span&gt;
+        &lt;span class="s"&gt;sha: context.sha,&lt;/span&gt;
+        &lt;span class="s"&gt;state: state,&lt;/span&gt;
+        &lt;span class="s"&gt;context: 'CI / build',&lt;/span&gt;
+        &lt;span class="s"&gt;description: state === 'success' ? 'CI passed (bypass)' : 'CI failed (bypass)'&lt;/span&gt;
+      &lt;span class="s"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;しかし、こちらもうまくいきませんでした。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2025/12/24/aikido-safe-chain/images/commit_status_API.png" alt="Commit Status APIの結果" /&gt;&lt;/p&gt;
+
+&lt;p&gt;API経由で報告したステータスは、既存のChecksとは「別の項目」として表示されてしまいました。GitHub側で設定した「必須のステータスチェック」は失敗したままとなり、マージをブロックし続けることになりました。&lt;/p&gt;
+
+&lt;h3 id="ブランチ名で条件分岐する成功"&gt;ブランチ名で条件分岐する（成功！）&lt;/h3&gt;
+
+&lt;p&gt;GitHub Actionsでは、ブランチ名を条件にして実行するコマンドを変えることができます。
+これを利用して、&lt;code&gt;hotfix/&lt;/code&gt;で始まるブランチ名の場合は24時間制限を自動バイパスするようにしました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Install dependencies&lt;/span&gt;
+  &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;npm ci&lt;/span&gt;
+  &lt;span class="na"&gt;env&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;# hotfix/ ブランチでは24時間制限をバイパス（緊急セキュリティパッチ用）&lt;/span&gt;
+    &lt;span class="na"&gt;SAFE_CHAIN_MINIMUM_PACKAGE_AGE_HOURS&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;${{ startsWith(github.head_ref, 'hotfix/') &amp;amp;&amp;amp; '0' || '' }}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;この方法なら、PR上で動くCIそのものがバイパスされたものになります。&lt;/p&gt;
+
+&lt;p&gt;開発者は&lt;code&gt;hotfix/&lt;/code&gt;ブランチを切るだけでよく、YAMLの書き換えは不要です。また、&lt;code&gt;hotfix/&lt;/code&gt;以外のブランチでは常に24時間制限が有効なまま維持されます。&lt;/p&gt;
+
+&lt;p&gt;まさに「必要なときだけバイパスし、通常時はセキュアに保つ」という目標を達成できました。&lt;/p&gt;
+
+&lt;h2 id="最終的なバイパス方法"&gt;最終的なバイパス方法&lt;/h2&gt;
+
+&lt;p&gt;今回の対応により、各環境でのバイパス手法が以下のように整理されました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;環境&lt;/th&gt;
+      &lt;th&gt;バイパス方法&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;CI&lt;/td&gt;
+      &lt;td&gt;ブランチ名で条件分岐&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;イメージビルド&lt;/td&gt;
+      &lt;td&gt;&lt;code&gt;workflow_dispatch&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ローカル開発環境&lt;/td&gt;
+      &lt;td&gt;環境変数を手動で指定&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id="tipsgithub-apiのレートリミット対策"&gt;Tips：GitHub APIのレートリミット対策&lt;/h2&gt;
+
+&lt;p&gt;運用中、CI/CDで&lt;code&gt;install-safe-chain.sh&lt;/code&gt;を実行する際にGitHub APIのレートリミットエラーが発生することがありました。
+これは、スクリプトが「最新バージョン」を確認するためにAPIを叩くことが原因です。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight docker"&gt;&lt;code&gt;&lt;span class="c"&gt;# バージョン指定なし&lt;/span&gt;
+&lt;span class="k"&gt;RUN &lt;/span&gt;curl &lt;span class="nt"&gt;-fsSL&lt;/span&gt; https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;対策：以下のように&lt;code&gt;SAFE_CHAIN_VERSION&lt;/code&gt;を明示的に指定することで、APIコールを回避できます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight docker"&gt;&lt;code&gt;&lt;span class="c"&gt;# バージョン指定あり&lt;/span&gt;
+&lt;span class="k"&gt;ENV&lt;/span&gt;&lt;span class="s"&gt; SAFE_CHAIN_VERSION="X.X.X"&lt;/span&gt;
+&lt;span class="k"&gt;RUN &lt;/span&gt;curl &lt;span class="nt"&gt;-fsSL&lt;/span&gt; https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;※バージョン固定になるため、定期的な更新フローとの併用を推奨します。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;Aikido Safe Chainの24時間制限は、セキュリティと運用のバランスを考える良い機会でした。同じ問題に直面している方の参考になれば幸いです。&lt;/p&gt;
+
+&lt;p&gt;今後は他のサービスにも導入していきたいです！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>GMO クリエイターズネットワーク 2024年セキュリティ改善計画振り返り</title>
+      <link>https://tech.pepabo.com/2025/03/10/cn-security2024/</link>
+      <guid>https://tech.pepabo.com/2025/03/10/cn-security2024/</guid>
+      <pubDate>Mon, 10 Mar 2025 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは！
+GMO ペパボのグループ会社である GMO クリエイターズネットワークの&lt;a href="https://x.com/theyoshida3"&gt;よしだ&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;今回は、GMO クリエイターズネットワークで実施した 2024 年度セキュリティ改善計画について振り返ります。&lt;/p&gt;
+
+&lt;h1 id="セキュリティ改善計画とは"&gt;セキュリティ改善計画とは&lt;/h1&gt;
+
+&lt;p&gt;期初に、サービスや運用を包括する形でセキュリティ改善項目を設定しています。
+今回は、主にサービス面での対策を抜粋して振り返りたいと思います。&lt;/p&gt;
+
+&lt;p&gt;また、運用面としては、下記の項目を実施しています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ポリシー遵守チェック&lt;/li&gt;
+  &lt;li&gt;業務ツールの棚卸&lt;/li&gt;
+  &lt;li&gt;標的型メールのセキュリティ訓練&lt;/li&gt;
+  &lt;li&gt;BCP 対策&lt;/li&gt;
+  &lt;li&gt;インシデント訓練&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;運用面は総務の方が担っており、日々支えていただいています。&lt;/p&gt;
+
+&lt;h2 id="バッチサーバーの-cloud-run-jobs-移行"&gt;バッチサーバーの Cloud Run Jobs 移行&lt;/h2&gt;
+
+&lt;p&gt;下記のテックブログにも記載しましたが、Docker on VM から Cloud Run への移行を進めています。
+その中で、移行できていないバッチサーバーを Cloud Run Jobs へ移行しています。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://tech.pepabo.com/2024/05/24/cn-infra-run/"&gt;Docker on VM から Cloud Run へのインフラ刷新プロジェクトを実施したお話&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;実施内容としては、Cloud Run Jobs の作成だけでなく、バッチ処理のエントリポイント統合や CD 修正がありました。&lt;/p&gt;
+
+&lt;p&gt;特に苦労したのは、VM 上で起動している cron の無効化と Cloud Run Jobs の有効化の切り替えタイミングです。
+下記の性質のものは特に慎重に対応する必要があります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行間隔が短い&lt;/li&gt;
+  &lt;li&gt;停止時間が長いとサービスに影響が出る&lt;/li&gt;
+  &lt;li&gt;営業時間内のみ実行される&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;中でも日中、数分間隔で実行している銀行口座への振込処理のに関しては、下記のような悩みがありました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;営業時間内に実行することで失敗時のリスクが高まるため、営業時間外に移行したい。&lt;/li&gt;
+  &lt;li&gt;しかし、営業時間外に移行することで動作確認ができない。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;そのため、事業部と移行時期や時間帯を調整し、業務に影響のない日中の時間帯に少しずつ移行していきました。&lt;/p&gt;
+
+&lt;p&gt;大きなトラブルもなく移行できたのは良かった点です。
+2025 年には全てのバッチサーバーを移行したいと思います。&lt;/p&gt;
+
+&lt;h2 id="脆弱性診断と対応"&gt;脆弱性診断と対応&lt;/h2&gt;
+
+&lt;p&gt;毎年、&lt;a href="https://gmo-cybersecurity.com/"&gt;GMO サイバーセキュリティ by イエラエ&lt;/a&gt;に脆弱性診断を依頼し、弊社エンジニアで修正対応を行っています。&lt;/p&gt;
+
+&lt;p&gt;毎年実施していることもあり、重大な脆弱性はありませんでしたが、改善点はいくつかありました。
+例えば下記のようなものです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;特定の状況下でエンドポイントを直接実行した際に、数値のマイナスを受け付けてしまう&lt;/li&gt;
+  &lt;li&gt;N+1 が発生しており、レスポンスが非常に遅い&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;リスクレベルの高いものから順に実施していき、修正対応も無事年内に完了しました。
+日々のリファクタリングによる修正が、思わぬ脆弱性を生んでしまうことも考えられます。そのため、継続的な診断実施と対応が必要だと感じました。&lt;/p&gt;
+
+&lt;p&gt;修正は簡単なものが多かったですが、OAuth 連携で再現するケース等の動作確認に手間がかかってしまいました。
+指摘事項を毎年減らしていきます。&lt;/p&gt;
+
+&lt;h2 id="php-バージョンアップ"&gt;PHP バージョンアップ&lt;/h2&gt;
+
+&lt;p&gt;使用している言語やライブラリの継続的なバージョンアップも必要です。
+2024 年は PHP とフレームワーク、関連ライブラリのバージョンアップを実施しました。&lt;/p&gt;
+
+&lt;p&gt;影響範囲の調査から始まり、非推奨の記述修正や関連ライブラリのアップデートと進めていきます。
+関連ライブラリが新しいバージョンに対応していない場合は代替ライブラリを探して対応します。&lt;/p&gt;
+
+&lt;p&gt;動作確認のために大幅にテストコードを増やせた点は大変だった反面、良かった点です。
+しかし、テストが困難な部分はシナリオを決めて、手動で実施する必要があったため、モジュール分割等のテストのしやすい構成へ修正していく必要性を感じました。&lt;/p&gt;
+
+&lt;p&gt;リリースに際し、大きなトラブルがなかったことは本当に良かったです。
+今回は複数バージョンを跨いでのバージョンアップでしたが、継続的にバージョンを上げていけるよう努力します。&lt;/p&gt;
+
+&lt;h2 id="インシデント訓練"&gt;インシデント訓練&lt;/h2&gt;
+
+&lt;p&gt;毎年、実際の業務で発生し得るシナリオを元にインシデント訓練を実施しています。
+2024 年はシステムのバグによる、誤送金でした。&lt;/p&gt;
+
+&lt;p&gt;インシデントの発生連絡から、原因の調査、関係各所への連絡と進行していきます。
+部署毎に並行して対応を行うため、定期的な進捗共有ミーティングも実施します。
+インシデントの収束まで実施し、訓練は終了となりました。&lt;/p&gt;
+
+&lt;p&gt;インシデント訓練を定期的に行うことで、潜在的なリスクの洗い出しができます。
+例えば、人の入れ替わりにより、調査者に適切なサービスのアクセス権がないことが発覚するかもしれません。&lt;/p&gt;
+
+&lt;p&gt;訓練後の振り返りを行うことで、次回以降の行動に結びつけることができます。
+準備から訓練の実施、振り返りと携われることで訓練を実施する意義をより理解できたように感じます。&lt;/p&gt;
+
+&lt;h1 id="全体を通して感じたこと"&gt;全体を通して感じたこと&lt;/h1&gt;
+
+&lt;p&gt;当たり前ではありますが、高いセキュリティ意識は全てのパートナーに必須のものとなっています。
+訓練や対策を通して、一人ひとりの意識を高めていくことで、より安全なサービスを提供できるのだと思います。&lt;/p&gt;
+
+&lt;p&gt;そのための施策を積極的に行ってくださっている社内外のパートナーの皆さまに支えられて私達は安全なサービスを提供できています。
+いつもありがとうございます。&lt;/p&gt;
+
+&lt;p&gt;これからもお客様にとって安心で安全なサービスを提供できるよう、精進していきます。&lt;/p&gt;
+
+&lt;h2 id="gmo-クリエイターズネットワークではプロダクト開発職種の採用をおこなっています"&gt;GMO クリエイターズネットワークでは、プロダクト開発職種の採用をおこなっています！&lt;/h2&gt;
+
+&lt;p&gt;フリーナンスでは今、プロダクト開発組織を立ち上げていこうとしている最中です。&lt;/p&gt;
+
+&lt;p&gt;ソフトウェアエンジニアとして面白い部分は、フロントエンド〜バックエンド〜インフラを横断的に扱う開発スタイルで開発している点です。
+Go のコードを書いたり、Terraform を書いたりしながら開発を進めていることが多いです。&lt;/p&gt;
+
+&lt;p&gt;現在は Go や React を中心としたシステムへのリアーキテクチャを検討しています。
+バックエンドアーキテクチャの設計やフレームワークの選定、検証とやれることは非常に多いです。&lt;/p&gt;
+
+&lt;p&gt;そんな技術課題の解消やユーザに価値を提供出来る仕組みづくりを私達と一緒に進めていってくださる方々を募集中です！以下の職種を積極採用しています！&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://open.talentio.com/r/1/c/gmo-cn/pages/78518"&gt;ソフトウェアエンジニア（バックエンド）&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また、&lt;a href="https://open.talentio.com/r/1/c/gmo-cn/pages/78856"&gt;カジュアル面談&lt;/a&gt;も大歓迎ですのでお気軽に申し込んでいただけると嬉しいです！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>CODE BLUE 2024参加レポート</title>
+      <link>https://tech.pepabo.com/2024/11/21/codeblue2024/</link>
+      <guid>https://tech.pepabo.com/2024/11/21/codeblue2024/</guid>
+      <pubDate>Thu, 21 Nov 2024 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは。セキュリティ対策室の&lt;a href="https://x.com/n01e0"&gt;n01e0&lt;/a&gt;です。11/14~11/15にかけて開催された国際的な情報セキュリティカンファレンスである&lt;a href="https://codeblue.jp/"&gt;CODE BLUE 2024&lt;/a&gt;に&lt;a href="https://tech.pepabo.com/2023/11/13/codeblue2023/"&gt;昨年&lt;/a&gt;に続き参加してきました。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;CODE BLUEとは、世界トップクラスの情報セキュリティ専門家による最先端の講演と、国や言語の垣根を越えた情報交換・交流の機会を提供する国際会議です。&lt;/p&gt;
+
+  &lt;p&gt;欧米の著名な研究者を招へいし、最新の成果を共有するとともに、日本をはじめとするアジア各国の優れた研究者を発掘し、その研究成果を世界へと発信していきます。&lt;/p&gt;
+
+  &lt;p&gt;医療の世界で使われるCODE BLUEという言葉は、「緊急事態発生」や「関係者招集」を意味します。&lt;/p&gt;
+
+  &lt;p&gt;インターネットの世界においても、IoT（Internet of Things）の時代を迎えるなど、セキュリティ対策の重要性が高まっており、世界各国の研究者を招集し、事態への対処や解決策を共に考える場が必要とされています。&lt;/p&gt;
+
+  &lt;p&gt;CODE BLUEは国際的なコミュニティ形成の場となることを目的にするとともに、CODE（技術）によってBLUE（海）を超えて人と人をつなぎ、よりよいインターネットの世界作りに貢献していきます。
+&lt;a href="https://codeblue.jp/"&gt;https://codeblue.jp/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;この記事では、特に印象に残っている発表やワークショップ、コンテストをいくつかピックアップして紹介します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#ワークショップ" id="markdown-toc-ワークショップ"&gt;ワークショップ&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#biohacking-village" id="markdown-toc-biohacking-village"&gt;BioHacking Village&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#コンテスト" id="markdown-toc-コンテスト"&gt;コンテスト&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#capture-the-flag-code-dark-biohacking-village-ctf-challenge" id="markdown-toc-capture-the-flag-code-dark-biohacking-village-ctf-challenge"&gt;Capture the Flag “Code D.A.R.K.: Biohacking Village CTF Challenge”:&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#発表" id="markdown-toc-発表"&gt;発表&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#piloting-edge-copilot--jun-kokatsu" id="markdown-toc-piloting-edge-copilot--jun-kokatsu"&gt;Piloting Edge Copilot : Jun Kokatsu&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki" id="markdown-toc-pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki"&gt;PkgFuzzプロジェクト:オープンソースソフトウェアのための新たな継続的ファジング : Yuhei Kawakoya, Eitaro Shioji, Yuta Otsuki&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="ワークショップ"&gt;ワークショップ&lt;/h2&gt;
+&lt;h3 id="biohacking-village"&gt;BioHacking Village&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Biohacking Villageは、常に世界中の専門家を結集し、医療、技術、サイバーセキュリティの専門家が生物医学セキュリティの最新の革新を探求する場を提供することに尽力しています。
+今回のCODEBLUE では Device Lab と Capture the Flag の2つを体験いただけます。 これらは、医療機器業界の専門家、医療従事者、およびセキュリティ研究者が、セキュリティに関する知識を共有し、新しい技術を探求するための安全な環境を提供します。 私たちは、相互尊重の上での意見交換が、革新を推進し、医療を前進させる鍵であると信じています。
+&lt;a href="https://codeblue.jp/program/contests-workshops/biohackingvillage/"&gt;https://codeblue.jp/program/contests-workshops/biohackingvillage/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href="https://www.villageb.io/"&gt;BioHacking Village&lt;/a&gt;は医療技術とサイバーセキュリティの橋渡しを目的として開催されており、現地では実際に使用されている医療機器を触ることができます。&lt;/p&gt;
+
+&lt;p&gt;分解してみるとデバッグ用のパッドが露出していたり、意外とシンプルな作りになっていて面白かったです。&lt;/p&gt;
+
+&lt;p&gt;また、&lt;a href="#capture-the-flag-code-dark-biohacking-village-ctf-challenge"&gt;CTF&lt;/a&gt;も併設されていました。&lt;/p&gt;
+
+&lt;h2 id="コンテスト"&gt;コンテスト&lt;/h2&gt;
+&lt;h3 id="capture-the-flag-code-dark-biohacking-village-ctf-challenge"&gt;Capture the Flag “Code D.A.R.K.: Biohacking Village CTF Challenge”:&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;医療とサイバーセキュリティの世界を橋渡しする CTF です。
+各チャレンジは、デジタル資産を保護するのと同様に重要な、生物データを保護する内容になっています。
+また CTF に参加するのが初めての方には、CTFを始めるためのヒント、トリック、およびツールを用いたガイダンスを提供します。
+&lt;a href="https://codeblue.jp/program/contests-workshops/biohackingvillage/"&gt;https://codeblue.jp/program/contests-workshops/biohackingvillage/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href="https://ctftime.org/team/269765/"&gt;BunkyoWesterns&lt;/a&gt;として参加し、優勝しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/11/21/codeblue2024/images/scoreboard.png" alt="scoreboard" /&gt;&lt;/p&gt;
+
+&lt;p&gt;問題数が非常に多く、解答すると問題が増えるスタイルはSANSのNetWarsを思い出しました。&lt;/p&gt;
+
+&lt;p&gt;こういったスタイルのCTFでは、「解きやすく、配点が高い」問題を優先して解くと良いです。&lt;/p&gt;
+
+&lt;p&gt;いくつか問題をピックアップして解説します&lt;/p&gt;
+
+&lt;h4 id="insulin-pump-malware"&gt;insulin pump malware&lt;/h4&gt;
+&lt;p&gt;「医療機器を対象としたマルウェアを解析する」というコンセプトの問題のようです。&lt;/p&gt;
+
+&lt;p&gt;問題のバイナリはarm64のMach-Oです。CTFでMach-Oのバイナリを解析するのは初めてなので少し楽しかったです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; iI
+arch     arm
+baddr    0x100000000
+binsz    33768
+bintype  mach0
+bits     64
+canary   true
+injprot  false
+class    MACH064
+compiler clang
+crypto   false
+endian   little
+havecode true
+intrp    /usr/lib/dyld
+laddr    0x0
+lang     c
+linenum  false
+lsyms    false
+machine  all
+nx       false
+os       macos
+pic      true
+relocs   false
+sanitize false
+static   false
+stripped false
+subsys   darwin
+va       true
+[0x100003de4]&amp;gt; afl
+0x100003ec0    1     12 sym.imp.__stack_chk_fail
+0x100003ecc    1     12 sym.imp.printf
+0x100003ed8    1     12 sym.imp.strcmp
+0x100003ee4    1     12 sym.imp.strlen
+0x100003de4   12    220 sub.main_100003de4
+0x100003d4c    4    152 sub._check_killswitch_100003d4c
+0x100003ce0    6    108 sub._decode_100003ce0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;こんな感じのバイナリです。&lt;/p&gt;
+
+&lt;p&gt;問題はいくつかのパートに分かれており、最終的にはKillSwitchを特定するのが目標となります&lt;/p&gt;
+
+&lt;p&gt;arm64かつMach-Oという、普段使っているもののあまり読まないタイプのバイナリではありますが、基本は同じです。&lt;/p&gt;
+
+&lt;p&gt;特に難読化もされていないので、&lt;code&gt;main&lt;/code&gt;を読んでみましょう&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; pdf @main
+            ;-- main:
+            ;-- entry0:
+            ;-- _main:
+            ;-- func.100003de4:
+            ;-- pc:
+┌ 220: sub.main_100003de4 (int argc, char **argv, int64_t envp);
+│           ; arg int argc @ x0
+│           ; arg char **argv @ x1
+│           ; arg int64_t envp @ sp+0x60
+│           ; var int64_t var_0h_3 @ sp+0x0
+│           ; var char **var_10h @ sp+0x10
+│           ; var int64_t var_0h_2 @ sp+0x18
+│           ; var int64_t var_0h @ sp+0x1c
+│           ; var int64_t var_20h @ sp+0x20
+│           ; var int64_t var_20h_2 @ sp+0x28
+│           0x100003de4      ffc300d1       sub sp, sp, 0x30
+│           0x100003de8      fd7b02a9       stp x29, x30, [var_20h]
+│           0x100003dec      fd830091       add x29, sp, 0x20
+│           0x100003df0      bfc31fb8       stur wzr, [x29, -4]        ; argc
+│           0x100003df4      a0831fb8       stur w0, [x29, -8]         ; argc
+│           0x100003df8      e10b00f9       str x1, [var_10h]          ; argv
+│           0x100003dfc      a8835fb8       ldur w8, [x29, -8]
+│           0x100003e00      08090071       subs w8, w8, 2
+│           0x100003e04      e8179f1a       cset w8, eq
+│       ┌─&amp;lt; 0x100003e08      88010037       tbnz w8, 0, 0x100003e38
+│      ┌──&amp;lt; 0x100003e0c      01000014       b 0x100003e10
+│      ││   ; CODE XREF from sub.main_100003de4 @ 0x100003e0c(x)
+│      └──&amp;gt; 0x100003e10      e80b40f9       ldr x8, [var_10h]
+│       │   0x100003e14      080140f9       ldr x8, [x8]
+│       │   0x100003e18      e9030091       mov x9, sp
+│       │   0x100003e1c      280100f9       str x8, [x9]
+│       │   0x100003e20      00000090       adrp x0, 0x100003000
+│       │   0x100003e24      00e03b91       add x0, x0, 0xef8          ; 0x100003ef8 ; "Usage: %s &amp;lt;killswitch&amp;gt;\n" ; const char *format
+│       │   0x100003e28      29000094       bl sym.imp.printf          ; int printf(const char *format)
+│       │   0x100003e2c      28008052       mov w8, 1
+│       │   0x100003e30      a8c31fb8       stur w8, [x29, -4]
+│      ┌──&amp;lt; 0x100003e34      1f000014       b 0x100003eb0
+│      ││   ; CODE XREF from sub.main_100003de4 @ 0x100003e08(x)
+│      │└─&amp;gt; 0x100003e38      e80b40f9       ldr x8, [var_10h]
+│      │    0x100003e3c      000540f9       ldr x0, [x8, 8]            ; const char *s
+│      │    0x100003e40      29000094       bl sym.imp.strlen          ; size_t strlen(const char *s)
+│      │    0x100003e44      082000f1       subs x8, x0, 8
+│      │    0x100003e48      e8179f1a       cset w8, eq
+│      │┌─&amp;lt; 0x100003e4c      08010037       tbnz w8, 0, 0x100003e6c
+│     ┌───&amp;lt; 0x100003e50      01000014       b 0x100003e54
+│     │││   ; CODE XREF from sub.main_100003de4 @ 0x100003e50(x)
+│     └───&amp;gt; 0x100003e54      00000090       adrp x0, 0x100003000
+│      ││   0x100003e58      00403c91       add x0, x0, 0xf10          ; 0x100003f10 ; "Invalid killswitch. Malware still active.\n" ; const char *format
+│      ││   0x100003e5c      1c000094       bl sym.imp.printf          ; int printf(const char *format)
+│      ││   0x100003e60      28008052       mov w8, 1
+│      ││   0x100003e64      a8c31fb8       stur w8, [x29, -4]
+│     ┌───&amp;lt; 0x100003e68      12000014       b 0x100003eb0
+│     │││   ; CODE XREF from sub.main_100003de4 @ 0x100003e4c(x)
+│     ││└─&amp;gt; 0x100003e6c      e80b40f9       ldr x8, [var_10h]
+│     ││    0x100003e70      000540f9       ldr x0, [x8, 8]            ; int64_t arg1
+│     ││    0x100003e74      b6ffff97       bl sub._check_killswitch_100003d4c
+│     ││    0x100003e78      08000071       subs w8, w0, 0
+│     ││    0x100003e7c      e8179f1a       cset w8, eq
+│     ││┌─&amp;lt; 0x100003e80      c8000037       tbnz w8, 0, 0x100003e98
+│    ┌────&amp;lt; 0x100003e84      01000014       b 0x100003e88
+│    ││││   ; CODE XREF from sub.main_100003de4 @ 0x100003e84(x)
+│    └────&amp;gt; 0x100003e88      00000090       adrp x0, 0x100003000
+│     │││   0x100003e8c      00ec3c91       add x0, x0, 0xf3b          ; 0x100003f3b ; "Killswitch activated. Malware deactivated: Achievement unlocked: Cyber Guardian of the Pancreas!\n" ; const char *format
+│     │││   0x100003e90      0f000094       bl sym.imp.printf          ; int printf(const char *format)
+│    ┌────&amp;lt; 0x100003e94      05000014       b 0x100003ea8
+│    ││││   ; CODE XREF from sub.main_100003de4 @ 0x100003e80(x)
+│    │││└─&amp;gt; 0x100003e98      00000090       adrp x0, 0x100003000
+│    │││    0x100003e9c      00403c91       add x0, x0, 0xf10          ; 0x100003f10 ; "Invalid killswitch. Malware still active.\n" ; const char *format
+│    │││    0x100003ea0      0b000094       bl sym.imp.printf          ; int printf(const char *format)
+│    │││┌─&amp;lt; 0x100003ea4      01000014       b 0x100003ea8
+│    ││││   ; CODE XREFS from sub.main_100003de4 @ 0x100003e94(x), 0x100003ea4(x)
+│    └──└─&amp;gt; 0x100003ea8      bfc31fb8       stur wzr, [x29, -4]
+│     ││┌─&amp;lt; 0x100003eac      01000014       b 0x100003eb0
+│     │││   ; CODE XREFS from sub.main_100003de4 @ 0x100003e34(x), 0x100003e68(x), 0x100003eac(x)
+│     └└└─&amp;gt; 0x100003eb0      a0c35fb8       ldur w0, [x29, -4]
+│           0x100003eb4      fd7b42a9       ldp x29, x30, [var_20h]
+│           0x100003eb8      ffc30091       add sp, sp, 0x30
+└           0x100003ebc      c0035fd6       ret
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;雰囲気で読めます。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;check_killswitch&lt;/code&gt;が怪しいですね。&lt;/p&gt;
+
+&lt;p&gt;中で&lt;code&gt;strcmp&lt;/code&gt;も呼んでいます&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; axt @sym.imp.strcmp
+sub._check_killswitch_100003d4c 0x100003d9c [CALL:--x] bl sym.imp.strcmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;おそらく入力値とKillswitchを比較しているのでしょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;check_killswitch&lt;/code&gt;の中身はこうなっています&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; pdf @0x100003d9c
+            ;-- _check_killswitch:
+            ;-- func.100003d4c:
+            ; CALL XREF from sub.main_100003de4 @ 0x100003e74(x)
+┌ 152: sub._check_killswitch_100003d4c (int64_t arg1, char *s2, char *s1, int64_t arg_50h);
+│           ; arg int64_t arg1 @ x0
+│           ; arg char *s2 @ sp+0x58
+│           ; arg char *s1 @ sp+0x68
+│           ; arg int64_t arg_50h @ sp+0xa0
+│           ; var int64_t var_0h_3 @ sp+0x8
+│           ; var int64_t var_14h @ sp+0x14
+│           ; var int64_t var_0h_2 @ sp+0x18
+│           ; var int64_t var_19h @ sp+0x27
+│           ; var int64_t var_0h_4 @ sp+0x2f
+│           ; var int64_t var_10h @ sp+0x30
+│           ; var int64_t var_0h @ sp+0x38
+│           ; var int64_t var_40h @ sp+0x40
+│           ; var int64_t var_40h_2 @ sp+0x48
+│           0x100003d4c      ff4301d1       sub sp, sp, 0x50
+│           0x100003d50      fd7b04a9       stp x29, x30, [var_40h]
+│           0x100003d54      fd030191       add x29, sp, 0x40
+│           0x100003d58      080000b0       adrp x8, reloc.__stack_chk_fail ; 0x100004000
+│           0x100003d5c      080540f9       ldr x8, [x8, 8]            ; 0x100004008
+│                                                                      ; reloc.__stack_chk_guard
+│           0x100003d60      080140f9       ldr x8, [x8]
+│           0x100003d64      a8831ff8       stur x8, [x29, -8]
+│           0x100003d68      e00f00f9       str x0, [arg_50hx18]       ; arg1
+│           0x100003d6c      08000090       adrp x8, 0x100003000
+│           0x100003d70      08c13b91       add x8, x8, 0xef0          ; 0x100003ef0
+│                                                                      ; section.2.__TEXT.__const
+│           0x100003d74      080140f9       ldr x8, [x8]               ; 0x100003ef0
+│                                                                      ; section.2.__TEXT.__const
+│           0x100003d78      a04300d1       sub x0, x29, 0x10          ; int64_t arg1
+│           0x100003d7c      a8031ff8       stur x8, [x29, -0x10]
+│           0x100003d80      a16700d1       sub x1, x29, 0x19          ; int64_t arg2
+│           0x100003d84      e10700f9       str x1, [var_0h_3]
+│           0x100003d88      02018052       mov w2, 8
+│           0x100003d8c      d5ffff97       bl sub._decode_100003ce0
+│           0x100003d90      e10740f9       ldr x1, [var_0h_3]         ; const char *s2
+│           0x100003d94      bff31e38       sturb wzr, [x29, -0x11]
+│           0x100003d98      e00f40f9       ldr x0, [arg_50hx18]       ; const char *s1
+│           0x100003d9c      4f000094       bl sym.imp.strcmp          ; int strcmp(const char *s1, const char *s2)
+│           0x100003da0      08000071       subs w8, w0, 0
+│           0x100003da4      e8179f1a       cset w8, eq
+│           0x100003da8      e81700b9       str w8, [var_14h]
+│           0x100003dac      a9835ff8       ldur x9, [x29, -8]
+│           0x100003db0      080000b0       adrp x8, reloc.__stack_chk_fail ; 0x100004000
+│           0x100003db4      080540f9       ldr x8, [x8, 8]            ; 0x100004008
+│                                                                      ; reloc.__stack_chk_guard
+│           0x100003db8      080140f9       ldr x8, [x8]
+│           0x100003dbc      080109eb       subs x8, x8, x9
+│           0x100003dc0      e8179f1a       cset w8, eq
+│       ┌─&amp;lt; 0x100003dc4      68000037       tbnz w8, 0, 0x100003dd0
+│      ┌──&amp;lt; 0x100003dc8      01000014       b 0x100003dcc
+│      ││   ; CODE XREF from sub._check_killswitch_100003d4c @ 0x100003dc8(x)
+│      └──&amp;gt; 0x100003dcc      3d000094       bl sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)
+│       │   ; CODE XREF from sub._check_killswitch_100003d4c @ 0x100003dc4(x)
+│       └─&amp;gt; 0x100003dd0      e81740b9       ldr w8, [var_14h]
+│           0x100003dd4      00010012       and w0, w8, 1
+│           0x100003dd8      fd7b44a9       ldp x29, x30, [var_40h]
+│           0x100003ddc      ff430191       add sp, sp, 0x50
+└           0x100003de0      c0035fd6       ret
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;0x100003ef0&lt;/code&gt;の内容は&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; px 8 @0x100003ef0
+- offset -   F0F1 F2F3 F4F5 F6F7 F8F9 FAFB FCFD FEFF  0123456789ABCDEF
+0x100003ef0  e8e3 e5e9 f3e8 eff8                      ........
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;で、これが&lt;code&gt;decode&lt;/code&gt;に渡されるようです&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; pdf @sub._decode_100003ce0
+            ;-- section.0.__TEXT.__text:
+            ;-- _decode:
+            ;-- func.100003ce0:
+            ; NULL XREF from aav.0x100000020 @ +0xb0(r)
+            ; CALL XREF from sub._check_killswitch_100003d4c @ 0x100003d8c(r)
+┌ 108: sub._decode_100003ce0 (int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg_20h);
+│           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
+│           ; arg int64_t arg3 @ x2
+│           ; arg int64_t arg_20h @ sp+0x40
+│           ; var signed int64_t var_8h @ sp+0x8
+│           ; var int64_t var_ch @ sp+0xc
+│           ; var int64_t var_10h @ sp+0x10
+│           ; var int64_t var_18h @ sp+0x18
+│           0x100003ce0      ff8300d1       sub sp, sp, 0x20           ; [00] -r-x section size 480 named 0.__TEXT.__text
+│           0x100003ce4      e00f00f9       str x0, [arg_20hx18]       ; arg1
+│           0x100003ce8      e10b00f9       str x1, [arg_20hx10]       ; arg2
+│           0x100003cec      e20f00b9       str w2, [var_ch]           ; arg3
+│           0x100003cf0      ff0b00b9       str wzr, [var_8h]          ; arg1
+│       ┌─&amp;lt; 0x100003cf4      01000014       b 0x100003cf8
+│       │   ; CODE XREFS from sub._decode_100003ce0 @ 0x100003cf4(x), 0x100003d40(x)
+│      ┌└─&amp;gt; 0x100003cf8      e80b40b9       ldr w8, [var_8h]
+│      ╎    0x100003cfc      e90f40b9       ldr w9, [var_ch]
+│      ╎    0x100003d00      0801096b       subs w8, w8, w9
+│      ╎    0x100003d04      e8b79f1a       cset w8, ge
+│      ╎┌─&amp;lt; 0x100003d08      e8010037       tbnz w8, 0, 0x100003d44
+│     ┌───&amp;lt; 0x100003d0c      01000014       b 0x100003d10
+│     │╎│   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d0c(x)
+│     └───&amp;gt; 0x100003d10      e80f40f9       ldr x8, [arg_20hx18]
+│      ╎│   0x100003d14      e90b80b9       ldrsw x9, [var_8h]
+│      ╎│   0x100003d18      08696938       ldrb w8, [x8, x9]
+│      ╎│   0x100003d1c      49158052       mov w9, 0xaa
+│      ╎│   0x100003d20      0801094a       eor w8, w8, w9
+│      ╎│   0x100003d24      e90b40f9       ldr x9, [arg_20hx10]
+│      ╎│   0x100003d28      ea0b80b9       ldrsw x10, [var_8h]
+│      ╎│   0x100003d2c      28692a38       strb w8, [x9, x10]
+│     ┌───&amp;lt; 0x100003d30      01000014       b 0x100003d34
+│     │╎│   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d30(x)
+│     └───&amp;gt; 0x100003d34      e80b40b9       ldr w8, [var_8h]
+│      ╎│   0x100003d38      08050011       add w8, w8, 1
+│      ╎│   0x100003d3c      e80b00b9       str w8, [var_8h]
+│      └──&amp;lt; 0x100003d40      eeffff17       b 0x100003cf8
+│       │   ; CODE XREF from sub._decode_100003ce0 @ 0x100003d08(x)
+│       └─&amp;gt; 0x100003d44      ff830091       add sp, sp, 0x20
+└           0x100003d48      c0035fd6       ret
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;decode&lt;/code&gt;ではその値が&lt;code&gt;0xaa&lt;/code&gt;とXORされているので、実際に計算してみましょう&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;radare2&lt;/code&gt;で対象のバイト列を配列のフォーマットで取得したいときは&lt;code&gt;pc&lt;/code&gt;を使います&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x100003de4]&amp;gt; pc 8 @0x100003ef0
+#define _BUFFER_SIZE 8
+const uint8_t buffer[_BUFFER_SIZE] = {
+  0xe8, 0xe3, 0xe5, 0xe9, 0xf3, 0xe8, 0xef, 0xf8
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight python"&gt;&lt;code&gt;&lt;span class="s"&gt;''&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="nb"&gt;chr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="mh"&gt;0xaa&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mh"&gt;0xe8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xe3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xe5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xe9&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xf3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xe8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xef&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0xf8&lt;/span&gt;&lt;span class="p"&gt;]])&lt;/span&gt;
+&lt;span class="c1"&gt;# 'BIOCYBER'
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;復号できました&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ ./malware_insulin_pump BIOCYBER
+Killswitch activated. Malware deactivated: Achievement unlocked: Cyber Guardian of the Pancreas!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;実際に試してみると正しいことがわかります&lt;/p&gt;
+
+&lt;h4 id="insulin-pump-malware-2"&gt;insulin pump malware 2&lt;/h4&gt;
+&lt;p&gt;今度はELFのバイナリです。&lt;/p&gt;
+
+&lt;p&gt;複数の難読化手法が用いられており、「どういった難読化が施されているか」という問題もありました。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x004010a0]&amp;gt; iI
+arch     x86
+baddr    0x400000
+binsz    12625
+bintype  elf
+bits     64
+canary   true
+injprot  false
+class    ELF64
+compiler GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0 clang version 10.0.0-4ubuntu1
+crypto   false
+endian   little
+havecode true
+intrp    /lib64/ld-linux-x86-64.so.2
+laddr    0x0
+lang     c
+linenum  false
+lsyms    false
+machine  AMD x86-64 architecture
+nx       true
+os       linux
+pic      false
+relocs   false
+relro    full
+rpath    NONE
+sanitize false
+static   false
+stripped true
+subsys   linux
+va       true
+[0x004010a0]&amp;gt; afl
+0x00401030    1      6 sym.imp.getenv
+0x00401040    1      6 sym.imp.strlen
+0x00401050    1      6 sym.imp.__stack_chk_fail
+0x00401060    1      6 sym.imp.printf
+0x00401070    1      6 sym.imp.strcmp
+0x00401080    1      6 sym.imp.memcpy
+0x00401090    1      6 sym.imp.exit
+0x004010a0    1     46 sub.entry0_4010a0
+0x00401740    4     90 sub.main_401740
+0x00401180    5     55 sub.entry.init0_401180
+0x00401150    3     32 sub.entry.fini0_401150
+0x004010e0    4     31 fcn.004010e0
+0x00401190    4    187 fcn.00401190
+0x004014b0    6    137 sub.n_4014b0
+0x00401460    3     68 sub.DEBUG_401460
+0x00401540    1     53 sub.sub.n_4014b0_401540
+0x004013f0    1    109 fcn.004013f0
+0x00401580   18    441 sub.sub.DEBUG_401460_401580
+0x00401000    3     27 sub.init_401000
+0x00401250    4     78 fcn.00401250
+0x004012a0    4     78 fcn.004012a0
+0x004012f0    4     81 fcn.004012f0
+0x00401350    4     78 fcn.00401350
+0x004013a0    4     78 fcn.004013a0
+0x004010d0    1      5 fcn.004010d0
+0x004017a0    4    101 sub.sub.init_401000_4017a0
+0x00401810    1      5 fcn.00401810
+0x00401818    1     13 sub.fini_401818
+[0x004010a0]&amp;gt; izq
+0x402004 6 5 DEBUG
+0x40200a 32 31 Debugging detected! Exiting...\n
+0x40202a 25 24 Processing sector %d...\n
+0x402043 30 29 Sector %d analysis complete.\n
+0x402061 41 40 Opaque predicate failed: Access denied.\n
+0x40208a 37 36 Killswitch matched: Access granted.\n
+0x4020af 37 36 Killswitch mismatch: Access denied.\n
+0x4020d4 24 23 Usage: %s &amp;lt;killswitch&amp;gt;\n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;シンボルはstripされています。&lt;/p&gt;
+
+&lt;p&gt;まずは&lt;code&gt;main&lt;/code&gt;から読んでみましょう。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight c"&gt;&lt;code&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mh"&gt;0x004010a0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;pdg&lt;/span&gt; &lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;
+
+&lt;span class="n"&gt;uint&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_401740&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int32_t&lt;/span&gt; &lt;span class="n"&gt;param_1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ulong&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;param_2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;ulong&lt;/span&gt; &lt;span class="n"&gt;uVar1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;ulong&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;apuStack_20&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="kt"&gt;int32_t&lt;/span&gt; &lt;span class="n"&gt;iStack_10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;uint&lt;/span&gt; &lt;span class="n"&gt;uStack_c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;uStack_c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;apuStack_20&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;param_2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;iStack_10&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;param_1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;param_1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;uVar1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;param_2&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mh"&gt;0x20&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mh"&gt;0x20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x40178e&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;uStack_c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEBUG_401460_401580&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;uVar1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;uVar1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;param_2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mh"&gt;0x20&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mh"&gt;0x20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x401775&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;sym&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;imp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Usage: %s &amp;lt;killswitch&amp;gt;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;uVar1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;uStack_c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;uStack_c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;実行時の引数を&lt;code&gt;sub.sub.DEBUG_401460_401580&lt;/code&gt;に渡しているようです。関数名が分かりづらいので変えておきましょう。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x004010a0]&amp;gt; afn check_killswitch sub.sub.DEBUG_401460_401580
+[0x004010a0]&amp;gt; pdf @check_killswitch
+            ; CALL XREF from sub.main_401740 @ 0x401789(x)
+┌ 441: check_killswitch (int64_t arg1);
+│           ; arg int64_t arg1 @ rdi
+│           ; var int64_t var_8h @ rbp-0x8
+│           ; var int64_t var_10h @ rbp-0x10
+│           ; var int64_t var_11h @ rbp-0x11
+│           ; var char *s2 @ rbp-0x19
+│           ; var int64_t var_20h @ rbp-0x20
+│           ; var char *s1 @ rbp-0x28
+│           ; var signed int64_t var_2ch @ rbp-0x2c
+│           ; var int64_t var_30h @ rbp-0x30
+│           ; var int64_t var_34h @ rbp-0x34
+│           ; var size_t var_38h @ rbp-0x38
+│           ; var int64_t var_3ch @ rbp-0x3c
+│           ; var uint32_t var_40h @ rbp-0x40
+│           ; var int64_t var_44h @ rbp-0x44
+│           0x00401580      55             push rbp
+│           0x00401581      4889e5         mov rbp, rsp
+│           0x00401584      4883ec50       sub rsp, 0x50
+│           0x00401588      64488b0425..   mov rax, qword fs:[0x28]
+│           0x00401591      488945f8       mov qword [var_8h], rax
+│           0x00401595      48897dd8       mov qword [s1], rdi         ; arg1
+│           0x00401599      e8c2feffff     call sub.DEBUG_401460
+│           0x0040159e      488d75e7       lea rsi, [s2]
+│           0x004015a2      488d7df0       lea rdi, [var_10h]
+│           0x004015a6      488b053f0b..   mov rax, qword [0x004020ec] ; [0x4020ec:8]=0xe3a2a3c4d3e0aebe
+│           0x004015ad      488945f0       mov qword [var_10h], rax
+│           0x004015b1      ba08000000     mov edx, 8
+│           0x004015b6      e885ffffff     call sub.sub.n_4014b0_401540
+│           0x004015bb      c645ef00       mov byte [var_11h], 0
+│           0x004015bf      c745d40000..   mov dword [var_2ch], 0
+│           ; CODE XREF from check_killswitch @ 0x40161b(x)
+│       ┌─&amp;gt; 0x004015c6      837dd40a       cmp dword [var_2ch], 0xa
+│      ┌──&amp;lt; 0x004015ca      0f8d50000000   jge 0x401620
+│      │╎   0x004015d0      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x004015d3      0faf45d4       imul eax, dword [var_2ch]
+│      │╎   0x004015d7      8945d0         mov dword [var_30h], eax
+│      │╎   0x004015da      8b45d0         mov eax, dword [var_30h]
+│      │╎   0x004015dd      83f864         cmp eax, 0x64               ; 'd' ; 100
+│     ┌───&amp;lt; 0x004015e0      0f8516000000   jne 0x4015fc
+│     ││╎   0x004015e6      8b75d4         mov esi, dword [var_2ch]
+│     ││╎   0x004015e9      488d3d3a0a..   lea rdi, str.Processing_sector__d..._n ; 0x40202a ; "Processing sector %d...\n" ; const char *format
+│     ││╎   0x004015f0      b000           mov al, 0
+│     ││╎   0x004015f2      e869faffff     call sym.imp.printf         ; int printf(const char *format)
+│    ┌────&amp;lt; 0x004015f7      e911000000     jmp 0x40160d
+│    │││╎   ; CODE XREF from check_killswitch @ 0x4015e0(x)
+│    │└───&amp;gt; 0x004015fc      8b75d4         mov esi, dword [var_2ch]
+│    │ │╎   0x004015ff      488d3d3d0a..   lea rdi, str.Sector__d_analysis_complete._n ; 0x402043 ; "Sector %d analysis complete.\n" ; const char *format
+│    │ │╎   0x00401606      b000           mov al, 0
+│    │ │╎   0x00401608      e853faffff     call sym.imp.printf         ; int printf(const char *format)
+│    │ │╎   ; CODE XREF from check_killswitch @ 0x4015f7(x)
+│    └┌───&amp;lt; 0x0040160d      e900000000     jmp 0x401612
+│     ││╎   ; CODE XREF from check_killswitch @ 0x40160d(x)
+│     └───&amp;gt; 0x00401612      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x00401615      83c001         add eax, 1
+│      │╎   0x00401618      8945d4         mov dword [var_2ch], eax
+│      │└─&amp;lt; 0x0040161b      e9a6ffffff     jmp 0x4015c6
+│      │    ; CODE XREF from check_killswitch @ 0x4015ca(x)
+│      └──&amp;gt; 0x00401620      c745cc0000..   mov dword [var_34h], 0
+│           0x00401627      488b7dd8       mov rdi, qword [s1]         ; const char *s
+│           0x0040162b      e810faffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+│           0x00401630      8945c8         mov dword [var_38h], eax
+│           0x00401633      c745c40000..   mov dword [var_3ch], 0
+│           ; CODE XREF from check_killswitch @ 0x401683(x)
+│       ┌─&amp;gt; 0x0040163a      8b45c4         mov eax, dword [var_3ch]
+│       ╎   0x0040163d      3b45c8         cmp eax, dword [var_38h]
+│      ┌──&amp;lt; 0x00401640      0f8d42000000   jge 0x401688
+│      │╎   0x00401646      8b45c4         mov eax, dword [var_3ch]
+│      │╎   0x00401649      83f001         xor eax, 1
+│      │╎   0x0040164c      83e006         and eax, 6
+│      │╎   0x0040164f      8b4dc8         mov ecx, dword [var_38h]
+│      │╎   0x00401652      81f1a5a5a5a5   xor ecx, 0xa5a5a5a5
+│      │╎   0x00401658      01c8           add eax, ecx
+│      │╎   0x0040165a      0345cc         add eax, dword [var_34h]
+│      │╎   0x0040165d      8945cc         mov dword [var_34h], eax
+│      │╎   0x00401660      8b45cc         mov eax, dword [var_34h]
+│      │╎   0x00401663      c1e005         shl eax, 5
+│      │╎   0x00401666      8b4dcc         mov ecx, dword [var_34h]
+│      │╎   0x00401669      c1e91b         shr ecx, 0x1b
+│      │╎   0x0040166c      09c8           or eax, ecx
+│      │╎   0x0040166e      3345cc         xor eax, dword [var_34h]
+│      │╎   0x00401671      8945cc         mov dword [var_34h], eax
+│      │╎   0x00401674      8b45cc         mov eax, dword [var_34h]
+│      │╎   0x00401677      8945cc         mov dword [var_34h], eax
+│      │╎   0x0040167a      8b45c4         mov eax, dword [var_3ch]
+│      │╎   0x0040167d      83c001         add eax, 1
+│      │╎   0x00401680      8945c4         mov dword [var_3ch], eax
+│      │└─&amp;lt; 0x00401683      e9b2ffffff     jmp 0x40163a
+│      │    ; CODE XREF from check_killswitch @ 0x401640(x)
+│      └──&amp;gt; 0x00401688      6945c85a5a..   imul eax, dword [var_38h], 0x5a5a5a5a
+│           0x0040168f      3345cc         xor eax, dword [var_34h]
+│           0x00401692      8945cc         mov dword [var_34h], eax
+│           0x00401695      8b45cc         mov eax, dword [var_34h]
+│           0x00401698      8945cc         mov dword [var_34h], eax
+│           0x0040169b      8b7dcc         mov edi, dword [var_34h]
+│           0x0040169e      e84dfdffff     call fcn.004013f0
+│           0x004016a3      83f800         cmp eax, 0
+│       ┌─&amp;lt; 0x004016a6      0f851a000000   jne 0x4016c6
+│       │   0x004016ac      488d3dae09..   lea rdi, str.Opaque_predicate_failed:_Access_denied._n ; 0x402061 ; "Opaque predicate failed: Access denied.\n" ; const char *format
+│       │   0x004016b3      b000           mov al, 0
+│       │   0x004016b5      e8a6f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│       │   0x004016ba      c745e00100..   mov dword [var_20h], 1
+│      ┌──&amp;lt; 0x004016c1      e949000000     jmp 0x40170f
+│      ││   ; CODE XREF from check_killswitch @ 0x4016a6(x)
+│      │└─&amp;gt; 0x004016c6      488d75e7       lea rsi, [s2]               ; const char *s2
+│      │    0x004016ca      488b7dd8       mov rdi, qword [s1]         ; const char *s1
+│      │    0x004016ce      e89df9ffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│      │    0x004016d3      8945c0         mov dword [var_40h], eax
+│      │    0x004016d6      837dc000       cmp dword [var_40h], 0
+│      │┌─&amp;lt; 0x004016da      0f851a000000   jne 0x4016fa
+│      ││   0x004016e0      488d3da309..   lea rdi, str.Killswitch_matched:_Access_granted._n ; 0x40208a ; "Killswitch matched: Access granted.\n" ; const char *format
+│      ││   0x004016e7      b000           mov al, 0
+│      ││   0x004016e9      e872f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│      ││   0x004016ee      c745e00000..   mov dword [var_20h], 0
+│     ┌───&amp;lt; 0x004016f5      e915000000     jmp 0x40170f
+│     │││   ; CODE XREF from check_killswitch @ 0x4016da(x)
+│     ││└─&amp;gt; 0x004016fa      488d3dae09..   lea rdi, str.Killswitch_mismatch:_Access_denied._n ; 0x4020af ; "Killswitch mismatch: Access denied.\n" ; const char *format
+│     ││    0x00401701      b000           mov al, 0
+│     ││    0x00401703      e858f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│     ││    0x00401708      c745e00100..   mov dword [var_20h], 1
+│     ││    ; CODE XREFS from check_killswitch @ 0x4016c1(x), 0x4016f5(x)
+│     └└──&amp;gt; 0x0040170f      8b45e0         mov eax, dword [var_20h]
+│           0x00401712      64488b0c25..   mov rcx, qword fs:[0x28]
+│           0x0040171b      488b55f8       mov rdx, qword [var_8h]
+│           0x0040171f      4839d1         cmp rcx, rdx
+│           0x00401722      8945bc         mov dword [var_44h], eax
+│       ┌─&amp;lt; 0x00401725      0f8509000000   jne 0x401734
+│       │   0x0040172b      8b45bc         mov eax, dword [var_44h]
+│       │   0x0040172e      4883c450       add rsp, 0x50
+│       │   0x00401732      5d             pop rbp
+│       │   0x00401733      c3             ret
+│       │   ; CODE XREF from check_killswitch @ 0x401725(x)
+└       └─&amp;gt; 0x00401734      e817f9ffff     call sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;最初に呼ばれている&lt;code&gt;sub.DEBUG_401460&lt;/code&gt;ですが、これは&lt;code&gt;DEBUG&lt;/code&gt;という環境変数を確認しているだけのようです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[0x004010a0]&amp;gt; pdg @sub.DEBUG_401460
+
+void sub.DEBUG_401460(void)
+
+{
+    ulong uStack_20;
+    uchar auStack_18 [4];
+    uint uStack_14;
+    int64_t iStack_10;
+
+    *(*0x20 + -0x20) = 0x401474;
+    iStack_10 = sym.imp.getenv("DEBUG");
+    if (iStack_10 != 0) {
+        *(*0x20 + -0x18 + -8) = 0x401491;
+        uStack_14 = sym.imp.printf("Debugging detected! Exiting...\n");
+    // WARNING: Subroutine does not return
+        *(*0x20 + -0x18 + -8) = 0x40149e;
+        sym.imp.exit(1);
+    }
+    return;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;デバッガの検知かと思いましたが、杞憂でしたね。&lt;/p&gt;
+
+&lt;p&gt;というわけでgdbを使用した動的解析に切り替えます。&lt;/p&gt;
+
+&lt;p&gt;こういったバイナリは入力とFlagを比較していることが多いので、それらしきアドレスを特定してbreakpointをおいておきましょう。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;│      │└─&amp;gt; 0x004016c6      488d75e7       lea rsi, [s2]               ; const char *s2
+│      │    0x004016ca      488b7dd8       mov rdi, qword [s1]         ; const char *s1
+│      │    0x004016ce      e89df9ffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│      │    0x004016d3      8945c0         mov dword [var_40h], eax
+│      │    0x004016d6      837dc000       cmp dword [var_40h], 0
+│      │┌─&amp;lt; 0x004016da      0f851a000000   jne 0x4016fa
+│      ││   0x004016e0      488d3da309..   lea rdi, str.Killswitch_matched:_Access_granted._n ; 0x40208a ; "Killswitch matched: Access granted.\n" ; const char *format
+│      ││   0x004016e7      b000           mov al, 0
+│      ││   0x004016e9      e872f9ffff     call sym.imp.printf         ; int printf(const char *format)
+│      ││   0x004016ee      c745e00000..   mov dword [var_20h], 0
+│     ┌───&amp;lt; 0x004016f5      e915000000     jmp 0x40170f
+│     │││   ; CODE XREF from check_killswitch @ 0x4016da(x)
+│     ││└─&amp;gt; 0x004016fa      488d3dae09..   lea rdi, str.Killswitch_mismatch:_Access_denied._n ; 0x4020af ; "Killswitch mismatch: Access denied.\n" ; const char *format
+│     ││    0x00401701      b000           mov al, 0
+│     ││    0x00401703      e858f9ffff     call sym.imp.printf         ; int printf(const char *format)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ここでは&lt;code&gt;0x004016ce&lt;/code&gt;の&lt;code&gt;strcmp&lt;/code&gt;が怪しいので、ここにbreakpointを設定して引数を見てみます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;gdb-peda$ b *0x004016ce
+Breakpoint 1 at 0x4016ce
+gdb-peda$ r foobarbaz
+Starting program: /home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv foobarbaz
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+Opaque predicate failed: Access denied.
+[Inferior 1 (process 2016993) exited with code 01]
+Warning: not running
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;残念ながら呼ばれませんでした。他にも検証があるようです。&lt;/p&gt;
+
+&lt;p&gt;こういうときは大体文字列の長さで先に弾かれています。&lt;/p&gt;
+
+&lt;p&gt;怪しいのは&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;│           0x004015a6      488b053f0b..   mov rax, qword [0x004020ec] ; [0x4020ec:8]=0xe3a2a3c4d3e0aebe
+│           0x004015ad      488945f0       mov qword [var_10h], rax
+│           0x004015b1      ba08000000     mov edx, 8
+│           0x004015b6      e885ffffff     call sub.sub.n_4014b0_401540
+│           0x004015bb      c645ef00       mov byte [var_11h], 0
+│           0x004015bf      c745d40000..   mov dword [var_2ch], 0
+│           ; CODE XREF from check_killswitch @ 0x40161b(x)
+│       ┌─&amp;gt; 0x004015c6      837dd40a       cmp dword [var_2ch], 0xa
+│      ┌──&amp;lt; 0x004015ca      0f8d50000000   jge 0x401620
+│      │╎   0x004015d0      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x004015d3      0faf45d4       imul eax, dword [var_2ch]
+│      │╎   0x004015d7      8945d0         mov dword [var_30h], eax
+│      │╎   0x004015da      8b45d0         mov eax, dword [var_30h]
+│      │╎   0x004015dd      83f864         cmp eax, 0x64               ; 'd' ; 100
+│     ┌───&amp;lt; 0x004015e0      0f8516000000   jne 0x4015fc
+│     ││╎   0x004015e6      8b75d4         mov esi, dword [var_2ch]
+│     ││╎   0x004015e9      488d3d3a0a..   lea rdi, str.Processing_sector__d..._n ; 0x40202a ; "Processing sector %d...\n" ; const char *format
+│     ││╎   0x004015f0      b000           mov al, 0
+│     ││╎   0x004015f2      e869faffff     call sym.imp.printf         ; int printf(const char *format)
+│    ┌────&amp;lt; 0x004015f7      e911000000     jmp 0x40160d
+│    │││╎   ; CODE XREF from check_killswitch @ 0x4015e0(x)
+│    │└───&amp;gt; 0x004015fc      8b75d4         mov esi, dword [var_2ch]
+│    │ │╎   0x004015ff      488d3d3d0a..   lea rdi, str.Sector__d_analysis_complete._n ; 0x402043 ; "Sector %d analysis complete.\n" ; const char *format
+│    │ │╎   0x00401606      b000           mov al, 0
+│    │ │╎   0x00401608      e853faffff     call sym.imp.printf         ; int printf(const char *format)
+│    │ │╎   ; CODE XREF from check_killswitch @ 0x4015f7(x)
+│    └┌───&amp;lt; 0x0040160d      e900000000     jmp 0x401612
+│     ││╎   ; CODE XREF from check_killswitch @ 0x40160d(x)
+│     └───&amp;gt; 0x00401612      8b45d4         mov eax, dword [var_2ch]
+│      │╎   0x00401615      83c001         add eax, 1
+│      │╎   0x00401618      8945d4         mov dword [var_2ch], eax
+│      │└─&amp;lt; 0x0040161b      e9a6ffffff     jmp 0x4015c6
+│      │    ; CODE XREF from check_killswitch @ 0x4015ca(x)
+│      └──&amp;gt; 0x00401620      c745cc0000..   mov dword [var_34h], 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;このあたりです。最初の&lt;code&gt;0x4015a6&lt;/code&gt;で&lt;code&gt;rax&lt;/code&gt;に入れられた値&lt;code&gt;0xe3a2a3c4d3e0aebe&lt;/code&gt;がエンコードされたkillswitchだと推測できます。&lt;/p&gt;
+
+&lt;p&gt;というわけで8文字で改めて動的解析を試してみましょう&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;gdb-peda$ r hogefuga
+Starting program: /home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv hogefuga
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+[----------------------------------registers-----------------------------------]
+RAX: 0x1
+RBX: 0x0
+RCX: 0x7f8
+RDX: 0x7fffffffdf01 --&amp;gt; 0x6f68007664615f70 ('p_adv')
+RSI: 0x7fffffffd9f7 ("P@ncR34s")
+RDI: 0x7fffffffdf07 ("hogefuga")
+RBP: 0x7fffffffda10 --&amp;gt; 0x7fffffffda30 --&amp;gt; 0x2
+RSP: 0x7fffffffd9c0 --&amp;gt; 0x1
+RIP: 0x4016ce (call   0x401070 &amp;lt;strcmp@plt&amp;gt;)
+R8 : 0x0
+R9 : 0x7fffffffd897 --&amp;gt; 0xbc1cd7085aa00039
+R10: 0x0
+R11: 0x246
+R12: 0x7fffffffdb48 --&amp;gt; 0x7fffffffdeb3 ("/home/ctf/BioHack/insulin_pump_malware2/malware_insulin_pump_adv")
+R13: 0x401740 (push   rbp)
+R14: 0x0
+R15: 0x7ffff7ffd040 --&amp;gt; 0x7ffff7ffe2e0 --&amp;gt; 0x0
+EFLAGS: 0x202 (carry parity adjust zero sign trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x4016c1:    jmp    0x40170f
+   0x4016c6:    lea    rsi,[rbp-0x19]
+   0x4016ca:    mov    rdi,QWORD PTR [rbp-0x28]
+=&amp;gt; 0x4016ce:    call   0x401070 &amp;lt;strcmp@plt&amp;gt;
+   0x4016d3:    mov    DWORD PTR [rbp-0x40],eax
+   0x4016d6:    cmp    DWORD PTR [rbp-0x40],0x0
+   0x4016da:    jne    0x4016fa
+   0x4016e0:    lea    rdi,[rip+0x9a3]        # 0x40208a
+Guessed arguments:
+arg[0]: 0x7fffffffdf07 ("hogefuga")
+arg[1]: 0x7fffffffd9f7 ("P@ncR34s")
+[------------------------------------stack-------------------------------------]
+0000| 0x7fffffffd9c0 --&amp;gt; 0x1
+0008| 0x7fffffffd9c8 --&amp;gt; 0x1
+0016| 0x7fffffffd9d0 --&amp;gt; 0x800400040
+0024| 0x7fffffffd9d8 --&amp;gt; 0x9a6342a400000008
+0032| 0x7fffffffd9e0 --&amp;gt; 0xa00000051 ('Q')
+0040| 0x7fffffffd9e8 --&amp;gt; 0x7fffffffdf07 ("hogefuga")
+0048| 0x7fffffffd9f0 --&amp;gt; 0x50007ffff7fc1000
+0056| 0x7fffffffd9f8 --&amp;gt; 0x73343352636e40 ('@ncR34s')
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x00000000004016ce in ?? ()
+gdb-peda$
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;というわけで&lt;code&gt;P@ncR34s&lt;/code&gt;がKillswitchのようです。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;./malware_insulin_pump_adv P@ncR34s
+Sector 0 analysis complete.
+Sector 1 analysis complete.
+Sector 2 analysis complete.
+Sector 3 analysis complete.
+Sector 4 analysis complete.
+Sector 5 analysis complete.
+Sector 6 analysis complete.
+Sector 7 analysis complete.
+Sector 8 analysis complete.
+Sector 9 analysis complete.
+Killswitch matched: Access granted.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;pancreas&lt;/code&gt;って何かと思ったら膵臓らしいです。最初の問題でも出てきましたね。&lt;/p&gt;
+
+&lt;h4 id="優勝"&gt;優勝&lt;/h4&gt;
+
+&lt;p&gt;初日に圧倒的な差で1位だったので油断していたら、終盤に怒涛の追い上げをされ、終了30分くらい前には一度1位の座を奪われました。油断してはいけない。&lt;/p&gt;
+
+&lt;p&gt;なんとか取り返し、無事賞品の&lt;a href="https://www.villageb.io/2024badge"&gt;バッジ&lt;/a&gt;とメダル、ステッカーをもらうことができました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2024/11/21/codeblue2024/images/prizes.png" alt="賞品" /&gt;&lt;/p&gt;
+
+&lt;p&gt;セキュリティカンファレンスでは、このような”Badge”と呼ばれる基板が作成されることが多くあります。&lt;/p&gt;
+
+&lt;p&gt;機能は様々で、例えば以前のCODE BLUE 2019で作成したバッジは現地ではんだ付けをし、スイッチを入れるとLEDが光るというものでした。&lt;/p&gt;
+
+&lt;p&gt;今回もらったバッジは光る以外に、アルコールチェッカーとしての機能がある他、CTFの問題も内包しているようです。&lt;/p&gt;
+
+&lt;h2 id="発表"&gt;発表&lt;/h2&gt;
+&lt;h3 id="piloting-edge-copilot--jun-kokatsu"&gt;Piloting Edge Copilot : Jun Kokatsu&lt;/h3&gt;
+&lt;p&gt;発表者のKokatsu Jun氏は、元MicrosoftでEdgeのセキュリティチームに所属しており、現在はGoogleでブラウザとAIのセキュリティを研究しています。&lt;/p&gt;
+
+&lt;p&gt;今回は、Microsoft EdgeのCopilotに関する機能の脆弱性についての発表でした。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;WebブラウザのAI機能はユーザーにとって便利だが、攻撃者にとってはどうだろうか？ この講演では、Microsoft Edgeブラウザに搭載されたAI機能であるEdge Copilotによって発生した複数の脆弱性を紹介する。例えば、あらゆるサイトの情報を盗む方法や、ユーザーの許可なしにマイクやカメラへのアクセスを行う方法などである。 さらにこの講演では、比較的安全なシステム（Edge）と安全なシステムではない（Bing）の統合により、安全なシステムに実装された緩和策が安全ではないシステムを介してどのようにバイパスされるかを説明する。さらに、従来のセキュリティ緩和策では防げない、LLM（大規模言語モデル）固有のリーク手法も解説する。
+&lt;a href="https://codeblue.jp/program/time-table/day1-002/"&gt;https://codeblue.jp/program/time-table/day1-002/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Edgeには&lt;code&gt;Edge Copilot&lt;/code&gt;と呼ばれる機能が搭載されており、この機能では現在開いているページの要約などができる。&lt;/p&gt;
+
+&lt;p&gt;この機能には&lt;code&gt;edge://discover-chat&lt;/code&gt;が使われており、ここでは強力なCSPとTrusted Typesが有効化されているため、XSSの可能性は現実的ではなかった。&lt;/p&gt;
+
+&lt;p&gt;さらに、そこで使われる&lt;code&gt;edgeservices.bing.com&lt;/code&gt;についても強力な保護が施されていたため、&lt;code&gt;bing.com&lt;/code&gt;自体の脆弱性を探すことに。&lt;/p&gt;
+
+&lt;p&gt;結果、&lt;code&gt;bing.com&lt;/code&gt;には複数の脆弱性が見つかり、&lt;code&gt;bing.com&lt;/code&gt;から使えるようになっていたブラウザのAPIを使用してさらなる攻撃にも繋げられた。&lt;/p&gt;
+
+&lt;p&gt;通常、Edge Copilotに送られるページの内容は保護されていて聞き出せないが、一度関係ない質問を挟むことでリークさせる、プロンプトインジェクションのような手法も通じた。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;安全なアプリケーションを新たに作成したとしても、依存している古いコンポーネントが脆弱な状態だと、新しいアプリケーションにも被害が生じる。ということが実感できる発表でした。&lt;/p&gt;
+
+&lt;p&gt;また、LLMに対する攻撃としてプロンプトインジェクションなどが取り上げられることが多いものの、XSSなどのプリミティブな脆弱性も通用することを忘れてはいけないと感じました。&lt;/p&gt;
+
+&lt;h3 id="pkgfuzzプロジェクトオープンソースソフトウェアのための新たな継続的ファジング--yuhei-kawakoya-eitaro-shioji-yuta-otsuki"&gt;PkgFuzzプロジェクト:オープンソースソフトウェアのための新たな継続的ファジング : Yuhei Kawakoya, Eitaro Shioji, Yuta Otsuki&lt;/h3&gt;
+&lt;p&gt;NTTセキュリティホールディングス及びNTT社会情報研究所の研究者チームによる発表です。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Googleが2016年に開始したOSS-Fuzzプロジェクトは2023年8月時点でさまざまなソフトウェアのバグを3万6000件以上見つけている。このプロジェクトでは「ファジング」という自動的にソフトウェアのバグを検出する技術が中核として使われている。ファジングは、自動的なバグ検出技術と言われるが、実際にファジングを実施するためにはハーネス（検査対象ソフトウェアを呼び出すプログラム）の作成、ファジング用バイナリの生成、コマンドライン引数の調整、初期シードの準備、などの人手による作業が必要である。特に、異なる複数のソフトウェアをファジングする場合、これらの作業が障害（自動化阻害要因）となり、ファジングワークフロー全体を自動化できない。このため、効率的に多種多様なソフトウェアのファジングを行うことが難しい。
+われわれは、これら自動化阻害要因を解消し、ファジング・ワークフロー全体を自動化するシステム、PkgFuzzを開発した。PkzFuzzでは、ソフトウェア・パッケージのビルドプロセスを監視し、ファジング可能なパッケージを選び出す。また、同時にファジングに必要な情報を収集する。このPkgFuzzを利用したファジングキャンペーン、PkgFuzz Projectについて発表する。PkgFuzz Projectでは、多種多様なソフトウェアが含まれるUbuntu 23.10のDebianパッケージに対するファジングキャンペーンを実施したところ、人間の介在なしに、265のパッケージから、6万4658件のクラッシュを得た。これらを精査したところ、攻撃に利用可能な4件の脆弱性を発見した。これらをIPAへ報告し、3件のアドバイザリとCVEの発行へとつなげた。
+PkgFuzzがファジングを自動実行した265のパッケージのうち、OSS-Fuzzでもファジングが実施されていたOSSプロジェクトはわずか32件（12％程度）であった。これは、PkgFuzz Projectが、OSS-Fuzzが今までファジング対象としていなかったOSSをファジングできていることを示している。PkgFuzz Projectではファジングの準備を自動化できる。つまり、OSS-Fuzzとは異なり、ハーネスの作成やコマンドライン引数の調整など、OSS開発者によるファジングのためだけの開発コストを要求しないため、ファジング導入のハードルが低い。そのため、今までファジングによるセキュリティテストを導入できていなかったOSSプロジェクト（特に今までOSS-Fuzzの恩恵をあまり受けていない小規模なOSS）に対してもファジングキャンペーンを実施することができる。PkgFuzz Projectにより、バグを発見、修正していくことで、より多くのOSSプロジェクトに対してセキュリティレベルの向上を促進し、安心なソフトウェア基盤の実現を可能にすると考える。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href="https://codeblue.jp/program/time-table/day2-002/"&gt;https://codeblue.jp/program/time-table/day2-002/&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;OSSに対するファジングは、現在Googleが行っているOSS-Fuzzなどのプロジェクトが存在するが、OSSメンテナ側にも負荷が存在する。&lt;/p&gt;
+
+&lt;p&gt;それらの自動化を阻害している要因を特定・解析し、より簡単に自動化を行えるようにしようというプロジェクトがPkgFuzz。&lt;/p&gt;
+
+&lt;p&gt;自動化阻害要因&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ハーネスの準備
+    &lt;ul&gt;
+      &lt;li&gt;ライブラリ関数などのファジングを行うためには、その関数を呼び出すようなコードを書く必要がある。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;コマンドライン引数の調整&lt;/li&gt;
+  &lt;li&gt;ファジング用バイナリのビルド&lt;/li&gt;
+  &lt;li&gt;初期シードファイルの作成
+    &lt;ul&gt;
+      &lt;li&gt;ファイルを入力に受け取る場合、ある程度正確なファイルを用意しないと効率が大幅に落ちてしまう。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;これらの要因に対して、ソフトウェアパッケージ(&lt;code&gt;.deb&lt;/code&gt;など)のビルドプロセスを監視し、必要な情報を収集するというアイデア。&lt;/p&gt;
+
+&lt;p&gt;テストとしてライブラリ関数を呼んでいるソースコードや、テスト用ファイルの活用、ビルド用オプションの特定などが比較的容易になる。&lt;/p&gt;
+
+&lt;p&gt;アイデアを元に、&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;パッケージの解析&lt;/li&gt;
+  &lt;li&gt;ファジングの実行&lt;/li&gt;
+  &lt;li&gt;クラッシュのトリアージ&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;をUbuntu23.10のパッケージのうち265件に対して行った。&lt;/p&gt;
+
+&lt;p&gt;結果、 計606回のファジングが実行され、合計で64658件のクラッシュを検出、AFLTriageによるトリアージを行った結果1186件のクラッシュを特定した。&lt;/p&gt;
+
+&lt;p&gt;一つ以上のクラッシュが観測されたパッケージの割合は65.6%、深刻度中以上のクラッシュを一つ以上含むパッケージは24.5%となった。&lt;/p&gt;
+
+&lt;p&gt;また、解析結果から、クラッシュの主な原因はメモリの読み書きであった。&lt;/p&gt;
+
+&lt;p&gt;自動化阻害要因に対して、メンテナが自力で解決して対応を行っているOSS-Fuzzと比較しても同程度の結果を自動的に得られた。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Fuzzingは「自動でバグを発見する夢の方法」のように思われがちですが、その導入や、正しく効率的なFuzzingを行うための作業は簡単なものではなく、無限の計算資源さえあれば誰でもできる。というものではありませんでした。&lt;/p&gt;
+
+&lt;p&gt;OSSのFuzzing導入に対するハードルを下げる、社会へ貢献する研究だと思います。&lt;/p&gt;
+
+&lt;p&gt;発表資料は&lt;a href="https://github.com/ntt-zerolab/PkgFuzz_Project"&gt;こちら&lt;/a&gt;で公開されています。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+&lt;p&gt;今年のCODE BLUEのタイムテーブルを見てみると、昨年に引き続き「LLM・ASM・Fuzzing」の3つが大きなトレンドになっているのを感じます。&lt;/p&gt;
+
+&lt;p&gt;非常に個人的な感想を述べると、今年は会場が家に近くてありがたかったです。来年もぜひ参加したい思っています。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>新卒で入社し、セキュリティエンジニアとして配属されてからの半年</title>
+      <link>https://tech.pepabo.com/2024/07/25/newcomer-security-engineer/</link>
+      <guid>https://tech.pepabo.com/2024/07/25/newcomer-security-engineer/</guid>
+      <pubDate>Thu, 25 Jul 2024 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは。2023年に新卒で入社した&lt;a href="https://x.com/n01e0"&gt;n01e0&lt;/a&gt;です。研修・OJTを終え、セキュリティ対策室に配属されてから半年がたちました。&lt;/p&gt;
+
+&lt;p&gt;はやいですね。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#やってきたこと" id="markdown-toc-やってきたこと"&gt;やってきたこと&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#asm" id="markdown-toc-asm"&gt;ASM&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#セキュリティに関することいろいろ" id="markdown-toc-セキュリティに関することいろいろ"&gt;セキュリティに関することいろいろ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#インシデントレスポンス" id="markdown-toc-インシデントレスポンス"&gt;インシデントレスポンス&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#セキュリティ研修の実施" id="markdown-toc-セキュリティ研修の実施"&gt;セキュリティ研修の実施&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#これからやること" id="markdown-toc-これからやること"&gt;これからやること&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#wazuhの活用" id="markdown-toc-wazuhの活用"&gt;Wazuhの活用&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#脆弱性情報の管理" id="markdown-toc-脆弱性情報の管理"&gt;脆弱性情報の管理&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="やってきたこと"&gt;やってきたこと&lt;/h2&gt;
+
+&lt;h3 id="asm"&gt;ASM&lt;/h3&gt;
+&lt;p&gt;ペパボでは、複数のサービスが日々、様々な機能を開発している上、新たなサービスも増えています。&lt;/p&gt;
+
+&lt;p&gt;セキュリティ対策室として、事業部を横断して見るためにも、まずはリソースの把握が重要だと感じ、セキュリティ上のリスクを理解するためにも、まずはAttack Surface Managementに取り組みました。&lt;/p&gt;
+
+&lt;p&gt;ペパボが所有しているIPレンジに対する定期的なポートスキャンや、サービスのドメインに対するスキャンは既に行っていますが、よりアクティブに収集・管理を行うため、改修を行いました。&lt;/p&gt;
+
+&lt;p&gt;外部に公開しているサービスのドメインはもちろん、社内で利用しているツールなどのドメインも監視対象に加え、さらにCertificate Transparencyの情報を利用してサブドメインの自動収集も行っています。&lt;/p&gt;
+
+&lt;h3 id="セキュリティに関することいろいろ"&gt;セキュリティに関することいろいろ&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;脆弱性診断
+    &lt;ul&gt;
+      &lt;li&gt;新規サービスの開始や機能追加時など、社内でも脆弱性診断を行っています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;脅威モデリング
+    &lt;ul&gt;
+      &lt;li&gt;サービスの設計段階でセキュリティリスクを洗い出すために行っています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;EDR(Endpoint Detection and Response)のログ監視
+    &lt;ul&gt;
+      &lt;li&gt;エンドポイント端末から上がってくるアラートなどのトリアージをしたり、監視ルールの作成を行っています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;セキュリティレビュー
+    &lt;ul&gt;
+      &lt;li&gt;各サービス・リポジトリのPRに対し、セキュリティ対策室としてレビューを行うこともあります&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;脆弱性情報のトリアージ
+    &lt;ul&gt;
+      &lt;li&gt;日々発行されるCVE-IDやGitHub Advisoryの情報を収集・トリアージしています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;インシデントレスポンス
+    &lt;ul&gt;
+      &lt;li&gt;社内CISRTとしてセキュリティインシデントへの対応だけでなく、障害対応にも参加しています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;開発プロセスにおけるセキュリティの組み込み
+    &lt;ul&gt;
+      &lt;li&gt;CIでSASTを簡単に導入できるようにしています&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;教育・研修
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="#セキュリティ研修の実施"&gt;2024年に新卒で入社したエンジニア向けに研修を行いました&lt;/a&gt;
+など、セキュリティに関することをいろいろやっています。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;幅広い内容に取り組めるのは事業会社でセキュリティエンジニアをするメリットだと改めて思います。&lt;/p&gt;
+
+&lt;h3 id="インシデントレスポンス"&gt;インシデントレスポンス&lt;/h3&gt;
+&lt;p&gt;技術的に面白かったインシデントの共有をします。&lt;/p&gt;
+
+&lt;p&gt;Fileless Executionのアラートが発生し、見てみると&lt;code&gt;memfd_create&lt;/code&gt;で作成した&lt;code&gt;anonymous file&lt;/code&gt;を&lt;code&gt;fexecve&lt;/code&gt;で実行している。というものでした。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;memfd_create&lt;/code&gt;についてはたまたま&lt;a href="https://feneshi.co/Detecting_fileless_execution_in_linux/"&gt;以前調べていた&lt;/a&gt;ので調査を行いました。&lt;/p&gt;
+
+&lt;p&gt;アラートの詳細を見てみると、実行しているプロセスの実行ファイルは&lt;code&gt;/memfd:spawn_worker_trampoline&lt;/code&gt;となっていました。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;memfd_create&lt;/code&gt;で作成したファイルを実行すると、このように&lt;code&gt;memfd:&lt;/code&gt;のprefixがつきます。&lt;/p&gt;
+
+&lt;p&gt;この情報をもとに調査してみると、&lt;a href="https://github.com/DataDog/libdatadog/blob/1aa5138531f3f561063925a5b0624eb22b5f0012/spawn_worker/src/unix/spawn.rs#L25"&gt;DataDogのTracerがmemfdにバイナリを書き込んで実行している&lt;/a&gt;ようでした。すごい&lt;/p&gt;
+
+&lt;p&gt;Rustで書かれているのも面白いし、&lt;code&gt;memfd&lt;/code&gt;で実行しているのも面白いですね。&lt;/p&gt;
+
+&lt;p&gt;ライブラリとして単一バイナリを置くだけで機能させることを考えるとこの方法になるんでしょうか。&lt;/p&gt;
+
+&lt;p&gt;検知できたこと、そして誤検知であったことが何よりうれしいです。&lt;/p&gt;
+
+&lt;h3 id="セキュリティ研修の実施"&gt;セキュリティ研修の実施&lt;/h3&gt;
+&lt;p&gt;今年入社した新卒エンジニアに向けてセキュリティ研修を実施しました。&lt;/p&gt;
+
+&lt;p&gt;「セキュリティエンジニアになってもらう」というより、日頃のアプリケーション開発や運用、業務におけるセキュリティの観点を身に着け、脆弱性を見つける・修正する・作らない技術を身につけることを目的としています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;セキュリティレビュー体験
+    &lt;ul&gt;
+      &lt;li&gt;研修中にRails Tutorialで作成したアプリケーションに対し、脆弱な実装を含むPRを作成し、レビューに取り組んでもらいました&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;EDRの実演
+    &lt;ul&gt;
+      &lt;li&gt;疑似マルウェアを作成し、EDRの検知とレスポンスの流れを実際に見てもらいました&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;脆弱性情報のトリアージについての説明
+    &lt;ul&gt;
+      &lt;li&gt;PoCを実装し、脆弱性を放置した場合のリスクについて理解してもらいました&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;脆弱性診断・修正体験
+    &lt;ul&gt;
+      &lt;li&gt;レビュー体験や実例の紹介で「脆弱性の発生しやすいパターン」をいくつか理解してもらったあとは、多くの脆弱性を実装したRails製の「やられアプリ」を対象に脆弱性を探し、修正をおこなってもらいました&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;セキュリティ研修は全体を通して「自分で調べ、手を動かして理解してもらう」ような形式にしています。&lt;/p&gt;
+
+&lt;p&gt;最初に技術的な説明は行いましたが、セキュリティにおいて重要なのは「違和感」を感じる力だと思っています。そのため、とにかく多くのコードを読み、アプリケーションを触り、その違和感を実際の攻撃と結びつけてもらうようにしました。&lt;/p&gt;
+
+&lt;p&gt;受講者のやる気と実力に依存した内容ではありましたが、期待通り楽しく学べていたようなので良かったです。&lt;/p&gt;
+
+&lt;h2 id="これからやること"&gt;これからやること&lt;/h2&gt;
+
+&lt;h3 id="wazuhの活用"&gt;Wazuhの活用&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://atmarkit.itmedia.co.jp/ait/articles/1902/18/news012.html"&gt;ペパボでは各サーバーにWazuhを導入しています。&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://wazuh.com/"&gt;Wazuh&lt;/a&gt;はオープンソースのセキュリティプラットフォームです。&lt;/p&gt;
+
+&lt;p&gt;上記の記事の通り、全社でWazuhの導入を行い、ログの収集・Slackへの通知などの整備を行いましたが、やはりアラートの量が非常に多く、管理が大変です。&lt;/p&gt;
+
+&lt;p&gt;データは無いよりあった方が当然うれしいですが、あまりにも多いとノイズになり大変です。&lt;/p&gt;
+
+&lt;p&gt;セキュリティツールは「導入すれば安全になって終わり」というものではありません。&lt;/p&gt;
+
+&lt;p&gt;情報を活用し、偽陽性を減らすなど、より見やすくしていきたいと考えています。&lt;/p&gt;
+
+&lt;h3 id="脆弱性情報の管理"&gt;脆弱性情報の管理&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;CVE&lt;/li&gt;
+  &lt;li&gt;JVN&lt;/li&gt;
+  &lt;li&gt;GitHub Advisory Database&lt;/li&gt;
+  &lt;li&gt;EDR製品からの情報&lt;/li&gt;
+  &lt;li&gt;Xなどのソーシャルメディアからの情報
+を収集し、トリアージを行っていますが、こちらも非常に量が多いです。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;近年、発行されるCVE数は増加しており、自社で使用・依存しているライブラリやソフトウェアなどの情報だけでも膨大です。&lt;/p&gt;
+
+&lt;p&gt;セキュリティや監査、大量に流れてくる情報をうまく処理する。という点ではデータ活用の知見も必要ですね。&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+&lt;p&gt;ペパボは事業会社ということもあり、セキュリティ対策室では「セキュリティに関すること全部」をできます。新しい技術や知識を学び続ける環境が整っており、実際に業務に反映させることができるのが魅力です。&lt;/p&gt;
+
+&lt;p&gt;また、事業部を横断した組織ということで、連携も重要になってきます。そんなとき「雑に聞ける」環境が整っているのも非常にありがたいことだと思っています。&lt;/p&gt;
+
+&lt;p&gt;引き続き、セキュリティの最前線を意識して活動し、さらに強力な防衛体制を築いていきたいと思います。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>CODE BLUE 2023参加レポート</title>
+      <link>https://tech.pepabo.com/2023/11/13/codeblue2023/</link>
+      <guid>https://tech.pepabo.com/2023/11/13/codeblue2023/</guid>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは。新卒13thの&lt;a href="https://twitter.com/n01e0"&gt;n01e0&lt;/a&gt;です。11/8~11/9にかけて開催されたCODE BLUE 2023に参加してきました。&lt;/p&gt;
+
+&lt;p&gt;このブログでは、特に印象に残っている発表やブース、ワークショップをいくつかピックアップして紹介します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#ブース" id="markdown-toc-ブース"&gt;ブース&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#ワークショップ" id="markdown-toc-ワークショップ"&gt;ワークショップ&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#webハッキングチャレンジforビギナーズ" id="markdown-toc-webハッキングチャレンジforビギナーズ"&gt;Webハッキングチャレンジforビギナーズ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#flatt-security-speedrun-ctf" id="markdown-toc-flatt-security-speedrun-ctf"&gt;Flatt Security Speedrun CTF&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#発表" id="markdown-toc-発表"&gt;発表&lt;/a&gt;    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#macosのセキュリティとプライバシーの機構をバイパスする手法について-gatekeeper-から-system-integrity-protection-まで-by-koh-nakagawa" id="markdown-toc-macosのセキュリティとプライバシーの機構をバイパスする手法について-gatekeeper-から-system-integrity-protection-まで-by-koh-nakagawa"&gt;macOSのセキュリティとプライバシーの機構をバイパスする手法について: Gatekeeper から System Integrity Protection まで by Koh Nakagawa&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#stelftools-クロスアーキテクチャに対応した静的結合されたライブラリ関数の特定ツール-by-shu-akabane-takeshi-okamoto-yuhei-kawakoya" id="markdown-toc-stelftools-クロスアーキテクチャに対応した静的結合されたライブラリ関数の特定ツール-by-shu-akabane-takeshi-okamoto-yuhei-kawakoya"&gt;stelftools: クロスアーキテクチャに対応した静的結合されたライブラリ関数の特定ツール by Shu akabane, Takeshi Okamoto, Yuhei Kawakoya&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#カーネル空間への宝探し-linuxカーネルでの攻撃可能な構造体の探索-by-yudai-fujiwara" id="markdown-toc-カーネル空間への宝探し-linuxカーネルでの攻撃可能な構造体の探索-by-yudai-fujiwara"&gt;カーネル空間への宝探し: Linuxカーネルでの攻撃可能な構造体の探索 by Yudai Fujiwara&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;CODE BLUEとの出会いは高校時代で、学生スタッフとして参加したのが最初でした。2018, 2019, 2021と学生スタッフでの参加をさせてもらいましたが、今回は社会人としての参加です。&lt;/p&gt;
+
+&lt;p&gt;セキュリティエンジニアになる決意をした場に改めて参加できたことを嬉しく思います。&lt;/p&gt;
+
+&lt;h2 id="ブース"&gt;ブース&lt;/h2&gt;
+&lt;p&gt;CODE BLUEでは、発表の他に、スポンサーによるブース展示やコンテスト・ワークショップも行われています。&lt;/p&gt;
+
+&lt;p&gt;GMOインターネットグループはトップスポンサーになっているため、入り口からほど近いところにはイエラエのブースがありました。&lt;/p&gt;
+
+&lt;p&gt;水をもらって場内巡りをします&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2023/11/13/codeblue2023/images/GMO_water.png" alt="GMO水" /&gt;&lt;/p&gt;
+
+&lt;p&gt;ブースの中でも個人的に一番グッと来たのはHex-Raysです。自分はIDAではなくradare2を使っているんですが、マントノン侯爵夫人はひときわ目立っていました。&lt;/p&gt;
+
+&lt;p&gt;拙い英語で「記念にブースの写真を撮ってもいいですか?」と聞いたら「撮ってあげるよ」と言われたので記念撮影。ありがとうございました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2023/11/13/codeblue2023/images/hexrays.png" alt="HexRays" /&gt;&lt;/p&gt;
+
+&lt;h2 id="ワークショップ"&gt;ワークショップ&lt;/h2&gt;
+&lt;h3 id="webハッキングチャレンジforビギナーズ"&gt;Webハッキングチャレンジforビギナーズ&lt;/h3&gt;
+&lt;p&gt;初日はイエラエの開催するWebハッキングチャレンジforビギナーズに参加しました。&lt;/p&gt;
+
+&lt;p&gt;シナリオベースのペンテストライクなCTFで、全問正解するとイエラエのパートナーが執筆した本がもらえます。&lt;/p&gt;
+
+&lt;p&gt;朝早い時間に参加し、全問解いたため、初日はずっと1位としてスコアボードに載っていました。&lt;/p&gt;
+
+&lt;p&gt;賞品は&lt;a href="http://www.data-house.info/book/12568.html"&gt;物理セキュリティの実践&lt;/a&gt;を頂きました。ありがとうございます。&lt;/p&gt;
+
+&lt;h3 id="flatt-security-speedrun-ctf"&gt;Flatt Security Speedrun CTF&lt;/h3&gt;
+&lt;p&gt;2日目はFlatt Securityの開催するFlatt Security Speedrun CTFに参加しました。&lt;/p&gt;
+
+&lt;p&gt;タイムアタック形式で、全問解くまでにかかった時間を競い、上位5名はノベルティが貰えるというコンテストでした。&lt;/p&gt;
+
+&lt;p&gt;結果、自分は5問中3問しか解くことができず、7位でした。Dart問が解けず悔しい。&lt;/p&gt;
+
+&lt;h2 id="発表"&gt;発表&lt;/h2&gt;
+&lt;p&gt;CODE BLUEの発表にはいくつかの種類があり、メインのトラック以外にも、主にツールの発表を行うBlueBox、アイデアを発表するCyberTAMAGO、CommunityとしてのBSides Tokyoなどがあります。&lt;/p&gt;
+
+&lt;p&gt;以下、自分が参加したものの中から、特に印象に残っている発表です。&lt;/p&gt;
+
+&lt;h3 id="macosのセキュリティとプライバシーの機構をバイパスする手法について-gatekeeper-から-system-integrity-protection-まで-by-koh-nakagawa"&gt;macOSのセキュリティとプライバシーの機構をバイパスする手法について: Gatekeeper から System Integrity Protection まで by Koh Nakagawa&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://github.com/FFRI/PoC-public/tree/main/cb2023"&gt;link&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;macOSにはSIP(System Integrity Protection)を始めとして、GatekeeperやApp Sandbox、TCC(Transparency, Consent and Controll)、XProtectなどの様々な防御機構があり、それぞれの役割を持ち、多層防御を行っている。&lt;/p&gt;
+
+&lt;p&gt;SIPはrootを含むユーザに対して一部のファイルやディレクトリの変更を制限、Gatekeeperは署名の検証、App Sandboxは一部のアプリケーションに対する隔離、TCCはユーザのデータまたはカメラやマイクなどへのアクセスに対する制御、XProtectはダウンロードしたファイルに対するマルウェアの検出をそれぞれ行っている。&lt;/p&gt;
+
+&lt;p&gt;App Store外からダウンロードしたアプリケーションには&lt;code&gt;com.apple.quarantine&lt;/code&gt;というattributeがついており、このattributeがついているアプリケーションを実行しようとするとポップアップが表示されるようになっている。&lt;/p&gt;
+
+&lt;p&gt;これがGatekeeperであり、まずはここのバイパス手法から。&lt;/p&gt;
+
+&lt;p&gt;標準のアーカイブユーティリティでは、圧縮されたアプリケーションの解凍時にもこのattributeを伝播するような仕組みがあるが、ここに問題があり、&lt;code&gt;uchg&lt;/code&gt; flagのついたファイルに対して、アーカイブユーティリティの使っているライブラリはquarantine attributeを付けていなかった。&lt;/p&gt;
+
+&lt;p&gt;zipではuchgを保持できないが、tar.gzではuchgがついたまま圧縮が可能なため、&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;アプリケーションを含むディレクトリを作成&lt;/li&gt;
+  &lt;li&gt;uchgフラグをアプリケーションにつける&lt;/li&gt;
+  &lt;li&gt;tar.gzでそのディレクトリを圧縮&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;この手順でGateKeeperをバイパスできてしまった。というもの。&lt;/p&gt;
+
+&lt;p&gt;また、quarantine attributeのついていないアプリケーションがDropする別のアプリケーションは、Sandbox環境下ではなく、通常の環境で動くため、同時にApp Sandboxのバイパスも行えた。&lt;/p&gt;
+
+&lt;p&gt;次はTCCのバイパス。TCCは主にユーザのセンシティブな情報を保護している。Zoomを開いたときに出るカメラの使用を許可しますか?みたいなやつ。&lt;/p&gt;
+
+&lt;p&gt;TCCはrootとログインユーザの2つの権限で2つの&lt;code&gt;tccd&lt;/code&gt;と呼ばれるデーモンが動いており、それぞれ&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;/Library/Application Support/com.apple.TCC/TCC.db&lt;/code&gt; (SIP protected)&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;~/Library/Application Support/com.apple.TCC/TCC.db&lt;/code&gt; (TCC protected)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;のデータベースで管理されている。&lt;/p&gt;
+
+&lt;p&gt;今回はこのデータベースを改ざんするために、別のアプリケーションに対してcode injectionを行う。&lt;/p&gt;
+
+&lt;p&gt;そのために用いるのが、CODE BLUE 2021の発表でも言及のあった、Rosetta 2のAOTと呼ばれるキャッシュ機構の改ざん。&lt;/p&gt;
+
+&lt;p&gt;(前回の発表内容がここで出てくるの、めちゃくちゃアツくないですか? 中川さんは冷静に発表されてましたが、自分は心の中でｳｵｰつってました)&lt;/p&gt;
+
+&lt;p&gt;AOTのlookupに使われるハッシュの計算には、&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Mach-O headerとload commands&lt;/li&gt;
+  &lt;li&gt;ctime, mtime, crtime&lt;/li&gt;
+  &lt;li&gt;file path&lt;/li&gt;
+  &lt;li&gt;uid, gid&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;が用いられるが、バイナリの内容そのものは使われていない。そのため、これらの要素を保持したままバイナリを書き換えると、汚染されたバイナリが実行されてしまう。ということだ。&lt;/p&gt;
+
+&lt;p&gt;APFSではmtimeを改ざんするとctimeも書き換わってしまうが、FAT32にはctimeが存在しないため、これを活用する。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;TCCで許可されたアプリケーションを探す&lt;/li&gt;
+  &lt;li&gt;FAT32のディスクイメージを作成、マウント&lt;/li&gt;
+  &lt;li&gt;許可されたアプリケーションをマウントしたディレクトリに移動&lt;/li&gt;
+  &lt;li&gt;シェルコードを書き込む&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;translate_tool&lt;/code&gt;でAOTファイルを作成させる&lt;/li&gt;
+  &lt;li&gt;アプリケーションを元の状態に復元&lt;/li&gt;
+  &lt;li&gt;タイムスタンプを改ざん&lt;/li&gt;
+  &lt;li&gt;実行&lt;/li&gt;
+  &lt;li&gt;シェルコードを含んだアプリケーションが実行される&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;また、AOTファイルの生成時にはスキャンが行われていなかったため、このバイパス手法によって、同時にXProtectもバイパスできた。&lt;/p&gt;
+
+&lt;p&gt;最後にSIPのバイパス。SIPをバイパスは常にTCCのバイパスでもある(SIPで保護されたTCCのdbを書き換えられる)上、SIPをバイパスすると、SIPで保護されたマルウェアの展開も可能なため、非常に重要。&lt;/p&gt;
+
+&lt;p&gt;SIPのバイパスを行うためには&lt;code&gt;com.apple.rootless.install&lt;/code&gt;及び&lt;code&gt;com.apple.rootless.install.heritable&lt;/code&gt;が重要。これらはSIPのバイパスをしたり、その権限を与えるのに使われる権限&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;system_installd&lt;/code&gt;は&lt;code&gt;com.apple.rootless.install.heritable&lt;/code&gt;をもっており、システムパッケージのインストール時に、SIPのバイパス権限を与えるのに使われている。&lt;/p&gt;
+
+&lt;p&gt;.pkgファイルにはインストール前後に実行されるスクリプトが入っており、そのスクリプトに脆弱性があると、&lt;code&gt;system_installd&lt;/code&gt;の権限で操作が可能になるため、SIPをバイパスできる。&lt;/p&gt;
+
+&lt;p&gt;InstallAssistant.pkgのpost install scriptには脆弱性があり、CVE-2023-23533として報告されている。&lt;/p&gt;
+
+&lt;p&gt;このような脆弱性は他にもあり、その原因はAppleが過剰な権限を与えているからだとしている。いくつかのパッケージについては、&lt;code&gt;system_installd&lt;/code&gt;ではなく、&lt;code&gt;installd&lt;/code&gt;で十分だとのこと。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;MacOSのセキュリティに関して、ここまで詳しくわかりやすい発表は初めてだった。公開されている情報が少ない分野なので、非常にありがたく、面白かったです。&lt;/p&gt;
+
+&lt;h3 id="stelftools-クロスアーキテクチャに対応した静的結合されたライブラリ関数の特定ツール-by-shu-akabane-takeshi-okamoto-yuhei-kawakoya"&gt;stelftools: クロスアーキテクチャに対応した静的結合されたライブラリ関数の特定ツール by Shu akabane, Takeshi Okamoto, Yuhei Kawakoya&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://github.com/shuakabane/stelftools"&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;BlueBox(ツールの発表を行うカテゴリ)の発表。ELF中に静的にリンクされたライブラリのシンボルを特定しようという試みと、その結果として生まれたツール。&lt;/p&gt;
+
+&lt;p&gt;以前からこのツールと関連研究については軽く追いかけており、個人的に普段使用しているツールから使えるようにするスクリプトの開発などもしていた(&lt;a href="https://feneshi.co/r2stelftools/"&gt;ref&lt;/a&gt;)ため、楽しみにしていた発表の一つです。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;stelftoolsはstatic linkされたバイナリの関数を特定するツールです。&lt;/p&gt;
+
+&lt;p&gt;多くのIoT向けマルウェアでは、ライブラリを静的にリンクしており、バイナリの解析時に開発者が定義した関数なのか、ライブラリの提供している関数なのかが特定しづらくなっています。&lt;/p&gt;
+
+&lt;p&gt;一般的に、解析を行いたいのは開発者が定義した関数の方で、ライブラリの提供する関数ではありません。これらを特定することで、区別が簡単になり、より効率的に解析が行なえます。&lt;/p&gt;
+
+&lt;p&gt;しかし、IoTデバイスは様々な命令セットで動いており、そのファームウェアや、ビルド時のツール郡もバラバラです。&lt;/p&gt;
+
+&lt;p&gt;stelftoolsではこれらに対し、網羅的にパターンを作成することで、IDA FLIRTなどの他のツールよりも優れた特定率を誇っています。&lt;/p&gt;
+
+&lt;p&gt;stelftoolsは、まず様々なツールチェインでコンパイルされたライブラリ関数に対し、yaraルールを作成します。&lt;/p&gt;
+
+&lt;p&gt;しかし、例えば&lt;code&gt;rand(3)&lt;/code&gt;のように、内部で別の関数をそのままcallするだけの関数に関してはシンボルが非常に小さく、大量のマッチが発生してしまいます。&lt;/p&gt;
+
+&lt;p&gt;そのため、stelftoolsではyaraルールによるパターンマッチングに加え、いくつかの方法で絞り込みを行っています&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Branch target analytics
+    &lt;ul&gt;
+      &lt;li&gt;遷移先アドレスの絞り込み&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Call-dependency filtering
+    &lt;ul&gt;
+      &lt;li&gt;ライブラリとバイナリの依存関係を比較&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Linking order filtering
+    &lt;ul&gt;
+      &lt;li&gt;絞り込めない関数を含んだソースコードを用意し、実際にコンパイルして比較&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また、発表内ではstelftoolsの他に、Generic UnpackerであるXUnpackなど、他のツール郡についても紹介されていました。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;非常に優れた研究・ツールだと思うので、今後も楽しみにしています。&lt;/p&gt;
+
+&lt;h3 id="カーネル空間への宝探し-linuxカーネルでの攻撃可能な構造体の探索-by-yudai-fujiwara"&gt;カーネル空間への宝探し: Linuxカーネルでの攻撃可能な構造体の探索 by Yudai Fujiwara&lt;/h3&gt;
+
+&lt;p&gt;日本の著名なCTFプレイヤー 藤原 裕大氏による発表です&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Linuxカーネルの脆弱性は、その攻撃可能性がわからないものが多くある。「potentially remote code Execution」みたいなのよく見る。&lt;/p&gt;
+
+&lt;p&gt;カーネルにおけるHeapベースの脆弱性があったときに、実際に攻撃につながるかどうかは、Heapにallocateされている構造体の種類によって求められる。&lt;/p&gt;
+
+&lt;p&gt;関数ポインタを持った構造体や、コントロール可能なメンバ、Blobデータなど&lt;/p&gt;
+
+&lt;p&gt;そういった構造体を、ユーザ空間から簡単にallocateできると攻撃に繋げやすい。例えば&lt;code&gt;tty_struct&lt;/code&gt;や&lt;code&gt;setxattr&lt;/code&gt;、&lt;code&gt;msg_msg&lt;/code&gt;など&lt;/p&gt;
+
+&lt;p&gt;今回の研究では、Ghidra Scriptを用いて、それらの構造体を自動で探し出した。&lt;/p&gt;
+
+&lt;p&gt;debug info付きでビルドしたLinux KernelをMALTIES(Malloc Tracer for Identifing Exploitable Struct)と名付けられたGhidra Scriptに読ませると、それらの構造体を特定してくれる。&lt;/p&gt;
+
+&lt;p&gt;この手法は、動的なものや、他の静的な手法と比べて基本的に優れているが、「ユーザ空間からのallocateのしやすさ」という点では動的手法の方が優れていることもある。&lt;/p&gt;
+
+&lt;p&gt;実際のLinux Kernelを対象に検証したところ、1133の構造体を見つけることができた。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+&lt;p&gt;CODE BLUEの発表を見ていると、トレンドがなんとなく見えてきます。&lt;/p&gt;
+
+&lt;p&gt;今回は生成AIのセキュリティに加え、TeslaやPwn2Ownなどの低レイヤーに関するセキュリティの話が多く、非常に楽しむことができました。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>不正利用報告の管理と自動化</title>
+      <link>https://tech.pepabo.com/2023/03/31/abuse-reports-manages-and-automation/</link>
+      <guid>https://tech.pepabo.com/2023/03/31/abuse-reports-manages-and-automation/</guid>
+      <pubDate>Fri, 31 Mar 2023 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちぐぉおおおおおおおおおおおおおおお。最近デスコアにハマっている 40代半ばの linyowsです。若い頃にハードコアバンドをやっていたせいか、いい年して最近またそれ系のニッチな音楽を聞いている次第です。これが中年の危機と言われるものなんでしょうか。よくわかりませんが、筋トレのおかげで精神は至って普通です。心配はご無用！本日は、ホスティング事業部 Trust &amp;amp; Safetyチームでの話を書きます。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#サービスと不正利用" id="markdown-toc-サービスと不正利用"&gt;サービスと不正利用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#不正利用の報告" id="markdown-toc-不正利用の報告"&gt;不正利用の報告&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#不正利用対応の課題" id="markdown-toc-不正利用対応の課題"&gt;不正利用対応の課題&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#定形業務の自動化" id="markdown-toc-定形業務の自動化"&gt;定形業務の自動化&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#まとめ" id="markdown-toc-まとめ"&gt;まとめ&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="サービスと不正利用"&gt;サービスと不正利用&lt;/h2&gt;
+
+&lt;p&gt;私の所属するホスティング事業部では、ロリポップやへテムル、ムームードメインといったホスティング関連サービスを運営しています。自分のインターネットドメインを登録したい、ウェブサイトを公開したい、メールアドレスを使いたい、といった要望に応えるためのサービスです。そのようなサービスで、中には禁止している使い方をされるケースがあります。具体的には、フィッシング目的でドメインを登録したり、フィッシングサイトを設置したり、フィッシングサイトに誘導するためにメールを送信したり、大量の迷惑メールを送信したり、といったものです。私たちは、これらを不正利用と呼んでいます。不正行為は、お客様自ら行う場合と、利用するソフトウエアの脆弱性や認証情報の管理の甘さによってアカウントが乗っ取られたり、改ざんされたりし、お客様が意図せず行われる場合があります。&lt;/p&gt;
+
+&lt;p&gt;私たちのサービスは、一般的にいうシェアードホスティング（共用ホスティング）という分類のホスティングサービスです。一つのハイスペックで高価な業務用サーバーを、複数のお客様が利用できるようにして安価に提供するサービスです。なので、先述の不正利用行為をするアカウントがその中にいると、利用している全アカウントに悪影響をもたらすことがあります。リソース（IPアドレス）をシェアしているので当然ですね。現実世界は信用の上で成り立っているのは言うまでもないでしょう。インターネットの世界も同様で、接続に使う名前（ドメイン）やIPアドレスは、DNSBL（DNS Block List）と呼ばれるサービスによって評価されているため、不正行為によってメールの受け取り拒否が特定IPアドレスやIPアドレスレンジで発生することがあります。そうすると、私たちは問題を特定したり、IPの付け直しを行い、サービスを正常化させる活動を行います。&lt;/p&gt;
+
+&lt;h2 id="不正利用の報告"&gt;不正利用の報告&lt;/h2&gt;
+
+&lt;p&gt;ドメインレジストラは、ドメインやIPアドレスを管理するデータベースであるWHOISに、&lt;a href="https://www.rfc-editor.org/rfc/rfc2142"&gt;RFC2142&lt;/a&gt;によって定められた不正利用の通報先を設定しています。国内だとJPCERT、海外だとSpamCopやNetcraftといったセキュリティ会社や団体があり、それらはフィッシングサイトやフィッシングメールなどの行為を発見し、改善するようWHOISの不正利用通報先へメールを投げてくれます。私たちは、その報告から実際に状況を確認し、問題を認め、アカウントをインアクティブ化します。メールによる通報は問題のあるドメインやIPアドレス、URLを掲載しているため、うっかりリンク先を開いてしまったり、セキュリティソフトが検知して削除されたりと、そのメール自体にリスクを抱えています。そのようなリスク回避のために Defang という簡単な手法によって無害化されています。例えば、以下のような文字列です。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight shell"&gt;&lt;code&gt;hXXp://abuse-domain[.]example/gr3lk1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;一般的なメールクライアントは、便利なことにURL形式のテキストをリンクにしてくれるので、それを回避しているわけです。&lt;/p&gt;
+
+&lt;h2 id="不正利用対応の課題"&gt;不正利用対応の課題&lt;/h2&gt;
+
+&lt;p&gt;不正利用報告のメールは、Google WorkspaceのGmailでホストしています。また、報告に対する対応をGitHub Enterprise ServerのIssueを使って管理しています。届いたメールをIssueに登録するのは、自社で作ったRuby Applicationと管理用DBによって行われていました。&lt;/p&gt;
+
+&lt;p&gt;不正利用報告メールは、通常人が送信しているため、担当者が違うと、タイトルや本文のフォーマットが変わります。それらの表記揺れは、Ruby Applicationの正規表現によってコントロールされており、フォーマットが異なるとその正規表現を更新しなければなりません。自前アプリケーションとはいえ、これらの運用にはなかなかコストがかかります。&lt;/p&gt;
+
+&lt;p&gt;私たちの不正利用報告メールアドレスには、波があるものの、1日におよそ100通ほどの報告が来ます。不正利用対応は、少人数で対応しているため、捌けないと対応待ちがどんどん積み上がります。多いと4000件以上スタックします。また、大量の報告には重要な報告が含まれることがあります。例えば、お客様に提供しているドメインの上位レジストラからServerHold通告などです。ドメインのステータスがServerHoldになると、通常ドメインは機能しないため、Webサイトは見えませんしメールも使えません（ドメインのステータスについては&lt;a href="https://www.icann.org/resources/pages/epp-status-codes-2014-06-16-en"&gt;こちら参照&lt;/a&gt;）。そういった重要度の高い連絡が中には含まれているので注意が必要です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2023/03/31/abuse-reports-manages-and-automation/abuse-reports-manage-system-before.png" alt="Abuse reports manage system: Before" /&gt;&lt;/p&gt;
+
+&lt;p&gt;不正利用報告システムを図にすると上記のような構成になり、課題を箇条書きにすると以下の3つになります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;人が介在する作業フローの自動化においてメンテコストを小さくしたい&lt;/li&gt;
+  &lt;li&gt;大量の報告メールを効率よく捌きたい&lt;/li&gt;
+  &lt;li&gt;重要な報告メールを検知したい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="定形業務の自動化"&gt;定形業務の自動化&lt;/h2&gt;
+
+&lt;p&gt;メールのフィルタリングを自作のアプリケーションとして行う必要はないとして、まずはフィルタリング機能を持っているGmail側で行うようにします。そうすると、フィルタのルール変更や追加をGUIベースでやれるため、メンテナンスの敷居が下がります。自作のアプリケーションから、フィルタリング機能を抜いたら、あとはメールをGitHub Issueに登録するだけになるため、Gmailと権限周りで連携しやすいGoogle Apps Scriptでやるようにします。機能としては、Gmailのラベル検索でマッチするものを処理します。処理済みは処理済みラベルを付与することで重複を排除できる仕組みです。Gmailの機能を活用することでScriptの方はステートを持たないでいい設計です。こちらのScriptはOSSとして公開しています。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/linyows/gmail-to-github-issues"&gt;gmail-to-github-issues&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;次に、不正利用報告はIPを指定されることが多いため、DNSの逆引きを事前にしておき、GitHub Issueのコメントとしてホスト名を残しておきます。GitHub Issueの本文にある IPアドレスはすべてを処理対象として、dns.googleのAPIを使って逆引きを行います。処理済みは、Gmailと同様の手法でGitHub Issuesのラベルで管理します。こちらのScriptもOSSです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://github.com/linyows/github-issues-rdns"&gt;github-issues-rdns&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;そして、不正利用報告のメールはいろんな方々からいただきますので、メールのSubjectの形式が様々です。また、私たちは複数サービスの不正利用対策に携わっているため、サービス名で報告を絞り込めると便利です。それらの細かいユースケースに対する整形作業もScript化します。これは、抽象化しにくい実装なのでPrivateなScriptになりました（名前は abuse-issues-formatting）。&lt;/p&gt;
+
+&lt;p&gt;ここまでの対応で、課題の一つである &lt;code&gt;人が介在する作業フローの自動化においてメンテコストを小さくしたい&lt;/code&gt; はだいぶ解消されました。二つ目の課題、 &lt;code&gt;大量の報告メールを効率よく捌きたい&lt;/code&gt; は難しい課題で、シンプルに考えると報告を受けて行う作業を標準化することになります。しかし、改ざんや脆弱性、通常機能の悪用によって行われた不正利用に対する作業というのは多くのバリエーションがあり、実現にはかなりの時間を要しそうだと考えておりました。&lt;/p&gt;
+
+&lt;p&gt;一方で、作成された報告Issueにはいくつもの重複があるという話がありました。報告メールの受信は、対象のInboxにくるまでに幾つかの転送を挟んで受信することもあって、メールそのものが重複したり、報告主は違うが同じ案件を報告しているケースがあるということが判明することから、まずは重複Issueを閉じていくScriptを実装しました。同一ドメイン、同一メール本文を検索し、古い方に紐づけて新しい方を閉じるというものです。これもかなり抽象化が厳しいのでPrivate Scriptです（名前は abuse-issues-closer）。このScriptにより、4000件超えていたIssueがびっくりすることに減り2-300件までに減りました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2023/03/31/abuse-reports-manages-and-automation/abuse-reports-manage-system-after.png" alt="Abuse reports manage system: After" /&gt;&lt;/p&gt;
+
+&lt;p&gt;不正利用報告システムが上記のような構成になり、責務分割されたGoogle Apps Scriptが、ちょっとしたワークフローのようになっております。&lt;/p&gt;
+
+&lt;p&gt;弊社では、特定ラベルが付いたIssueを特定時間にSlackに通知する仕組み https://github.com/linyows/github-issues-notice が稼働しています。設定は Google Spreadsheetsから行え簡単に導入できるため、全社各所で使われています。この通知Scriptは、勤務時間に合わせ休日は通知しない仕組みになっております。最後の課題である &lt;code&gt;重要な報告メールを検知したい&lt;/code&gt; に関しては、メールフィルタで重要連絡元にラベルを設定し、通知Scriptは休日でも検知が行えるようにしました。以下は、通知サンプルです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2023/03/31/abuse-reports-manages-and-automation/important-notice.png" alt="Important notice" /&gt;&lt;/p&gt;
+
+&lt;p&gt;これで、重要な不正利用報告メールを逃さない仕組みができました。&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;ホスティング事業部 Trust &amp;amp; Safetyチームでは、大量のサービスの不正利用報告メールから、サービス安定化のために対応を行なっています。それらを少人数で効率よく対応できるよう、Google Apps Scriptで自動化しています。その自動化のプロセスを簡単にご紹介いたしました。&lt;/p&gt;
+
+&lt;p&gt;もちろん今回の外部からの不正利用報告の事後対応だけではなく、不正利用の事前検知や、そもそも不正利用を防止するための仕組みづくりも行なっています。しかしながら、それらは難易度のある課題でもあります。私たちTrust &amp;amp; Safetyチームは、この難しい課題を一緒に解決してくれる仲間を募集しています。この記事を読んで面白かった、興味が持てた、という方は下にある採用情報をご覧いただきご応募いただけるとうれしいです！カジュアル面談もできますので &lt;a href="https://twitter.com/linyows"&gt;@linyows&lt;/a&gt; へお気軽にお声掛けください！ デスコアが好きな人もぜひ！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Trust &amp; Safetyチームで配属1カ月目の新卒が奮闘した話</title>
+      <link>https://tech.pepabo.com/2022/10/04/ojt-trust-and-safety-2022/</link>
+      <guid>https://tech.pepabo.com/2022/10/04/ojt-trust-and-safety-2022/</guid>
+      <pubDate>Tue, 04 Oct 2022 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;新卒エンジニアのyukyanとseijiです！私たちは2022年8月18日からホスティング事業部に配属され、現在はOJTという形でさまざまなチームを回って業務を行っています！&lt;/p&gt;
+
+&lt;p&gt;2022年9月30日までの約1カ月間、Trust &amp;amp; Safetyチームでセキュリティに関わる開発を行ったので、取り組んだ業務や工夫したこと、学んだことを紹介します。&lt;/p&gt;
+
+&lt;h2 id="trust--safety-チームとは"&gt;Trust &amp;amp; Safety チームとは&lt;/h2&gt;
+
+&lt;p&gt;ホスティング事業部のサービスを取り巻く人々の安全を守り、社会からサービスに対する信頼を得ることをミッションとしたチームです。イエラエセキュリティがグループにジョインしたことや、セキュリティ課題を解決する組織が必要としたことなどがきっかけとなり、2022年4月に新設されました。&lt;/p&gt;
+
+&lt;h2 id="取り組んだ業務"&gt;取り組んだ業務&lt;/h2&gt;
+
+&lt;p&gt;今回のOJTでは、タスクとして運用の効率化と、デバイス認証の実装の２つの選択肢がありました。僕たちは6月から8月に行ったエンジニア研修で学んだWebアプリ開発の知識を生かしたい気持ちもあり、後者のデバイス認証の実装をすることにしました。&lt;/p&gt;
+
+&lt;h3 id="デバイス認証の開発"&gt;デバイス認証の開発&lt;/h3&gt;
+
+&lt;p&gt;今回のOJTでは、「一度ログインしたデバイスを信頼できるデバイスとして登録する」という開発を行いました。この改修はムームードメイン、ロリポップ、ヘテムルの３サービスを対象に行いました。これにより、セキュリティレベルを落とさずに2段階認証をスキップすることが可能になり、サービスをより快適にご利用いただけるようになりました。&lt;/p&gt;
+
+&lt;p&gt;今回の開発は認証に関わる部分なので、いかにセキュリティレベルを落とさずに実装するかが肝でした。アルゴリズムやデータベースの構成、信頼できるデバイスとして登録できる期限の設定、使用するメソッドなどをセキュリティの観点から検討を行い、仕様策定から実装、検証までを全て経験することができました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/sms-authentication.png" alt="SMS認証の様子" /&gt;&lt;/p&gt;
+
+&lt;h2 id="工夫したこと"&gt;工夫したこと&lt;/h2&gt;
+
+&lt;p&gt;初めて実際に動いているサービスの開発に携わったので、開発に必要な権限の取得方法から、プロダクトに使用されている技術スタックまで、分からないことだらけでした。こうした手探り状態の中で、よりスムーズに業務を進めていくために、いくつか工夫をしながらOJTを行いました。&lt;/p&gt;
+
+&lt;h3 id="細かく報告する"&gt;細かく報告する&lt;/h3&gt;
+
+&lt;p&gt;ホスティング事業部は拠点が福岡にあり、ほとんどのパートナーが福岡に出勤しています。しかし、私たちは東京オフィス配属であるため、コミュニケーションがすべてオンラインになります。こうした状況下で円滑にコミュニケーションを取りながら業務を進めるためには、きめ細やかな発信が必要になります。&lt;/p&gt;
+
+&lt;p&gt;そこで私たちは、Slackのワークフローで毎朝スレッドを立て、そこに現在の状況や、これからしようとしていることを逐一アウトプットし、共有するようにしました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/log.png" alt="作業ログの様子" /&gt;&lt;/p&gt;
+
+&lt;h3 id="つまずいたところは対策をする"&gt;つまずいたところは対策をする&lt;/h3&gt;
+
+&lt;p&gt;業務を進める上で必要な環境構築などをしていると、ところどころエラーが出てつまずく箇所がありました。原因は、前提となるツールを入れていなかったり、開発環境が使用パソコンのチップに対応していないなどさまざまです。こういった「つまずきポイント」は、積み重なっていくとエンジニアの作業時間をじわじわと奪っていきます。そこで、自分の環境内でのみ暫定的な対応をするのではなく、リポジトリのコードやドキュメント自体に手を加えて根本的な対策をすることで、再発防止を図りました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/update-document.png" alt="ドキュメントを更新した事例" /&gt;&lt;/p&gt;
+
+&lt;h3 id="緊急度重要度を考える"&gt;緊急度・重要度を考える&lt;/h3&gt;
+
+&lt;p&gt;先述のように、つまずいたところは対策するよう心がけていますが、配属して1カ月目の新人となると、わからないことが山ほど出てきます。その全てを解決しようとすると果てしない工数がかかってしまうので、緊急度・重要度を考えて業務に取り組むようにしました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/priority.png" alt="工数を考えて解決策を提案している様子" /&gt;&lt;/p&gt;
+
+&lt;h2 id="学んだこと"&gt;学んだこと&lt;/h2&gt;
+
+&lt;p&gt;このOJTを通して学んだことは大きく分けて2つあります。&lt;/p&gt;
+
+&lt;h3 id="ただ開発するだけでは終わらない"&gt;ただ開発するだけでは終わらない&lt;/h3&gt;
+
+&lt;p&gt;設計、開発、検証のみがエンジニアの仕事ではありません。その仕事によって、ユーザーやパートナーにどのような影響があるか考え、お知らせやFAQを出したり、ドキュメントを書くなどの対応が必要であることを学びました。例えば、ユーザーが操作する場所に変更があった場合、突然の仕様変更に戸惑うことのないよう、適切なお知らせを出す必要があります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/info.png" alt="他チームに相談している様子" /&gt;&lt;/p&gt;
+
+&lt;h3 id="雑談こそチーム力向上の鍵"&gt;雑談こそ、チーム力向上の鍵&lt;/h3&gt;
+
+&lt;p&gt;先述のように、コミュニケーションはオンラインが中心であるため、はじめは、お互いを知る機会が不足するのではと不安を感じていました。しかし、OJTが始まってみると、毎回のミーティングなどで必ずと言っていいほど雑談の時間があり、最近興味のある技術や休日の過ごし方など、自然と話すことができました。この時間があったからこそ、気軽に質問や相談ができ、業務を円滑に進めることができたと思います。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/chat1.png" alt="雑談の様子1" /&gt;
+&lt;img src="/blog/2022/10/04/ojt-trust-and-safety-2022/images/chat2.png" alt="雑談の様子2" /&gt;&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://www.gmo.jp/ir_news/article/656/"&gt;2022年1月にイエラエセキュリティがグループにジョイン&lt;/a&gt;したこともあり、全社的にセキュリティを高めていこうという動きが活発になっています。実際にセキュリティ学習のためのイベントも定期的に開催されています。&lt;/p&gt;
+
+&lt;p&gt;その波に乗って、ペパボのホスティング事業部も&lt;a href="https://open.talentio.com/r/1/c/pepabo/pages/69944"&gt;セキュリティエンジニアを大募集&lt;/a&gt;しています。
+この記事でペパボのTrust &amp;amp; Safetyチームの取り組みに興味を持ってくださった方、ご応募お待ちしております！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>mobsfscanとGithub Actionsによるモバイルアプリの継続的セキュリティチェック</title>
+      <link>https://tech.pepabo.com/2022/08/12/ec-security-chapter/</link>
+      <guid>https://tech.pepabo.com/2022/08/12/ec-security-chapter/</guid>
+      <pubDate>Fri, 12 Aug 2022 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは、EC事業部事業領域拡大チーム所属の&lt;a href="https://github.com/Tatsumi0000/"&gt;Tatsumi0000&lt;/a&gt;です！業務ではAndroidアプリ開発をメインに、時々iOSアプリの開発をしています。&lt;/p&gt;
+
+&lt;p&gt;EC事業部では、Chapterという活動をしています。Chapterとは、事業部内のチームを横断した組織で、フロントエンド、バックエンド、セキュリティなど、様々なChapterが存在しています（詳細については、&lt;a href="#chapter"&gt;後述&lt;/a&gt;します）。その中でも私はセキュリティChapterに参加し、Chapterのメンバーと一緒にいろいろな活動をしてきました。&lt;/p&gt;
+
+&lt;p&gt;この記事では、EC事業部で行っているChapterと、セキュリティChapterの活動の一環として、mobsfscanをgithub.comのGitHub Actionsで試した話について紹介します。&lt;/p&gt;
+
+&lt;ol id="markdown-toc"&gt;
+  &lt;li&gt;&lt;a href="#ec事業部のchapterとは" id="markdown-toc-ec事業部のchapterとは"&gt;EC事業部のChapterとは&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#mobsfscanをgithub-actionsで試した" id="markdown-toc-mobsfscanをgithub-actionsで試した"&gt;mobsfscanをGitHub Actionsで試した&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#おわりに" id="markdown-toc-おわりに"&gt;おわりに&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id="ec事業部のchapterとは"&gt;EC事業部のChapterとは&lt;/h2&gt;
+
+&lt;p&gt;EC事業部にはChapterという枠組みが存在します。これは&lt;a href="https://leantrenches.wordpress.com/2013/10/16/scaling-agile-at-spotify-ja/"&gt;Spotifyモデル&lt;/a&gt;を参考にした組織構造ですが、少しだけアレンジが加えてあります。
+Spotifyモデルには、Guildという興味のある人が集まって情報共有を目的としている枠組みと、Chapterという業務上の専門領域における課題に対してチームを横断して解決することを目的としている枠組みが存在しています。
+EC事業部のChapterはSpotifyモデルのChapterと異なり、SpotifyモデルにおけるGuild・Chapter両方の役割を果たすことを期待されています。
+SpotifyモデルにおけるGuildとしての情報共有を目的とした活動をメインにしつつ、業務上の専門領域における課題に対してチームを横断して解決できるとなお良いという位置づけになっています。&lt;/p&gt;
+
+&lt;p&gt;現在、EC事業部内には以下のChapterがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;エンジニアリングマネジメント&lt;/li&gt;
+  &lt;li&gt;バックエンド&lt;/li&gt;
+  &lt;li&gt;フロントエンド&lt;/li&gt;
+  &lt;li&gt;セキュリティ&lt;/li&gt;
+  &lt;li&gt;IoT・XR&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id="mobsfscanをgithub-actionsで試した"&gt;mobsfscanをGitHub Actionsで試した&lt;/h2&gt;
+
+&lt;p&gt;セキュリティChapterでは、普段の業務におけるセキュリティ周りの悩みや、その悩みを解決するに当たって調べたことを話しています。他にも、話し合いの内容をもとに開発もしています。ここからは、今まで行ってきた活動の中から、GitHub Actions上でmobsfscanという静的解析ツールを試した話を紹介します。&lt;/p&gt;
+
+&lt;p&gt;セキュリティChapterの活動で、&lt;a href="https://speakerdeck.com/mrtc0/gmo-pepabozhu-shi-hui-she-23zu-24zu-xiang-ke-sekiyuriteimian-qiang-hui-shi-jian-devsecops-paipurain"&gt;GMO ペパボ株式会社 23卒・24卒向け セキュリティ勉強会 実践 DevSecOps パイプライン&lt;/a&gt; を読む機会があり、その中でSAST（Static Application Security Testing）という言葉が出てきました。&lt;/p&gt;
+
+&lt;p&gt;SASTとは、アプリケーションに対して静的解析を行い、脆弱性がないか確認するテスト手法のことです。この資料の中で紹介されていたSASTツールはすべてWebアプリケーション開発向けのツール群だったため、私が普段開発を行っているモバイル（Android・iOS）アプリケーション向けのSASTツールがないのか調査をしました。&lt;/p&gt;
+
+&lt;p&gt;その結果、&lt;a href="https://github.com/MobSF/mobsfscan"&gt;mobsfscan&lt;/a&gt; というものがあることが分かりました。mobsfscanの&lt;a href="https://github.com/MobSF/mobsfscan#mobsfscan"&gt;README&lt;/a&gt;によると、AndroidとiOSのソースコードから安全でないコードパターンを見つける事ができる静的解析ツールとのことでした。&lt;/p&gt;
+
+&lt;p&gt;さらにmobsfscanは、静的解析した結果をSARIF（Static Analysis Results Interchange Format）として&lt;a href="https://github.com/MobSF/mobsfscan#command-line-options"&gt;出力することができます&lt;/a&gt;。SARIFとは、静的解析ツールの結果を共有するために定められた&lt;a href="https://docs.github.com/ja/code-security/code-scanning/integrating-with-code-scanning/sarif-support-for-code-scanning#about-sarif-support"&gt;フォーマットの名前&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;今回は、GitHub Actions上でmobsfscanを使ってコードの静的解析を行いSARIFとして出力します。さらに、その出力したSARIFをGitHubにアップロードすることで、脆弱性が検出された場合にはリポジトリのSecurityタブにアラートと表示させることができることを検証しました。検証に使ったコードは、&lt;a href="https://github.com/Tatsumi0000/MobSF-Practice"&gt;こちらのリポジトリ&lt;/a&gt;になります。&lt;/p&gt;
+
+&lt;p&gt;今回はサンプルアプリとしてMobSF-iOSを作りました。このアプリのコードにはパスワードをハードコーディングしています。このハードコーディングしたパスワードを検出出来るか試してみます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight swift"&gt;&lt;code&gt;&lt;span class="kd"&gt;import&lt;/span&gt; &lt;span class="kt"&gt;SwiftUI&lt;/span&gt;
+
+&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="kt"&gt;ContentView&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;View&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;/// わざとパスワードをハードコーディングしてみる&lt;/span&gt;
+    &lt;span class="k"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"strong password"&lt;/span&gt;
+
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="nv"&gt;body&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;some&lt;/span&gt; &lt;span class="kt"&gt;View&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;Text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"Hello, world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;padding&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="kt"&gt;ContentView_Previews&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;PreviewProvider&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    
+    &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="nv"&gt;previews&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;some&lt;/span&gt; &lt;span class="kt"&gt;View&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;ContentView&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;GitHub Actionsのワークフローファイルは以下のように設定しています。今回は学習のために敢えて、&lt;a href="https://github.com/marketplace/actions/mobsfscan"&gt;mobsfscanのAction&lt;/a&gt;と、&lt;a href="https://github.com/github/codeql-action/tree/v1/upload-sarif"&gt;SARIFをアップロードするAction&lt;/a&gt;を使わずに動かしています。mobsfscanはpipでインストールし、mobsfscanコマンドを使って実行します。SARIFはGitHubのWebAPIに対してcurlコマンドを使ってアップロードします。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;
+&lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;mobsfscan ios&lt;/span&gt;
+&lt;span class="na"&gt;on&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;push&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;paths&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="s"&gt;MobSF-iOS/**'&lt;/span&gt;
+
+&lt;span class="c1"&gt;# GITHUB_TOKENの権限を設定できる&lt;/span&gt;
+&lt;span class="na"&gt;permissions&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;security-events&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;write&lt;/span&gt;
+
+&lt;span class="na"&gt;jobs&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;mobsfscan&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;runs-on&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;mobsfscan code scanning&lt;/span&gt;
+    &lt;span class="na"&gt;steps&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;uses&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;actions/checkout@v2&lt;/span&gt;
+
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Set up Python&lt;/span&gt;
+      &lt;span class="na"&gt;uses&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;actions/setup-python@v2&lt;/span&gt;
+      &lt;span class="na"&gt;with&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; 
+          &lt;span class="na"&gt;python-version&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;3.7"&lt;/span&gt;
+          &lt;span class="na"&gt;architecture&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="s"&gt;x64"&lt;/span&gt;
+
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Set up MobSF&lt;/span&gt;
+      &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+        &lt;span class="s"&gt;pip3 install --upgrade mobsfscan&lt;/span&gt;
+    
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Run mobsfscan&lt;/span&gt;
+      &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+        &lt;span class="s"&gt;mobsfscan MobSF-iOS --sarif --output results.sarif || true&lt;/span&gt;
+
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;gzip&lt;/span&gt;
+      &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;gzip&lt;/span&gt;
+      &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+        &lt;span class="s"&gt;SARIF=$(gzip -c results.sarif | base64 -w0)&lt;/span&gt;
+        &lt;span class="s"&gt;echo "::set-output name=SARIF::$SARIF"&lt;/span&gt;
+    &lt;span class="c1"&gt;# https://docs.github.com/ja/rest/code-scanning#upload-an-analysis-as-sarif-data&lt;/span&gt;
+    &lt;span class="pi"&gt;-&lt;/span&gt; &lt;span class="na"&gt;name&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Upload mobsfscan report&lt;/span&gt;
+      &lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="pi"&gt;|&lt;/span&gt;
+        &lt;span class="s"&gt;curl -i -X POST \&lt;/span&gt;
+          &lt;span class="s"&gt;-H "Accept: application/vnd.github.v3+json" \&lt;/span&gt;
+          &lt;span class="s"&gt;-H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \&lt;/span&gt;
+          &lt;span class="s"&gt;-d '{"commit_sha": "${{ github.sha }}", "ref": "${{ github.ref }}", "sarif": "${{ steps.gzip.outputs.SARIF }}"}' \&lt;/span&gt;
+          &lt;span class="s"&gt;https://api.github.com/repos/Tatsumi0000/MobSF-Practice/code-scanning/sarifs&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;code&gt;permissions&lt;/code&gt;で、SARIFファイルをアップロードするために使う&lt;code&gt;POST /repos/:owner/:repo/code-scanning/sarifs&lt;/code&gt;に必要な権限をGITHUB_TOKENに付与するために&lt;a href="https://docs.github.com/en/rest/reference/code-scanning#upload-an-analysis-as-sarif-data"&gt;設定します&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Run mobsfscan&lt;/code&gt;ステップでは、mobsfscanコマンドで今回のためのサンプルアプリとして作ったMobSF-iOSアプリを解析し、解析結果を、results.sarifファイルに出力します。&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;gzip&lt;/code&gt;ステップでは、SARIFをGitHubにアップロードするためには、gzip形式に圧縮し、base64形式の文字列としてエンコードする必要があるため&lt;a href="https://docs.github.com/ja/rest/code-scanning#upload-an-analysis-as-sarif-data"&gt;圧縮します&lt;/a&gt;。&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Upload mobsfscan report&lt;/code&gt;ステップでは、curlコマンドでGitHubにアップロードします。APIにアクセスするために必要なパラメータは&lt;a href="https://docs.github.com/ja/rest/code-scanning#upload-an-analysis-as-sarif-data"&gt;こちら&lt;/a&gt;を参照しています。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;GitHub Actionsが動いたあとに、SARIFをアップロードしたリポジトリ（今回だとTatsumi0000/MobSF-Practiceリポジトリ）「Security」→「Code scanning alerts」にアラートが出ました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2022/08/12/ec-security-chapter/img/security_alerts.png" alt="GitHub Securityにアラートを出しているスクショ" /&gt;&lt;/p&gt;
+
+&lt;h2 id="おわりに"&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;GitHub Securityにアラートを出す以外にも、Pull requestの段階で脆弱性の検出をしてreviewdogなどを使ってコメントを残すといったこともしたいと思いました。&lt;/p&gt;
+
+&lt;p&gt;セキュリティChapterではさまざまなことに取り組んでいます。今後もペパボのサービスを使ってくださるユーザー様に安心していただくためにも、セキュリティの知識をつけていきたいと思います。&lt;/p&gt;
+
+&lt;p&gt;今後セキュリティ以外のChapterの活動に関する記事も公開していく予定です。&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>全リージョン、複数AWSアカウントのAWS Security Hubのコントロールをコードで統制・管理する</title>
+      <link>https://tech.pepabo.com/2022/08/09/security-hub-controls/</link>
+      <guid>https://tech.pepabo.com/2022/08/09/security-hub-controls/</guid>
+      <pubDate>Tue, 09 Aug 2022 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは。技術部技術基盤チームの&lt;a href="https://twitter.com/k1LoW"&gt;@k1LoW&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;FUJI ROCK FESTIVAL ‘22のライブ配信で観ることができた &lt;a href="https://www.fujirockfestival.com/artist/detail/5384"&gt;Hiatus Kaiyote&lt;/a&gt; のアクトは最高でした。&lt;/p&gt;
+
+&lt;p&gt;また、配信はされなかったものの&lt;a href="https://twitter.com/search?q=%23fujirock"&gt;#fujirockのTwitter TL&lt;/a&gt;で知ることができた &lt;a href="https://www.fujirockfestival.com/artist/detail/5647"&gt;SMTK&lt;/a&gt; をヘビーに聴いています。最高です。&lt;/p&gt;
+
+&lt;p&gt;さて、本エントリーではGMOペパボにおけるAWS Security Hubのコントロールの統制・管理の取り組みについて紹介します。&lt;/p&gt;
+
+&lt;h2 id="aws-security-hubのセキュリティ標準とコントロール"&gt;AWS Security Hubのセキュリティ標準とコントロール&lt;/h2&gt;
+
+&lt;p&gt;AWS Security Hubとは、&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/what-is-securityhub.html"&gt;公式ドキュメント&lt;/a&gt;によると次のように紹介されています。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;AWS Security Hub では、AWS のセキュリティ状態を包括的に把握することが可能で、セキュリティ業界標準およびベストプラクティスに照らした環境チェックを行うのに有効です。&lt;/p&gt;
+
+  &lt;p&gt;Security Hub は、AWS アカウント、サービス、およびサポートされているサードパーティーパートナー製品からセキュリティデータを収集するため、セキュリティの傾向を分析し、最も優先度の高いセキュリティ問題を特定するのに役立てることができます。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;また「セキュリティ標準（&lt;code&gt;Standard&lt;/code&gt;）」というベストプラクティスや業界標準に基づいた一連のセキュリティチェック項目で継続的な環境チェックとスコアリングをすることができます。&lt;/p&gt;
+
+&lt;p&gt;AWS Security Hubでは2022年8月9日時点で次のセキュリティ標準が利用可能です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-cis.html"&gt;CIS AWS Foundations&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-pcidss.html"&gt;Payment Card Industry Data Security Standard (PCI DSS)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-fsbp.html"&gt;AWS Foundational Security Best Practices&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;セキュリティ標準は、セキュリティチェック項目の集まりです。その特定のリソースに対するセキュリティチェック項目を「コントロール（&lt;code&gt;Control&lt;/code&gt;）」と呼びます。&lt;/p&gt;
+
+&lt;p&gt;あるセキュリティ標準を有効にすると、そのセキュリティ標準に含まれる各コントロールに従ったセキュリティチェックが実施されるようになります。&lt;/p&gt;
+
+&lt;p&gt;そして、セキュリティチェックの結果が「検出結果（&lt;code&gt;Finding&lt;/code&gt;）」として集約され、そのセキュリティ標準のスコアリングがされることになります。&lt;/p&gt;
+
+&lt;h2 id="全リージョン複数awsアカウントのコントロールの統制管理の難しさ"&gt;全リージョン、複数AWSアカウントのコントロールの統制・管理の難しさ&lt;/h2&gt;
+
+&lt;p&gt;GMOペパボでは複数のAWSアカウントを運用しています。その全てのAWSアカウントでAWS Security Hubを有効にしています。&lt;/p&gt;
+
+&lt;p&gt;各コントロールの検出結果に対して「セキュリティチェックが成功するように各リソースについて修正対応する」というのが最初に検討する対応です。&lt;/p&gt;
+
+&lt;p&gt;一方で修正対応以外の対応方法もあります。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;コントロールを無効化する
+    &lt;ul&gt;
+      &lt;li&gt;コントロールが要求する基準が高すぎたり、実際の運用に合致しない場合、「コントールを無効化する」ことを選択することがあります。&lt;/li&gt;
+      &lt;li&gt;また、AWS Security Hubの料金は各コントロールのリソースへのセキュリティチェック単位で発生します。「不必要と判断したコントールを無効化する」ことは、コストを最適化という面でも有効です。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;リソース単位でのコントロールによるセキュリティチェックを無効化（抑制）する
+    &lt;ul&gt;
+      &lt;li&gt;コントロールを無効化する以外にも、「このリソースにおいてはコントロールが指摘するセキュリティチェック項目を対応する必要はない」として「リソース単位でのコントロールのセキュリティチェックを無効化（抑制）する」という手段もあります。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;上記のような対応を取る場合、次のような課題があります。&lt;/p&gt;
+
+&lt;h3 id="一定の基準で無効化を実施する必要がある"&gt;一定の基準で無効化を実施する必要がある&lt;/h3&gt;
+
+&lt;p&gt;コントロールの無効化やリソース単位での無効化といった手段は安易に実施してしまうとセキュリティレベルを下げてしまうことにもなりかねません。&lt;/p&gt;
+
+&lt;p&gt;会社全体でセキュリティレベルを維持するため、無効化する際には一定の基準を元に実施判断をしていく必要があります。&lt;/p&gt;
+
+&lt;p&gt;「一定の基準」をどのように維持していくかが課題になります。&lt;/p&gt;
+
+&lt;h3 id="対象となるコントロールが多い"&gt;対象となるコントロールが多い&lt;/h3&gt;
+
+&lt;p&gt;コントロールの統制・管理が必要だということは上記で述べた通りです。&lt;/p&gt;
+
+&lt;p&gt;しかし、そのコントロールの数は膨大です。例えば&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-fsbp.html"&gt;AWS Foundational Security Best Practices&lt;/a&gt;のコントロールは200近くあります。&lt;/p&gt;
+
+&lt;p&gt;また、AWS Security Hubはリージョン単位のサービスです。全リージョンの検出結果を1つのリージョンに集約させることは可能ですが、セキュリティ標準やコントロールの設定はリージョンごとに必要になります。&lt;/p&gt;
+
+&lt;p&gt;さらに、複数AWSアカウントに対して横断的に統制・管理するとなると、統制・管理対象の要素は単純計算で「リージョン数 x AWSアカウント数 x コントロール数」になります。&lt;/p&gt;
+
+&lt;p&gt;「リソース単位でのコントロールによるセキュリティチェックを無効化（抑制）」も考慮するとその数はさらに増えることになります。&lt;/p&gt;
+
+&lt;p&gt;数に対して、いかに効率的に統制・管理していくかが課題になります。&lt;/p&gt;
+
+&lt;h2 id="コードで統制管理する"&gt;コードで統制・管理する&lt;/h2&gt;
+
+&lt;p&gt;コントロールの統制・管理の課題は&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;無効化の手段を取る場合は一定の基準を元に実施判断をしていく必要がある&lt;/li&gt;
+  &lt;li&gt;単純に対象となるコントロールの数が多い&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;の2つであると述べました。&lt;/p&gt;
+
+&lt;p&gt;この２つの課題を軽減するために、AWS Security Hubのコントロールの設定をコードで記述しそれをGitHubのリポジトリで管理する方法を選択しました。&lt;/p&gt;
+
+&lt;h3 id="課題1-無効化の手段を取る場合は一定の基準を元に実施判断をしていく必要があるに対応する"&gt;課題「1. 無効化の手段を取る場合は一定の基準を元に実施判断をしていく必要がある」に対応する&lt;/h3&gt;
+
+&lt;p&gt;1つ目の課題の「無効化の手段を取る場合は一定の基準を元に実施判断をしていく必要がある」については、&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;無効化の申請はGitHubのPull Requestベースで行い、Pull Requestのレビューを「一定の基準に沿っているか」を判断するチェックポイントとして活用する&lt;/li&gt;
+  &lt;li&gt;無効化の判断理由をコード上に記述することを強制することで、過去の判断基準を確認できるようにする&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;とすることで対応することにしました。&lt;/p&gt;
+
+&lt;p&gt;Pull Requestをマージしたタイミングで記述されたコードの通りにAWS Security Hubのコントロールの状態が更新されればさらに良いでしょう。&lt;/p&gt;
+
+&lt;p&gt;なお、GitHubのPull Requestを使ったチェックフローは、GMOペパボにおいてはエンジニアに限らず全パートナーが慣れているフローなのでこの形に落とし込めることは大きなメリットになります。&lt;/p&gt;
+
+&lt;h3 id="課題2-単純に対象となるコントロールの数が多いに対応する"&gt;課題「2. 単純に対象となるコントロールの数が多い」に対応する&lt;/h3&gt;
+
+&lt;p&gt;数の多さに対応するためには、「どのようなコード（構造）でコントロールを管理するか」が重要になってくると考えました。&lt;/p&gt;
+
+&lt;p&gt;前述したように、AWS Security Hubはリージョン単位のサービスです。&lt;/p&gt;
+
+&lt;p&gt;単純な方法だと全リージョン分のコントロールについて同じようなコードを書く必要がでてきます。&lt;/p&gt;
+
+&lt;p&gt;また、GMOペパボでは複数AWSアカウントを運用しているため、統制・管理のために「複数AWSアカウント横断で共通の設定」という方法も取れることが望ましいです。&lt;/p&gt;
+
+&lt;h3 id="コード化する手段の検討"&gt;コード化する手段の検討&lt;/h3&gt;
+
+&lt;p&gt;AWS Security Hubのコントロール設定をコード化するの手段として、まずAWS CloudFormation（AWS CloudFormation StackSets）とTerraformを検討しました。&lt;/p&gt;
+
+&lt;p&gt;課題1については検討した2ツールとも問題なく対応できると判断しました。&lt;/p&gt;
+
+&lt;p&gt;しかし、課題2についてはAWS CloudFormationやTerraformの上に全リージョンや複数AWSアカウントをまたいだ効率的なコントロール管理の仕組みを構築するのは難しいと判断しました。&lt;/p&gt;
+
+&lt;p&gt;そこで、最終手段として「専用のツールを作る」という選択をしました。&lt;/p&gt;
+
+&lt;h2 id="control-controls"&gt;control-controls&lt;/h2&gt;
+
+&lt;p&gt;今回、control-controlsというツールを作成しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/pepabo/control-controls"&gt;https://github.com/pepabo/control-controls&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;control-controlsはAWS Security Hubのコントロールの設定を管理するためのツールです。&lt;/p&gt;
+
+&lt;p&gt;control-controlsの特徴は次の通りです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Terraformや&lt;a href="https://github.com/codenize-tools"&gt;Codenize.tools&lt;/a&gt;と同じように、対象となるリソースの状態の冪等性を担保する動きをする（ &lt;code&gt;control-controls apply&lt;/code&gt; ）&lt;/li&gt;
+  &lt;li&gt;Dry-run（ &lt;code&gt;control-controls plan&lt;/code&gt; ）の仕組みを提供している&lt;/li&gt;
+  &lt;li&gt;あらかじめ全リージョンを対象を前提としている&lt;/li&gt;
+  &lt;li&gt;ベースとなるコントロールの設定に対してリージョンごとの設定の差分を書ける&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://github.com/kubernetes-sigs/kustomize"&gt;kustomize&lt;/a&gt;と同じように、設定ファイル自体の差分パッチの機能を持つ（ &lt;code&gt;--overlay&lt;/code&gt; ）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id="使い方"&gt;使い方&lt;/h3&gt;
+
+&lt;p&gt;使い方はTerraformと同じように &lt;code&gt;control-controls plan&lt;/code&gt; で差分を確認し、&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight console"&gt;&lt;code&gt;&lt;span class="gp"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;control-controls plan controls.yml
+&lt;span class="go"&gt;2022-04-14T15:16:54+09:00 INF Checking eu-north-1
+2022-04-14T15:17:02+09:00 INF Checking ap-south-1
+2022-04-14T15:17:08+09:00 INF Checking eu-west-3
+[...]
+2022-04-14T15:18:19+09:00 INF Checking us-east-2
+2022-04-14T15:18:25+09:00 INF Checking us-west-1
+2022-04-14T15:18:31+09:00 INF Checking us-west-2
+- eu-north-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.4 (disabled reason: Redshift is not running.)
+- eu-north-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.6 (disabled reason: Redshift is not running.)
+- eu-north-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.8 (disabled reason: Redshift is not running.)
+- ap-south-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.4 (disabled reason: Redshift is not running.)
+- ap-south-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.6 (disabled reason: Redshift is not running.)
+[...]
+- us-west-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.6 (disabled reason: Redshift is not running.)
+- us-west-1::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.8 (disabled reason: Redshift is not running.)
+- us-west-2::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.4 (disabled reason: Redshift is not running.)
+- us-west-2::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.6 (disabled reason: Redshift is not running.)
+- us-west-2::standards::aws-foundational-security-best-practices/v/1.0.0::controls::Redshift.8 (disabled reason: Redshift is not running.)
+
+Plan: 0 to enable, 51 to disable
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;control-controls apply&lt;/code&gt; で適用します。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight console"&gt;&lt;code&gt;&lt;span class="gp"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;control-controls apply controls.yml
+&lt;span class="go"&gt;2022-04-14T15:43:37+09:00 INF Applying to eu-north-1
+2022-04-14T15:43:46+09:00 INF Disable control Control=Redshift.4 Reason="Redshift is not running." Region=eu-north-1 Standard=aws-foundational-security-best-practice
+s/v/1.0.0
+2022-04-14T15:43:47+09:00 INF Disable control Control=Redshift.6 Reason="Redshift is not running." Region=eu-north-1 Standard=aws-foundational-security-best-practice
+s/v/1.0.0
+2022-04-14T15:43:49+09:00 INF Disable control Control=Redshift.8 Reason="Redshift is not running." Region=eu-north-1 Standard=aws-foundational-security-best-practice
+s/v/1.0.0
+2022-04-14T15:43:51+09:00 INF Applying to ap-south-1
+2022-04-14T15:43:56+09:00 INF Disable control Control=Redshift.4 Reason="Redshift is not running." Region=ap-south-1 Standard=aws-foundational-security-best-practice
+s/v/1.0.0
+2022-04-14T15:43:57+09:00 INF Disable control Control=Redshift.6 Reason="Redshift is not running." Region=ap-south-1 Standard=aws-foundational-security-best-practice
+s/v/1.0.0
+[...]
+2022-04-14T15:46:18+09:00 INF Disable control Control=Redshift.6 Reason="Redshift is not running." Region=us-west-1 Standard=aws-foundational-security-best-practices
+/v/1.0.0
+2022-04-14T15:46:19+09:00 INF Disable control Control=Redshift.8 Reason="Redshift is not running." Region=us-west-1 Standard=aws-foundational-security-best-practices
+/v/1.0.0
+2022-04-14T15:46:20+09:00 INF Applying to us-west-2
+2022-04-14T15:46:26+09:00 INF Disable control Control=Redshift.4 Reason="Redshift is not running." Region=us-west-2 Standard=aws-foundational-security-best-practices
+/v/1.0.0
+2022-04-14T15:46:27+09:00 INF Disable control Control=Redshift.6 Reason="Redshift is not running." Region=us-west-2 Standard=aws-foundational-security-best-practices
+/v/1.0.0
+2022-04-14T15:46:29+09:00 INF Disable control Control=Redshift.8 Reason="Redshift is not running." Region=us-west-2 Standard=aws-foundational-security-best-practices
+/v/1.0.0
+
+Apply complete
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;GMOペパボでは全AWSアカウントのcontrol-controlsの設定ファイルを1つのGitHubリポジトリで管理するようにし、GitHub Actionsを使って&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Pull Requestを作成すると &lt;code&gt;control-controls plan&lt;/code&gt; を実行し、Dry-runの結果をコメント&lt;/li&gt;
+  &lt;li&gt;mainブランチにマージすると &lt;code&gt;control-controls apply&lt;/code&gt; を実行し、結果をPull Requestにコメント&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;と自動化しています。&lt;/p&gt;
+
+&lt;h3 id="設定ファイルを使った統制管理"&gt;設定ファイルを使った統制・管理&lt;/h3&gt;
+
+&lt;p&gt;設定ファイルは次のような構成になっています。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;autoEnable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;
+&lt;span class="na"&gt;standards&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;aws-foundational-security-best-practices/v/1.0.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;
+    &lt;span class="na"&gt;controls&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;disable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;CodeBuild.1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CodeBuildは使用ないため無効化する&lt;/span&gt;
+        &lt;span class="na"&gt;CodeBuild.2&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CodeBuildは使用ないため無効化する&lt;/span&gt;
+        &lt;span class="na"&gt;CodeBuild.4&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CodeBuildは使用ないため無効化する&lt;/span&gt;
+        &lt;span class="na"&gt;CodeBuild.5&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;CodeBuildは使用ないため無効化する&lt;/span&gt;
+        &lt;span class="na"&gt;ElasticBeanstalk.1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;ElasticBeanstalkは使用ないため無効化する&lt;/span&gt;
+        &lt;span class="na"&gt;ElasticBeanstalk.2&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;ElasticBeanstalkは使用ないため無効化する&lt;/span&gt;
+  &lt;span class="na"&gt;cis-aws-foundations-benchmark/v/1.2.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;
+  &lt;span class="na"&gt;pci-dss/v/3.2.1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+&lt;span class="na"&gt;regions&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;eu-north-1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;standards&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;aws-foundational-security-best-practices/v/1.0.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+      &lt;span class="na"&gt;cis-aws-foundations-benchmark/v/1.2.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+  &lt;span class="na"&gt;ap-south-1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;standards&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;aws-foundational-security-best-practices/v/1.0.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+      &lt;span class="na"&gt;cis-aws-foundations-benchmark/v/1.2.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+&lt;span class="pi"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;...&lt;/span&gt;&lt;span class="pi"&gt;]&lt;/span&gt;
+  &lt;span class="na"&gt;eu-central-1&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;standards&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;aws-foundational-security-best-practices/v/1.0.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+      &lt;span class="na"&gt;cis-aws-foundations-benchmark/v/1.2.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;standards.&amp;lt;standard&amp;gt;.*&lt;/code&gt; にベースとなる設定を記述します。これは全リージョンに適用されます。&lt;/p&gt;
+
+&lt;p&gt;もしリージョンごとに差分がある場合は &lt;code&gt;regions.&amp;lt;region&amp;gt;.standards.&amp;lt;standard&amp;gt;.*&lt;/code&gt; に差分を記述することで、ベースの設定を上書き可能です。&lt;/p&gt;
+
+&lt;p&gt;上記の例では、使用しないリージョンについてセキュリティ標準自体を無効化しています。&lt;/p&gt;
+
+&lt;p&gt;コントロールの有効・無効の設定は &lt;code&gt;standards.&amp;lt;standard&amp;gt;.controls.enable&lt;/code&gt;、&lt;code&gt;standards.&amp;lt;standard&amp;gt;.controls.disable&lt;/code&gt; に記述しますが、無効設定のみ「無効理由」を強制するようになっています。&lt;/p&gt;
+
+&lt;p&gt;上記の例では、CodeBuildやElasticBeanstalkの関連コントロールを無効化しています。&lt;/p&gt;
+
+&lt;p&gt;また、リソース単位でのコントロールによるセキュリティチェックの無効化（抑制）も可能です。&lt;/p&gt;
+
+&lt;p&gt;例えばS3バケット &lt;code&gt;arn:aws:s3:::static.example.com&lt;/code&gt; について、&lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-fsbp.html"&gt;AWS Foundational Security Best Practices&lt;/a&gt; のコントロール &lt;a href="https://docs.aws.amazon.com/ja_jp/securityhub/latest/userguide/securityhub-standards-fsbp-controls.html#fsbp-s3-2"&gt;S3.2&lt;/a&gt;のチェックを抑制する（&lt;code&gt;SUPPRESSED&lt;/code&gt;）には次のように書くことができます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight yaml"&gt;&lt;code&gt;&lt;span class="na"&gt;standards&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+  &lt;span class="na"&gt;aws-foundational-security-best-practices/v/1.0.0&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+    &lt;span class="na"&gt;enable&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="no"&gt;true&lt;/span&gt;
+    &lt;span class="na"&gt;findings&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+      &lt;span class="na"&gt;S3.2&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt;
+        &lt;span class="s"&gt;arn:aws:s3:::static.example.com:&lt;/span&gt;
+          &lt;span class="s"&gt;status&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="s"&gt;SUPPRESSED&lt;/span&gt;
+          &lt;span class="s"&gt;note&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt; &lt;span class="s"&gt;秘匿すべき情報はない。また用途上Publicアクセスを無効にするのは難しい&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id="--overlay-オプションを使った統制管理"&gt;&lt;code&gt;--overlay&lt;/code&gt; オプションを使った統制・管理&lt;/h3&gt;
+
+&lt;p&gt;設定ファイルを使った統制・管理は1AWSアカウントを想定しています。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;--overlay&lt;/code&gt; オプションを活用することで、複数AWSアカウントをまたいだ統制・管理ができるようになります。&lt;/p&gt;
+
+&lt;p&gt;GMOペパボは&lt;a href="https://pepabo.com/services/"&gt;インターネットサービスを多数展開しています&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;例えば、それぞれのサービスごとにAWSアカウントを分けているとします。&lt;/p&gt;
+
+&lt;p&gt;共通の設定を &lt;code&gt;base.yml&lt;/code&gt; として作成し、それぞれのサービスごとのAWSアカウントごとの差分を &lt;code&gt;[サービス].yml&lt;/code&gt; として記述します。&lt;/p&gt;
+
+&lt;p&gt;それらを次のように &lt;code&gt;--overlay&lt;/code&gt; オプションを使用して実行することで、&lt;code&gt;base.yml&lt;/code&gt; に &lt;code&gt;[サービス].yml&lt;/code&gt; の差分パッチを当てた状態で &lt;code&gt;plan&lt;/code&gt; や &lt;code&gt;apply&lt;/code&gt; を実行できます。&lt;/p&gt;
+
+&lt;div class="highlight"&gt;&lt;pre class="highlight console"&gt;&lt;code&gt;&lt;span class="gp"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;AWS_PROFILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;colorme control-controls apply base.yml &lt;span class="nt"&gt;--overlay&lt;/span&gt; colorme.yml
+&lt;span class="gp"&gt;$&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;AWS_PROFILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;minne control-controls apply base.yml &lt;span class="nt"&gt;--overlay&lt;/span&gt; minne.yml
+&lt;span class="go"&gt;[...]
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;（実際には、AWSアカウントをまたいだAssumeRoleを活用して適用していますが、簡単のために AWS_PROFILE 環境変数で表現しています。）&lt;/p&gt;
+
+&lt;h2 id="まとめ"&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;本エントリーでは、GMOペパボにおけるAWS Security Hubのコントロールの統制・管理の取り組みについて紹介しました。&lt;/p&gt;
+
+&lt;p&gt;今回は最終手段として「専用のツールを作る」ことを選択しました。&lt;/p&gt;
+
+&lt;p&gt;ユースケースを「AWS Security Hubのコントロールの統制・管理」に絞ったことで、記述量の少ない、GitHub Actionsで自動化された統制・管理構成を構築できたと思います。&lt;/p&gt;
+
+&lt;p&gt;もし同じような課題で困っている方がいらっしゃいましたら、 &lt;a href="https://github.com/pepabo/control-controls"&gt;control-controls&lt;/a&gt; も検討してもらえると嬉しいです。&lt;/p&gt;
+
+&lt;p&gt;また、今回私たちが選択できなかった（AWS CDKを含む）AWS CloudFormationやTerraformといった、一般的によく使用されているIaCツールでの統制・管理方法についても聞いてみたいです。&lt;/p&gt;
+
+&lt;p&gt;知見をお持ちの方はぜひ広くインターネットに共有していただけると嬉しいです。&lt;/p&gt;
+
+&lt;p&gt;それでは良い夏休みを！&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>新卒エンジニア研修2021に参加しました (後編)</title>
+      <link>https://tech.pepabo.com/2021/11/05/newbie-training-2021-participants-02/</link>
+      <guid>https://tech.pepabo.com/2021/11/05/newbie-training-2021-participants-02/</guid>
+      <pubDate>Fri, 05 Nov 2021 00:00:00 +0900</pubDate>
+      <description>&lt;p&gt;こんにちは！ペパボでは今年の6月から8月にかけて、新卒パートナー向けのエンジニア研修を実施しました。
+今回は研修に参加した新卒パートナーが研修内容を振り返りながら、研修の中で得た気づきを紹介します。&lt;/p&gt;
+
+&lt;p&gt;ペパボの2021年研修では2021年にWebアプリケーション開発を行う上で必要な技術領域について広く扱っています。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Rails研修&lt;/li&gt;
+  &lt;li&gt;フロントエンド研修&lt;/li&gt;
+  &lt;li&gt;モバイル研修&lt;/li&gt;
+  &lt;li&gt;コンテナ・デプロイ研修&lt;/li&gt;
+  &lt;li&gt;機械学習研修&lt;/li&gt;
+  &lt;li&gt;セキュリティ研修&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;詳細な研修内容については、先日公開された &lt;a href="https://tech.pepabo.com/2021/09/21/newbie-training-2021/"&gt;「GMOペパボのエンジニア研修2021の資料を公開します」&lt;/a&gt; において講師陣が紹介しておりますので、ぜひそちらもご覧ください！
+またその他にも外部講師をお招きした1day形式のワークショップや読書会など盛りだくさんでした。
+DBモデリングとRSpecについてのワークショップの内容をまとめた&lt;a href="https://tech.pepabo.com/2021/09/22/igaiga-workshop/"&gt;テックブログ&lt;/a&gt;もありますので、気になる方はぜひ読んでみてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://tech.pepabo.com/2021/10/04/newbiew-training-2021-participants-01/"&gt;先日公開された前編&lt;/a&gt;では、Rails研修、フロントエンド研修、モバイル研修について紹介しました。&lt;/p&gt;
+
+&lt;p&gt;後編の今回は、コンテナ・デプロイ研修、機械学習研修、セキュリティ研修について紹介していきます。&lt;/p&gt;
+
+&lt;h2 id="コンテナデプロイ研修"&gt;コンテナ・デプロイ研修&lt;/h2&gt;
+
+&lt;p&gt;こんにちは、新卒11期エンジニアのhomirun(@h0mirun_deux)です。 僕からはコンテナとデプロイ研修について紹介します。&lt;/p&gt;
+
+&lt;p&gt;この研修は主にakichanさんとghostさんにご指導いただき、&lt;strong&gt;コンテナ・クラウド・デプロイ技術に触ることができ、標準化・抽象化について実戦で使える理解をするという目標&lt;/strong&gt;をもとに、11日間で以下のような流れで行われました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コンテナ
+    &lt;ul&gt;
+      &lt;li&gt;コンテナの歴史とコンテナから学ぶ標準化・抽象化について&lt;/li&gt;
+      &lt;li&gt;コンテナを使わない世界と使う世界
+        &lt;ul&gt;
+          &lt;li&gt;Docker, Vagrant, Docker以外のランタイムをそれぞれ使ってみる&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Docker Composeを使ってみる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;CI/CD
+    &lt;ul&gt;
+      &lt;li&gt;GitHub Actionsを使ってみる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;パブリッククラウド
+    &lt;ul&gt;
+      &lt;li&gt;AWSを使ってみる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Infrastructure as Code
+    &lt;ul&gt;
+      &lt;li&gt;Terraformを使ってAWSの操作をしてみる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;総合演習
+    &lt;ul&gt;
+      &lt;li&gt;Kubernetesに入門してアプリケーションを動かす&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;それぞれの技術で座学 + ハンズオンを繰り返す形で進行していき、それによって着実に学びを深めていくことができました。&lt;/p&gt;
+
+&lt;p&gt;個人的に楽しかったのはGitHub Actionsでした。というのも今までCI/CDを利用することはあってもそれを自分で用意したことはなかったため、今回の研修で実際に手を動かしてデプロイまで行うことができ、これからの業務や趣味プログラミングにも役立てることができそうだなと感じました。&lt;/p&gt;
+
+&lt;p&gt;下記の画像はself hostedなGitHub ActionsのRunnerを手元のマシンで動かしたときのスクリーンショットです。手元で実際にJobが動いていて感動しました。
+&lt;img src="/blog/2021/11/05/newbie-training-2021-participants-02/github_actions_runner.png" alt="GitHubActionsのRunner" /&gt;&lt;/p&gt;
+
+&lt;p&gt;次に、研修の後半で行われた総合演習について掘り下げて話をします。
+総合演習は、&lt;strong&gt;未知の技術領域に先輩や同僚の力を借りてアプローチできるようになること&lt;/strong&gt;を目的に行われました。&lt;/p&gt;
+
+&lt;p&gt;総合演習は先にも述べたように、Kubernetesに一から入門し、それを使ってRailsTutorialで作成したアプリケーションを動かそうというものでした。実はこれ以外にも要件があり、「コンテナにログインする運用は禁止」、「manifestはGitOpsでデプロイする」など実際の業務に近い要件が設定されていました。&lt;/p&gt;
+
+&lt;p&gt;個人的に一番躓いたのはどうやってDBマイグレーションを行うかでした。Initコンテナでマイグレーションを行うとオートヒーリングやアップデートの際に毎回マイグレーションが走ってしまいます。なので、最終的にはJobを使うことでそれを解決する事ができました。&lt;/p&gt;
+
+&lt;p&gt;下記は、総合演習で僕が実際に作成したアーキテクチャの図です。この図を書き終えたとき、自分は先輩方や同期と相談しつつもここまで実装できたんだなという達成感がありました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="/blog/2021/11/05/newbie-training-2021-participants-02/container_training.png" alt="ほみるんのアーキテクチャ図" /&gt;&lt;/p&gt;
+
+&lt;p&gt;この研修を通して、自分たちが書いたアプリケーションがどのような技術を介して提供されるのかを理解することができました。ここで学んだ技術を用いてこれからバリューを出していきたいと思います！&lt;/p&gt;
+
+&lt;h2 id="機械学習研修"&gt;機械学習研修&lt;/h2&gt;
+
+&lt;p&gt;こんにちは、わたさん @watasan です！ペパボに入社する前から大学院で機械学習関係の研究をしておりまして、そんな私が機械学習研修で学んだことや感じたことをお伝えしたいと思います。&lt;/p&gt;
+
+&lt;p&gt;5日間の研修はデータエンジニアリング（2日間）と機械学習（3日間）の2パートに分かれていました。ここからそれぞれのパートで特に印象に残った内容と個人的な感想をご紹介していきます。&lt;/p&gt;
+
+&lt;h3 id="データエンジニアリングパート"&gt;データエンジニアリングパート&lt;/h3&gt;
+&lt;p&gt;データエンジニアリングのパートでは、機械学習について学ぶ前にそもそもなぜデータを収集するのか、またそのデータを扱うためにどのような処理が必要なのかという考え方を教えていただきました。データの扱いの基本的な三要素である&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Extract（収集）&lt;/li&gt;
+  &lt;li&gt;Transform（変換）&lt;/li&gt;
+  &lt;li&gt;Load（蓄積）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;の頭文字を取ったETLという概念と、それぞれでどのようなことを気をつけなければならないかというお話を聞きました。データを無目的にただ蓄積する、というのは簡単だけれども、量が増えれば増えるほどコストがかかってしまうし、いざ何かに利用しようとしたときに、適切な構造化を施した上での収集がされていないとデータから情報を引き出せないという話はとても納得できました。&lt;/p&gt;
+
+&lt;p&gt;また分析を行うためにデータはTransform（変換）されますが、大元のデータが蓄積されている場所と変換済みのデータの保管場所は分けておこう、という話も勉強になりました。分析のプロセスでは不可逆な変換を繰り返すことがよくあるので、ちゃんと大元のデータに戻れるようにという配慮だそうです。&lt;/p&gt;
+
+&lt;p&gt;私個人の感想としては、これまで研究のためにデータが必要となった際はオンラインにある既に整理されたデータを扱うことがほとんどだったので、その整理されたデータを作るためにこれだけ考えることがあるのか…と率直に驚きました。今まで使っていたデータを整備してくださった方々にお礼を言わなければという気持ちになりました。「データ駆動」という言葉をよく目にするようになった昨今ですが、データを活かすところまで持っていくことがいかに困難かということを、この研修を通して以前よりも具体的にイメージできるようになれたように思います。&lt;/p&gt;
+
+&lt;h3 id="機械学習パート"&gt;機械学習パート&lt;/h3&gt;
+&lt;p&gt;このパートでは「『機械学習とは何か？』を自分の言葉で説明できるようになる」ことを目的に、機械学習で取り組む主要なタスク（回帰や識別）や基本的な概念（損失関数や汎化誤差など）、学習のテクニック（勾配法など）について学びました。&lt;/p&gt;
+
+&lt;p&gt;研修の形式は、座学とハンズオンの二段構えになっており、座学では講師である&lt;a href="https://rand.pepabo.com/"&gt;ペパボ研究所&lt;/a&gt;の皆さんがスライドで丁寧に解説してくださいました。数式を軸としながらも、ビジュアルに基本的な概念を教えてくださり非常にわかりやすかったです。一方でハンズオンはGoogleが公開している&lt;a href="https://developers.google.com/machine-learning/crash-course"&gt;Machine Learning Crash Course&lt;/a&gt;が題材となっていました。このCrash Courseは機械学習を実際に利用するために必要な知識が無駄なく配置されていて、なおかつ直感的に操作できるデモや具体例が充実していて素敵な教材だと感じました。基本的にこのコースは英語で書かれていて、たまに数式が書かれているので完全に機械学習が初めての人にとっては少しとっつきにくいかもなぁという印象がありましたが、そこは座学でのフォローアップを丁寧にしていただいていたのでノープロブレムという感じでした。&lt;/p&gt;
+
+&lt;p&gt;座学もCrash Courseも、エンジニアが機械学習を学ぶなら？という観点で説明がなされていたのが非常に印象的でした。たとえば座学では、「機械学習は、ある関数の入出力を左右するパラメータを、プログラマがマニュアルで決めるのではなく、データから自動的に決めるために利用される技術」と、ソフトウェア開発の観点から説明がなされていました。この説明の仕方は機械学習の入門本ではあまり見たことがないですが、非常に分かりやすくて個人的に感動しました。&lt;/p&gt;
+
+&lt;p&gt;また研修の最終日では応用編として、BigQueryを操作して実際のペパボのサービスのデータにアクセスし、そこから識別モデルの訓練と予測までおこなってみるという、データエンジニアリングパートと機械学習パートの集大成的なハンズオンを行いました。BigQueryではBigQuery MLという機械学習モデルの構築と実行をSQLクエリでサポートする機能を提供していて、それを実際に触らせてもらいました。データの収集からモデルの訓練と予測までを1つのクエリ文で出来てしまうのが非常に快適で驚きました。また、実際のサービスのどのような場面に機械学習を活かすことができるかという実例を示していただけたので、これからサービスの開発をしていく上で課題にぶつかった時に「この課題は機械学習で解けないか？」と考える視点をいただけたように思います。&lt;/p&gt;
+
+&lt;p&gt;データエンジニアリングパートも機械学習基礎・応用パートも資料は全て&lt;a href="https://tech.pepabo.com/2021/09/21/newbie-training-2021/"&gt;公開されている研修資料&lt;/a&gt;に含まれていますので、ぜひご覧いただければと思います！&lt;/p&gt;
+
+&lt;h2 id="セキュリティ研修"&gt;セキュリティ研修&lt;/h2&gt;
+
+&lt;p&gt;講義資料：&lt;a href="https://github.com/pepabo/training/blob/master/security/web-security-training-2021.pdf"&gt;https://github.com/pepabo/training/blob/master/security/web-security-training-2021.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;どうも、yagijinです。他の新卒のみんなの力を借りつつセキュリティ研修について紹介できればと思います。
+この研修ではmrtc0さんよりWebアプリケーションのセキュリティについて5日間にわたって講義していただきました。&lt;/p&gt;
+
+&lt;p&gt;講義の冒頭ではイントロダクションとして、セキュリティを学ぶ必要がある理由やペパボでのセキュリティに対する取り組みについて、実際の事例を交えながら紹介していただきました。
+ペパボのセキュリティへの取組みについて興味がある方は、社外向けの記事として&lt;a href="https://logmi.jp/tech/articles/324600"&gt;logmiでの記事&lt;/a&gt;がありますので併せてご覧ください。&lt;/p&gt;
+
+&lt;h3 id="研修の前半脆弱性についての座学と攻撃体験"&gt;研修の前半：脆弱性についての座学と攻撃体験&lt;/h3&gt;
+
+&lt;p&gt;前半は、CVEなどの分類や用語、要素技術や脆弱性の種類について学びました。具体的に学んだトピックは以下の通りです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Web セキュリティ基礎
+    &lt;ul&gt;
+      &lt;li&gt;ブラウザの仕組み&lt;/li&gt;
+      &lt;li&gt;HTTP&lt;/li&gt;
+      &lt;li&gt;Same Origin Policy&lt;/li&gt;
+      &lt;li&gt;Cookie とセッション&lt;/li&gt;
+      &lt;li&gt;セッションハイジャック&lt;/li&gt;
+      &lt;li&gt;CSRF&lt;/li&gt;
+      &lt;li&gt;Fetch Metadata&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;XSS&lt;/li&gt;
+  &lt;li&gt;SQLインジェクション&lt;/li&gt;
+  &lt;li&gt;オープンリダイレクト&lt;/li&gt;
+  &lt;li&gt;ディレクトリトラバーサル&lt;/li&gt;
+  &lt;li&gt;RCE&lt;/li&gt;
+  &lt;li&gt;CORS&lt;/li&gt;
+  &lt;li&gt;安全なアプリケーションの作りかた
+    &lt;ul&gt;
+      &lt;li&gt;認証、認可&lt;/li&gt;
+      &lt;li&gt;ログ&lt;/li&gt;
+      &lt;li&gt;秘匿情報の管理&lt;/li&gt;
+      &lt;li&gt;セキュアコーディングについて&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また、セキュリティへの意識を高めるために攻撃者側を体験してみようということで、&lt;a href="https://portswigger.net/web-security"&gt;PortSwiggerのWebSecurityAcademy&lt;/a&gt;というサービスを使って脆弱性を実際に攻撃してみるワークも行いました。当たり前ですが実際のサービスに対してはしてはいけない行為なので、なんだかドキドキしながらワークを進めました。実際に攻撃してみることで、脆弱性によってはサービスにとって致命的なリスクになることを体感することができました。具体例を出すと、よく聞くSQLインジェクションがデータベースから任意のデータを抜き出すことのできる絶対に作ってはいけない脆弱性の一つだと再認識できましたし、ユーザーからの入力は絶対に信じてはいけないという教訓が得られました。&lt;/p&gt;
+
+&lt;h3 id="後半脆弱性を実際に修正する"&gt;後半：脆弱性を実際に修正する&lt;/h3&gt;
+&lt;p&gt;後半は実践編ということで、脆弱性の修正を体験しました。
+事前に用意された脆弱性を持ったRailsアプリケーションを題材に、ここまで学んできた脆弱性を探し、修正するというワークがありました。このワークはチームに分かれて行ったのですが、脆弱性について話し合いながら行うことができたので良い復習になりました。また、このワークでは脆弱性が修正できたか確認できるテストが用意されており、実際に修正できているかすぐに確認することができました。&lt;/p&gt;
+
+&lt;h3 id="セキュリティ研修のまとめ"&gt;セキュリティ研修のまとめ&lt;/h3&gt;
+&lt;p&gt;セキュリティ研修では、幅広く脆弱性やそれが生まれやすい部分について学ぶことができました。また、体験を通して個々の脆弱性の脅威の違いや対策についても学ぶことができました。&lt;/p&gt;
+
+&lt;p&gt;そんな中でも、最初のイントロダクションでの「攻撃者は一つでも穴を見つければ勝ち、サービス側はすべての穴を防がなければならない」というmrtc0さんの言葉が印象に残っています。
+セキュリティは、忙しいからといっておろそかにしてはいけなく、常に狙われているという意識を持ち、コストを掛けて維持していかなくてはならないものだと再認識することができました。&lt;/p&gt;
+
+&lt;p&gt;また、Webアプリケーションのセキュリティは見なくてはならない領域がとても広いことがわかりました。
+なので、エンジニア各々が意識していても1人ですべての領域を網羅することは不可能で、組織として取り組む必要があると感じました。
+そんな中、社内にセキュリティ対策室があってmrtc0さんのようなスペシャリストがいる環境はとても心強いことだと思いました。&lt;/p&gt;
+
+&lt;p&gt;以上、セキュリティ研修の振り返りでした！&lt;/p&gt;
+
+&lt;h2 id="終わりに"&gt;終わりに&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href="https://tech.pepabo.com/2021/10/04/newbiew-training-2021-participants-01/"&gt;前編&lt;/a&gt;に続いて、2021年度のペパボエンジニア研修について振り返ってみましたが、いかがだったでしょうか。&lt;/p&gt;
+
+&lt;p&gt;ペパボエンジニア研修では、サービスを形作る技術について幅広い領域に渡って学ぶことができました。
+この後、2021年度の新卒エンジニアたちは様々な部署に配属されました。
+研修で学んだことを糧に、各部署でぐんぐん成長していきたいと思います！&lt;/p&gt;
+
+&lt;p&gt;研修に携わってくださった皆さん、ここまで読んでくださった皆さんありがとうございました！！&lt;/p&gt;
+</description>
+    </item>
+  </channel>
+</rss>
