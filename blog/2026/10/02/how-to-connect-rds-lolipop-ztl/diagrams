@@ -1,0 +1,22 @@
+<h1 id="図のmermaidソース">図のmermaidソース</h1>
+
+<p>記事中の画像(architecture.png)の元になったmermaidソース。修正時はここを編集し、mermaid部分をファイルに保存して<code>mmdc -i &lt;ファイル&gt; -o architecture.png -s 2 -b transparent</code>で再画像化する。<code>ztld</code>の前後の<code>&amp;nbsp;</code>は、中継用EC2インスタンスの枠がVPCの枠からはみ出さないよう幅を確保するためのもの。</p>
+
+<h2 id="architecturepng構成図">architecture.png(構成図)</h2>
+
+<div class="highlight"><pre class="highlight plaintext"><code>graph LR
+    subgraph pc [手元のPC]
+        mysql[MySQLクライアント] --&gt; ztlc[ZTLクライアント]
+    end
+
+    subgraph vpc [RDSのあるVPC]
+        subgraph relay [中継用EC2インスタンス]
+            ztld["&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;ztld&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;"]
+        end
+        ztld -- 3306 --&gt; rds[(RDS)]
+    end
+
+    ztlc &lt;== ZTLネットワーク ==&gt; ztld
+
+    style vpc fill:#f4f8fd,stroke:#2b6cb0,stroke-dasharray:5 5
+</code></pre></div>
