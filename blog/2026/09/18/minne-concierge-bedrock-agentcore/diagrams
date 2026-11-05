@@ -1,0 +1,47 @@
+<h1 id="図のmermaidソース">図のmermaidソース</h1>
+
+<p>記事中の画像（architecture.png、flow.png）の元になったmermaidソース。修正時はここを編集して再画像化する。</p>
+
+<h2 id="architecturepng全体アーキテクチャ">architecture.png（全体アーキテクチャ）</h2>
+
+<div class="highlight"><pre class="highlight plaintext"><code>graph LR
+    u[購入者] --&gt; ui
+
+    subgraph webfront [Next.js]
+        ui[チャットUI] --&gt; bff["BFF（API Route）"]
+    end
+
+    subgraph aws [AWS ap-northeast-1]
+        bff -- "SigV4&lt;br&gt;InvokeAgentRuntime" --&gt; rt[AgentCore Runtime&lt;br&gt;Strands Agent]
+        rt --&gt; llm[Bedrock&lt;br&gt;Claude]
+        rt &lt;--&gt; mem[AgentCore Memory]
+        rt -.-&gt; obs[CloudWatch&lt;br&gt;Observability]
+    end
+
+    subgraph minneapp [Rails]
+        gql[作品検索API]
+    end
+
+    rt -- 作品検索ツール --&gt; gql
+</code></pre></div>
+<h2 id="flowpngエージェントの処理フロー">flow.png（エージェントの処理フロー）</h2>
+
+<div class="highlight"><pre class="highlight plaintext"><code>graph TD
+    input["購入者の入力"] --&gt; translate
+
+    subgraph agent ["Strands Agent（LLM）"]
+        translate["会話を検索引数に翻訳&lt;br&gt;キーワード / 価格上限 / 納期 など"]
+        judge{候補は十分か}
+        relax["条件を緩めて再検索&lt;br&gt;（どこを緩めたかは応答で明示）"]
+        select["候補から数点を選定し&lt;br&gt;マッチ理由を生成"]
+    end
+
+    subgraph minneapp [Rails]
+        search["作品検索API&lt;br&gt;ビジネスルール適用 + ランキング"]
+    end
+
+    translate --&gt; search
+    search -- 上位数十件のメタデータ --&gt; judge
+    judge -- 0件や条件過多 --&gt; relax --&gt; search
+    judge -- 十分 --&gt; select --&gt; reply[作品カードつき応答]
+</code></pre></div>
